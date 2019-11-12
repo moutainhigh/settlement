@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div class="left-nav" th:fragment="left">
+    <div id="side-nav">
+        <ul id="nav">
+        </ul>
+    </div>
+</div>
+<script>
+    $(function () {
+        layui.use('element', function() {
+            $.get("/sys-permission/menu", function(data) {
+                if (data.data != null) {
+                    getMenus(data.data);
+                }
+            });
+        });
+    })
+    var getMenus= function(data) {
+        for (var j = 0; j < data.length; j++) {
+            var node = data[j];
+            var li = $("<li></li>");
+            var a = $("<a href='javascript:;'></a>");
+            var i = $("<i class='iconfont left-nav-li' lay-tips='" + node.pname + "'>" + node.icon + "</i>");
+            var cite = $("<cite>" + node.pname + "</cite>");
+            var iArrow = $("<i class='iconfont nav_right'>&#xe6a7;</i>");
+            a.append(i).append(cite).append(iArrow);
+            li.append(a);
+            var childrens = node.childrens;
+            if (childrens.length > 0) {
+                var ul = $("<ul class='sub-menu'></ul>");
+                for (var k = 0 ; k < childrens.length; k++) {
+                    var childNode = childrens[k];
+                    var childLi = $("<li></li>");
+                    var childA = $("<a onclick=xadmin.add_tab('" + childNode.pname + "','" + childNode.url + "')></a>");
+                    var childI = $("<i class='iconfont'>&#xe6a7;</i>");
+                    var childCite = $("<cite>" + childNode.pname + "</cite>");
+                    childA.append(childI).append(childCite);
+                    childLi.append(childA);
+                    ul.append(childLi);
+                }
+                li.append(ul);
+            }
+            $("#nav").append(li);
+        }
+    }
+</script>
