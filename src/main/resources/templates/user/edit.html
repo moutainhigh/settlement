@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+    
+    <head>
+        <th:bolck th:include="common/header :: header('编辑用户')" />
+        <link rel="stylesheet" th:href="@{/css/formSelects-v4.css}" />
+    </head>
+    <body>
+        <div class="layui-fluid">
+            <div class="layui-row">
+                <form class="layui-form">
+                    <div class="layui-form-item">
+                        <div class="layui-form-item">
+                            <label for="realName" class="layui-form-label">
+                                <span class="x-red">*</span>姓名</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="realName" name="realName" th:value="${userVo.realName}" required="" lay-verify="realName" autocomplete="off"  placeholder="请输入姓名" class="layui-input" maxlength="20">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="employeeNo" class="layui-form-label">
+                                <span class="x-red">*</span>员工编号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="employeeNo" name="employeeNo" th:value="${userVo.employeeNo}" required="" lay-verify="employeeNo" autocomplete="off" placeholder="请输入员工编号" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="email" class="layui-form-label">
+                                <span class="x-red">*</span>邮箱</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="email" name="email" th:value="${userVo.email}" readonly required="" lay-verify="email" autocomplete="off" placeholder="公司邮箱,系统登陆用户名" class="layui-input">
+                            </div>
+                            <div class="layui-form-mid layui-word-aux">
+                                <span class="x-red">*</span>邮箱不可修改<!-- <button type="button" id="userIsExist" lay-filter="userIsExist" class="layui-btn layui-btn-primary layui-btn-xs">检查邮箱是否可用</button>-->
+                            </div>
+                        </div>
+                        <!--<div class="layui-form-item">
+                            <label for="password" class="layui-form-label">
+                                <span class="x-red">*</span>密码</label>
+                            <div class="layui-input-inline">
+                                <input type="password" id="password" name="passord" required="" lay-verify="password" autocomplete="off" placeholder="8到16个字符,含大小写字母和数字" class="layui-input">
+                            </div>
+                            <div class="layui-input-inline">
+                               <button type="button" onclick="setPass()" class="layui-btn layui-btn-primary layui-btn-xs">使用系统默认密码</button>
+                            </div>
+                        </div>-->
+                        <div class="layui-form-item">
+                            <label for="city" class="layui-form-label">
+                                <span class="x-red">*</span>城市</label>
+                            <div class="layui-input-inline">
+                                <input type="city" id="city" name="city" th:value="${userVo.city}" required="" lay-verify="city" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="mobile" class="layui-form-label">
+                                <span class="x-red">*</span>手机</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="mobile" name="mobile" th:value="${userVo.mobile}" required="" lay-verify="phone" autocomplete="off" placeholder="请输入手机" class="layui-input">
+                            </div>
+                        </div>
+                       <div class="layui-form-item">
+                            <label  class="layui-form-label">
+                                <span class="x-red">*</span>部门</label>
+                            <div class="layui-input-inline">
+                                <select name="deptId" xm-select="deptSelect" lay-filter="deptId" xm-select-max="1" lay-verify="deptId">
+                                </select>
+                            </div>
+                       </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label"><span class="x-red">*</span>角色</label>
+                            <div class="layui-input-block" id="roleDiv">
+                                <input name="role.id" type="radio" th:each="r:${roles}" th:value="${r.id}"  th:checked="${r.id==userVo.role.id}"     th:title="${r.roleCnName}"  />
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="edit" class="layui-form-label"></label>
+                            <input type="hidden" name="id" th:value="${userVo.id}" />
+                            <button class="layui-btn" id="edit" lay-filter="edit" lay-submit="">修改</button>
+                        </div>
+                   </div>
+                </form>
+            </div>
+        </div>
+        <script th:src="@{/js/formSelects-v4.js}" type="text/javascript" charset="utf-8"></script>
+        <script th:src="@{/js/user/user.js}" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" >
+            var deptIdInit = [[${userVo.deptId}]];
+            // 下拉多选框
+            formSelects.data('deptSelect', 'server', {
+              url: '/sys-dept/deptselect',
+                success: function(id, url, searchVal, result){
+                    formSelects.value('deptSelect', [deptIdInit]);
+                }
+            });
+            // 表单操作
+            layui.use(['form', 'layer','jquery'],
+            function() {
+                $ = layui.jquery;
+                var form = layui.form,
+                layer = layui.layer;
+                form.render();
+                //自定义验证规则
+                form.verify({
+                    realName: function(value) {
+                        if (value.length < 1) {
+                            return '姓名至少得1个字符啊';
+                        }
+                    },
+                    employeeNo: function (value) {
+                        if (value.length < 1) {
+                            return '员工编号至少得1个字符啊';
+                        }
+                    },
+                    city: function (value) {
+                        if (value.length < 1) {
+                            return '城市至少得1个字符啊';
+                        }
+                    },
+                    deptId: function(value) {
+                        if (value.length < 1) {
+                            return '部门至少得选择一个啊';
+                        }
+                    }
+                });
+
+                //监听提交
+                form.on('submit(edit)',
+                function(data) {
+                    if (checkRole(layer)) {
+
+                        $.ajax({
+                            url:"/sys-user/edit/",
+                            type:"PUT",
+                            // contentType:"application/json",//设置请求参数类型为json字符串
+                             data: data.field,
+                            // dataType:"json",
+                            success:function(r){
+                                layer.alert(r.msg, {
+                                        icon : r.code == 'edit_200' ? 6: 5
+                                    },
+                                    function() {
+                                        //关闭当前frame
+                                        xadmin.close();
+                                        // 可以对父窗口进行刷新
+                                        xadmin.father_reload();
+                                    });
+                            }
+                        });
+                    }
+                    return false;
+                });
+
+                // 监听检查邮箱是否存在
+               /* $(document).on('click','#userIsExist', function(data) {
+                    var email = $("#email").val();
+                    if (email.trim() != '') {
+                        checkEmailIsExist(email.trim(), layer,'');
+                    }
+                });*/
+            });
+        </script>
+    </body>
+</html>
