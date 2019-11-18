@@ -18,10 +18,10 @@ import java.util.Map;
  * @author admin
  * @date 2019/11/08.
  */
-@Configuration
+/*@Configuration*/
 public class ShiroConfig {
 
-    @Bean(name="shiroFilter")
+    @Bean
     public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);

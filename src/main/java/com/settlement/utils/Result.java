@@ -23,7 +23,9 @@ public class Result<T extends Object>  implements Serializable {
     public Result() {
 
     }
-
+    public Result(String code) {
+        this.code = code;
+    }
     public Result(String code, String msg) {
         this.code = code;
         this.msg = msg;

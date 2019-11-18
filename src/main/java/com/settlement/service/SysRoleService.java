@@ -2,6 +2,7 @@ package com.settlement.service;
 
 import com.settlement.entity.SysRole;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.settlement.utils.Result;
 
 import java.util.List;
 
@@ -16,5 +17,7 @@ import java.util.List;
 public interface SysRoleService extends IService<SysRole> {
 
     List<SysRole> findRoleByUserId(Integer userId);
+
+    Result getRolesByDeptId(Integer deptId);
 
 }

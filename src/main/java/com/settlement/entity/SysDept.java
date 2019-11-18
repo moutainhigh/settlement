@@ -5,6 +5,8 @@ package com.settlement.entity;
     import com.baomidou.mybatisplus.annotation.TableId;
     import java.time.LocalDateTime;
     import java.io.Serializable;
+    import java.util.Date;
+
     import lombok.Data;
     import lombok.EqualsAndHashCode;
     import lombok.experimental.Accessors;
@@ -33,13 +35,17 @@ package com.settlement.entity;
 
     private Integer chief;
 
+    private Integer parentId;
+
+    private Integer sort;
+
     private String enabled;
 
     private String remark;
 
     private Integer createUserId;
 
-    private LocalDateTime createTime;
+    private Date createTime;
 
     private String delFlag;
 

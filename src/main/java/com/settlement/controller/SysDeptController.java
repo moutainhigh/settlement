@@ -1,9 +1,14 @@
 package com.settlement.controller;
 
 
+import com.settlement.service.SysDeptService;
+import com.settlement.utils.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * <p>
@@ -14,7 +19,22 @@ import org.springframework.stereotype.Controller;
  * @since 2019-11-07
  */
 @Controller
-@RequestMapping("/sys-dept")
 public class SysDeptController {
+
+    @Autowired
+    private SysDeptService sysDeptService;
+
+    /**
+     * @description 部门下拉框
+     *
+     * @author admin
+     * @date 2019-11-13
+     * @return
+     */
+    @ResponseBody
+    @GetMapping("/sys-dept/deptselect")
+    public Result getDeptSelect() {
+        return sysDeptService.getDeptSelect();
+    }
 
 }

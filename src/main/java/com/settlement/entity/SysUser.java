@@ -63,4 +63,22 @@ package com.settlement.entity;
         return this.email + this.salt;
     }
 
+    public SysUser() {
+    }
+
+    public SysUser(Integer id, String email, String password, String employeeNo, String realName, String city, String mobile, String enabled, Integer createUserId, Date createTime, Integer deptId, String delFlag, String salt) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.employeeNo = employeeNo;
+        this.realName = realName;
+        this.city = city;
+        this.mobile = mobile;
+        this.enabled = enabled;
+        this.createUserId = createUserId;
+        this.createTime = createTime;
+        this.deptId = deptId;
+        this.delFlag = delFlag;
+        this.salt = salt;
+    }
 }

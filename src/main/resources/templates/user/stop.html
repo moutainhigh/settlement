@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:bolck th:include="common/header :: header('用户停用')" />
+</head>
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>停用操作说明：停用前，请先移交项目，将负责的项目组交给同部门同角色的用户。
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-form-text">
+                <label for="desc" class="layui-form-label">用户信息</label>
+                <div class="layui-input-block">
+                    <table class="layui-table">
+                        <tbody>
+                            <tr>
+                                <td>姓名</td>
+                                <td>张三</td>
+                                <td>员工编号</td>
+                                <td>01010101</td>
+                            </tr>
+                            <tr>
+                                <td>角色</td>
+                                <td>交付经理</td>
+                                <td>部门</td>
+                                <td>业务二组</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-form-text">
+                <label for="desc" class="layui-form-label">停用信息</label>
+                <div class="layui-input-block">
+                    <table class="layui-table">
+                        <tbody>
+                        <tr>
+                            <td width="25%">停用类型</td>
+                            <td colspan="3">
+                                张三 李四 王五
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="25%">备注</td>
+                            <td colspan="3">交333333333333</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-form-text">
+                <label for="desc" class="layui-form-label">描述</label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请输入内容" id="desc" name="desc" class="layui-textarea"></textarea>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label for="stop" class="layui-form-label"></label>
+                <button class="layui-btn" lay-filter="stop" lay-submit="">停用</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>layui.use(['form', 'layer'],
+    function() {
+        $ = layui.jquery;
+        var form = layui.form,
+            layer = layui.layer;
+
+        //自定义验证规则
+        form.verify({
+            nikename: function(value) {
+                if (value.length < 5) {
+                    return '昵称至少得5个字符啊';
+                }
+            },
+            pass: [/(.+){6,12}$/, '密码必须6到12位'],
+            repass: function(value) {
+                if ($('#L_pass').val() != $('#L_repass').val()) {
+                    return '两次密码不一致';
+                }
+            }
+        });
+
+        //监听提交
+        form.on('submit(add)',
+            function(data) {
+                console.log(data);
+                //发异步，把数据提交给php
+                layer.alert("增加成功", {
+                        icon: 6
+                    },
+                    function() {
+                        // 获得frame索引
+                        var index = parent.layer.getFrameIndex(window.name);
+                        //关闭当前frame
+                        parent.layer.close(index);
+                    });
+                return false;
+            });
+
+    });</script>
+
+</body>
+
+</html>

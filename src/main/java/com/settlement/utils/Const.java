@@ -17,4 +17,10 @@ public class Const {
     public final static String DEL_FLAG_N = "N";
     /** 删除状态D-删除 */
     public final static String DEL_FLAG_D = "D";
+    /** 部门根节点CODE */
+    public final static String DEPT_ROOT = "ROOT";
+    /** 部门根节点ID */
+    public final static Integer DEPT_ROOT_ID = 1;
+    /** slat */
+    public final static String SALT = "12345678";
 }
