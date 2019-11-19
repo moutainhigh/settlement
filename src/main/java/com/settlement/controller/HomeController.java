@@ -63,7 +63,7 @@ public class HomeController {
     public String welcome() {
         return "welcome";
     }
-
+///////////////////////////////////////////////////////////////////////////   用户跳转页面 start //////////////////////////////////////////////////////////////
     /**
      * @description 用户列表页面
      *
@@ -112,8 +112,9 @@ public class HomeController {
      */
     @GetMapping("/sys-user/stop/{id}")
     public String toUserStop(@PathVariable  Integer id, Model model) {
-        SysUserVo userVo = new SysUserVo();
-        model.addAttribute("userVo",userVo);
+        // 根据数据字典 取得停用原因
+        model.addAttribute("userVo",sysUserService.getUserStop(id));
         return "user/stop";
     }
+/////////////////////////////////////////////////////////////////////////////////   用户跳转页面 end //////////////////////////////////////////////////////////////
 }

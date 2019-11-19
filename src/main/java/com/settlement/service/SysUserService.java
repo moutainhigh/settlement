@@ -32,5 +32,9 @@ public interface SysUserService extends IService<SysUser> {
     Result updateUserDefaultPassword(Integer id);
     /** 启用 */
     Result updateUserStart(Integer id);
+    /** 根据权限ID查询用户 */
+    Result getUserSelectByRoleDept(Integer roleId, Integer userId, Integer deptId);
+    /** 停用用户信息 */
+    SysUserVo getUserStop(Integer id);
 
 }

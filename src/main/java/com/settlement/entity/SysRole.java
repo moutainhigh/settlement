@@ -5,6 +5,7 @@ package com.settlement.entity;
     import com.baomidou.mybatisplus.annotation.TableId;
     import java.time.LocalDateTime;
     import java.io.Serializable;
+    import java.util.Date;
     import java.util.List;
 
     import lombok.Data;
@@ -39,12 +40,9 @@ package com.settlement.entity;
 
     private Integer createUserId;
 
-    private LocalDateTime createTime;
+    private Date createTime;
 
     private String delFlag;
-
-    private List<SysPermission> permissions;
-
 
     @Override
     protected Serializable pkVal() {

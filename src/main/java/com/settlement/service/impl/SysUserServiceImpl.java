@@ -8,8 +8,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.settlement.co.UserCo;
 import com.settlement.config.RemoteProperties;
+import com.settlement.entity.SysDept;
+import com.settlement.entity.SysRole;
 import com.settlement.entity.SysUser;
 import com.settlement.entity.SysUserRole;
+import com.settlement.mapper.SysDeptMapper;
+import com.settlement.mapper.SysRoleMapper;
 import com.settlement.mapper.SysUserMapper;
 import com.settlement.mapper.SysUserRoleMapper;
 import com.settlement.service.SysUserService;
@@ -17,6 +21,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.settlement.utils.Const;
 import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
+import com.settlement.vo.SelectVo;
 import com.settlement.vo.SysUserVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +31,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,6 +52,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private SysUserMapper sysUserMapper;
     @Autowired
     private RemoteProperties remoteProperties;
+    @Autowired
+    private SysRoleMapper sysRoleMapper;
+    @Autowired
+    private SysDeptMapper sysDeptMapper;
 
     @Override
     public SysUser findUserByEmail(String email) {
@@ -154,5 +164,36 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             r.setMsg(HttpResultEnum.CODE_200.getMessage());
         }
         return r;
+    }
+
+    @Override
+    public Result getUserSelectByRoleDept(Integer roleId, Integer userId, Integer deptId) {
+        List<SysUser> users = sysUserMapper.getUserSelectByRoleDept(roleId, userId, deptId);
+        List<SelectVo> userSelect = new ArrayList<SelectVo>();
+        if (users != null) {
+            for (SysUser user : users) {
+                SelectVo sv = new SelectVo(user.getId(), user.getRealName());
+                userSelect.add(sv);
+            }
+        }
+        Result r = new Result(HttpResultEnum.CODE_0.getCode(), HttpResultEnum.CODE_0.getMessage());
+        r.setData(userSelect);
+        return r;
+    }
+
+    @Override
+    public SysUserVo getUserStop(Integer id) {
+        SysUser user = this.getBaseMapper().selectOne(new QueryWrapper<SysUser>().eq("id", id));
+        SysUserRole userRole = sysUserRoleMapper.selectOne(new QueryWrapper<SysUserRole>().eq("user_id",id));
+        SysRole role = sysRoleMapper.selectOne(new QueryWrapper<SysRole>().eq("id",userRole.getRoleId()));
+        SysDept dept = sysDeptMapper.selectOne(new QueryWrapper<SysDept>().eq("id",user.getDeptId()));
+        SysUserVo userVo = new SysUserVo();
+        userVo.setId(user.getId());
+        userVo.setRealName(user.getRealName());
+        userVo.setDeptId(user.getDeptId());
+        userVo.setEmployeeNo(user.getEmployeeNo());
+        userVo.setRole(role);
+        userVo.setDeptName(dept.getDeptName());
+        return userVo;
     }
 }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="x-admin-sm"  xmlns:th="http://www.thymeleaf.org">
     <head>
-        <th:bolck th:include="common/header :: header('用户管理')" />
+        <th:bolck th:include="common/header :: header('数据字典管理')" />
     </head>
     <body>
         <div class="x-nav">
@@ -9,7 +9,7 @@
             <a href="/home">首页</a>
             <a href="">系统管理</a>
             <a>
-              <cite>用户管理</cite></a>
+              <cite>数据字典管理</cite></a>
           </span>
           <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
             <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
@@ -21,7 +21,7 @@
                         <div class="layui-card-body">
                             <form class="layui-form layui-col-space5" onsubmit="return false">
                                 <div class="layui-inline layui-show-xs-block">
-                                    <input type="text" id="keyword" name="keyword"  placeholder="请输入用户名" autocomplete="off" class="layui-input">
+                                    <input type="text" id="keyword" name="keyword"  placeholder="请输入关键字" autocomplete="off" class="layui-input">
                                 </div>
                                 <div class="layui-inline layui-show-xs-block">
                                     <button class="layui-btn" id="search" data-type="reload" lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i>查询</button>
@@ -29,8 +29,7 @@
                             </form>
                         </div>
                         <div class="layui-card-header">
-                            <button class="layui-btn" onclick="xadmin.open('添加用户','/sys-user/add',600,550)"><i class="layui-icon"></i>添加</button>
-                            <button class="layui-btn layui-btn-danger" data-type="resetPass"><i class="layui-icon"></i>重置密码</button>
+                            <button class="layui-btn" onclick="xadmin.open('添加数据字典','/sys-datadic/add',600,550)"><i class="layui-icon"></i>添加</button>
                         </div>
                         <div class="layui-card-body layui-table-body layui-table-main" >
                             <table class="layui-table layui-form" id="dataTable" lay-filter="dataTable">
@@ -47,7 +46,6 @@
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
     </script>
     <script type="text/html" id="switchStatus">
-        <!-- 这里的 checked 的状态只是演示 -->
         <input type="checkbox" name="status" value="{{d.id}}" lay-skin="switch" lay-text="启用|停用" lay-filter="status" {{ d.enabled == 'Y' ? 'checked' : '' }}>
     </script>
     <script type="text/javascript"  th:inline="none">
@@ -62,7 +60,7 @@
            url: '/sys-user/pagedata',
            // toolbar: '',
            page: true,
-           title: '用户数据表',
+           title: '数据字典表',
            height: 'full-210',
            // id: 'userData',
            cols: [[
@@ -90,20 +88,6 @@
                       }
                   }, 'data');
               },
-              resetPass: function(){ //获取选中数据
-                  var checkStatus = table.checkStatus('dataTable')
-                      ,data = checkStatus.data;
-                  if (data.length == 0) {
-                        layer.alert('请先选择一行',{icon : 5});
-                  }else if (data.length > 1) {
-                      layer.alert('不能多选啊，只能选择一行',{icon : 5});
-                  }else if(data.length == 1) {
-                      $.get('/sys-user/resetpass/'+data[0].id,null,function(r) {
-                          layer.alert(r.msg, {icon: r.code == '200'? 6:5});
-                      })
-                  }
-                  // layer.alert(JSON.stringify(data));
-              }
           };
           $('.layui-btn').on('click', function(){
               var type = $(this).data('type');
@@ -155,17 +139,6 @@
                       }
                   });
               }
-              // alert(JSON.stringify(data));
-             /* if (!data.elem.checked) {
-                  stopOpen('用户停用','/sys-user/stop/'+ id,750,550);
-              } else {
-                  layer.confirm('确认要启用吗？',function(index){
-                      $.get('/sys-user/start/'+ id,null,function(r) {
-                          layer.msg(r.msg,{icon: 5,time:1000});
-                      })
-                  });
-              }*/
-              // location.reload(false);
               return false;
           });
 
@@ -197,31 +170,7 @@
 
       });
 
-       /*用户-停用*/
-      function member_stop(obj,id){
-          layer.confirm('确认要停用吗？',function(index){
-
-              if($(obj).attr('title')=='启用'){
-
-                //发异步把用户状态进行更改
-                $(obj).attr('title','停用')
-                $(obj).find('i').html('&#xe62f;');
-
-                $(obj).parents("tr").find(".td-status").find('span').addClass('layui-btn-disabled').html('已停用');
-                layer.msg('已停用!',{icon: 5,time:1000});
-
-              }else{
-                $(obj).attr('title','启用')
-                $(obj).find('i').html('&#xe601;');
-
-                $(obj).parents("tr").find(".td-status").find('span').removeClass('layui-btn-disabled').html('已启用');
-                layer.msg('已启用!',{icon: 5,time:1000});
-              }
-              
-          });
-      }
-
-      /*用户-删除*/
+      /*数据字典-删除*/
       function user_del(id){
           $.ajax({
               url:"/sys-user/del/" + id,
