@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html class="x-admin-sm"  xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <th:bolck th:include="common/header :: header('用户管理')" />
+    </head>
+    <body>
+        <div class="x-nav">
+          <span class="layui-breadcrumb">
+            <a href="/home">首页</a>
+            <a href="">系统管理</a>
+            <a>
+              <cite>功能管理</cite></a>
+          </span>
+          <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
+            <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
+        </div>
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+            <legend>基本演示</legend>
+        </fieldset>
+        <div class="layui-btn-container">
+            <button type="button" class="layui-btn layui-btn-sm" lay-demo="getChecked">获取选中节点数据</button>
+            <button type="button" class="layui-btn layui-btn-sm" lay-demo="setChecked">勾选指定节点</button>
+            <button type="button" class="layui-btn layui-btn-sm" lay-demo="reload">重载实例</button>
+        </div>
+
+        <div class="layui-card-body layui-table-body layui-table-main" >
+            <div style="width:40%; height:auto; float:left; display:inline">
+                <div id="test9" class="demo-tree demo-tree-box" ></div>
+            </div>
+            <div style="width:60%; height:auto; float:left; display:inline">
+                <div class="layui-fluid">
+                    <div class="layui-row">
+                        <form class="layui-form">
+                            <div class="layui-form-item">
+                                <div class="layui-form-item">
+                                    <label for="realName" class="layui-form-label">
+                                        <span class="x-red">*</span>姓名</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" id="realName" name="realName" required="true" lay-verify="realName" autocomplete="off" class="layui-input" maxlength="20"></div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label for="employeeNo" class="layui-form-label">
+                                        <span class="x-red">*</span>员工编号</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" id="employeeNo" name="employeeNo" required="" lay-verify="employeeNo" autocomplete="off" class="layui-input"></div>
+                                </div>
+                                <label for="L_email" class="layui-form-label">
+                                    <span class="x-red">*</span>邮箱</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" id="email" name="email" required="" lay-verify="email" autocomplete="off" class="layui-input"></div>
+                                <div class="layui-form-mid layui-word-aux">
+                                    <span class="x-red">*</span>将会成为登陆用户名</div></div>
+                            <div class="layui-form-item">
+                                <label for="password" class="layui-form-label">
+                                    <span class="x-red">*</span>密码</label>
+                                <div class="layui-input-inline">
+                                    <input type="password" id="password" name="passord" required="" lay-verify="password" autocomplete="off" class="layui-input"></div>
+                                <div class="layui-form-mid layui-word-aux">
+                                    <span class="x-red">*</span>8到16个字符&nbsp; <button type="button" onclick="setPass()" class="layui-btn layui-btn-primary layui-btn-xs">使用默认密码</button></div></div>
+                            <div class="layui-form-item">
+                                <label for="city" class="layui-form-label">
+                                    <span class="x-red">*</span>城市</label>
+                                <div class="layui-input-inline">
+                                    <input type="city" id="repassword" name="city" required="" lay-verify="city" autocomplete="off" class="layui-input"></div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label for="mobile" class="layui-form-label">
+                                    <span class="x-red">*</span>手机</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" id="mobile" name="mobile" required="" lay-verify="phone" autocomplete="off" class="layui-input"></div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label for="add" class="layui-form-label"></label>
+                                <button class="layui-btn" lay-filter="add" lay-submit="">增加</button></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+        <script>
+            layui.use(['tree', 'util'], function(){
+                var tree = layui.tree
+                    ,layer = layui.layer
+                    ,util = layui.util;
+                 var nodes="";
+                 // $.ajax({
+                 //     url: "/sys-permission/pagedata",
+                 //     type: "post",
+                 //     datatype: "json",
+                 //     async: false,
+                 //     success: function(result) {
+                 //        // if(result.success()) {
+                 //         alert("result");
+                 //         alert(result);
+                 //         nodes=result;
+                 //         // alert(result.data);
+                 //         //     var list = result?result.data:null;
+                 //         //     if(list!=null) {
+                 //         //         nodes=list;
+                 //         //     }
+                 //       //  }
+                 //     }
+                 //
+                 // });
+
+
+
+                //按钮事件
+                util.event('lay-demo', {
+                    getChecked: function(othis){
+                        var checkedData = tree.getChecked('demoId1'); //获取选中节点的数据
+
+                        layer.alert(JSON.stringify(checkedData), {shade:0});
+                        console.log(checkedData);
+                    }
+                    ,setChecked: function(){
+                        tree.setChecked('demoId1', [12, 16]); //勾选指定节点
+                    }
+                    ,reload: function(){
+                        //重载实例
+                        tree.reload('demoId1', {
+
+                        });
+
+                    }
+                });
+
+                $.post("/sys-permission/pagedata",{},function (result) {
+                    alert(result);
+                    //开启节点操作图标
+                    tree.render({
+                        elem: '#test9'
+                        ,data: result
+                        ,edit: ['添加', '修改', '删除'] //操作节点的图标
+                        ,click: function(obj){
+                            layer.msg(JSON.stringify(obj.data));
+                        }
+                    });
+                } ,"json") ;
+
+
+
+
+            });
+        </script>
+
+        </body>
+</html>

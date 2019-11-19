@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html class="x-admin-sm"  xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <th:bolck th:include="common/header :: header('用户管理')" />
+    </head>
+    <body>
+        <div class="x-nav">
+          <span class="layui-breadcrumb">
+            <a href="/home">首页</a>
+            <a href="">系统管理</a>
+            <a>
+              <cite>功能管理</cite></a>
+          </span>
+          <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
+            <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
+        </div>
+        <div class="layui-fluid">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-md12">
+                    <div class="layui-card">
+                        <div class="layui-card-body">
+                            <form class="layui-form layui-col-space5" onsubmit="return false">
+                                <div class="layui-inline layui-show-xs-block">
+                                    <input type="text" id="keyword" name="keyword"  placeholder="请输入功能名" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-inline layui-show-xs-block">
+                                    <button class="layui-btn" id="search" data-type="reload" lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i>查询</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="layui-card-header">
+                            <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
+                            <button class="layui-btn" onclick="xadmin.open('添加功能','/sys-permission/toadd',600,500)"><i class="layui-icon"></i>添加</button>
+                        </div>
+                        <div class="layui-card-body layui-table-body layui-table-main" >
+                            <div style="width:40%; height:auto; float:left; display:inline">
+                                <table class="layui-table layui-form" id="dataTable">
+                                </table>
+                            </div>
+                            <div style="width:60%; height:auto; float:left; display:inline">
+                                <div class="layui-fluid">
+                                    <div class="layui-row">
+                                        <form class="layui-form">
+                                            <div class="layui-form-item">
+                                                <div class="layui-form-item">
+                                                    <label for="realName" class="layui-form-label">
+                                                        <span class="x-red">*</span>姓名</label>
+                                                    <div class="layui-input-inline">
+                                                        <input type="text" id="realName" name="realName" required="true" lay-verify="realName" autocomplete="off" class="layui-input" maxlength="20"></div>
+                                                </div>
+                                                <div class="layui-form-item">
+                                                    <label for="employeeNo" class="layui-form-label">
+                                                        <span class="x-red">*</span>员工编号</label>
+                                                    <div class="layui-input-inline">
+                                                        <input type="text" id="employeeNo" name="employeeNo" required="" lay-verify="employeeNo" autocomplete="off" class="layui-input"></div>
+                                                </div>
+                                                <label for="L_email" class="layui-form-label">
+                                                    <span class="x-red">*</span>邮箱</label>
+                                                <div class="layui-input-inline">
+                                                    <input type="text" id="email" name="email" required="" lay-verify="email" autocomplete="off" class="layui-input"></div>
+                                                <div class="layui-form-mid layui-word-aux">
+                                                    <span class="x-red">*</span>将会成为登陆用户名</div></div>
+                                            <div class="layui-form-item">
+                                                <label for="password" class="layui-form-label">
+                                                    <span class="x-red">*</span>密码</label>
+                                                <div class="layui-input-inline">
+                                                    <input type="password" id="password" name="passord" required="" lay-verify="password" autocomplete="off" class="layui-input"></div>
+                                                <div class="layui-form-mid layui-word-aux">
+                                                    <span class="x-red">*</span>8到16个字符&nbsp; <button type="button" onclick="setPass()" class="layui-btn layui-btn-primary layui-btn-xs">使用默认密码</button></div></div>
+                                            <div class="layui-form-item">
+                                                <label for="city" class="layui-form-label">
+                                                    <span class="x-red">*</span>城市</label>
+                                                <div class="layui-input-inline">
+                                                    <input type="city" id="repassword" name="city" required="" lay-verify="city" autocomplete="off" class="layui-input"></div>
+                                            </div>
+                                            <div class="layui-form-item">
+                                                <label for="mobile" class="layui-form-label">
+                                                    <span class="x-red">*</span>手机</label>
+                                                <div class="layui-input-inline">
+                                                    <input type="text" id="mobile" name="mobile" required="" lay-verify="phone" autocomplete="off" class="layui-input"></div>
+                                            </div>
+                                            <div class="layui-form-item">
+                                                <label for="add" class="layui-form-label"></label>
+                                                <button class="layui-btn" lay-filter="add" lay-submit="">增加</button></div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </body>
+    <script type="text/html" id="toolBar">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+    <script type="text/javascript"  th:inline="none">
+      layui.use(['laydate','table','form','element'], function(){
+        var laydate = layui.laydate;
+        var  form = layui.form;
+        var table = layui.table;
+        // var $ = layui.jquery;
+        table.render({
+           elem: '#dataTable',
+            url: '/sys-permission/pagedata',
+           // toolbar: '',
+           page: true,
+           title: '功能数据表',
+           height: 'full-210',
+           // id: 'userData',
+           cols: [[
+               {field:'id',type:'checkbox',fixed:'left'},
+               {field:'pCode',title:'功能代码',align:'center'},
+               {field:'pName',title:'功能名称',align:'center'},
+               {field:'url',title:'功能url',align:'center'},
+               {field:'sort',title:'排序',align:'center'},
+               {field:'type',title:'类型',align:'center'},
+               {field:'permission',title:'权限符',align:'center'},
+               {field:'icon',title:'图标',align:'center'},
+               {field:'createUserId',title:'创建用户',align:'center'},
+               {field:'createTime',title:'创建日期',align:'center'},
+               {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:180}
+           ]]
+        });
+          var $ = layui.$, active = {
+              reload: function(){
+                  var keyword = $('#keyword');
+                  //执行重载
+                  table.reload('dataTable', {
+                      page: {
+                          curr: 1 //重新从第 1 页开始
+                      }
+                      ,where: {
+                         // key: {
+                              keyword: keyword.val()
+                          // }
+                      }
+                  }, 'data');
+              }
+          };
+          $('.layui-btn').on('click', function(){
+              var type = $(this).data('type');
+              active[type] ? active[type].call(this) : '';
+          });
+
+        // 监听全选
+        form.on('checkbox(checkall)', function(data){
+
+          if(data.elem.checked){
+            $('tbody input').prop('checked',true);
+          }else{
+            $('tbody input').prop('checked',false);
+          }
+          form.render('checkbox');
+        }); 
+        
+        //执行一个laydate实例
+        laydate.render({
+          elem: '#start' //指定元素
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+          elem: '#end' //指定元素
+        });
+
+
+      });
+
+       /*用户-停用*/
+      function member_stop(obj,id){
+          layer.confirm('确认要停用吗？',function(index){
+
+              if($(obj).attr('title')=='启用'){
+
+                //发异步把用户状态进行更改
+                $(obj).attr('title','停用')
+                $(obj).find('i').html('&#xe62f;');
+
+                $(obj).parents("tr").find(".td-status").find('span').addClass('layui-btn-disabled').html('已停用');
+                layer.msg('已停用!',{icon: 5,time:1000});
+
+              }else{
+                $(obj).attr('title','启用')
+                $(obj).find('i').html('&#xe601;');
+
+                $(obj).parents("tr").find(".td-status").find('span').removeClass('layui-btn-disabled').html('已启用');
+                layer.msg('已启用!',{icon: 5,time:1000});
+              }
+              
+          });
+      }
+
+      /*用户-删除*/
+      function member_del(obj,id){
+          layer.confirm('确认要删除吗？',function(index){
+              //发异步删除数据
+              $(obj).parents("tr").remove();
+              layer.msg('已删除!',{icon:1,time:1000});
+          });
+      }
+
+
+
+      function delAll (argument) {
+        var ids = [];
+
+        // 获取选中的id 
+        $('tbody input').each(function(index, el) {
+            if($(this).prop('checked')){
+               ids.push($(this).val())
+            }
+        });
+  
+        layer.confirm('确认要删除吗？'+ids.toString(),function(index){
+            //捉到所有被选中的，发异步进行删除
+            layer.msg('删除成功', {icon: 1});
+            $(".layui-form-checked").not('.header').parents('tr').remove();
+        });
+      }
+    </script>
+</html>
