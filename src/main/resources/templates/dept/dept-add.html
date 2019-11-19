@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+    
+    <head>
+        <th:bolck th:include="common/header :: header('添加用户')" />
+    </head>
+    <body>
+        <div class="layui-fluid">
+            <div class="layui-row">
+                <form class="layui-form">
+                    <div class="layui-form-item">
+                        <div class="layui-form-item">
+                            <label for="realName" class="layui-form-label">
+                                <span class="x-red">*</span>姓名</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="realName" name="realName" required="true" lay-verify="realName" autocomplete="off" class="layui-input" maxlength="20"></div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="employeeNo" class="layui-form-label">
+                                <span class="x-red">*</span>员工编号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="employeeNo" name="employeeNo" required="" lay-verify="employeeNo" autocomplete="off" class="layui-input"></div>
+                        </div>
+                        <label for="L_email" class="layui-form-label">
+                            <span class="x-red">*</span>邮箱</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="email" name="email" required="" lay-verify="email" autocomplete="off" class="layui-input"></div>
+                        <div class="layui-form-mid layui-word-aux">
+                            <span class="x-red">*</span>将会成为登陆用户名</div></div>
+                    <div class="layui-form-item">
+                        <label for="password" class="layui-form-label">
+                            <span class="x-red">*</span>密码</label>
+                        <div class="layui-input-inline">
+                            <input type="password" id="password" name="passord" required="" lay-verify="password" autocomplete="off" class="layui-input"></div>
+                        <div class="layui-form-mid layui-word-aux">
+                            <span class="x-red">*</span>8到16个字符&nbsp; <button type="button" onclick="setPass()" class="layui-btn layui-btn-primary layui-btn-xs">使用默认密码</button></div></div>
+                    <div class="layui-form-item">
+                        <label for="city" class="layui-form-label">
+                            <span class="x-red">*</span>城市</label>
+                        <div class="layui-input-inline">
+                            <input type="city" id="repassword" name="city" required="" lay-verify="city" autocomplete="off" class="layui-input"></div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label for="mobile" class="layui-form-label">
+                            <span class="x-red">*</span>手机</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="mobile" name="mobile" required="" lay-verify="phone" autocomplete="off" class="layui-input"></div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label for="add" class="layui-form-label"></label>
+                        <button class="layui-btn" lay-filter="add" lay-submit="">增加</button></div>
+                </form>
+            </div>
+        </div>
+        <script>layui.use(['form', 'layer','jquery'],
+            function() {
+                $ = layui.jquery;
+                var form = layui.form,
+                layer = layui.layer;
+                form.render();
+                //自定义验证规则
+                form.verify({
+                    realName: function(value) {
+                        if (value.length < 1) {
+                            return '姓名至少得1个字符啊';
+                        }
+                    },
+                    employeeNo: function (value) {
+                        if (value.length < 1) {
+                            return '员工编号至少得1个字符啊';
+                        }
+                    },
+                    password: [/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,16}$/, '密码必须8到16位，包含大写字母、小写字母、数字'],
+                    city: function (value) {
+                        if (value.length < 1) {
+                            return '城市至少得1个字符啊';
+                        }
+                    },
+                });
+
+                //监听提交
+                form.on('submit(add)',
+                function(data) {
+                    console.log(data);
+                    //发异步，把数据提交给php
+                    alert(data);
+                    $.post('/sys-user/add',data.field, function(r) {
+                        if (r.code == 200) {
+                            alert('success');
+                        }
+                    });
+                    /*layer.alert("增加成功", {
+                        icon: 6
+                    },*/
+                    function() {
+                        //关闭当前frame
+                        xadmin.close();
+
+                        // 可以对父窗口进行刷新 
+                        xadmin.father_reload();
+                    });
+                    return false;
+                });
+
+            });</script>
+    </body>
+    <script>
+        function setPass() {
+            // 此处应该从后台取得
+            $("#password").val("Abcd1234");
+        }
+    </script>
+</html>

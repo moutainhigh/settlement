@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:bolck th:include="common/header :: header('添加用户')" />
+</head>
+<body>
+<div class="layui-fluid">
+    <form class="layui-form" >
+        <input th:type="hidden" name="_method" value="put" th:if="${mode.equals('update')}" />
+        <input type="hidden" name="id" th:value="${sysPermission.id}" th:if="${mode.equals('update')}" />
+    <div class="layui-row" layui-form-panel lay-filter="show_form">
+
+            <div class="layui-form-item">
+                <div class="layui-form-item">
+                    <label for="parentID" class="layui-form-label">
+                        <span class="x-red">*</span>父ID</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="parentId" name="parentId"  th:value="${mode.equals('update')}?${sysPermission.parentId}:${sysPermission.parentId}" required="true" lay-verify="parentId" autocomplete="off" class="layui-input" maxlength="20"></div>
+                </div>
+
+                <div  class="layui-form-item">
+                    <label  class="layui-form-label">
+                        <span class="x-red">*</span>pCode</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="pCode" name="pCode"  th:value="${mode.equals('update')}?${sysPermission.pCode}:${sysPermission.pCode}" required="" lay-verify="id" autocomplete="off" class="layui-input"></div>
+                </div>
+                <label for="pName" class="layui-form-label">
+                    <span class="x-red">*</span>菜单名称</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="pName" name="pName" th:value="${mode.equals('update')}?${sysPermission.PName}" required="" lay-verify="pName" autocomplete="off" class="layui-input"></div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>菜单名称</div></div>
+            <div class="layui-form-item">
+                <label  class="layui-form-label">
+                    <span class="x-red">*</span>url</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="url" name="url" th:value="${mode.equals('update')}?${sysPermission.url}" required="" autocomplete="off" class="layui-input"></div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>权限控制标识 </div></div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span class="x-red">*</span>类型
+                </label>
+                <div class="layui-input-block">
+                    <input type="radio" name="type" th:value="${mode.equals('update')}?${sysPermission.type}" title="菜单" checked>
+                    <input type="radio" name="type" th:value="${mode.equals('update')}?${sysPermission.type}" title="按钮" >
+                </div>
+          </div>
+            <div class="layui-form-item">
+                <label for="permission" class="layui-form-label">
+                    <span class="x-red">*</span>permission</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="permission" name="permission" th:value="${mode.equals('update')}?${sysPermission.permission}" required="" lay-verify="permission" autocomplete="off" class="layui-input"></div>
+            </div>
+            <div class="layui-form-item">
+                <label for="sort" class="layui-form-label">
+                    <span class="x-red">*</span>显示顺序</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="sort" name="sort" th:value="${mode.equals('update')}?${sysPermission.sort}" required="" lay-verify="sort" autocomplete="off" class="layui-input"></div>
+            </div>
+            <div class="layui-form-item">
+                <label for="add" class="layui-form-label"></label>
+                <button class="layui-btn" lay-filter="add" th:text="${mode.equals('add')}?'增加' : '修改'" lay-submit="">增加</button></div>
+
+    </div>
+    </form>
+</div>
+
+<script th:inline="javascript">
+    layui.use('form', function(){
+        var form = layui.form;
+       var mode=[[${mode}]];
+
+        //监听提交
+        form.on('submit(add)', function(data){
+            if("add"==mode) {
+                $.post('/sys-permission/add',data.field,function (r) {
+                        var pid=$("#parentId").val();
+                        if(r.code=='add_200') {
+                            var obj1 = window.parent.layui.dtree.getNowParam("demoTree");
+                            //alert(window.parent.layui.find("demoTree"));
+
+                            //window.parent.layui.dtree.changeTreeNodeAdd("refresh");
+                            window.parent.layui.dtree.reload("demoTree",{
+                                url: "/sys-permission/dtree/list/pagedata",
+                                //request: {id:pid},
+                                method: "post",
+                                initLevel: "5",
+                                success: function(data, obj, first){
+                                }
+                            });
+                            layer.msg('添加成功', {icon: 6});
+                        } else {
+                            layer.msg('添加失败', {icon: 6});
+                        }
+                    }
+                );
+            } else if("update"==mode) {
+                $.post('/sys-permission/update',data.field,function (r) {
+                        if(r.code=='edit_200') {
+                            window.parent.layui.dtree.reload("demoTree",{
+                                url: "/sys-permission/dtree/list/pagedata",
+                                //request: {id:pid},
+                                method: "post",
+                                initLevel: "5"
+                            });
+                            layer.msg("修改成功", {icon: 6});
+
+                        } else {
+                            layer.msg("修改成功", {icon: 6});
+                        }
+                    }
+                );
+            }
+
+            return false;
+        });
+    });
+</script>
+</body>
+
+</html>
