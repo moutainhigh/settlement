@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -116,4 +118,23 @@ public class HomeController {
         model.addAttribute("userVo",userVo);
         return "user/stop";
     }
+
+    @GetMapping("/sys-role/list")
+    public String toRolePageList() {
+        return "role/role-list";
+    }
+
+    @GetMapping("/sys-permission/list")
+    public String toPermissionList() {
+        //public String toPermissionList(@RequestParam(defaultValue = "update") String mode, Model model) {
+        //model.addAttribute("mode",mode);
+        return "permission/permission-list";
+    }
+    @GetMapping("/sys-dept/list")
+    public String toDeptList() {
+        //public String toPermissionList(@RequestParam(defaultValue = "update") String mode, Model model) {
+        //model.addAttribute("mode",mode);
+        return "dept/dept-list";
+    }
+
 }

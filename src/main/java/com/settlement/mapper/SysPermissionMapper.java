@@ -2,6 +2,8 @@ package com.settlement.mapper;
 
 import com.settlement.entity.SysPermission;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * <p>
@@ -11,6 +13,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author admin
  * @since 2019-11-07
  */
+@Repository
 public interface SysPermissionMapper extends BaseMapper<SysPermission> {
 
 }

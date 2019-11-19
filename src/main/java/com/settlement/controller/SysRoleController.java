@@ -1,15 +1,9 @@
 package com.settlement.controller;
 
 
-import com.settlement.service.SysRoleService;
-import com.settlement.utils.Result;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * <p>
@@ -33,4 +27,31 @@ public class SysRoleController {
     }
 
 
+    @Autowired
+    private SysRoleService sysRoleService;
+
+    /**
+     * 查询角色列表页面
+     * @param roleCo
+     * @param model
+     * @return
+     */
+    @ResponseBody
+    @GetMapping("/pagedata")
+    public PageData getRoleList(RoleCo roleCo, Model model) {
+        IPage<SysRole> page = new Page<>(roleCo.getPage(),roleCo.getLimit());
+        QueryWrapper<SysRole> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like(StringUtils.isNotBlank(roleCo.getKeyword()),"role_cn_name",roleCo.getKeyword());
+        sysRoleService.page(page,queryWrapper);
+        return new PageData(page.getTotal(),page.getRecords());
+    }
+
+    /**
+     * 跳转角色添加页面
+     * @return
+     */
+    @GetMapping("/toadd")
+    public String toRoleAdd() {
+        return "role/role-add";
+    }
 }
