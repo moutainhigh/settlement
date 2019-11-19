@@ -15,6 +15,8 @@ public class SysUserVo extends SysUser {
 
     private SysRole role;
 
+    private String deptName;
+
     public SysUserVo() {
     }
 

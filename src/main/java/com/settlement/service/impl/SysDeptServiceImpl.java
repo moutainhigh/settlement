@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.settlement.utils.Const;
 import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
-import com.settlement.vo.DeptSelectVo;
+import com.settlement.vo.SelectVo;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,15 +31,15 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         queryWrapper.ne("dept_code", Const.DEPT_ROOT);
         queryWrapper.orderByAsc("sort");
         List<SysDept> deptList = this.baseMapper.selectList(queryWrapper);
-        List<DeptSelectVo> deptSelectVoList = new ArrayList<DeptSelectVo>();
+        List<SelectVo> deptSelectVoList = new ArrayList<SelectVo>();
         if (deptList.size() > 0) {
             for (SysDept dept : deptList) {
                 if (dept.getParentId() == Const.DEPT_ROOT_ID) {
-                    DeptSelectVo dsv = new DeptSelectVo(dept.getId(),dept.getDeptName());
-                    dsv.setChildren(new ArrayList<DeptSelectVo>());
+                    SelectVo dsv = new SelectVo(dept.getId(),dept.getDeptName());
+                    dsv.setChildren(new ArrayList<SelectVo>());
                     for (SysDept  deptChild : deptList) {
                         if (deptChild.getParentId() == dept.getId()) {
-                            dsv.getChildren().add(new DeptSelectVo(deptChild.getId(), deptChild.getDeptName()));
+                            dsv.getChildren().add(new SelectVo(deptChild.getId(), deptChild.getDeptName()));
                         }
                     }
                     deptSelectVoList.add(dsv);

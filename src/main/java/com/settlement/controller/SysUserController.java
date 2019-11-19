@@ -150,5 +150,14 @@ public class SysUserController {
         return sysUserService.updateUserStart(id);
     }
 
-
+    /**
+     *@description 根据角色ID查询用户
+     *
+     * @param roleId
+     * @return
+     */
+    @GetMapping("/sys-user/userselect/{roleId}/{userId}/{deptId}")
+    public Result getUserSelectByRoleDept(@PathVariable Integer roleId, @PathVariable Integer userId, @PathVariable Integer deptId) {
+        return sysUserService.getUserSelectByRoleDept(roleId, userId, deptId);
+    }
 }
