@@ -44,6 +44,7 @@ package com.settlement.entity;
 
     private String delFlag;
 
+
     @Override
     protected Serializable pkVal() {
         return this.id;

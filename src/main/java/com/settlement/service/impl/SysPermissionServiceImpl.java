@@ -60,4 +60,27 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
         }
         return leftList;
     }
+    @Override
+    public List<SysPermissionVo> getMenu() {
+        List<SysPermission> list = this.baseMapper.selectList(null);
+        List<SysPermissionVo> leftList = new ArrayList<SysPermissionVo>();
+        if (list != null && list.size() > 0) {
+            for (SysPermission sp : list) {
+
+                SysPermissionVo spv = new SysPermissionVo();
+                spv.setCheckArr("0");
+                spv.setId(sp.getId());
+                spv.setPName(sp.getPName());
+                spv.setTitle(sp.getPName());
+                spv.setUrl(sp.getUrl());
+                spv.setPermission(sp.getPermission());
+                spv.setParentId(sp.getParentId());
+                spv.setIcon(sp.getIcon());
+
+                leftList.add(spv);
+
+            }
+        }
+        return leftList;
+    }
 }

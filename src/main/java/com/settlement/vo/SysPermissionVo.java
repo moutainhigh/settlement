@@ -15,6 +15,20 @@ import java.util.List;
 @Data
 public class SysPermissionVo extends SysPermission {
 
-    private List<SysPermissionVo> childrens = new ArrayList<SysPermissionVo>();
+    private String checkArr;
+    private String title;
+    private List<SysPermissionVo> childrens ;
+    private boolean open;
+    private boolean checked;
+    public List<SysPermissionVo> getChildrens() {
+        if(childrens==null) {
+            childrens = new ArrayList<>();
+        }
+        return childrens;
+    }
+
+    public void setChildrens(List<SysPermissionVo> childrens) {
+        this.childrens = childrens;
+    }
 
 }
