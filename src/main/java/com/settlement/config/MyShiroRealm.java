@@ -37,8 +37,8 @@ public class MyShiroRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
-        SysUser user = (SysUser)principalCollection.getPrimaryPrincipal();
-        List<SysRole> roleList = sysRoleService.findRoleByUserId(user.getId());
+        // SysUser user = (SysUser)principalCollection.getPrimaryPrincipal();
+       // List<SysRole> roleList = sysRoleService.findRoleByUserId(user.getId());
         // user.setRoles(roleList);
         /*for(SysRole role:user.getRoles()){
             authorizationInfo.addRole(role.getRoleCnName());
@@ -60,14 +60,14 @@ public class MyShiroRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         String userName = (String)authenticationToken.getPrincipal();
-        String pwd = new String((char[]) authenticationToken.getCredentials());
+       //  String pwd = new String((char[]) authenticationToken.getCredentials());
         // 根据用户名从数据库取得用户信息
         SysUser user = sysUserService.findUserByEmail(userName);
         if (user == null) {
             return null;
         }
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
-                user.getEmail(), //这里传入的是user对象，比对的是用户名，直接传入用户名也没错，但是在授权部分就需要自己重新从数据库里取权限
+                user, //这里传入的是user对象，比对的是用户名，直接传入用户名也没错，但是在授权部分就需要自己重新从数据库里取权限
                 user.getPassword(), //密码
                 // ByteSource.Util.bytes(user.getSalt()),//salt=username+salt
                 getName()  //realm name

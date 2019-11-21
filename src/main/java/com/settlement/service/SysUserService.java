@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -36,5 +37,7 @@ public interface SysUserService extends IService<SysUser> {
     Result getUserSelectByRoleDept(Integer roleId, Integer userId, Integer deptId);
     /** 停用用户信息 */
     SysUserVo getUserStop(Integer id);
+    /** 根据部门查询客户经理下拉列表 */
+    Result getAmSelect(Map<String, Object> map);
 
 }

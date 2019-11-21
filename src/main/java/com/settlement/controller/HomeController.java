@@ -10,6 +10,7 @@ import com.settlement.service.SysUserRoleService;
 import com.settlement.service.SysUserService;
 import com.settlement.utils.Result;
 import com.settlement.vo.SysUserVo;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -58,6 +59,7 @@ public class HomeController {
     @PostMapping("/doLogin")
     public Result login(String username,String password) {
         Result r = loginService.login(username, password);
+        SysUser user = (SysUser) SecurityUtils.getSubject().getPrincipal();
         return r;
     }
 
@@ -96,7 +98,7 @@ public class HomeController {
     @GetMapping("/sys-user/edit/{id}")
     public String toUserEdit(@PathVariable  Integer id, Model model) {
         // 根据ID 取得用户信息
-        SysUser user = sysUserService.getOne(new QueryWrapper<SysUser>().eq("id", id));
+        SysUser user = this.sysUserService.getOne(new QueryWrapper<SysUser>().eq("id", id));
         SysUserRole userRole = sysUserRoleService.getOne(new QueryWrapper<SysUserRole>().eq("user_id",id));
         SysUserVo userVo = new SysUserVo(user.getId(),user.getEmail(),null,user.getEmployeeNo(),user.getRealName(),user.getCity(),user.getMobile(),user.getEnabled(),user.getCreateUserId(),user.getCreateTime(),user.getDeptId(),user.getDelFlag(),null);
         userVo.setRole(new SysRole().setId(userRole.getRoleId()));
@@ -119,6 +121,9 @@ public class HomeController {
         return "user/stop";
     }
 
+
+/////////////////////////////////////////////////////////////////////////////////   用户跳转页面 end //////////////////////////////////////////////////////////////
+
     @GetMapping("/sys-role/list")
     public String toRolePageList() {
         return "role/role-list";
@@ -137,5 +142,30 @@ public class HomeController {
         return "dept/dept-list";
     }
 
-/////////////////////////////////////////////////////////////////////////////////   用户跳转页面 end //////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////  项目组跳转start ///////////////////////////////////////////////////////////////////
+
+    /**
+     * @description 项目组列表
+     *
+     * @auth    admin
+     * @dte     2019-11-20
+     */
+    @GetMapping("/ba-project-group/list")
+    public String toPgList() {
+        return "pg/list";
+    }
+
+    /**
+     * @description 项目组添加
+     *
+     * @auth admin
+     * @date 2019-11-21
+     * @return
+     */
+    @GetMapping("/ba-project-group/add")
+    public String toPgAdd() {
+        return "pg/add";
+    }
+    /////////////////////////////////////////////////////////////  项目组跳转end  ///////////////////////////////////////////////////////////////////
 }
+

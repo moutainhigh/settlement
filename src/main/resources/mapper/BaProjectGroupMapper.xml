@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.settlement.mapper.BaProjectGroupMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.settlement.entity.BaProjectGroup">
+        <id column="id" property="id" />
+        <result column="pg_name" property="pgName" />
+        <result column="code" property="code" />
+        <result column="customer_id" property="customerId" />
+        <result column="check_status" property="checkStatus" />
+        <result column="enabled" property="enabled" />
+        <result column="create_user_id" property="createUserId" />
+        <result column="owner_user_id" property="ownerUserId" />
+        <result column="create_time" property="createTime" />
+        <result column="del_flag" property="delFlag" />
+    </resultMap>
+
+    <select id="getProjectGroupList" resultType="com.settlement.vo.ProjectGroupVo">
+        SELECT bpg.id, bpg.pg_name, bpg.code, bpg.check_status,bpg.create_time,bpg.enabled,sdd.dic_content as checkStatusContent, su.real_name as ownerName
+        FROM ba_project_group bpg, sys_data_dic sdd, sys_user su
+        WHERE bpg.owner_user_id = su.id and bpg.check_status = sdd.dic_code and bpg.del_flag = 'N'
+        <if test="projectGroupCo.keyword != null">
+            and CONCAT(pg_name,code) like CONCAT('%',#{projectGroupCo.keyword},'%')
+        </if>
+    </select>
+
+</mapper>

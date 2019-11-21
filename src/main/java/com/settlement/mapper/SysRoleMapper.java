@@ -3,6 +3,7 @@ package com.settlement.mapper;
 import com.settlement.entity.SysRole;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Select;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import java.util.List;
  * @author admin
  * @since 2019-11-07
  */
+@Repository
 public interface SysRoleMapper extends BaseMapper<SysRole> {
 
     @Select("SELECT r.id, r.role_cn_name, r.role_code  FROM sys_role r, sys_user_role ur WHERE r.del_flag = 'N' ur.role_id = r.id AND ur.user_id = #{userId}")

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+    
+    <head>
+        <th:bolck th:include="common/header :: header('添加项目组')" />
+        <link rel="stylesheet" th:href="@{/css/formSelects-v4.css}" />
+    </head>
+    <body>
+        <div class="layui-fluid">
+            <div class="layui-row">
+                <form class="layui-form">
+                    <div class="layui-form-item">
+                        <div class="layui-form-item">
+                            <label for="pgName" class="layui-form-label">
+                                <span class="x-red">*</span>项目组</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="pgName" name="pgName" required="" lay-verify="pgName" autocomplete="off"  placeholder="请输入项目组" class="layui-input" maxlength="20">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="code" class="layui-form-label">
+                                <span class="x-red">*</span>项目组编号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="code" name="code" required="" lay-verify="code" autocomplete="off" placeholder="请输入项目组编号" class="layui-input" maxlength="20">
+                            </div>
+                            <div class="layui-input-inline">
+                                <button type="button" id="pgIsExist" lay-filter="pgIsExist" class="layui-btn layui-btn-primary layui-btn-xs">检查项目组是否可用</button>
+                            </div>
+                        </div>
+                       <div class="layui-form-item">
+                            <label  class="layui-form-label">
+                                <span class="x-red">*</span>客户经理</label>
+                            <div class="layui-input-inline">
+                                <select name="checkUserId" xm-select="amselect" lay-filter="checkUserId" xm-select-max="1" lay-verify="checkUserId">
+                                </select>
+                            </div>
+                       </div>
+                        <div class="layui-form-item">
+                            <label for="saveButton" class="layui-form-label"></label>
+                            <button class="layui-btn" id="saveButton" lay-filter="add" lay-submit="">保存</button>
+                            <button class="layui-btn layui-btn-normal" id="submitButton" lay-filter="add" lay-submit="">提交</button>
+                        </div>
+                   </div>
+                </form>
+            </div>
+        </div>
+        <script th:src="@{/js/formSelects-v4.js}" type="text/javascript" charset="utf-8"></script>
+        <script th:src="@{/js/pg/pg.js}" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript">
+            // 下拉多选框
+            formSelects.data('amselect', 'server', {
+              url: '/sys-user/amselect'
+            });
+            // 表单操作
+            layui.use(['form', 'layer','jquery'],
+            function() {
+                $ = layui.jquery;
+                var form = layui.form,
+                layer = layui.layer;
+                form.render();
+                //自定义验证规则
+                form.verify({
+                    realName: function(value) {
+                        if (value.length < 1) {
+                            return '姓名至少得1个字符啊';
+                        }
+                    },
+                    employeeNo: function (value) {
+                        if (value.length < 1) {
+                            return '员工编号至少得1个字符啊';
+                        }
+                    },
+                    password: [/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,16}$/, '密码必须8到16位，包含大写字母、小写字母、数字'],
+                    city: function (value) {
+                        if (value.length < 1) {
+                            return '城市至少得1个字符啊';
+                        }
+                    },
+                    deptId: function(value) {
+                        if (value.length < 1) {
+                            return '部门至少得选择一个啊';
+                        }
+                    }
+
+                });
+
+                //监听提交
+                form.on('submit(add)',
+                function(data) {
+                    if (checkRole(layer) && checkEmailIsExist($("#email").val(),layer,'submit')) {
+                        $.post('/sys-user/add',data.field, function(r) {
+                            layer.alert(r.msg, {
+                                    icon : r.code == 'add_200' ? 6: 5
+                                },
+                                function() {
+                                    //关闭当前frame
+                                    xadmin.close();
+                                    // 可以对父窗口进行刷新
+                                    xadmin.father_reload();
+                                });
+                        });
+                    }
+                    return false;
+                });
+
+                // 监听检查邮项目组是否存在
+                $(document).on('click','#pgIsExist', function(data) {
+                    var code = $("#code").val();
+                    if (code.trim() != '') {
+                        checkPgIsExist(code.trim(), layer,'');
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

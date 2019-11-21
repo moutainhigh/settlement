@@ -14,9 +14,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.util.UrlPathHelper;
 
 @EnableTransactionManagement
-@EnableAutoConfiguration
-@MapperScan("com.settlement.mapper")
 @SpringBootApplication
+@MapperScan("com.settlement.mapper")
 public class SettlementApplication {
 
 	public static void main(String[] args) {

@@ -15,8 +15,13 @@ public enum HttpResultEnum {
     // USER
     USER_ISEXIST_0("0","邮箱不存在，可以添加"),
     USER_ISEXIST_1("1","邮箱已经存在，不可以添加"),
+    // 项目组
+    PG_CODE_0("0","项目组不存在，可以添加"),
+    PG_CODE_1("1","项目组已经存在，不可以添加"),
 
     LOGIN_CODE_500("login_500","登录失败,用户名或密码错误"),
+    LOGIN_CODE_501("login_501","用户名不正确"),
+    LOGIN_CODE_502("login_502","密码不正确"),
     PARAM_CODE_500("valid_500","缺少必填参数"),
     DEL_CODE_200("delete_200","删除成功"),
     DEL_FAIL_CODE_200("delete_fail_200","删除失败"),

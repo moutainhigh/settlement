@@ -17,6 +17,7 @@ import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
 import com.settlement.vo.SysUserVo;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.ui.Model;
@@ -26,7 +27,9 @@ import org.springframework.stereotype.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -159,5 +162,23 @@ public class SysUserController {
     @GetMapping("/sys-user/userselect/{roleId}/{userId}/{deptId}")
     public Result getUserSelectByRoleDept(@PathVariable Integer roleId, @PathVariable Integer userId, @PathVariable Integer deptId) {
         return sysUserService.getUserSelectByRoleDept(roleId, userId, deptId);
+    }
+
+    /**
+     * @description 取得客户经理下拉框
+     *
+     * @auth admin
+     * @date 2019-11-21
+     * @return
+     */
+    @GetMapping("/sys-user/amselect")
+    public Result getAmSelect() {
+        // 从session中取得当前用户部门
+        SysUser user = (SysUser) SecurityUtils.getSubject().getPrincipal();
+        Map<String,Object> paramMap = new HashMap<String, Object>();
+        paramMap.put("deptId",user.getDeptId());
+        paramMap.put("amRoleCode",Const.USER_ROLE_CODE_AM);
+        paramMap.put("enabled", Const.ENABLED_Y);
+        return this.sysUserService.getAmSelect(paramMap);
     }
 }

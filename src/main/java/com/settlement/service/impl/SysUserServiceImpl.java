@@ -24,6 +24,7 @@ import com.settlement.utils.Result;
 import com.settlement.vo.SelectVo;
 import com.settlement.vo.SysUserVo;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -31,8 +32,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -195,5 +198,21 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         userVo.setRole(role);
         userVo.setDeptName(dept.getDeptName());
         return userVo;
+    }
+
+    @Override
+    public Result getAmSelect(Map<String, Object> map) {
+        List<SysUser> amList = this.baseMapper.getAmSelect(map);
+        List<SelectVo> amSelectList = new ArrayList<SelectVo>();
+        if (amList != null && amList.size() > 0) {
+            SelectVo selectVo = null;
+            for (SysUser am : amList) {
+                selectVo = new SelectVo(am.getId(), am.getRealName());
+                amSelectList.add(selectVo);
+            }
+        }
+        Result r = new Result(HttpResultEnum.CODE_0.getCode(), HttpResultEnum.CODE_0.getMessage());
+        r.setData(amSelectList);
+        return r;
     }
 }

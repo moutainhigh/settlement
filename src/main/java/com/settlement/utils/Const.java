@@ -23,4 +23,6 @@ public class Const {
     public final static Integer DEPT_ROOT_ID = 1;
     /** slat */
     public final static String SALT = "12345678";
+    /** 客户经理绝色CODE:AM */
+    public final static String USER_ROLE_CODE_AM = "AM";
 }
