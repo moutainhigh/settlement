@@ -21,6 +21,12 @@ public class Const {
     public final static String DEPT_ROOT = "ROOT";
     /** 部门根节点ID */
     public final static Integer DEPT_ROOT_ID = 1;
+    /** 数据字典根节点ID */
+    public final static Integer DATA_DIC_ROOT = 1;
+    /** 添加标志 */
+    public final static String MODE_AD = "add";
+    /** 修改标志 */
+    public final static String MODE_UPDADTE = "update";
     /** slat */
     public final static String SALT = "12345678";
     /** 客户经理绝色CODE:AM */

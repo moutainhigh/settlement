@@ -2,7 +2,10 @@ package com.settlement.mapper;
 
 import com.settlement.entity.SysDataDic;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.settlement.vo.SysDataDicVo;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * <p>
@@ -15,4 +18,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SysDataDicMapper extends BaseMapper<SysDataDic> {
 
+   public List<SysDataDicVo> getDataDicVoByPid(Integer pid);
 }

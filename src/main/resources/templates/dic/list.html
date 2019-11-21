@@ -29,7 +29,8 @@
                             </form>
                         </div>
                         <div class="layui-card-header">
-                            <button class="layui-btn" onclick="xadmin.open('添加数据字典','/sys-datadic/add',600,550)"><i class="layui-icon"></i>添加</button>
+                            <button class="layui-btn" onclick="xadmin.open('添加数据字典','/sys-data-dic/toAddOrUpdate?mode=add',600,550)"><i class="layui-icon"></i>添加</button>
+                            <button type="button" id="delete" class="layui-btn layui-btn-danger" lay-demo="reload">删除</button>
                         </div>
                         <div class="layui-card-body layui-table-body layui-table-main" >
                             <table class="layui-table layui-form" id="dataTable" lay-filter="dataTable">
@@ -57,7 +58,7 @@
         // var $ = layui.jquery;
         table.render({
            elem: '#dataTable',
-           url: '/sys-user/pagedata',
+           url: '/sys-data-dic/pagedata',
            // toolbar: '',
            page: true,
            title: '数据字典表',
@@ -65,11 +66,10 @@
            // id: 'userData',
            cols: [[
                {field:'id',type:'checkbox',fixed:'left'},
-               {field:'realName',title:'姓名',align:'center',fixed:'left'},
-               {field:'employeeNo',title:'员工编号',align:'center'},
-               {field:'email',title:'邮箱',align:'center'},
-               {field:'city',title:'城市',align:'center'},
-               {field:'mobile',title:'手机',align:'center'},
+               {field:'dicCode',title:'字典代码',align:'center',fixed:'left'},
+               {field:'dicContent',title:'字典内容',align:'center'},
+               {field:'sort',title:'排序',align:'center'},
+               {field:'pidContent',title:'父Id',align:'center'},
                {field:'enabled',title:'状态',align:'center',templet: '#switchStatus', unresize: true},
                {field:'createTime',title:'创建日期',align:'center'},
                {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:180}
@@ -148,12 +148,12 @@
               if(obj.event === 'detail'){
                   layer.msg('ID：'+ data.id + ' 的查看操作');
               } else if(obj.event === 'del'){
-                  layer.confirm('真的删除【 '+ data.realName + '】么?', function(index){
-                      user_del(data.id);
+                  layer.confirm('真的删除【 '+ data.dicContent + '】么?', function(index){
+                      datadic_del(data.id);
                       layer.close(index);
                   });
               } else if(obj.event === 'edit'){
-                  xadmin.open('编辑用户','/sys-user/edit/'+ data.id,600,550);
+                  xadmin.open('编辑数据字典','/sys-user/toAddOrUpdate?mode=add&id='+ data.id,600,550);
               }
           });
 
@@ -171,9 +171,9 @@
       });
 
       /*数据字典-删除*/
-      function user_del(id){
+      function datadic_del(id){
           $.ajax({
-              url:"/sys-user/del/" + id,
+              url:"/sys-data-dic/del/" + id,
               type:"DELETE",
               contentType:"application/json",//设置请求参数类型为json字符串
               // data: {id:id},

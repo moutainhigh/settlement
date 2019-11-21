@@ -15,4 +15,23 @@
         <result column="del_flag" property="delFlag" />
     </resultMap>
 
+
+    <select parameterType="Integer" resultType="com.settlement.vo.SysDataDicVo" id="getDataDicVoByPid">
+    select dic.id as id,
+       dic.dic_code as dicCode,
+       dic.dic_content as dicContent,
+       dic.sort as sort,
+       dic.pid as pid,
+       dic2.dic_content as pidContent,
+       dic.enabled as enabled,
+       dic.create_user_id as createUserId,
+       dic.del_flag as delFlag
+        from
+        (select d.id,d.dic_code,d.dic_content,d.sort,d.pid,d.enabled,d.create_user_id,d.del_flag from sys_data_dic d) dic,
+        (select id,dic_content from sys_data_dic) dic2
+        where dic.pid=dic2.id
+        and dic.pid=#{pid}
+        and dic.del_flag='N'
+        order by dic.sort
+    </select>
 </mapper>

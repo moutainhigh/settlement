@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+    
+    <head>
+        <th:bolck th:include="common/header :: header('添加用户')" />
+        <link rel="stylesheet" th:href="@{/css/formSelects-v4.css}" />
+    </head>
+    <body>
+        <div class="layui-fluid">
+            <div class="layui-row">
+                <form class="layui-form">
+                    <div class="layui-form-item">
+                        <div class="layui-form-item">
+                            <label for="dicCode" class="layui-form-label">
+                                <span class="x-red">*</span>数据字典代码</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="dicCode" name="dicCode" th:value="${mode.equals('update')}?${sysDataDic.dicCode}" required="" lay-verify="dicCode" autocomplete="off"  placeholder="请输入数据字典代码" class="layui-input" maxlength="20">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="dicContent" class="layui-form-label">
+                                <span class="x-red">*</span>数据字典内容</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="dicContent" name="dicContent"  required="" lay-verify="dicContent" autocomplete="off" placeholder="请输入数据字典内容" class="layui-input" maxlength="20">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="sort" class="layui-form-label">
+                                <span class="x-red">*</span>显示顺序</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="sort" name="sort" required=""  lay-verify="sort" autocomplete="off" placeholder="显示顺序" class="layui-input" maxlength="100">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="pid" class="layui-form-label">
+                                <span class="x-red">*</span>父ID</label>
+                            <div class="layui-input-inline">
+                                <select id="pid" name="pid" xm-select-radio xm-select="pidSelect" lay-filter="pid" xm-select-max="1" lay-verify="pid">
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <div class="layui-form-item">
+                            <label for="add" class="layui-form-label"></label>
+                            <button class="layui-btn" id="add" lay-filter="add" lay-submit="">增加</button>
+                        </div>
+                   </div>
+                </form>
+            </div>
+        </div>
+        <script th:src="@{/js/formSelects-v4.js}" type="text/javascript" charset="utf-8"></script>
+        <script th:src="@{/js/user/user.js}" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" th:inline="javascript">
+            // 下拉多选框
+            formSelects.data('pidSelect', 'server', {
+              url: '/sys-data-dic/pidSelect'
+            });
+            // 表单操作
+            layui.use(['form', 'layer','jquery'],
+            function() {
+                $ = layui.jquery;
+                var form = layui.form,
+                layer = layui.layer;
+                form.render();
+                //自定义验证规则
+                form.verify({
+                    dicCode: function(value) {
+                        if (value.length < 1) {
+                            return '姓名至少得1个字符啊';
+                        }
+                    },
+                    dicContent: function (value) {
+                        if (value.length < 1) {
+                            return '员工编号至少得1个字符啊';
+                        }
+                    },
+
+                    sort: function (value) {
+                        if (value.length < 1) {
+                            return '城市至少得1个字符啊';
+                        }
+                    }
+
+                });
+                //监听提交
+                form.on('submit(add)', function(data){
+                    var mode=[[${mode}]];
+
+                   // if("add"==mode) {
+                        $.post('/sys-data-dic/add',data.field,function (r) {
+                            layer.alert(r.msg, {
+                                    icon : r.code == 'add_200' ? 6: 5
+                                },
+                                function() {
+                                    //关闭当前frame
+                                    xadmin.close();
+                                    // 可以对父窗口进行刷新
+                                    xadmin.father_reload();
+                                });
+                        });
+                   // }
+                    return false;
+                });
+
+            });
+        </script>
+    </body>
+</html>
