@@ -1,13 +1,11 @@
 package com.settlement.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.settlement.entity.SysDataDic;
 import com.settlement.entity.SysRole;
 import com.settlement.entity.SysUser;
 import com.settlement.entity.SysUserRole;
-import com.settlement.service.LoginService;
-import com.settlement.service.SysRoleService;
-import com.settlement.service.SysUserRoleService;
-import com.settlement.service.SysUserService;
+import com.settlement.service.*;
 import com.settlement.utils.Result;
 import com.settlement.vo.SysUserVo;
 import org.apache.shiro.SecurityUtils;
@@ -18,8 +16,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.List;
 
@@ -40,6 +38,8 @@ public class HomeController {
     private SysUserRoleService sysUserRoleService;
     @Autowired
     private SysRoleService sysRoleService;
+    @Autowired
+    private SysDataDicService sysDataDicService;
 
     @GetMapping({"/","/login"})
     public String toLogin() {
@@ -167,5 +167,39 @@ public class HomeController {
         return "pg/add";
     }
     /////////////////////////////////////////////////////////////  项目组跳转end  ///////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////   用户跳转页面 end //////////////////////////////////////////////////////////////
+
+    @GetMapping("/sys-data-dic/list")
+    public String toDatatDicList() {
+        return "dic/list";
+    }
+
+    /**
+     *@desciption 用户添加页面
+     *
+     * @return
+     */
+    @GetMapping("/sys-data-dic/toAddOrUpdate")
+    public String toDataDicAdd(@RequestParam String mode, @RequestParam(required = false) Integer id, Model model) {
+
+       QueryWrapper<SysDataDic> dicQueryWrapper = new QueryWrapper<>();
+        dicQueryWrapper.eq("pid",0);
+       List<SysDataDic> sysDataDicList = sysDataDicService.list(dicQueryWrapper);
+        if("add".equals(mode)) {
+            model.addAttribute("mode","add");
+
+        } else if("update".equals(mode)) {
+            QueryWrapper<SysDataDic> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("id",id);
+            SysDataDic sysDataDic = sysDataDicService.getOne(queryWrapper);
+            model.addAttribute("mode","update");
+            model.addAttribute("sysDataDic",sysDataDic);
+        }
+        model.addAttribute("sysDataDicList",sysDataDicList);
+        return "dic/add";
+    }
+
+
+
 }
 
