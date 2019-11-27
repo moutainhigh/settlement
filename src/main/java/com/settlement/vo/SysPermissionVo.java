@@ -31,4 +31,6 @@ public class SysPermissionVo extends SysPermission {
         this.childrens = childrens;
     }
 
+
+
 }

@@ -21,7 +21,7 @@
                         <div class="layui-card-body">
                             <form class="layui-form layui-col-space5" onsubmit="return false">
                                 <div class="layui-inline layui-show-xs-block">
-                                    <input type="text" id="keyword" name="keyword"  placeholder="请输入关键字" autocomplete="off" class="layui-input">
+                                    <input type="text" id="keyword" name="keyword"  placeholder="查询数据字典内容" autocomplete="off" class="layui-input">
                                 </div>
                                 <div class="layui-inline layui-show-xs-block">
                                     <button class="layui-btn" id="search" data-type="reload" lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i>查询</button>
@@ -29,8 +29,8 @@
                             </form>
                         </div>
                         <div class="layui-card-header">
-                            <button class="layui-btn" onclick="xadmin.open('添加数据字典','/sys-data-dic/toAddOrUpdate?mode=add',600,550)"><i class="layui-icon"></i>添加</button>
-                            <button type="button" id="delete" class="layui-btn layui-btn-danger" lay-demo="reload">删除</button>
+                            <button class="layui-btn" onclick="xadmin.open('添加数据字典','/sys-data-dic/toAddOrUpdate/add/0',600,550)"><i class="layui-icon"></i>添加</button>
+<!--                            <button type="button" id="delete" class="layui-btn layui-btn-danger" onclick="deleteFun()" lay-demo="reload">删除</button>-->
                         </div>
                         <div class="layui-card-body layui-table-body layui-table-main" >
                             <table class="layui-table layui-form" id="dataTable" lay-filter="dataTable">
@@ -67,14 +67,21 @@
            cols: [[
                {field:'id',type:'checkbox',fixed:'left'},
                {field:'dicCode',title:'字典代码',align:'center',fixed:'left'},
-               {field:'dicContent',title:'字典内容',align:'center'},
-               {field:'sort',title:'排序',align:'center'},
-               {field:'pidContent',title:'父Id',align:'center'},
+               {field:'dicContent',title:'字典内容',edit: 'text',align:'center'},
+               {field:'sort',title:'排序',edit: 'text',align:'center'},
+               {field:'pidContent',title:'父结点',align:'center'},
                {field:'enabled',title:'状态',align:'center',templet: '#switchStatus', unresize: true},
-               {field:'createTime',title:'创建日期',align:'center'},
-               {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:180}
+               {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:200}
            ]]
         });
+
+          //监听单元格编辑
+          // table.on('edit(dataTable)', function(obj){
+          //     var value = obj.value //得到修改后的值
+          //         ,data = obj.data //得到所在行所有键值
+          //         ,field = obj.field; //得到字段
+          //     layer.msg('[ID: '+ data.id +'] ' + field + ' 字段更改为：'+ value);
+          // });
           var $ = layui.$, active = {
               reload: function(){
                   var keyword = $('#keyword');
@@ -100,37 +107,63 @@
               var id = this.value;
               var obj = $(data.elem);
               var a = data.elem.checked;
+              //alert(id+":"+a);
               if (!a) {
-                  layer.open({
-                      type: 2,
-                      area: [750+'px', 550 +'px'],
-                      fix: false, //不固定
-                      maxmin: true,
-                      shadeClose: true,
-                      shade:0.4,
-                      title: '用户停用',
-                      content: '/sys-user/stop/'+id,
-                      cancel: function (index, layero) {
-                          // parent.location.reload();
-                          data.elem.checked = !a;
-                          layui.form.render();
-                      }
-                  })
+                  // 发送ajax请求，enabled停用 更新后台
+                  $.ajax({
+                      url:'/sys-data-dic/enable/stop/'+id,
+                      type:'put',
+                      success: function(data){
+                          if("edit_200"==data.code){
+                            layer.msg('停用成功', {icon: 6});
+                            data.elem.checked = a;
+                            layui.form.render();
+
+                          }else {
+                              data.elem.checked = !a;
+                              layui.form.render();
+                              layer.msg('停用失败', {icon: 5});
+                          }
+                     }
+                  });
               } else {
                   layer.open({
                       content: '确定要启用此用户吗？'
                       ,btn: ['确定','取消']
-                      ,yes: function(index, layero){
-                          // 发送ajax请求，更新后台
-                          data.elem.checked=a;
-                          layui.form.render();
-                          layer.close(index);
+                      ,yes: function(index){
+                          // 发送ajax请求，enabled启用 更新后台
+                          $.ajax({
+                              url:'/sys-data-dic/enable/start/'+id,
+                              type:'put',
+                              success: function(data){
+                                  if("edit_200"==data.code){
+                                      layer.close(index);
+                                      data.elem.checked=a;
+                                      layui.form.render();
+                                  } else {
+                                      layer.msg('启用失败', {icon: 5});
+                                  }
+                              }
+                          });
                       }
-                      ,btn2: function(index, layero){
+                      ,btn2: function(index){
                           //按钮【按钮二】的回调
-                          data.elem.checked=!a;
+                          // 发送ajax请求，enabled停用 更新后台
+                          //alert("cancle:"+a);
+                          data.elem.checked = !a;
                           layui.form.render();
                           layer.close(index);
+                          // $.ajax({
+                          //     url:'/sys-data-dic/enable/stop/'+id,
+                          //     type:'put',
+                          //     success: function(data){
+                          //         alert("cancle start:"+data.code);
+                          //         if("edit_200"==data.code)
+                          //             data.elem.checked = !a;
+                          //             layui.form.render();
+                          //             layer.close(index);
+                          //     }
+                          // });
                       }
                       ,cancel: function(){
                           //右上角关闭回调
@@ -153,7 +186,7 @@
                       layer.close(index);
                   });
               } else if(obj.event === 'edit'){
-                  xadmin.open('编辑数据字典','/sys-user/toAddOrUpdate?mode=add&id='+ data.id,600,550);
+                  xadmin.open('编辑数据字典','/sys-data-dic/toAddOrUpdate/update/'+ data.id,600,550);
               }
           });
 
@@ -170,16 +203,22 @@
 
       });
 
+
       /*数据字典-删除*/
       function datadic_del(id){
           $.ajax({
               url:"/sys-data-dic/del/" + id,
-              type:"DELETE",
-              contentType:"application/json",//设置请求参数类型为json字符串
+              type:"put",
+              //contentType:"application/json",//设置请求参数类型为json字符串
               // data: {id:id},
-              dataType:"json",
+              //dataType:"json",
               success:function(r){
-                  layer.msg(r.msg,{icon:1,time:1000});
+                  if("delete_200"==r.code) {
+                      layer.msg('删除成功', {icon: 6});
+                  } else {
+                      layer.msg('删除失败', {icon: 5});
+                  }
+                  //layer.msg(r.msg,{icon:1,time:1000});
                   location.reload();
               }
           });

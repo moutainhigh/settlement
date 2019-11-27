@@ -18,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -33,6 +35,12 @@ public class SysDataDicServiceImpl extends ServiceImpl<SysDataDicMapper, SysData
 
     @Autowired
     private SysDataDicMapper sysDataDicMapper;
+
+    /**
+     * 添加数据字典
+     * @param sysDataDic
+     * @return
+     */
     @Override
     public Result saveDataDic(SysDataDic sysDataDic) {
         Result r = new Result(HttpResultEnum.ADD_CODE_500.getCode(),HttpResultEnum.ADD_CODE_500.getMessage());
@@ -50,6 +58,11 @@ public class SysDataDicServiceImpl extends ServiceImpl<SysDataDicMapper, SysData
         return r;
     }
 
+    /**
+     * 更新数据字典
+     * @param sysDataDic
+     * @return
+     */
     @Override
     public Result updateDataDic(SysDataDic sysDataDic) {
         Result r = new Result(HttpResultEnum.EDIT_CODE_500.getCode(),HttpResultEnum.EDIT_CODE_500.getMessage());
@@ -59,6 +72,7 @@ public class SysDataDicServiceImpl extends ServiceImpl<SysDataDicMapper, SysData
             updateWrapper.set("dic_content",sysDataDic.getDicContent());
             updateWrapper.set("sort",sysDataDic.getSort());
             updateWrapper.set("pid",sysDataDic.getPid());
+            updateWrapper.set("del_flag",sysDataDic.getDelFlag());
             Integer ret=sysDataDicMapper.update(sysDataDic,updateWrapper);
             if(ret!=null && ret>0) {
                 r.setCode(HttpResultEnum.EDIT_CODE_200.getCode());
@@ -72,13 +86,18 @@ public class SysDataDicServiceImpl extends ServiceImpl<SysDataDicMapper, SysData
 
     }
 
+    /**
+     * 逻辑删除数据字典
+     * @param id
+     * @return
+     */
     @Override
     public Result deleteDataDic(Integer id) {
         Result r = new Result(HttpResultEnum.DEL_CODE_500.getCode(),HttpResultEnum.DEL_CODE_500.getMessage());
         try{
             UpdateWrapper<SysDataDic> updateWrapper = new UpdateWrapper<SysDataDic>();
             updateWrapper.set("del_flag", Const.DEL_FLAG_D);
-            updateWrapper.set("id",id);
+            updateWrapper.eq("id",id);
             SysDataDic sysDataDic = new SysDataDic();
             sysDataDic.setId(id);
             Integer ret=sysDataDicMapper.update(sysDataDic,updateWrapper);
@@ -93,16 +112,55 @@ public class SysDataDicServiceImpl extends ServiceImpl<SysDataDicMapper, SysData
         return r;
     }
 
+    /**
+     * 启用数据字典
+     * @param id
+     * @return
+     */
     @Override
     public Result updateDataDicStart(Integer id) {
-        return null;
+        Result r = new Result(HttpResultEnum.EDIT_CODE_500.getCode(),HttpResultEnum.EDIT_CODE_500.getMessage());
+        UpdateWrapper<SysDataDic> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("id",id);
+        updateWrapper.set("enabled", Const.ENABLED_Y);
+        SysDataDic sysDataDic = new SysDataDic();
+        sysDataDic.setId(id);
+
+        Integer ret = sysDataDicMapper.update(sysDataDic,updateWrapper);
+        if(ret!=null && ret>0) {
+            r.setCode(HttpResultEnum.EDIT_CODE_200.getCode());
+            r.setMsg(HttpResultEnum.EDIT_CODE_200.getMessage());
+        }
+        return r;
+
     }
 
+    /**
+     * 信用数据字典
+     * @param id
+     * @return
+     */
     @Override
-    public SysDataDic getDataDicStop(Integer id) {
-        return null;
+    public Result updateDataDicStop(Integer id) {
+        Result r = new Result(HttpResultEnum.EDIT_CODE_500.getCode(),HttpResultEnum.EDIT_CODE_500.getMessage());
+        UpdateWrapper<SysDataDic> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("id",id);
+        updateWrapper.set("enabled", Const.ENABLED_N);
+        SysDataDic sysDataDic = new SysDataDic();
+        sysDataDic.setId(id);
+
+        Integer ret = sysDataDicMapper.update(sysDataDic,updateWrapper);
+        if(ret!=null && ret>0) {
+            r.setCode(HttpResultEnum.EDIT_CODE_200.getCode());
+            r.setMsg(HttpResultEnum.EDIT_CODE_200.getMessage());
+        }
+        return r;
     }
 
+    /**
+     * 数据字典下拉选择框内容
+     * @return
+     */
     @Override
     public Result pidSelectData() {
         QueryWrapper<SysDataDic> queryWrapper = new QueryWrapper<>();
@@ -110,7 +168,7 @@ public class SysDataDicServiceImpl extends ServiceImpl<SysDataDicMapper, SysData
         queryWrapper.orderByAsc("sort");
         List<SysDataDic> sysDataDicList = sysDataDicMapper.selectList(queryWrapper);
         List<SelectVo> pidSelectVoList = new ArrayList<SelectVo>();
-        pidSelectVoList.add(new SelectVo(1,"数据字典"));
+        pidSelectVoList.add(new SelectVo(0,"数据字典"));
         for(SysDataDic sysDataDic: sysDataDicList){
             SelectVo selectVo = new SelectVo(sysDataDic.getId(),sysDataDic.getDicContent());
             pidSelectVoList.add(selectVo);
@@ -120,15 +178,23 @@ public class SysDataDicServiceImpl extends ServiceImpl<SysDataDicMapper, SysData
         return r;
     }
 
+    /**
+     * 加载显示数据字典页面
+     * @param dataDicCo
+     * @return
+     */
     @Override
     public PageData listPageData(DataDicCo dataDicCo) {
         Page<SysDataDicVo> page = new Page<SysDataDicVo>(dataDicCo.getPage(),dataDicCo.getLimit());
-        List<SysDataDicVo> sysDataDicList = sysDataDicMapper.getDataDicVoByPid(Const.DATA_DIC_ROOT);
+        dataDicCo.setPid(Const.DATA_DIC_ROOT);
+        List<SysDataDicVo> sysDataDicList = sysDataDicMapper.getDataDicVoByPid(dataDicCo,page);
         List<SysDataDicVo> sysPageDataDicList = new ArrayList<>();
         for(SysDataDicVo sysDataDic: sysDataDicList){
 
             sysPageDataDicList.add(sysDataDic);
-            List<SysDataDicVo> sysDataDicList2 = sysDataDicMapper.getDataDicVoByPid(sysDataDic.getId());
+            dataDicCo.setPid(sysDataDic.getId());
+            List<SysDataDicVo> sysDataDicList2 = sysDataDicMapper.getDataDicVoByPid(dataDicCo,page);
+
             for(SysDataDicVo sysDataDic2: sysDataDicList2){
                 sysPageDataDicList.add(sysDataDic2);
             }
@@ -136,5 +202,52 @@ public class SysDataDicServiceImpl extends ServiceImpl<SysDataDicMapper, SysData
         page.setRecords(sysPageDataDicList);
         page.setTotal(sysPageDataDicList.size());
         return new PageData(page.getTotal(),page.getRecords());
+    }
+
+    /**
+     *  更新数据字典的状态
+     * @param id
+     * @param enable
+     * @return
+     */
+    @Override
+    public Result updateStatus(Integer id,boolean enable) {
+        Result r = new Result(HttpResultEnum.EDIT_CODE_500.getCode(),HttpResultEnum.EDIT_CODE_500.getMessage());
+        UpdateWrapper<SysDataDic> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("id",id);
+        SysDataDic sysDataDic = new SysDataDic();
+        sysDataDic.setId(id);
+        if(enable) {
+            updateWrapper.set("enabled", Const.ENABLED_Y);
+        } else{
+            updateWrapper.set("enabled", Const.ENABLED_N);
+        }
+
+        Integer ret = sysDataDicMapper.update(sysDataDic,updateWrapper);
+        if(ret!=null && ret>0) {
+            r.setCode(HttpResultEnum.EDIT_CODE_200.getCode());
+            r.setMsg(HttpResultEnum.EDIT_CODE_200.getMessage());
+        }
+    return r;
+    }
+
+    /**
+     * 检查dicCode是否可用
+     * @param dicCode
+     * @return
+     */
+    @Override
+    public Result dicCodeIsExist(String dicCode) {
+        Result r = null;
+        QueryWrapper<SysDataDic> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("dic_code",dicCode);
+        queryWrapper.eq("del_flag",Const.DEL_FLAG_N);
+        Integer count = this.sysDataDicMapper.selectCount(queryWrapper);
+        if(count!=null && count>0) {
+            r = new Result(HttpResultEnum.DIC_CODE_1.getCode(),HttpResultEnum.DIC_CODE_1.getMessage());
+        } else {
+            r = new Result(HttpResultEnum.DIC_CODE_0.getCode(),HttpResultEnum.DIC_CODE_0.getMessage());
+        }
+        return r;
     }
 }

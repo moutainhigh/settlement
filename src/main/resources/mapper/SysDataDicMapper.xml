@@ -16,7 +16,7 @@
     </resultMap>
 
 
-    <select parameterType="Integer" resultType="com.settlement.vo.SysDataDicVo" id="getDataDicVoByPid">
+    <select  resultType="com.settlement.vo.SysDataDicVo" id="getDataDicVoByPid">
     select dic.id as id,
        dic.dic_code as dicCode,
        dic.dic_content as dicContent,
@@ -26,12 +26,14 @@
        dic.enabled as enabled,
        dic.create_user_id as createUserId,
        dic.del_flag as delFlag
-        from
-        (select d.id,d.dic_code,d.dic_content,d.sort,d.pid,d.enabled,d.create_user_id,d.del_flag from sys_data_dic d) dic,
+        from sys_data_dic dic,
         (select id,dic_content from sys_data_dic) dic2
-        where dic.pid=dic2.id
-        and dic.pid=#{pid}
+        where dic.id=dic2.id
+        and dic.pid=#{dataDicCo.pid}
         and dic.del_flag='N'
+        <if test="dataDicCo.keyword!=null">
+            and dic.dic_content like CONCAT('%',#{dataDicCo.keyword},'%')
+        </if>
         order by dic.sort
     </select>
 </mapper>

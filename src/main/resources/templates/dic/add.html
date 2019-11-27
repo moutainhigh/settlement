@@ -14,21 +14,24 @@
                             <label for="dicCode" class="layui-form-label">
                                 <span class="x-red">*</span>数据字典代码</label>
                             <div class="layui-input-inline">
-                                <input type="text" id="dicCode" name="dicCode" th:value="${mode.equals('update')}?${sysDataDic.dicCode}" required="" lay-verify="dicCode" autocomplete="off"  placeholder="请输入数据字典代码" class="layui-input" maxlength="20">
+                                <input type="text" id="dicCode" name="dicCode" th:readonly="${mode.equals('update')}?true" th:value="${mode.equals('update')}?${sysDataDic.dicCode}" required="" lay-verify="dicCode" autocomplete="off"  placeholder="请输入数据字典代码" class="layui-input" maxlength="20">
+                            </div>
+                            <div class="layui-input-inline">
+                                <button type="button" id="dicCodeIsExist" th:if="${mode.equals('add')}" lay-filter="dicCodeIsExist" class="layui-btn layui-btn-primary layui-btn-xs">检查数据字典代码是否可用</button>
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label for="dicContent" class="layui-form-label">
                                 <span class="x-red">*</span>数据字典内容</label>
                             <div class="layui-input-inline">
-                                <input type="text" id="dicContent" name="dicContent"  required="" lay-verify="dicContent" autocomplete="off" placeholder="请输入数据字典内容" class="layui-input" maxlength="20">
+                                <input type="text" id="dicContent" name="dicContent" th:value="${mode.equals('update')}?${sysDataDic.dicContent}"  required="" lay-verify="dicContent" autocomplete="off" placeholder="请输入数据字典内容" class="layui-input" maxlength="20">
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label for="sort" class="layui-form-label">
                                 <span class="x-red">*</span>显示顺序</label>
                             <div class="layui-input-inline">
-                                <input type="text" id="sort" name="sort" required=""  lay-verify="sort" autocomplete="off" placeholder="显示顺序" class="layui-input" maxlength="100">
+                                <input type="text" id="sort" name="sort" required="" th:value="${mode.equals('update')}?${sysDataDic.sort}"  lay-verify="sort" autocomplete="off" placeholder="显示顺序" class="layui-input" maxlength="100">
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -43,19 +46,43 @@
 
                         <div class="layui-form-item">
                             <label for="add" class="layui-form-label"></label>
-                            <button class="layui-btn" id="add" lay-filter="add" lay-submit="">增加</button>
+                            <button class="layui-btn" id="add" th:text="${mode.equals('add')}?'增加' : '修改'" lay-filter="add" lay-submit="">增加</button>
                         </div>
                    </div>
                 </form>
             </div>
         </div>
         <script th:src="@{/js/formSelects-v4.js}" type="text/javascript" charset="utf-8"></script>
-        <script th:src="@{/js/user/user.js}" type="text/javascript" charset="utf-8"></script>
+        <script th:src="@{/js/dic/dic.js}" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript" th:inline="javascript">
             // 下拉多选框
-            formSelects.data('pidSelect', 'server', {
-              url: '/sys-data-dic/pidSelect'
-            });
+            var mode = [[${mode}]];
+            var pIdInit = [[${sysDataDic.pid}]];
+            if(mode=="add"){
+                formSelects.data('pidSelect', 'server', {
+                            url: '/sys-data-dic/pidSelect',
+                    success: function(id, url, searchVal, result){
+                        if(0==pIdInit) {
+                            formSelects.value('pidSelect', ['0']);
+                        } else {
+                            formSelects.value('pidSelect', [pIdInit]);
+                        }
+                    }
+                        });
+            } else {
+                //var pIdInit = [[${sysDataDic.pid}]];
+                formSelects.data('pidSelect', 'server', {
+                    url: '/sys-data-dic/pidSelect',
+                    success: function(id, url, searchVal, result){
+                        if(0==pIdInit) {
+                            formSelects.value('pidSelect', ['0']);
+                        } else {
+                            formSelects.value('pidSelect', [pIdInit]);
+                        }
+                    }
+                });
+
+            }
             // 表单操作
             layui.use(['form', 'layer','jquery'],
             function() {
@@ -67,27 +94,36 @@
                 form.verify({
                     dicCode: function(value) {
                         if (value.length < 1) {
-                            return '姓名至少得1个字符啊';
+                            return '数据字典编码至少得1个字符啊';
+                        }
+                    },
+                    sort:function (value) {
+                        if (!/^\d+$/.test(value.trim())) {
+                            return '显示顺序至少1位，且只能是数字';
                         }
                     },
                     dicContent: function (value) {
                         if (value.length < 1) {
-                            return '员工编号至少得1个字符啊';
-                        }
-                    },
-
-                    sort: function (value) {
-                        if (value.length < 1) {
-                            return '城市至少得1个字符啊';
+                            return '数据字典内容至少得1个字符啊';
                         }
                     }
 
                 });
+
+                $('#dicCodeIsExist').click(function () {
+                        var dicCode = $('#dicCode').val();
+                        if(dicCode.trim().length==0) {
+                            layer.msg('数据字典编码不能为空');
+                            return false;
+                        }
+                        checkDicCodeIsExist(dicCode,layer,'');
+                    }
+                );
                 //监听提交
                 form.on('submit(add)', function(data){
                     var mode=[[${mode}]];
 
-                   // if("add"==mode) {
+                    if("add"==mode && checkDicCodeIsExist($('#dicCode').val(),layer,'')) {
                         $.post('/sys-data-dic/add',data.field,function (r) {
                             layer.alert(r.msg, {
                                     icon : r.code == 'add_200' ? 6: 5
@@ -99,7 +135,19 @@
                                     xadmin.father_reload();
                                 });
                         });
-                   // }
+                    } else if('update'==mode){
+                        $.post('/sys-data-dic/update',data.field,function (r) {
+                            layer.alert(r.msg, {
+                                    icon : r.code == 'edit_200' ? 6: 5
+                                },
+                                function() {
+                                    //关闭当前frame
+                                    xadmin.close();
+                                    // 可以对父窗口进行刷新
+                                    xadmin.father_reload();
+                                });
+                        });
+                    }
                     return false;
                 });
 

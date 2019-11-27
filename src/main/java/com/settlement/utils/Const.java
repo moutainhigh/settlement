@@ -22,9 +22,11 @@ public class Const {
     /** 部门根节点ID */
     public final static Integer DEPT_ROOT_ID = 1;
     /** 数据字典根节点ID */
-    public final static Integer DATA_DIC_ROOT = 1;
+    public final static Integer DATA_DIC_ROOT = 0;
+    /** 权限菜单根节点ID */
+    public final static Integer PERMISSION_ROOT_ID = 0;
     /** 添加标志 */
-    public final static String MODE_AD = "add";
+    public final static String MODE_ADD = "add";
     /** 修改标志 */
     public final static String MODE_UPDADTE = "update";
     /** slat */

@@ -1,12 +1,11 @@
 package com.settlement.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.settlement.entity.SysDataDic;
-import com.settlement.entity.SysRole;
-import com.settlement.entity.SysUser;
-import com.settlement.entity.SysUserRole;
+import com.settlement.entity.*;
 import com.settlement.service.*;
+import com.settlement.utils.Const;
 import com.settlement.utils.Result;
+import com.settlement.vo.SysPermissionVo;
 import com.settlement.vo.SysUserVo;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @description Home控制器类
@@ -40,6 +40,8 @@ public class HomeController {
     private SysRoleService sysRoleService;
     @Autowired
     private SysDataDicService sysDataDicService;
+    @Autowired
+    private SysPermissionService sysPermissionService;
 
     @GetMapping({"/","/login"})
     public String toLogin() {
@@ -129,6 +131,26 @@ public class HomeController {
         return "role/role-list";
     }
 
+    /**
+     * 跳转角色添加页面
+     * @return
+     */
+    @GetMapping("/sys-role/toAddorUpdate/{mode}/{id}")
+    public String toRoleAdd(@PathVariable String mode,@PathVariable(required = false) Integer id,Model model) {
+        if(Const.MODE_ADD.equals(mode)) {
+            Map<SysPermission,List<Map<SysPermission, List<SysPermission>>>> maproot = sysPermissionService.getPermissons();
+            model.addAttribute("maproot",maproot);
+            model.addAttribute("mode",Const.MODE_ADD);
+        } else if(Const.MODE_UPDADTE.equals(mode)){
+            SysRole sysRole = sysRoleService.getById(id);
+            Map<SysPermissionVo,List<Map<SysPermissionVo, List<SysPermissionVo>>>> maproot = sysPermissionService.getPermissons(id);
+            model.addAttribute("maproot",maproot);
+            model.addAttribute("sysRole",sysRole);
+            model.addAttribute("mode",Const.MODE_UPDADTE);
+        }
+        return "role/role-add";
+    }
+
     @GetMapping("/sys-permission/list")
     public String toPermissionList() {
         //public String toPermissionList(@RequestParam(defaultValue = "update") String mode, Model model) {
@@ -179,16 +201,25 @@ public class HomeController {
      *
      * @return
      */
-    @GetMapping("/sys-data-dic/toAddOrUpdate")
-    public String toDataDicAdd(@RequestParam String mode, @RequestParam(required = false) Integer id, Model model) {
+    @GetMapping("/sys-data-dic/toAddOrUpdate/{mode}/{id}")
+    public String toDataDicAdd(@PathVariable(value = "mode") String mode, @PathVariable(value="id",required = false) Integer id, Model model) {
 
        QueryWrapper<SysDataDic> dicQueryWrapper = new QueryWrapper<>();
         dicQueryWrapper.eq("pid",0);
        List<SysDataDic> sysDataDicList = sysDataDicService.list(dicQueryWrapper);
-        if("add".equals(mode)) {
+        if(Const.MODE_ADD.equals(mode)) {
+            SysDataDic sysDataDic = new SysDataDic();
+            if(id.equals(Const.DATA_DIC_ROOT)){
+                sysDataDic.setId(Const.DATA_DIC_ROOT);
+                sysDataDic.setPid(0);
+            } else {
+                QueryWrapper<SysDataDic> queryWrapper = new QueryWrapper<>();
+                queryWrapper.eq("id", id);
+                sysDataDic = sysDataDicService.getOne(queryWrapper);
+            }
             model.addAttribute("mode","add");
-
-        } else if("update".equals(mode)) {
+            model.addAttribute("sysDataDic",sysDataDic);
+        } else if(Const.MODE_UPDADTE.equals(mode)) {
             QueryWrapper<SysDataDic> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("id",id);
             SysDataDic sysDataDic = sysDataDicService.getOne(queryWrapper);

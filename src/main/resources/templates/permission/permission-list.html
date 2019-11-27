@@ -29,7 +29,7 @@
             <div class="layui-field-box">
                 <div class="layui-row layui-col-space10" style="margin-top: 10px;">
                     <div class="layui-col-lg4"><div style="height: 700px;overflow: auto;">
-                        <ul id="demoTree" class="dtree" data-id="0"></ul>
+                        <ul id="treeObject" class="dtree" data-id="0"></ul>
                     </div>
                 </div>
                     <div class="layui-col-lg8">
@@ -51,7 +51,7 @@
                     ,util = layui.util;
 
                 var dtree1 = dtree.render({
-                    elem: '#demoTree',
+                    elem: '#treeObject',
                     //skin: "layui",
                     useIframe: true,  //启用iframe
                     iframeElem: "#iframe_content",  // iframe的ID
@@ -70,7 +70,7 @@
                 // 点击按钮获取所有选中节点值
                 $("#add").click(function(){
                    // alert([[${mode}]]);
-                    var param = dtree.getNowParam("demoTree"); // 获取当前选中节点
+                    var param = dtree.getNowParam("treeObject"); // 获取当前选中节点
                     var id=0;
                     if(param.nodeId==null) {
                         id=0;
@@ -81,7 +81,7 @@
                 })
                 // 点击按钮获取所有选中节点值
                 $("#edit").click(function(){
-                    var param = dtree.getNowParam("demoTree"); // 获取当前选中节点
+                    var param = dtree.getNowParam("treeObject"); // 获取当前选中节点
                     $.ajax({
                             type: "get",
                             url: "/sys-permission/iframeContent",
@@ -95,7 +95,7 @@
                 })
                 // 点击按钮获取所有选中节点值
                 $("#delete").click(function(){
-                    var param = dtree.getNowParam("demoTree");
+                    var param = dtree.getNowParam("treeObject");
                     // var parent=param.parent();
                     // alert(parent.context);
                     if(param.leaf==null) {
@@ -116,14 +116,14 @@
                                 success: function (r) {
                                     if(r.code=='delete_200') {
                                         layer.msg('删除成功', {icon: 6});
-                                        dtree.reload("demoTree", {
+                                        dtree.reload("treeObject", {
                                             url: "/sys-permission/dtree/list/pagedata",
                                             //request: {id:pid},
                                             method: "post",
                                             initLevel: "5"
                                         });
                                     } else {
-                                        layer.msg('删除失败', {icon: 6});
+                                        layer.msg('删除失败', {icon: 5});
                                     }
                                 }
                             });
@@ -134,7 +134,7 @@
                     layer.msg("delete:"+JSON.stringify(params));
                 })
                 // 绑定图标的点击事件
-                dtree1.on("changeTree(demoTree)",function(obj) {
+                dtree1.on("changeTree(treeObject)",function(obj) {
                     if (obj.show) {
                         // 调用内置函数，第二个参数为json数组，如果你不想访问默认的url，你可以自己使用ajax访问你的url，然后将data数据传入进来即可。
                         dtree1.getChild($(obj.dom).parent("div"), [{"id": "001001", "title": "测试啦", "parentId": "0"}]);

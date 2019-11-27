@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.settlement.vo.SysPermissionVo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -18,4 +19,6 @@ public interface SysPermissionService extends IService<SysPermission> {
 
     List<SysPermissionVo> getMenu(Integer roleId);
     List<SysPermissionVo> getMenu();
+    Map<SysPermission,List<Map<SysPermission,List<SysPermission>>>> getPermissons();
+    Map<SysPermissionVo, List<Map<SysPermissionVo, List<SysPermissionVo>>>> getPermissons(Integer id);
 }
