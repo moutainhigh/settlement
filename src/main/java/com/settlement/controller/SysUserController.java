@@ -108,6 +108,7 @@ public class SysUserController {
     public Result userIsExist(@PathVariable  String email) {
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<SysUser>();
         queryWrapper.eq("email",email);
+        queryWrapper.eq("del_flag", Const.DEL_FLAG_N);
         SysUser sysUser = sysUserService.getOne(queryWrapper);
         Result r = null;
         if (sysUser == null) {
@@ -177,8 +178,43 @@ public class SysUserController {
         SysUser user = (SysUser) SecurityUtils.getSubject().getPrincipal();
         Map<String,Object> paramMap = new HashMap<String, Object>();
         paramMap.put("deptId",user.getDeptId());
-        paramMap.put("amRoleCode",Const.USER_ROLE_CODE_AM);
+        paramMap.put("amRoleCode",Const.ROLE_CODE_AM);
         paramMap.put("enabled", Const.ENABLED_Y);
         return this.sysUserService.getAmSelect(paramMap);
+    }
+
+    /**
+     * @description 助理下拉框
+     *
+     * @auth admin
+     * @date 2019-11-22
+     * @return
+     */
+    @GetMapping("/sys-user/assistant-select")
+    public Result getAssistantSelect() {
+        // 从session中取得当前用户部门
+        SysUser user = (SysUser) SecurityUtils.getSubject().getPrincipal();
+        Map<String,Object> paramMap = new HashMap<String, Object>();
+        paramMap.put("deptId",user.getDeptId());
+        paramMap.put("assistantRoleCode",Const.ROLE_CODE_ASSISTANT);
+        paramMap.put("enabled", Const.ENABLED_Y);
+        return this.sysUserService.getAssistantSelect(paramMap);
+    }
+
+    /**
+     * @description 结算负责人下拉框
+     *
+     * @auth admin
+     * @date 2019-11-22
+     * @return
+     */
+    @GetMapping("/sys-user/settlement-select")
+    public Result getSettlementSelect() {
+        // 从session中取得当前用户部门
+        SysUser user = (SysUser) SecurityUtils.getSubject().getPrincipal();
+        Map<String,Object> paramMap = new HashMap<String, Object>();
+        paramMap.put("settlementRoleCode",Const.ROLE_CODE_SETTLEMENT);
+        paramMap.put("enabled", Const.ENABLED_Y);
+        return this.sysUserService.getSettlementSelect(paramMap);
     }
 }

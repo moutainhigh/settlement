@@ -215,4 +215,36 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         r.setData(amSelectList);
         return r;
     }
+
+    @Override
+    public Result getAssistantSelect(Map<String, Object> map) {
+        List<SysUser> assistantList = this.baseMapper.getAssistantSelect(map);
+        List<SelectVo> assistantSelectList = new ArrayList<SelectVo>();
+        if (assistantList != null && assistantList.size() > 0) {
+            SelectVo selectVo = null;
+            for (SysUser assistant : assistantList) {
+                selectVo = new SelectVo(assistant.getId(), assistant.getRealName());
+                assistantSelectList.add(selectVo);
+            }
+        }
+        Result r = new Result(HttpResultEnum.CODE_0.getCode(), HttpResultEnum.CODE_0.getMessage());
+        r.setData(assistantSelectList);
+        return r;
+    }
+
+    @Override
+    public Result getSettlementSelect(Map<String, Object> map) {
+        List<SysUser> settlementList = this.baseMapper.getSettlementSelect(map);
+        List<SelectVo> settlementSelectList = new ArrayList<SelectVo>();
+        if (settlementList != null && settlementList.size() > 0) {
+            SelectVo selectVo = null;
+            for (SysUser assistant : settlementList) {
+                selectVo = new SelectVo(assistant.getId(), assistant.getRealName());
+                settlementSelectList.add(selectVo);
+            }
+        }
+        Result r = new Result(HttpResultEnum.CODE_0.getCode(), HttpResultEnum.CODE_0.getMessage());
+        r.setData(settlementSelectList);
+        return r;
+    }
 }

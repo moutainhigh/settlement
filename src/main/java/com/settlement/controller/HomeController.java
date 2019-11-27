@@ -40,6 +40,8 @@ public class HomeController {
     private SysRoleService sysRoleService;
     @Autowired
     private SysDataDicService sysDataDicService;
+    @Autowired
+    private BaProjectGroupService baProjectGroupService;
 
     @GetMapping({"/","/login"})
     public String toLogin() {
@@ -142,31 +144,6 @@ public class HomeController {
         return "dept/dept-list";
     }
 
-    /////////////////////////////////////////////////////////////  项目组跳转start ///////////////////////////////////////////////////////////////////
-
-    /**
-     * @description 项目组列表
-     *
-     * @auth    admin
-     * @dte     2019-11-20
-     */
-    @GetMapping("/ba-project-group/list")
-    public String toPgList() {
-        return "pg/list";
-    }
-
-    /**
-     * @description 项目组添加
-     *
-     * @auth admin
-     * @date 2019-11-21
-     * @return
-     */
-    @GetMapping("/ba-project-group/add")
-    public String toPgAdd() {
-        return "pg/add";
-    }
-    /////////////////////////////////////////////////////////////  项目组跳转end  ///////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////   用户跳转页面 end //////////////////////////////////////////////////////////////
 
     @GetMapping("/sys-data-dic/list")
@@ -200,6 +177,72 @@ public class HomeController {
     }
 
 
+    /////////////////////////////////////////////////////////////  项目组跳转start ///////////////////////////////////////////////////////////////////
+
+    /**
+     * @description 项目组列表
+     *
+     * @auth    admin
+     * @dte     2019-11-20
+     */
+    @GetMapping("/ba-project-group/list")
+    public String toPgList() {
+        return "pg/list";
+    }
+
+    /**
+     * @description 项目组添加
+     *
+     * @auth admin
+     * @date 2019-11-21
+     * @return
+     */
+    @GetMapping("/ba-project-group/add")
+    public String toPgAdd() {
+        return "pg/add";
+    }
+
+    /**
+     * @description 项目组编辑
+     *
+     * @auth admin
+     * @date 2019-11-25
+     * @return
+     */
+    @GetMapping("/ba-project-group/edit/{id}")
+    public String toPgEdit(@PathVariable Integer id, Model model) {
+        model.addAttribute("pg",this.baProjectGroupService.getById(id));
+        return "pg/edit";
+    }
+
+    /**
+     * @description 关联助理
+     *
+     * @auth admin
+     * @date 2019-11-26
+     * @param id
+     * @return
+     */
+    @GetMapping("/ba-project-group/relate-assistant/{id}")
+    public String toRelateAssistant(@PathVariable Integer id, Model model) {
+        model.addAttribute("pg",this.baProjectGroupService.getProjectGroupAssistantById(id));
+        return "pg/relate-assistant";
+    }
+
+    /**
+     * @description 关联结算负责人
+     *
+     * @auth admin
+     * @date 2019-11-27
+     * @param id
+     * @return
+     */
+    @GetMapping("/ba-project-group/relate-settlement/{id}")
+    public String toRelateSettlement(@PathVariable Integer id, Model model) {
+        model.addAttribute("pg", this.baProjectGroupService.getProjectGroupSettlementById(id));
+        return "pg/relate-settlement";
+    }
+    /////////////////////////////////////////////////////////////  项目组跳转end  ///////////////////////////////////////////////////////////////////
 
 }
 

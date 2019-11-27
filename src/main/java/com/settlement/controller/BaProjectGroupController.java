@@ -9,18 +9,21 @@ import com.settlement.co.ProjectGroupCo;
 import com.settlement.co.UserCo;
 import com.settlement.entity.BaProjectGroup;
 import com.settlement.entity.SysUser;
+import com.settlement.service.BaProjectGroupAssistantService;
 import com.settlement.service.BaProjectGroupService;
+import com.settlement.service.BaProjectGroupSettlementService;
 import com.settlement.utils.Const;
 import com.settlement.utils.Result;
+import com.settlement.vo.ProjectGroupVo;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Date;
 
 /**
  * <p>
@@ -35,6 +38,10 @@ public class BaProjectGroupController {
 
     @Autowired
     private BaProjectGroupService baProjectGroupService;
+    @Autowired
+    private BaProjectGroupAssistantService baProjectGroupAssistantService;
+    @Autowired
+    private BaProjectGroupSettlementService baProjectGroupSettlementService;
 
     /**
      * @description 项目组列表
@@ -63,5 +70,108 @@ public class BaProjectGroupController {
         return this.baProjectGroupService.checkProjectGroupIsExist(code);
     }
 
+    /**
+     * @description 项目组保存
+     *
+     * @auth admin
+     * @date 2019-11-22
+     * @return
+     */
+    @PostMapping("/ba-project-group/add")
+    public Result addProjectGroup(ProjectGroupVo projectGroupVo) {
+        // 新增项目组信息
+        SysUser user = (SysUser) SecurityUtils.getSubject().getPrincipal();
+        projectGroupVo.setCreateTime(new Date());
+        projectGroupVo.setEnabled(Const.ENABLED_N);
+        projectGroupVo.setCreateUserId(user.getId());
+        projectGroupVo.setDelFlag(Const.DEL_FLAG_N);
+        projectGroupVo.setOwnerUserId(user.getId());
+        return this.baProjectGroupService.saveProjectGroup(projectGroupVo);
+    }
 
+    /**
+     * @description 项目组提交，并审核
+     *
+     * @auth admin
+     * @date 2019-11-22
+     * @return
+     */
+    @PostMapping("/ba-project-group/addsubmit")
+    public Result addAndSubmitProjectGroup(ProjectGroupVo projectGroupVo) {
+        // 新增项目组信息
+        SysUser user = (SysUser) SecurityUtils.getSubject().getPrincipal();
+        projectGroupVo.setCreateTime(new Date());
+        projectGroupVo.setEnabled(Const.ENABLED_N);
+        projectGroupVo.setCreateUserId(user.getId());
+        projectGroupVo.setDelFlag(Const.DEL_FLAG_N);
+        projectGroupVo.setOwnerUserId(user.getId());
+        projectGroupVo.setCheckStatus(Const.CHECK_STATUS_NO_CHECK);
+        // 新增项目组审核信息
+        return this.baProjectGroupService.addProjectGroup(projectGroupVo);
+    }
+
+    /**
+     * @description 项目组编辑
+     *
+     * @auth admin
+     * @date 2019-11-25
+     * @param projectGroupVo
+     * @return
+     */
+    @PutMapping("/ba-project-group/edit")
+    public Result editProjectGroup(ProjectGroupVo projectGroupVo) {
+        return this.baProjectGroupService.updateProjectGroup(projectGroupVo);
+    }
+
+    /**
+     * @description 项目组编辑，并审核
+     *
+     * @auth admin
+     * @date 2019-11-25
+     * @param projectGroupVo
+     * @return
+     */
+    @PutMapping("/ba-project-group/editsubmit")
+    public Result editAndSubmitProjectGroup(ProjectGroupVo projectGroupVo) {
+        return this.baProjectGroupService.updateAndSubmitProjectGroup(projectGroupVo);
+    }
+
+    /**
+     * @description 项目组删除
+     *
+     * @auth admin
+     * @date 2019-11-26
+     * @param id
+     * @return
+     */
+    @DeleteMapping("/ba-project-group/del/{id}")
+    public Result delete(@PathVariable  Integer id) {
+        return this.baProjectGroupService.deleteProjectGroup(id);
+    }
+
+    /**
+     * @description 关联助理
+     *
+     * @auth admin
+     * @date 2019-11-26
+     * @param projectGroupVo
+     * @return
+     */
+    @PostMapping("/ba-project-group/relate-assistant")
+    public Result relateAssistant(ProjectGroupVo projectGroupVo) {
+        return this.baProjectGroupAssistantService.batchInsert(projectGroupVo.getId(), projectGroupVo.getAssistants());
+    }
+
+    /**
+     * @description 关联结算负责人
+     *
+     * @auth admin
+     * @date 2019-11-27
+     * @param projectGroupVo
+     * @return
+     */
+    @PostMapping("/ba-project-group/relate-settlement")
+    public Result relateSettlement(ProjectGroupVo projectGroupVo) {
+        return this.baProjectGroupSettlementService.batchInsert(projectGroupVo.getId(), projectGroupVo.getSettlements());
+    }
 }

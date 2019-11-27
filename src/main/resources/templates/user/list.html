@@ -47,7 +47,6 @@
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
     </script>
     <script type="text/html" id="switchStatus">
-        <!-- 这里的 checked 的状态只是演示 -->
         <input type="checkbox" name="status" value="{{d.id}}" lay-skin="switch" lay-text="启用|停用" lay-filter="status" {{ d.enabled == 'Y' ? 'checked' : '' }}>
     </script>
     <script type="text/javascript"  th:inline="none">
@@ -126,7 +125,7 @@
                       shade:0.4,
                       title: '用户停用',
                       content: '/sys-user/stop/'+id,
-                      cancel: function (index, layero) {
+                      cancel: function (index, layer) {
                           // parent.location.reload();
                           data.elem.checked = !a;
                           layui.form.render();
@@ -183,18 +182,6 @@
                   xadmin.open('编辑用户','/sys-user/edit/'+ data.id,600,550);
               }
           });
-
-        //执行一个laydate实例
-        laydate.render({
-          elem: '#start' //指定元素
-        });
-
-        //执行一个laydate实例
-        laydate.render({
-          elem: '#end' //指定元素
-        });
-
-
       });
 
        /*用户-停用*/

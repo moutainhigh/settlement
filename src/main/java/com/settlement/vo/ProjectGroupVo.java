@@ -11,9 +11,13 @@ import lombok.Data;
  */
 @Data
 public class ProjectGroupVo extends BaProjectGroup {
-    /** 数据字典名称 */
+    /** 审核状态数据字典内容 */
     private String checkStatusContent;
     /** 负责人姓名 */
     private String ownerName;
+
+    private String assistants;
+
+    private String settlements;
 
 }
