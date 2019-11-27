@@ -14,14 +14,14 @@
                             <label for="pgName" class="layui-form-label">
                                 <span class="x-red">*</span>项目组</label>
                             <div class="layui-input-inline">
-                                <input type="text" id="pgName" name="pgName" required="" lay-verify="pgName" autocomplete="off"  placeholder="请输入项目组" class="layui-input" maxlength="20">
+                                <input type="text" id="pgName" name="pgName" th:value="${pg.pgName}" required="" lay-verify="pgName" autocomplete="off"  placeholder="请输入项目组" class="layui-input" maxlength="20">
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label for="code" class="layui-form-label">
                                 <span class="x-red">*</span>项目组编号</label>
                             <div class="layui-input-inline">
-                                <input type="text" id="code" name="code" required="" lay-verify="code" autocomplete="off" placeholder="请输入项目组编号" class="layui-input" maxlength="20">
+                                <input type="text" id="code" name="code" th:value="${pg.code}" required="" lay-verify="code" autocomplete="off" placeholder="请输入项目组编号" class="layui-input" maxlength="20">
                             </div>
                             <div class="layui-input-inline">
                                 <button type="button" id="pgIsExist" lay-filter="pgIsExist" class="layui-btn layui-btn-primary layui-btn-xs">检查项目组是否可用</button>
@@ -35,29 +35,13 @@
                                 </select>
                             </div>
                        </div>
-
-                       <!-- <div class="layui-form-item">
-                            <label  class="layui-form-label">
-                                <span class="x-red">*</span>助理</label>
-                            <div class="layui-input-inline">
-                                <select name="assistant" xm-select="assistantselect" lay-filter="assistant"  lay-verify="assistant">
-                                </select>
-                            </div>
-                        </div>
-
                         <div class="layui-form-item">
-                            <label  class="layui-form-label">
-                                <span class="x-red">*</span>结算负责人</label>
-                            <div class="layui-input-inline">
-                                <select name="settlement" xm-select="settlementselect" lay-filter="settlement"  lay-verify="settlement">
-                                </select>
-                            </div>
-                        </div>-->
-
-                        <div class="layui-form-item">
-                            <label for="saveButton" class="layui-form-label"></label>
-                            <button class="layui-btn" id="saveButton" lay-filter="saveButton" lay-submit="">增加</button>
-                            <button class="layui-btn layui-btn-normal" id="submitButton" lay-filter="submitButton" lay-submit="">增加并提交</button>
+                            <label for="editButton" class="layui-form-label"></label>
+                            <input type="hidden" id="checkUserIdHidden" th:value="${pg.checkUserId}" />
+                            <input type="hidden" id="oldCode" th:value="${pg.code}" />
+                            <input type="hidden" name="id" id="id" th:value="${pg.id}" />
+                            <button class="layui-btn" id="editButton" lay-filter="editButton" lay-submit="">修改</button>
+                            <button class="layui-btn layui-btn-normal" id="editAndSubmitButton" lay-filter="editAndSubmitButton" lay-submit="">修改并提交</button>
                         </div>
                    </div>
                 </form>
@@ -66,18 +50,15 @@
         <script th:src="@{/js/formSelects-v4.js}" type="text/javascript" charset="utf-8"></script>
         <script th:src="@{/js/pg/pg.js}" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript">
-            // 客户经理下拉多选框
+            var oldCode = $("#oldCode").val();
+            // 下拉多选框赋值
+            var checkUserId = $("#checkUserIdHidden").val();
             formSelects.data('amselect', 'server', {
-              url: '/sys-user/amselect'
+                url: '/sys-user/amselect',
+                success: function(id, url, searchVal, result){
+                    formSelects.value('amselect', [checkUserId]);
+                }
             });
-            // 助理下拉框
-          /*  formSelects.data('assistantselect', 'server', {
-                url: '/sys-user/assistantselect'
-            });
-            // 结算员下拉框
-            formSelects.data('settlementselect', 'server', {
-                url: '/sys-user/settlementselect'
-            });*/
             // 表单操作
             layui.use(['form', 'layer','jquery'],
             function() {
@@ -105,40 +86,30 @@
                 });
 
                 //监听保存
-                form.on('submit(saveButton)',
+                form.on('submit(editButton)',
                     function(data) {
-                        if (checkPgIsExist($("#code").val(),layer,'submit')) {
-                            $.post('/ba-project-group/add',data.field, function(r) {
-                                layer.alert(r.msg, {
-                                        icon : r.code == 'add_200' ? 6: 5
-                                    },
-                                    function() {
-                                        //关闭当前frame
-                                        xadmin.close();
-                                        // 可以对父窗口进行刷新
-                                        xadmin.father_reload();
-                                    });
-                            });
+                        var url = '/ba-project-group/edit';
+                        if ($("#code").val().trim() != oldCode) {
+                            if (checkPgIsExist($("#code").val(), layer, 'submit')) {
+                                edit(data,layer,url);
+                            }
+                        } else {
+                            edit(data,layer,url);
                         }
                         return false;
                     });
 
                 //监听提交
-                form.on('submit(submitButton)',
+                form.on('submit(editAndSubmitButton)',
                 function(data) {
                     layer.confirm('确认提交么?提交后需要审核，项目组、项目组编号将不能编辑', function(index) {
-                        if (checkPgIsExist($("#code").val(), layer, 'submit')) {
-                            $.post('/ba-project-group/addsubmit', data.field, function (r) {
-                                layer.alert(r.msg, {
-                                        icon: r.code == 'add_200' ? 6 : 5
-                                    },
-                                    function () {
-                                        //关闭当前frame
-                                        xadmin.close();
-                                        // 可以对父窗口进行刷新
-                                        xadmin.father_reload();
-                                    });
-                            });
+                        var url = '/ba-project-group/editsubmit';
+                        if ($("#code").val().trim() != oldCode) {
+                            if (checkPgIsExist($("#code").val(), layer, 'submit')) {
+                                edit(data,layer,url);
+                            }
+                        } else {
+                            edit(data,layer,url);
                         }
                     });
                     return false;
@@ -147,11 +118,39 @@
                 // 监听检查项目组是否存在
                 $(document).on('click','#pgIsExist', function(data) {
                     var code = $("#code").val();
-                    if (code.trim() != '') {
+                    if (code.trim() != '' && oldCode != code.trim()) {
                         checkPgIsExist(code.trim(), layer,'');
                     }
                 });
             });
+
+            function edit(data, layer, url) {
+                // 处理重复提交
+                $.ajax({
+                    url: url,
+                    type:"PUT",
+                    // contentType:"application/json",//设置请求参数类型为json字符串
+                    data: data.field,
+                    // dataType:"json",
+                    beforeSend: function () {
+                        // 禁用按钮防止重复提交
+                        $(".layui-btn").attr({ disabled: "disabled" });
+
+                    },
+                    success:function(r){
+                        layer.alert(r.msg, {
+                                icon : r.code == 'edit_200' ? 6: 5
+                            },
+                            function() {
+                                //关闭当前frame
+                                xadmin.close();
+                                // 可以对父窗口进行刷新
+                                xadmin.father_reload();
+                            });
+                        $(".layui-btn").removeAttr('disabled');
+                    }
+                });
+            }
         </script>
     </body>
 </html>

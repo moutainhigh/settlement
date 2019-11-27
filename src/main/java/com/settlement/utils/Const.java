@@ -31,6 +31,16 @@ public class Const {
     public final static String MODE_UPDADTE = "update";
     /** slat */
     public final static String SALT = "12345678";
-    /** 客户经理绝色CODE:AM */
-    public final static String USER_ROLE_CODE_AM = "AM";
+    /** 客户经理角色CODE:AM */
+    public final static String ROLE_CODE_AM = "AM";
+    /** 助理角色CODE：ASSISTANT */
+    public final static String ROLE_CODE_ASSISTANT = "ASSISTANT";
+    /** 结算负责人角色CODE：SETTLEMENT */
+    public final static String ROLE_CODE_SETTLEMENT = "SETTLEMENT";
+    /** 审核状态NO_CHECK：待审核 */
+    public final static String CHECK_STATUS_NO_CHECK = "NO_CHECK";
+    /** 审核状态CHECK_PASS：审核通过*/
+    public final static String CHECK_STATUS_CHECK_PASS = "CHECK_PASS";
+    /** 审核状态CHECK_NOTPASS：审核未通过*/
+    public final static String CHECK_STATUS_CHECK_NOPASS = "CHECK_NOPASS";
 }

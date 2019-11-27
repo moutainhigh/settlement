@@ -29,8 +29,10 @@
                             </form>
                         </div>
                         <div class="layui-card-header">
-
                             <button class="layui-btn" onclick="xadmin.open('添加项目组','/ba-project-group/add',600,400)"><i class="layui-icon"></i>添加</button>
+                            <button class="layui-btn" data-type="relateAssistant"><i class="layui-icon"></i>关联助理</button>
+                            <button class="layui-btn" data-type="relateSettlement"><i class="layui-icon"></i>关联结算负责人</button>
+                            <button class="layui-btn" data-type="addEmp"><i class="layui-icon"></i>员工录入</button>
                         </div>
                         <div class="layui-card-body layui-table-body layui-table-main" >
                             <table class="layui-table layui-form" id="dataTable" lay-filter="dataTable">
@@ -49,7 +51,7 @@
     <script type="text/html" id="switchStatus">
         <input type="checkbox" name="status" value="{{d.id}}" lay-skin="switch" lay-text="启用|停用" lay-filter="status" {{ d.enabled == 'Y' ? 'checked' : '' }}>
     </script>
-    <script type="text/javascript"  th:inline="none">
+    <script type="text/javascript"  th:inline="javascript">
       layui.use(['laydate','table','form','element'], function(){
         var laydate = layui.laydate;
         var  form = layui.form;
@@ -63,7 +65,10 @@
            page: true,
            title: '项目组表',
            height: 'full-210',
-           // id: 'userData',
+         /*  done: function() {
+               $("[data-field='checkStatus']").css('display','none');
+           },*/
+           // id: 'checkStatus',
            cols: [[
                {field:'id',type:'checkbox',fixed:'left'},
                {field:'pgName',title:'项目组',align:'center',fixed:'left'},
@@ -73,7 +78,7 @@
                {field:'ownerName',title:'负责人',align:'center'},
                {field:'enabled',title:'状态',align:'center',templet: '#switchStatus', unresize: true},
                {field:'createTime',title:'创建日期',align:'center'},
-               {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:180}
+               {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:200}
            ]]
         });
           var $ = layui.$, active = {
@@ -89,20 +94,12 @@
                       }
                   }, 'data');
               },
-              resetPass: function(){ //获取选中数据
-                  var checkStatus = table.checkStatus('dataTable')
-                      ,data = checkStatus.data;
-                  if (data.length == 0) {
-                        layer.alert('请先选择一行',{icon : 5});
-                  }else if (data.length > 1) {
-                      layer.alert('不能多选啊，只能选择一行',{icon : 5});
-                  }else if(data.length == 1) {
-                      $.get('/sys-user/resetpass/'+data[0].id,null,function(r) {
-                          layer.alert(r.msg, {icon: r.code == '200'? 6:5});
-                      })
-                  }
-                  // layer.alert(JSON.stringify(data));
-              }
+              relateAssistant: function(){ //获取选中数据
+                  checkBoxCheckedOper('关联助理','/ba-project-group/relate-assistant/',table, layer, 600, 400);
+              },
+              relateSettlement: function(){ //获取选中数据
+                  checkBoxCheckedOper('关联结算负责人','/ba-project-group/relate-settlement/',table, layer, 600, 400);
+              },
           };
           $('.layui-btn').on('click', function(){
               var type = $(this).data('type');
@@ -112,47 +109,54 @@
           //监听状态操作
           form.on('switch(status)', function(data){
               // layer.tips(this.value + ' ' + this.name + '：'+ obj.elem.checked, obj.othis);
+              var passCheckStatus = [[ ${PG_CHECKSTATUS_CHECK_PASS} ]];
               var id = this.value;
               var obj = $(data.elem);
               var a = data.elem.checked;
-              if (!a) {
-                  layer.open({
-                      type: 2,
-                      area: [750+'px', 550 +'px'],
-                      fix: false, //不固定
-                      maxmin: true,
-                      shadeClose: true,
-                      shade:0.4,
-                      title: '用户停用',
-                      content: '/sys-user/stop/'+id,
-                      cancel: function (index, layero) {
-                          // parent.location.reload();
-                          data.elem.checked = !a;
-                          layui.form.render();
-                      }
-                  })
+              if (passCheckStatus == data.checkStatus) {
+                  if (!a) {
+                      layer.open({
+                          type: 2,
+                          area: [750+'px', 550 +'px'],
+                          fix: false, //不固定
+                          maxmin: true,
+                          shadeClose: true,
+                          shade:0.4,
+                          title: '项目组停用',
+                          content: '/ba-project-group/stop/'+id,
+                          cancel: function (index, layero) {
+                              // parent.location.reload();
+                              data.elem.checked = !a;
+                              layui.form.render();
+                          }
+                      })
+                  } else {
+                      layer.open({
+                          content: '确定要启用此项目组吗？'
+                          ,btn: ['确定','取消']
+                          ,yes: function(index, layer){
+                              // 发送ajax请求，更新后台
+                              data.elem.checked=a;
+                              layui.form.render();
+                              layer.close(index);
+                          }
+                          ,btn2: function(index, layer){
+                              //按钮【按钮二】的回调
+                              data.elem.checked=!a;
+                              layui.form.render();
+                              layer.close(index);
+                          }
+                          ,cancel: function(){
+                              //右上角关闭回调
+                              data.elem.checked=!a;
+                              layui.form.render();
+                          }
+                      });
+                  }
               } else {
-                  layer.open({
-                      content: '确定要启用此用户吗？'
-                      ,btn: ['确定','取消']
-                      ,yes: function(index, layero){
-                          // 发送ajax请求，更新后台
-                          data.elem.checked=a;
-                          layui.form.render();
-                          layer.close(index);
-                      }
-                      ,btn2: function(index, layero){
-                          //按钮【按钮二】的回调
-                          data.elem.checked=!a;
-                          layui.form.render();
-                          layer.close(index);
-                      }
-                      ,cancel: function(){
-                          //右上角关闭回调
-                          data.elem.checked=!a;
-                          layui.form.render();
-                      }
-                  });
+                  layer.msg("项目组只有处于【审核已通过】状态才能启用、停用",{icon:5});
+                  data.elem.checked=!a;
+                  layui.form.render();
               }
               return false;
           });
@@ -160,35 +164,33 @@
           // 监听工具栏
          table.on('tool(dataTable)', function(obj){
               var data = obj.data;
+             var noPass = [[ ${PG_CHECKSTATUS_CHECK_NOPASS} ]];
+             var checkStatus = data.checkStatus;
               if(obj.event === 'detail'){
                   layer.msg('ID：'+ data.id + ' 的查看操作');
               } else if(obj.event === 'del'){
-                  layer.confirm('真的删除【 '+ data.realName + '】么?', function(index){
-                      user_del(data.id);
-                      layer.close(index);
-                  });
+                  if (checkStatus == noPass || checkStatus == null) {
+                      layer.confirm('真的删除【 '+ data.pgName + '】么?', function(index){
+                          pg_del(data.id);
+                          layer.close(index);
+                      });
+                  } else {
+                      layer.msg("项目组处于【待审核】或者【审核已通过】状态，不能删除",{icon:5});
+                  }
               } else if(obj.event === 'edit'){
-                  xadmin.open('编辑用户','/sys-user/edit/'+ data.id,600,550);
+                  if (checkStatus == noPass || checkStatus == null) {
+                      xadmin.open('编辑项目组','/ba-project-group/edit/'+ data.id,600,400);
+                  } else {
+                      layer.msg("项目组处于【待审核】或者【审核已通过】状态，不能编辑",{icon:5});
+                  }
               }
           });
-
-        //执行一个laydate实例
-        laydate.render({
-          elem: '#start' //指定元素
-        });
-
-        //执行一个laydate实例
-        laydate.render({
-          elem: '#end' //指定元素
-        });
-
-
       });
 
-      /*用户-删除*/
-      function user_del(id){
+      /** 项目组-删除*/
+      function pg_del(id){
           $.ajax({
-              url:"/sys-user/del/" + id,
+              url:"/ba-project-group/del/" + id,
               type:"DELETE",
               contentType:"application/json",//设置请求参数类型为json字符串
               // data: {id:id},
@@ -198,6 +200,26 @@
                   location.reload();
               }
           });
+      }
+
+      /** 复选框选中操作 */
+      function checkBoxCheckedOper(title, url, table, layer,w,h) {
+          var checkStatus = table.checkStatus('dataTable')
+              ,data = checkStatus.data;
+          var passCheckStatus = [[ ${PG_CHECKSTATUS_CHECK_PASS} ]];
+          if (data.length == 0) {
+              layer.alert('请先选择一行',{icon : 5});
+          }else if (data.length > 1) {
+              layer.alert('不能多选啊，只能选择一行',{icon : 5});
+          }else if(data.length == 1) {
+              //xadmin.open(title,url + data[0].id,w,h);
+              // 项目组只有处于审核通过状态才能操作
+             if (data.checkStatus == passCheckStatus) {
+                  xadmin.open(title,url + data[0].id,w,h);
+              } else {
+                  layer.msg("项目组只有处于【审核已通过】状态才能" + title,{icon:5});
+              }
+          }
       }
     </script>
 </html>

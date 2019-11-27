@@ -18,11 +18,16 @@
 
     <select id="getProjectGroupList" resultType="com.settlement.vo.ProjectGroupVo">
         SELECT bpg.id, bpg.pg_name, bpg.code, bpg.check_status,bpg.create_time,bpg.enabled,sdd.dic_content as checkStatusContent, su.real_name as ownerName
-        FROM ba_project_group bpg, sys_data_dic sdd, sys_user su
-        WHERE bpg.owner_user_id = su.id and bpg.check_status = sdd.dic_code and bpg.del_flag = 'N'
+        FROM
+            ba_project_group bpg
+            LEFT JOIN sys_data_dic sdd ON bpg.check_status = sdd.dic_code
+            LEFT JOIN sys_user su ON bpg.owner_user_id = su.id
+        WHERE
+            bpg.del_flag = 'N'
         <if test="projectGroupCo.keyword != null">
             and CONCAT(pg_name,code) like CONCAT('%',#{projectGroupCo.keyword},'%')
         </if>
+            ORDER BY bpg.create_time desc
     </select>
 
 </mapper>

@@ -5,6 +5,7 @@ import com.settlement.co.ProjectGroupCo;
 import com.settlement.entity.BaProjectGroup;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.settlement.utils.Result;
+import com.settlement.vo.ProjectGroupVo;
 
 /**
  * <p>
@@ -19,5 +20,18 @@ public interface BaProjectGroupService extends IService<BaProjectGroup> {
     PageData getProjectGroupList(ProjectGroupCo baProjectGroupCo);
     /** 根据CODE检查项目组是否存在 */
     Result checkProjectGroupIsExist(String code);
-
+    /** 项目组新增 */
+    Result saveProjectGroup(ProjectGroupVo projectGroupVo);
+    /** 项目组新增，并审核 */
+    Result addProjectGroup(ProjectGroupVo projectGroupVo);
+    /** 项目组编辑*/
+    Result updateProjectGroup(ProjectGroupVo projectGroupVo);
+    /** 项目组编辑，并审核 */
+    Result updateAndSubmitProjectGroup(ProjectGroupVo projectGroupVo);
+    /** 项目组删除 */
+    Result deleteProjectGroup(Integer id);
+    /** 根据ID查询项目组，助理 */
+    ProjectGroupVo getProjectGroupAssistantById(Integer id);
+    /** 根据ID查询项目组，结算负责人 */
+    ProjectGroupVo getProjectGroupSettlementById(Integer id);
 }

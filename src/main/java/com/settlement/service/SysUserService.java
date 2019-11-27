@@ -39,5 +39,8 @@ public interface SysUserService extends IService<SysUser> {
     SysUserVo getUserStop(Integer id);
     /** 根据部门查询客户经理下拉列表 */
     Result getAmSelect(Map<String, Object> map);
-
+    /** 助理下拉框 */
+    Result getAssistantSelect(Map<String, Object> map);
+    /** 结算负责人下拉框 */
+    Result getSettlementSelect(Map<String, Object> map);
 }

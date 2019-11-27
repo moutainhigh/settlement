@@ -32,4 +32,29 @@
         and sr.role_code = #{amRoleCode}
     </select>
 
+    <select id="getAssistantSelect" resultType="com.settlement.entity.SysUser">
+        select
+            su.id,
+            su.real_name
+        from sys_user su, sys_user_role sur, sys_role sr
+        where
+        su.enabled = #{enabled}
+        and su.id = sur.user_id
+        and sur.role_id = sr.id
+        and su.dept_id = #{deptId}
+        and sr.role_code = #{assistantRoleCode}
+    </select>
+
+    <select id="getSettlementSelect" resultType="com.settlement.entity.SysUser">
+        select
+            su.id,
+            su.real_name
+        from sys_user su, sys_user_role sur, sys_role sr
+        where
+        su.enabled = #{enabled}
+        and su.id = sur.user_id
+        and sur.role_id = sr.id
+        and sr.role_code = #{settlementRoleCode}
+    </select>
+
 </mapper>
