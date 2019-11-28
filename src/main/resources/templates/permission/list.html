@@ -34,7 +34,7 @@
                 </div>
                     <div class="layui-col-lg8">
                         <div style="height: 700px; width:100%;overflow: auto;">
-                            <iframe th:src="@{/sys-dept/iframeContent}" id="iframe_content" name="iframe_content" frameborder="0" style="width: 100%;height: 99%;"></iframe>
+                            <iframe th:src="@{/sys-permission/iframeContent}" id="iframe_content" name="iframe_content" frameborder="0" style="width: 100%;height: 99%;"></iframe>
                         </div>
                     </div>
                 </div>
@@ -55,7 +55,7 @@
                     //skin: "layui",
                     useIframe: true,  //启用iframe
                     iframeElem: "#iframe_content",  // iframe的ID
-                    iframeUrl: "/sys-dept/iframeContent", // iframe路由到的地址
+                    iframeUrl: "/sys-permission/iframeContent", // iframe路由到的地址
                     iframeLoad: "all", // 表示点击任意节点加载iframe
                     iframeDefaultRequest: {nodeId: "id"}, // 这里就将nodeId这个参数名称改为了id这个名称
                     iframeRequest : {"mode" : "update"},
@@ -63,7 +63,7 @@
                     //dataStyle: "layuiStyle",  //使用layui风格的数据格式
                     dataFormat: "list",  //配置data的风格为list
                     //response:{message:"msg",statusCode:0 ,title: "pName" },  //修改response中返回数据的定义 ,childName: "childrens"
-                    url: "/sys-dept/dtree/pagedata",
+                    url: "/sys-permission/dtree/list/pagedata",
                     initLevel: "5"
                     // line:true,
                 });
@@ -77,14 +77,14 @@
                     } else {
                         id=param.nodeId;
                     }
-                    document.getElementById('iframe_content').src="/sys-dept/iframeContent?mode=add&id="+id;
+                    document.getElementById('iframe_content').src="/sys-permission/iframeContent?mode=add&id="+id;
                 })
                 // 点击按钮获取所有选中节点值
                 $("#edit").click(function(){
                     var param = dtree.getNowParam("demoTree"); // 获取当前选中节点
                     $.ajax({
                             type: "get",
-                            url: "/sys-dept/iframeContent",
+                            url: "/sys-permission/iframeContent",
                             data: {id: param.nodeId,mode:'edit'},
                             dataType: "json",
                             success: function (data) {
@@ -110,14 +110,14 @@
 
                             $.ajax({
                                 type:"delete",
-                                url: "/sys-dept/"+param.nodeId,
+                                url: "/sys-permission/"+param.nodeId,
                                 //data: {id: param.nodeId},
                                 //dataType: "json",
                                 success: function (r) {
                                     if(r.code=='delete_200') {
                                         layer.msg('删除成功', {icon: 6});
                                         dtree.reload("demoTree", {
-                                            url: "/sys-dept/dtree/pagedata",
+                                            url: "/sys-permission/dtree/list/pagedata",
                                             //request: {id:pid},
                                             method: "post",
                                             initLevel: "5"

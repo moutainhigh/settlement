@@ -35,6 +35,8 @@ package com.settlement.entity;
 
     private Integer chief;
 
+    private String email;
+
     private Integer parentId;
 
     private Integer sort;

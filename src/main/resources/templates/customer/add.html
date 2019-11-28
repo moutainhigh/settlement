@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+    
+    <head>
+        <th:bolck th:include="common/header :: header('添加用户')" />
+        <link rel="stylesheet" th:href="@{/css/formSelects-v4.css}" />
+    </head>
+    <body>
+        <div class="layui-fluid">
+            <div class="layui-row">
+                <form class="layui-form">
+                    <input type="hidden" name="id" th:value="${baCustomer.id}" th:if="${baCustomer!=null}" />
+                    <div class="layui-form-item">
+                        <div class="layui-form-item">
+                            <label for="dept_id" class="layui-form-label">
+                                <span class="x-red">*</span>部门名称</label>
+                            <div class="layui-input-inline">
+                                <select id="dept_id" name="dept_id" xm-select-radio xm-select="deptIdSelect" lay-filter="dept_id" xm-select-max="1" lay-verify="pid">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="customerName" class="layui-form-label">
+                                <span class="x-red">*</span>客户名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="customerName" name="customerName"  th:value="${mode.equals('update')}?${baCustomer.customerName}" required="" lay-verify="customerName" autocomplete="off"  placeholder="请输入客户名称" class="layui-input" maxlength="20">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="code" class="layui-form-label">
+                                <span class="x-red">*</span>客户编号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="code" name="code" th:value="${mode.equals('update')}?${baCustomer.code}"  required="" lay-verify="code" autocomplete="off" placeholder="请输入客户编号" class="layui-input" maxlength="20">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="chief" class="layui-form-label">
+                                <span class="x-red">*</span>负责人</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="chief" name="chief" th:value="${mode.equals('update')}?${baCustomer.chief}"  required="" lay-verify="chief" autocomplete="off" placeholder="请输入负责人" class="layui-input" maxlength="20">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="add" class="layui-form-label"></label>
+                            <button class="layui-btn" id="add" th:text="${mode.equals('add')}?'增加' : '修改'" lay-filter="add" lay-submit="">增加</button>
+                        </div>
+                   </div>
+                </form>
+            </div>
+        </div>
+        <script th:src="@{/js/formSelects-v4.js}" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" th:inline="javascript">
+            // 下拉多选框
+            var mode = [[${mode}]];
+            var pIdInit = [[${sysDataDic.pid}]];
+            if(mode=="add"){
+                formSelects.data('deptIdSelect', 'server', {
+                    url: '/ba-customer/deptIdSelect',
+                    success: function(id, url, searchVal, result){
+                        if(0==pIdInit) {
+                            formSelects.value('deptIdSelect', ['0']);
+                        } else {
+                            formSelects.value('deptIdSelect', [pIdInit]);
+                        }
+                    }
+                });
+            } else {
+                //var pIdInit = [[${sysDataDic.pid}]];
+                formSelects.data('deptIdSelect', 'server', {
+                    url: '/ba-customer/deptIdSelect',
+                    success: function(id, url, searchVal, result){
+                        if(0==pIdInit) {
+                            formSelects.value('deptIdSelect', ['0']);
+                        } else {
+                            formSelects.value('deptIdSelect', [pIdInit]);
+                        }
+                    }
+                });
+
+            }
+            // 表单操作
+            layui.use(['form', 'layer','jquery'],
+            function() {
+                $ = layui.jquery;
+                var form = layui.form,
+                layer = layui.layer;
+                form.render();
+                //自定义验证规则
+                form.verify({
+                    paramCode: function(value) {
+                        if (value.length < 1) {
+                            return '时间点参数编号至少得1个字符啊';
+                        }
+                    },
+                    paramItem: function (value) {
+                        if (value.length < 1) {
+                            return '时间点参数项至少得1个字符啊';
+                        }
+                    },
+                    paramValue: function (value) {
+                        if (!/^\d+$/.test(value.trim())) {
+                            return '时间点参数值至少1位，且只能是数字';
+                        }
+                    },
+                    sort:function (value) {
+                        if (!/^\d+$/.test(value.trim())) {
+                            return '显示顺序至少1位，且只能是数字';
+                        }
+                    }
+
+
+                });
+                //监听提交
+                form.on('submit(add)', function(data){
+                    var mode=[[${mode}]];
+
+                    if("add"==mode ) {
+                        $.post('/ba-customer/add',data.field,function (r) {
+                            layer.alert(r.msg, {
+                                    icon : r.code == 'add_200' ? 6: 5
+                                },
+                                function() {
+                                    //关闭当前frame
+                                    xadmin.close();
+                                    // 可以对父窗口进行刷新
+                                    xadmin.father_reload();
+                                });
+                        });
+                    } else if('update'==mode){
+                        $.ajax({
+                            url:"/ba-customer/update/",
+                            type:"PUT",
+                            data: data.field,
+                            success:function(r){
+                                layer.alert(r.msg, {
+                                        icon : r.code == 'edit_200' ? 6: 5
+                                    },
+                                    function() {
+                                        //关闭当前frame
+                                        xadmin.close();
+                                        // 可以对父窗口进行刷新
+                                        xadmin.father_reload();
+                                    });
+                            }
+                        });
+                    }
+                    return false;
+                });
+
+            });
+        </script>
+    </body>
+</html>

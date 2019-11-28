@@ -4,10 +4,13 @@ package com.settlement.controller;
 import com.settlement.bo.PageData;
 import com.settlement.co.FormulaParamCo;
 import com.settlement.entity.BaFormulaParam;
+import com.settlement.entity.SysUser;
 import com.settlement.service.BaFormulaParamService;
 import com.settlement.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
 
 
 /**
@@ -42,7 +45,9 @@ public class BaFormulaParamController {
      * @return
      */
     @PostMapping("/add")
-    public Result addFormulaParam(BaFormulaParam baFormulaParam){
+    public Result addFormulaParam(BaFormulaParam baFormulaParam, HttpSession session){
+        SysUser user = (SysUser)session.getAttribute("user");
+        baFormulaParam.setCreateUserId(user.getId());
         Result r = baFormulaParamService.addFormulaParam(baFormulaParam);
         return r;
     }

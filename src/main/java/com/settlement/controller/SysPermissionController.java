@@ -34,14 +34,13 @@ import java.util.*;
  * @author admin
  * @since 2019-11-07
  */
-@Controller
+@RestController
 @RequestMapping("/sys-permission")
 public class SysPermissionController {
 
     @Autowired
     private SysPermissionService sysPermissionService;
 
-    @ResponseBody
     @GetMapping("menu")
     public Result getMenuList(HttpSession session) {
         // 从session中取得当前登陆用户角色
@@ -58,7 +57,6 @@ public class SysPermissionController {
      * @param permissionCo
      * @return
      */
-    @ResponseBody
     @GetMapping("/pagedata2")
     public PageData getPermissionList(PermissionCo permissionCo) {
         IPage<SysPermission> page = new Page<>(permissionCo.getPage(),permissionCo.getLimit());
@@ -68,7 +66,10 @@ public class SysPermissionController {
         return new PageData(page.getTotal(),page.getRecords());
     }
 
-    @ResponseBody
+    /**
+     * ztree加载数据
+     * @return
+     */
     @PostMapping("/ztree/pagedata")
     public Object getPermissionTree() {
         List<SysPermissionVo> sysPermissions = sysPermissionService.getMenu();
@@ -100,7 +101,11 @@ public class SysPermissionController {
         return JSONArray.toJSON(treeDataList);
 
     }
-    @ResponseBody
+
+    /**
+     * dtree加载数据
+     * @return
+     */
     @PostMapping("/dtree/list/pagedata")
     public Object getPermissionDTreeList() {
         List<SysPermissionVo> sysPermissions = sysPermissionService.getMenu();
@@ -115,7 +120,7 @@ public class SysPermissionController {
         return josn.toJSONString();
     }
 
-    @ResponseBody
+
     @PostMapping("/dtree/pagedata")
     public Object getPermissionDTree() {
         List<SysPermissionVo> sysPermissions = sysPermissionService.getMenu();
@@ -147,7 +152,6 @@ public class SysPermissionController {
         return josn.toJSONString();
 
     }
-    @ResponseBody
     @GetMapping("/pagedata3")
     public Object getPermissionTree3() {
         List<SysPermissionVo> sysPermissions = sysPermissionService.getMenu();
@@ -172,53 +176,17 @@ public class SysPermissionController {
         System.out.println(treeDataList);
         return treeDataList;
     }
-    /**
-     * 跳转到功能添加页面
-     * @return
-     */
-    @GetMapping("/toadd")
-    public String toPermissionAdd() {
-        return  "permission/permission-add";
-    }
 
-    @GetMapping("/iframeContent")
-    public String iframeContent(@RequestParam(required =false,defaultValue = "1") String id, @RequestParam(required = false,defaultValue = "") String mode, Model model) {
-        System.out.println("id:"+id+",mode:"+mode);
-        QueryWrapper<SysPermission> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq(StringUtils.isNotBlank(id),"id",id);
-        //queryWrapper.eq("id",id);
-        SysPermission sysPermission = null;
-         if("update".equals(mode)) {
-            sysPermission=sysPermissionService.getOne(queryWrapper);
-            model.addAttribute("mode","update");
-            model.addAttribute("sysPermission",sysPermission);
-        } else if ("add".equals(mode)) {
-             sysPermission = new SysPermission();
-             if(StringUtils.isNotBlank(id)) {
-                 sysPermission.setParentId(Integer.parseInt(id));
-             } else {
-                 sysPermission.setParentId(0);
-             }
-             model.addAttribute("mode", "add");
-             model.addAttribute("sysPermission",sysPermission);
-         } else {
-            sysPermission=sysPermissionService.getOne(queryWrapper);
-            model.addAttribute("mode","default");
-            model.addAttribute("sysPermission",sysPermission);
-    }
-
-        System.out.println("sysPermission:"+sysPermission);
-        return "permission/iframeContent";
-    }
 
     /**
      * 添加
      * @param sysPermission
      * @return
      */
-    @ResponseBody
     @PostMapping("/add")
-    public Result add(SysPermission sysPermission) {
+    public Result add(SysPermission sysPermission, HttpSession session){
+        SysUser user = (SysUser)session.getAttribute("user");
+        sysPermission.setCreateUserId(user.getId());
         sysPermission.setCreateTime(new Date());
         sysPermission.setDelFlag(Const.DEL_FLAG_N);
         boolean ret =sysPermissionService.save(sysPermission);
@@ -233,17 +201,11 @@ public class SysPermissionController {
         //forward 表示转发到一个地址
     }
 
-    @GetMapping("/{id}")
-    public String toEdit(@PathVariable("id") String id,Model model) {
-
-        return "permission/iframeContent";
-    }
     /**
      * 修改
      * @param sysPermission
      * @return
      */
-    @ResponseBody
     @PostMapping("/update")
     public Result update(SysPermission sysPermission) {
         boolean ret = sysPermissionService.saveOrUpdate(sysPermission);
@@ -255,7 +217,12 @@ public class SysPermissionController {
         }
         return  r;
     }
-    @ResponseBody
+
+    /**
+     * 删除菜单
+     * @param id
+     * @return
+     */
     @DeleteMapping("/{id}")
     public Result delete(@PathVariable Integer id) {
         boolean ret = sysPermissionService.removeById(id);
@@ -268,6 +235,11 @@ public class SysPermissionController {
         return  r;
     }
 
+    /**
+     * 加载单个结点
+     * @param id
+     * @return
+     */
     @GetMapping("/loadnode")
     public Object loadnode(Integer id) {
 

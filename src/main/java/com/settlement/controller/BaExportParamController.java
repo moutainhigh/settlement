@@ -2,12 +2,15 @@ package com.settlement.controller;
 
 import com.settlement.co.ExportParamCo;
 import com.settlement.entity.BaExportParam;
+import com.settlement.entity.SysUser;
 import com.settlement.service.BaExportParamService;
 import com.settlement.vo.ExportParamVo;
 import com.settlement.utils.Result;
 import com.settlement.bo.PageData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
 
 
 /**
@@ -42,7 +45,9 @@ public class BaExportParamController {
      * @return
      */
     @PostMapping("/add")
-    public Result addExportParam(BaExportParam baExportParam){
+    public Result addExportParam(BaExportParam baExportParam, HttpSession session){
+        SysUser user = (SysUser)session.getAttribute("user");
+        baExportParam.setCreateUserId(user.getId());
         Result r = baExportParamService.addExportParam(baExportParam);
         return r;
     }

@@ -3,11 +3,14 @@ package com.settlement.controller;
 
 import com.settlement.co.TimeParamCo;
 import com.settlement.entity.BaTimeParam;
+import com.settlement.entity.SysUser;
 import com.settlement.service.BaTimeParamService;
 import com.settlement.utils.Result;
 import com.settlement.bo.PageData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
 
 /**
  * <p>
@@ -40,7 +43,9 @@ public class BaTimeParamController {
      * @return
      */
     @PostMapping("/add")
-    public Result addTimeParam(BaTimeParam baTimeParam){
+    public Result addTimeParam(BaTimeParam baTimeParam, HttpSession session){
+        SysUser user = (SysUser)session.getAttribute("user");
+        baTimeParam.setCreateUserId(user.getId());
         Result r = baTimeParamService.addTimeParam(baTimeParam);
         return r;
     }
