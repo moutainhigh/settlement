@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+    
+    <head>
+        <th:bolck th:include="common/header :: header('添加用户')" />
+        <link rel="stylesheet" th:href="@{/css/formSelects-v4.css}" />
+    </head>
+    <body>
+        <div class="layui-fluid">
+            <div class="layui-row">
+                <form class="layui-form">
+                    <input type="hidden" name="id" th:value="${baTimeParam.id}" th:if="${baTimeParam!=null}" />
+                    <div class="layui-form-item">
+                        <div class="layui-form-item">
+                            <label for="paramCode" class="layui-form-label">
+                                <span class="x-red">*</span>时间点参数编号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="paramCode" name="paramCode" th:readonly="${mode.equals('update')}?true" th:value="${mode.equals('update')}?${baTimeParam.paramCode}" required="" lay-verify="paramCode" autocomplete="off"  placeholder="请输入时间点参数编号" class="layui-input" maxlength="20">
+                            </div>
+                            <div class="layui-input-inline">
+                                <button type="button" id="paramCodeIsExist" th:if="${mode.equals('add')}" lay-filter="paramCodeIsExist" class="layui-btn layui-btn-primary layui-btn-xs">检查时间点参数编号是否可用</button>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="paramItem" class="layui-form-label">
+                                <span class="x-red">*</span>时间点参数项</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="paramItem" name="paramItem" th:value="${mode.equals('update')}?${baTimeParam.paramItem}"  required="" lay-verify="paramItem" autocomplete="off" placeholder="请输入时间点参数项内容" class="layui-input" maxlength="20">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="paramValue" class="layui-form-label">
+                                <span class="x-red">*</span>时间点参值</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="paramValue" name="paramValue" th:value="${mode.equals('update')}?${baTimeParam.paramValue}"  required="" lay-verify="paramValue" autocomplete="off" placeholder="请输入时间点参数值内容" class="layui-input" maxlength="20">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="add" class="layui-form-label"></label>
+                            <button class="layui-btn" id="add" th:text="${mode.equals('add')}?'增加' : '修改'" lay-filter="add" lay-submit="">增加</button>
+                        </div>
+                   </div>
+                </form>
+            </div>
+        </div>
+        <script type="text/javascript" th:inline="javascript">
+
+            // 表单操作
+            layui.use(['form', 'layer','jquery'],
+            function() {
+                $ = layui.jquery;
+                var form = layui.form,
+                layer = layui.layer;
+                form.render();
+                //自定义验证规则
+                form.verify({
+                    paramCode: function(value) {
+                        if (value.length < 1) {
+                            return '时间点参数编号至少得1个字符啊';
+                        }
+                    },
+                    paramItem: function (value) {
+                        if (value.length < 1) {
+                            return '时间点参数项至少得1个字符啊';
+                        }
+                    },
+                    paramValue: function (value) {
+                        if (!/^\d+$/.test(value.trim())) {
+                            return '时间点参数值至少1位，且只能是数字';
+                        }
+                    },
+                    sort:function (value) {
+                        if (!/^\d+$/.test(value.trim())) {
+                            return '显示顺序至少1位，且只能是数字';
+                        }
+                    }
+
+
+                });
+
+                $('#paramCodeIsExist').click(function () {
+                        var paramCode = $('#paramCode').val();
+                        if(paramCode.trim().length==0) {
+                            layer.msg('时间点参数编号不能为空');
+                            return false;
+                        }
+                        checkParamCodeIsExist(paramCode,layer,'');
+                    }
+                );
+                //监听提交
+                form.on('submit(add)', function(data){
+                    var mode=[[${mode}]];
+
+                    if("add"==mode && checkParamCodeIsExist($('#paramCode').val(),layer,'')) {
+                        $.post('/ba-time-param/add',data.field,function (r) {
+                            layer.alert(r.msg, {
+                                    icon : r.code == 'add_200' ? 6: 5
+                                },
+                                function() {
+                                    //关闭当前frame
+                                    xadmin.close();
+                                    // 可以对父窗口进行刷新
+                                    xadmin.father_reload();
+                                });
+                        });
+                    } else if('update'==mode){
+                        $.ajax({
+                            url:"/ba-time-param/update/",
+                            type:"PUT",
+                            data: data.field,
+                            success:function(r){
+                                layer.alert(r.msg, {
+                                        icon : r.code == 'edit_200' ? 6: 5
+                                    },
+                                    function() {
+                                        //关闭当前frame
+                                        xadmin.close();
+                                        // 可以对父窗口进行刷新
+                                        xadmin.father_reload();
+                                    });
+                            }
+                        });
+                    }
+                    return false;
+                });
+
+            });
+            // 检查邮箱是否存在
+            function checkParamCodeIsExist(paramCode, layer,mode) {
+                var flag = true;
+                $.ajaxSettings.async = false;
+                $.get('/ba-time-param/isexist/' + paramCode,null, function(r) {
+                    if (r.code == 1)  {
+                        flag = false;
+                        layer.alert(r.msg, {icon: 5});
+                    } else if (mode != 'submit' && r.code == 0) {
+                        layer.alert(r.msg, {icon: 6});
+                    }
+                });
+                $.ajaxSettings.async = true;
+                return flag;
+            }
+        </script>
+    </body>
+</html>
