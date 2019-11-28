@@ -44,6 +44,12 @@ public class HomeController {
     private SysPermissionService sysPermissionService;
     @Autowired
     private BaProjectGroupService baProjectGroupService;
+    @Autowired
+    private BaTimeParamService baTimeParamService;
+    @Autowired
+    private BaExportParamService baExportParamService;
+    @Autowired
+    private BaFormulaParamService baFormulaParamService;
 
     @GetMapping({"/","/login"})
     public String toLogin() {
@@ -130,7 +136,7 @@ public class HomeController {
 
     @GetMapping("/sys-role/list")
     public String toRolePageList() {
-        return "role/role-list";
+        return "role/list";
     }
 
     /**
@@ -150,20 +156,20 @@ public class HomeController {
             model.addAttribute("sysRole",sysRole);
             model.addAttribute("mode",Const.MODE_UPDADTE);
         }
-        return "role/role-add";
+        return "role/add";
     }
 
     @GetMapping("/sys-permission/list")
     public String toPermissionList() {
         //public String toPermissionList(@RequestParam(defaultValue = "update") String mode, Model model) {
         //model.addAttribute("mode",mode);
-        return "permission/permission-list";
+        return "permission/list";
     }
     @GetMapping("/sys-dept/list")
     public String toDeptList() {
         //public String toPermissionList(@RequestParam(defaultValue = "update") String mode, Model model) {
         //model.addAttribute("mode",mode);
-        return "dept/dept-list";
+        return "dept/list";
     }
 
 /////////////////////////////////////////////////////////////////////////////////   用户跳转页面 end //////////////////////////////////////////////////////////////
@@ -275,5 +281,82 @@ public class HomeController {
     }
     /////////////////////////////////////////////////////////////  项目组跳转end  ///////////////////////////////////////////////////////////////////
 
+    /**
+     * 跳转时间点参数页面
+     * @return
+     */
+    @GetMapping("/ba-time-param/list")
+    public String toTimeParam(){
+        return "timeparam/list";
+    }
+
+    /**
+     * 跳转角色添加页面
+     * @return
+     */
+    @GetMapping("/ba-time-param/toAddorUpdate/{mode}/{id}")
+    public String toTimeParamAddOrUpdate(@PathVariable String mode,@PathVariable(required = false) Integer id,Model model) {
+        if(Const.MODE_ADD.equals(mode)) {
+            model.addAttribute("mode",Const.MODE_ADD);
+        } else if(Const.MODE_UPDADTE.equals(mode)){
+            BaTimeParam baTimeParam = baTimeParamService.getById(id);
+            model.addAttribute("baTimeParam",baTimeParam);
+            model.addAttribute("mode",Const.MODE_UPDADTE);
+        }
+        return "timeparam/add";
+    }
+
+    /**
+     * 跳转导出参数页面
+     * @return
+     */
+    @GetMapping("/ba-export-param/list")
+    public String toExportParam(){
+        return "exportparam/list";
+    }
+
+
+    /**
+     * 跳转角色添加页面
+     * @return
+     */
+    @GetMapping("/ba-export-param/toAddorUpdate/{mode}/{id}")
+    public String toExportParamAddOrUpdate(@PathVariable String mode,@PathVariable(required = false) Integer id,Model model) {
+        if(Const.MODE_ADD.equals(mode)) {
+            model.addAttribute("mode",Const.MODE_ADD);
+        } else if(Const.MODE_UPDADTE.equals(mode)){
+            BaExportParam baExportParam = baExportParamService.getById(id);
+            model.addAttribute("baExportParam",baExportParam);
+            model.addAttribute("mode",Const.MODE_UPDADTE);
+        }
+        return "exportparam/add";
+    }
+
+
+    /**
+     * 跳转结算公式参数页面
+     * @return
+     */
+    @GetMapping("/ba-formula-param/list")
+    public String toFormulaParam(){
+        return "formulaparam/list";
+    }
+
+
+    /**
+     * 跳转角色添加页面
+     * @return
+     */
+    @GetMapping("/ba-formula-param/toAddorUpdate/{mode}/{id}")
+    public String toFormulaParamAddOrUpdate(@PathVariable String mode,@PathVariable(required = false) Integer id,Model model) {
+        if(Const.MODE_ADD.equals(mode)) {
+            model.addAttribute("mode",Const.MODE_ADD);
+        } else if(Const.MODE_UPDADTE.equals(mode)){
+           BaFormulaParam baFormulaParam = baFormulaParamService.getById(id);
+            model.addAttribute("baFormulaParam",baFormulaParam);
+            model.addAttribute("mode",Const.MODE_UPDADTE);
+        }
+        return "formulaparam/add";
+    }
 }
 
