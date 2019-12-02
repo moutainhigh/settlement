@@ -12,7 +12,7 @@ import java.util.List;
  * 部门表 服务类
  * </p>
  *
- * @author admin
+ * @author kun
  * @since 2019-11-07
  */
 public interface SysDeptService extends IService<SysDept> {
@@ -21,9 +21,9 @@ public interface SysDeptService extends IService<SysDept> {
     /**加载部门树列表**/
     List<SysDeptVo>  getDeptTreeList() ;
     /**添加 **/
-    Result add(SysDept sysDept);
+    Result add(SysDeptVo sysDeptVo);
     /**修改**/
-    Result update(SysDept sysDept);
+    Result update(SysDeptVo sysDeptVo);
     /**删除 **/
     Result delete(Integer id);
     /**启用状态 **/

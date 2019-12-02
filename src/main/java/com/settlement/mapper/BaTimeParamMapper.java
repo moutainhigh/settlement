@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * 时间点参数表 Mapper 接口
  * </p>
  *
- * @author admin
+ * @author kun
  * @since 2019-11-27
  */
 public interface BaTimeParamMapper extends BaseMapper<BaTimeParam> {

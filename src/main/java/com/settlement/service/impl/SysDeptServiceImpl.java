@@ -3,7 +3,12 @@ package com.settlement.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.settlement.entity.SysDept;
+import com.settlement.entity.SysDeptRole;
+import com.settlement.entity.SysRole;
 import com.settlement.mapper.SysDeptMapper;
+import com.settlement.mapper.SysDeptRoleMapper;
+import com.settlement.mapper.SysRoleMapper;
+import com.settlement.service.SysDeptRoleService;
 import com.settlement.service.SysDeptService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.settlement.utils.Const;
@@ -11,7 +16,10 @@ import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
 import com.settlement.vo.SelectVo;
 import com.settlement.vo.SysDeptVo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,11 +30,15 @@ import java.util.List;
  * 部门表 服务实现类
  * </p>
  *
- * @author admin
+ * @author kun
  * @since 2019-11-07
  */
 @Service
+@Transactional
 public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> implements SysDeptService {
+
+    @Autowired
+    private SysDeptRoleService sysDeptRoleService;
 
     @Override
     public Result getDeptSelect() {
@@ -85,39 +97,76 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     }
     /**
      * 添加
-     * @param sysDept
+     * @param sysDeptVo
      * @return
      */
     @Override
-    public Result add(SysDept sysDept) {
+    public Result add(SysDeptVo sysDeptVo) {
         Result r =  new Result(HttpResultEnum.ADD_CODE_500.getCode(),HttpResultEnum.ADD_CODE_500.getMessage());
-        sysDept.setDelFlag(Const.DEL_FLAG_N);
-        sysDept.setEnabled(Const.ENABLED_Y);
-        sysDept.setCreateTime(new Date());
-        Integer ret = this.baseMapper.insert(sysDept);
-        if(ret!=null && ret>0) {
-            r.setCode(HttpResultEnum.ADD_CODE_200.getCode());
-            r.setMsg(HttpResultEnum.ADD_CODE_200.getMessage());
+        try{
+            SysDept sysDept = new SysDept();
+            sysDept.setDeptCode(sysDeptVo.getDeptCode());
+            sysDept.setDeptName(sysDeptVo.getDeptName());
+            sysDept.setChief(sysDeptVo.getChief());
+            sysDept.setEmail(sysDeptVo.getEmail());
+            sysDept.setParentId(sysDeptVo.getParentId());
+            sysDept.setSort(sysDeptVo.getSort());
+            sysDept.setEnabled(Const.ENABLED_Y);
+            sysDept.setDelFlag(Const.DEL_FLAG_N);
+            sysDept.setRemark(sysDeptVo.getRemark());
+            sysDept.setCreateTime(new Date());
+            Integer ret = this.baseMapper.insert(sysDept);
+            if(ret!=null && ret>0) {
+                sysDeptVo.setId(sysDept.getId());
+                Result r1=sysDeptRoleService.add(sysDeptVo);
+                if(r1.getCode().equals(HttpResultEnum.ADD_CODE_200.getCode())) {
+                    r.setCode(HttpResultEnum.ADD_CODE_200.getCode());
+                    r.setMsg(HttpResultEnum.ADD_CODE_200.getMessage());
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
+
         return  r;
 
     }
 
     /**
      * 修改
-     * @param sysDept
+     * @param sysDeptVo
      * @return
      */
     @Override
-    public Result update(SysDept sysDept) {
+    public Result update(SysDeptVo sysDeptVo) {
         Result r = new Result(HttpResultEnum.EDIT_CODE_500.getCode(),HttpResultEnum.EDIT_CODE_500.getMessage());
-        UpdateWrapper<SysDept> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("id",sysDept.getId());
-        Integer ret=this.baseMapper.update(sysDept,updateWrapper);
-        if(ret!=null && ret>0) {
-            r.setCode(HttpResultEnum.EDIT_CODE_200.getCode());
-            r.setMsg(HttpResultEnum.EDIT_CODE_200.getMessage());
+        try{
+            SysDept sysDept = new SysDept();
+            sysDept.setId(sysDeptVo.getId());
+            sysDept.setDeptCode(sysDeptVo.getDeptCode());
+            sysDept.setDeptName(sysDeptVo.getDeptName());
+            sysDept.setChief(sysDeptVo.getChief());
+            sysDept.setEmail(sysDeptVo.getEmail());
+            sysDept.setParentId(sysDeptVo.getParentId());
+            sysDept.setSort(sysDeptVo.getSort());
+            sysDept.setRemark(sysDeptVo.getRemark());
+            UpdateWrapper<SysDept> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.eq("id",sysDept.getId());
+            Integer ret=this.baseMapper.update(sysDept,updateWrapper);
+            if(ret!=null && ret>0) {
+                Result r1 = sysDeptRoleService.update(sysDeptVo);
+                if(r1.getCode().equals(HttpResultEnum.EDIT_CODE_200.getCode())) {
+                    r.setCode(HttpResultEnum.EDIT_CODE_200.getCode());
+                    r.setMsg(HttpResultEnum.EDIT_CODE_200.getMessage());
+                }
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
+
         return r;
     }
 
@@ -136,12 +185,15 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
             SysDept sysDept = this.baseMapper.selectById(id);
             Integer ret=this.baseMapper.update(sysDept,updateWrapper);
             if(ret!=null && ret>0) {
-                r.setCode(HttpResultEnum.DEL_CODE_200.getCode());
-                r.setMsg(HttpResultEnum.DEL_CODE_200.getMessage());
+                Result r1 = sysDeptRoleService.delete(id);
+                if(r1.getCode().equals(HttpResultEnum.DEL_CODE_200.getCode())) {
+                    r.setCode(HttpResultEnum.DEL_CODE_200.getCode());
+                    r.setMsg(HttpResultEnum.DEL_CODE_200.getMessage());
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
-
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         return r;
     }

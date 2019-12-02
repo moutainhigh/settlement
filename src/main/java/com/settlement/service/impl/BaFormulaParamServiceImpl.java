@@ -14,6 +14,8 @@ import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.Date;
 
@@ -23,10 +25,11 @@ import java.util.Date;
  * 结算公式参数表 服务实现类
  * </p>
  *
- * @author admin
+ * @author kun
  * @since 2019-11-28
  */
 @Service
+@Transactional
 public class BaFormulaParamServiceImpl extends ServiceImpl<BaFormulaParamMapper, BaFormulaParam> implements BaFormulaParamService {
 
     /**
@@ -56,10 +59,15 @@ public class BaFormulaParamServiceImpl extends ServiceImpl<BaFormulaParamMapper,
         baFormulaParam.setDelFlag(Const.DEL_FLAG_N);
         baFormulaParam.setEnabled(Const.ENABLED_Y);
         baFormulaParam.setCreateTime(new Date());
-        Integer ret = this.baseMapper.insert(baFormulaParam);
-        if(ret!=null && ret>0) {
-            r.setCode(HttpResultEnum.ADD_CODE_200.getCode());
-            r.setMsg(HttpResultEnum.ADD_CODE_200.getMessage());
+        try {
+            Integer ret = this.baseMapper.insert(baFormulaParam);
+            if (ret != null && ret > 0) {
+                r.setCode(HttpResultEnum.ADD_CODE_200.getCode());
+                r.setMsg(HttpResultEnum.ADD_CODE_200.getMessage());
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         return  r;
 
@@ -75,10 +83,15 @@ public class BaFormulaParamServiceImpl extends ServiceImpl<BaFormulaParamMapper,
         Result r = new Result(HttpResultEnum.EDIT_CODE_500.getCode(),HttpResultEnum.EDIT_CODE_500.getMessage());
         UpdateWrapper<BaFormulaParam> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id",baFormulaParam.getId());
-        Integer ret=this.baseMapper.update(baFormulaParam,updateWrapper);
-        if(ret!=null && ret>0) {
-            r.setCode(HttpResultEnum.EDIT_CODE_200.getCode());
-            r.setMsg(HttpResultEnum.EDIT_CODE_200.getMessage());
+        try {
+            Integer ret = this.baseMapper.update(baFormulaParam, updateWrapper);
+            if (ret != null && ret > 0) {
+                r.setCode(HttpResultEnum.EDIT_CODE_200.getCode());
+                r.setMsg(HttpResultEnum.EDIT_CODE_200.getMessage());
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         return r;
     }
@@ -104,7 +117,7 @@ public class BaFormulaParamServiceImpl extends ServiceImpl<BaFormulaParamMapper,
             }
         } catch (Exception e) {
             e.printStackTrace();
-
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         return r;
     }

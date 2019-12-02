@@ -16,6 +16,8 @@ import com.settlement.utils.Result;
 import com.settlement.vo.SysRoleVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.awt.geom.QuadCurve2D;
 import java.util.Date;
@@ -26,10 +28,11 @@ import java.util.List;
  * 角色表 服务实现类
  * </p>
  *
- * @author admin
+ * @author kun
  * @since 2019-11-07
  */
 @Service
+@Transactional
 public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> implements SysRoleService {
     /**
      * 加载显示角色列表
@@ -44,6 +47,35 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         queryWrapper.eq("del_flag",Const.DEL_FLAG_N);
         this.baseMapper.selectPage(page,queryWrapper);
         return new PageData(page.getTotal(),page.getRecords());
+    }
+
+    /**
+     * 所有的角色
+     * @return
+     */
+    @Override
+    public List<SysRoleVo> getRoleVo() {
+        return this.baseMapper.getRoleVo();
+    }
+
+    /**
+     * 根据部门id获得对应的选中的角色状态
+     * @param deptId
+     * @return
+     */
+    @Override
+    public List<SysRoleVo> getRoleVoByDeptId(Integer deptId) {
+        List<SysRoleVo> sysRoleVos = this.baseMapper.getRoleVo();
+        List<SysRoleVo> sysRoleCheckedVos = this.baseMapper.getRoleVoByDeptId(deptId);
+        for(SysRoleVo sysCheckedRoleVo:sysRoleCheckedVos) {
+            for(SysRoleVo sysRoleVo:sysRoleVos) {
+                if(sysCheckedRoleVo.getId().equals(sysRoleVo.getId())){
+                    sysRoleVo.setChecked(true);
+                    break;
+                }
+            }
+        }
+        return sysRoleVos;
     }
 
     /**
@@ -79,11 +111,16 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         sysRole.setCreateUserId(sysRoleVo.getCreateUserId());
         sysRole.setCreateTime(new Date());
         sysRole.setDelFlag(Const.DEL_FLAG_N);
-        Integer ret = this.baseMapper.insert(sysRole);
-        if(ret!=null & ret>0) {
-            r.setCode(HttpResultEnum.ADD_CODE_200.getCode());
-            r.setMsg(HttpResultEnum.ADD_CODE_200.getMessage());
-            r.setData(sysRole);
+        try {
+            Integer ret = this.baseMapper.insert(sysRole);
+            if (ret != null & ret > 0) {
+                r.setCode(HttpResultEnum.ADD_CODE_200.getCode());
+                r.setMsg(HttpResultEnum.ADD_CODE_200.getMessage());
+                r.setData(sysRole);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         return  r;
     }
@@ -104,10 +141,15 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         sysRole.setDelFlag(Const.DEL_FLAG_N);
         UpdateWrapper<SysRole> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id",sysRoleVo.getId());
-        Integer ret=this.baseMapper.update(sysRole,updateWrapper);
-        if(ret!=null && ret>0) {
-            r.setCode(HttpResultEnum.EDIT_CODE_200.getCode());
-            r.setMsg(HttpResultEnum.EDIT_CODE_200.getMessage());
+        try {
+            Integer ret = this.baseMapper.update(sysRole, updateWrapper);
+            if (ret != null && ret > 0) {
+                r.setCode(HttpResultEnum.EDIT_CODE_200.getCode());
+                r.setMsg(HttpResultEnum.EDIT_CODE_200.getMessage());
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         return r;
     }
@@ -120,14 +162,19 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Override
     public Result deleteRole(Integer id) {
         Result r = new Result(HttpResultEnum.DEL_CODE_500.getCode(),HttpResultEnum.DEL_CODE_500.getMessage());
-        UpdateWrapper<SysRole> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.set("del_flag",Const.DEL_FLAG_D);
-        updateWrapper.eq("id",id);
-        SysRole sysRole = this.baseMapper.selectById(id);
-        Integer ret = this.baseMapper.update(sysRole,updateWrapper);
-        if(ret!=null && ret>0) {
-            r.setCode(HttpResultEnum.DEL_CODE_200.getCode());
-            r.setMsg(HttpResultEnum.DEL_CODE_200.getMessage());
+        try {
+            UpdateWrapper<SysRole> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.set("del_flag", Const.DEL_FLAG_D);
+            updateWrapper.eq("id", id);
+            SysRole sysRole = this.baseMapper.selectById(id);
+            Integer ret = this.baseMapper.update(sysRole, updateWrapper);
+            if (ret != null && ret > 0) {
+                r.setCode(HttpResultEnum.DEL_CODE_200.getCode());
+                r.setMsg(HttpResultEnum.DEL_CODE_200.getMessage());
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         return r;
     }

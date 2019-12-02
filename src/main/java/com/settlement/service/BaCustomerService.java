@@ -12,7 +12,7 @@ import com.settlement.vo.BaCustomerVo;
  * 客户表 服务类
  * </p>
  *
- * @author admin
+ * @author kun
  * @since 2019-11-28
  */
 public interface BaCustomerService extends IService<BaCustomer> {
@@ -28,5 +28,6 @@ public interface BaCustomerService extends IService<BaCustomer> {
     Result updateEnableStart(Integer id);
     /**停用状态 **/
     Result updateEnableStop(Integer id);
-
+    /**根据id查询得到 BaCustomerVo**/
+    BaCustomerVo getBaCustomerVoById(Integer id);
 }

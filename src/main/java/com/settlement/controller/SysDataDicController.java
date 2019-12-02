@@ -30,7 +30,7 @@ import java.util.Date;
  * 数据字典表 前端控制器
  * </p>
  *
- * @author admin
+ * @author kun
  * @since 2019-11-19
  */
 @RestController

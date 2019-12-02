@@ -89,7 +89,7 @@
                 $('#paramCodeIsExist').click(function () {
                         var paramCode = $('#paramCode').val();
                         if(paramCode.trim().length==0) {
-                            layer.msg('参数编号不能为空');
+                            layer.msg('公式参数编号内容至少得1个字符啊',{icon:5});
                             return false;
                         }
                         checkParamCodeIsExist(paramCode,layer,'');
@@ -99,7 +99,7 @@
                 form.on('submit(add)', function(data){
                     var mode=[[${mode}]];
 
-                    if("add"==mode && checkParamCodeIsExist($('#paramCode').val(),layer,'')) {
+                    if("add"==mode && checkParamCodeIsExist($('#paramCode').val(),layer,'submit')) {
                         $.post('/ba-formula-param/add',data.field,function (r) {
                             layer.alert(r.msg, {
                                     icon : r.code == 'add_200' ? 6: 5

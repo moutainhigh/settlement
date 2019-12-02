@@ -15,6 +15,7 @@ import com.settlement.utils.Result;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.Date;
 
@@ -24,7 +25,7 @@ import java.util.Date;
  * 导出参数表 服务实现类
  * </p>
  *
- * @author admin
+ * @author kun
  * @since 2019-11-27
  */
 @Service
@@ -56,10 +57,15 @@ public class BaExportParamServiceImpl extends ServiceImpl<BaExportParamMapper, B
         baExportParam.setDelFlag(Const.DEL_FLAG_N);
         baExportParam.setEnabled(Const.ENABLED_Y);
         baExportParam.setCreateTime(new Date());
-        Integer ret = this.baseMapper.insert(baExportParam);
-        if(ret!=null && ret>0) {
-            r.setCode(HttpResultEnum.ADD_CODE_200.getCode());
-            r.setMsg(HttpResultEnum.ADD_CODE_200.getMessage());
+        try {
+            Integer ret = this.baseMapper.insert(baExportParam);
+            if (ret != null && ret > 0) {
+                r.setCode(HttpResultEnum.ADD_CODE_200.getCode());
+                r.setMsg(HttpResultEnum.ADD_CODE_200.getMessage());
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         return  r;
 
@@ -75,10 +81,15 @@ public class BaExportParamServiceImpl extends ServiceImpl<BaExportParamMapper, B
         Result r = new Result(HttpResultEnum.EDIT_CODE_500.getCode(),HttpResultEnum.EDIT_CODE_500.getMessage());
         UpdateWrapper<BaExportParam> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id",baExportParam.getId());
-        Integer ret=this.baseMapper.update(baExportParam,updateWrapper);
-        if(ret!=null && ret>0) {
-            r.setCode(HttpResultEnum.EDIT_CODE_200.getCode());
-            r.setMsg(HttpResultEnum.EDIT_CODE_200.getMessage());
+        try {
+            Integer ret = this.baseMapper.update(baExportParam, updateWrapper);
+            if (ret != null && ret > 0) {
+                r.setCode(HttpResultEnum.EDIT_CODE_200.getCode());
+                r.setMsg(HttpResultEnum.EDIT_CODE_200.getMessage());
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         return r;
     }
@@ -104,7 +115,7 @@ public class BaExportParamServiceImpl extends ServiceImpl<BaExportParamMapper, B
             }
         } catch (Exception e) {
             e.printStackTrace();
-
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         return r;
     }

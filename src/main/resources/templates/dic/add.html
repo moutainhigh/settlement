@@ -94,7 +94,7 @@
                 form.verify({
                     dicCode: function(value) {
                         if (value.length < 1) {
-                            return '数据字典编码至少得1个字符啊';
+                            return '数据字典编码至少得1个字符';
                         }
                     },
                     sort:function (value) {
@@ -113,7 +113,7 @@
                 $('#dicCodeIsExist').click(function () {
                         var dicCode = $('#dicCode').val();
                         if(dicCode.trim().length==0) {
-                            layer.msg('数据字典编码不能为空');
+                            layer.msg('数据字典编码至少得1个字符',{icon:5});
                             return false;
                         }
                         checkDicCodeIsExist(dicCode,layer,'');
@@ -137,7 +137,7 @@
                 form.on('submit(add)', function(data){
                     var mode=[[${mode}]];
 
-                    if("add"==mode && checkDicCodeIsExist($('#dicCode').val(),layer,'')) {
+                    if("add"==mode && checkDicCodeIsExist($('#dicCode').val(),layer,'submit')) {
                         $.post('/sys-data-dic/add',data.field,function (r) {
                             layer.alert(r.msg, {
                                     icon : r.code == 'add_200' ? 6: 5

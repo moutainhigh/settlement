@@ -17,7 +17,7 @@ package com.settlement.entity;
     * 功能菜单表
     * </p>
 *
-* @author admin
+* @author kun
 * @since 2019-11-07
 */
     @Data

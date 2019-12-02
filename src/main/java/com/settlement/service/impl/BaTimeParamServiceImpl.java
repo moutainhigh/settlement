@@ -14,6 +14,8 @@ import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.Date;
 
@@ -22,10 +24,11 @@ import java.util.Date;
  * 时间点参数表 服务实现类
  * </p>
  *
- * @author admin
+ * @author kun
  * @since 2019-11-27
  */
 @Service
+@Transactional
 public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTimeParam> implements BaTimeParamService {
     /**
      * 加载列表页面
@@ -54,10 +57,15 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
         baTimeParam.setDelFlag(Const.DEL_FLAG_N);
         baTimeParam.setEnabled(Const.ENABLED_Y);
         baTimeParam.setCreateTime(new Date());
-        Integer ret = this.baseMapper.insert(baTimeParam);
-        if(ret!=null && ret>0) {
-            r.setCode(HttpResultEnum.ADD_CODE_200.getCode());
-            r.setMsg(HttpResultEnum.ADD_CODE_200.getMessage());
+        try {
+            Integer ret = this.baseMapper.insert(baTimeParam);
+            if (ret != null && ret > 0) {
+                r.setCode(HttpResultEnum.ADD_CODE_200.getCode());
+                r.setMsg(HttpResultEnum.ADD_CODE_200.getMessage());
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         return  r;
     }
@@ -72,10 +80,15 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
         Result r = new Result(HttpResultEnum.EDIT_CODE_500.getCode(),HttpResultEnum.EDIT_CODE_500.getMessage());
         UpdateWrapper<BaTimeParam> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id",baTimeParam.getId());
-        Integer ret=this.baseMapper.update(baTimeParam,updateWrapper);
-        if(ret!=null && ret>0) {
-            r.setCode(HttpResultEnum.EDIT_CODE_200.getCode());
-            r.setMsg(HttpResultEnum.EDIT_CODE_200.getMessage());
+        try {
+            Integer ret = this.baseMapper.update(baTimeParam, updateWrapper);
+            if (ret != null && ret > 0) {
+                r.setCode(HttpResultEnum.EDIT_CODE_200.getCode());
+                r.setMsg(HttpResultEnum.EDIT_CODE_200.getMessage());
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         return r;
     }
@@ -101,7 +114,7 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
             }
         } catch (Exception e) {
             e.printStackTrace();
-
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         return r;
     }

@@ -74,7 +74,7 @@
                 $('#colValueIsExist').click(function () {
                         var colValue= $('#colValue').val();
                         if(colValue.trim().length==0) {
-                            layer.msg('导出参数字段值不能为空');
+                            layer.msg('导出参数名称至少得1个字符啊',{icon:5});
                             return false;
                         }
                         checkColValueIsExist(colValue,layer,'');
@@ -84,7 +84,7 @@
                 form.on('submit(add)', function(data){
                     var mode=[[${mode}]];
 
-                    if("add"==mode && checkColValueIsExist($('#colValue').val(),layer,'')) {
+                    if("add"==mode && checkColValueIsExist($('#colValue').val(),layer,'submit')) {
                         $.post('/ba-export-param/add',data.field,function (r) {
                             layer.alert(r.msg, {
                                     icon : r.code == 'add_200' ? 6: 5

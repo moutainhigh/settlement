@@ -31,7 +31,7 @@ import java.util.*;
  * @desciption 功能菜单表 前端控制器
  * </p>
  *
- * @author admin
+ * @author kun
  * @since 2019-11-07
  */
 @RestController
@@ -187,16 +187,7 @@ public class SysPermissionController {
     public Result add(SysPermission sysPermission, HttpSession session){
         SysUser user = (SysUser)session.getAttribute("user");
         sysPermission.setCreateUserId(user.getId());
-        sysPermission.setCreateTime(new Date());
-        sysPermission.setDelFlag(Const.DEL_FLAG_N);
-        boolean ret =sysPermissionService.save(sysPermission);
-        Result r = null;
-        if(ret) {
-            r = new Result(HttpResultEnum.ADD_CODE_200.getCode(),HttpResultEnum.ADD_CODE_200.getMessage());
-        } else {
-            r = new Result(HttpResultEnum.ADD_CODE_500.getCode(),HttpResultEnum.ADD_CODE_500.getMessage());
-        }
-        return  r;
+        return sysPermissionService.add(sysPermission);
         //redirect:表示重定向到一个地址 redirect:/iframeContent
         //forward 表示转发到一个地址
     }
@@ -208,14 +199,7 @@ public class SysPermissionController {
      */
     @PostMapping("/update")
     public Result update(SysPermission sysPermission) {
-        boolean ret = sysPermissionService.saveOrUpdate(sysPermission);
-        Result r = null ;
-        if(ret) {
-            r = new Result(HttpResultEnum.EDIT_CODE_200.getCode(),HttpResultEnum.EDIT_CODE_200.getMessage());
-        } else  {
-            r = new Result(HttpResultEnum.EDIT_CODE_500.getCode(),HttpResultEnum.EDIT_CODE_500.getMessage());
-        }
-        return  r;
+        return  sysPermissionService.update(sysPermission);
     }
 
     /**
@@ -225,14 +209,7 @@ public class SysPermissionController {
      */
     @DeleteMapping("/{id}")
     public Result delete(@PathVariable Integer id) {
-        boolean ret = sysPermissionService.removeById(id);
-        Result r = null ;
-        if (ret) {
-            r = new Result(HttpResultEnum.DEL_CODE_200.getCode(),HttpResultEnum.DEL_CODE_200.getMessage());
-        } else {
-            r = new Result(HttpResultEnum.DEL_CODE_500.getCode(),HttpResultEnum.DEL_CODE_500.getMessage());
-        }
-        return  r;
+        return sysPermissionService.delete(id) ;
     }
 
     /**

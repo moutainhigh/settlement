@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * 结算公式参数表 Mapper 接口
  * </p>
  *
- * @author admin
+ * @author kun
  * @since 2019-11-28
  */
 public interface BaFormulaParamMapper extends BaseMapper<BaFormulaParam> {

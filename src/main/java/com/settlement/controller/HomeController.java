@@ -5,7 +5,9 @@ import com.settlement.entity.*;
 import com.settlement.service.*;
 import com.settlement.utils.Const;
 import com.settlement.utils.Result;
+import com.settlement.vo.BaCustomerVo;
 import com.settlement.vo.SysPermissionVo;
+import com.settlement.vo.SysRoleVo;
 import com.settlement.vo.SysUserVo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -231,8 +233,11 @@ public class HomeController {
         queryWrapper.eq(StringUtils.isNotBlank(id),"id",id);
         //queryWrapper.eq("id",id);
         SysDept sysDept = null;
+        List<SysRoleVo> sysRoleVos = sysRoleService.getRoleVo();
         if("update".equals(mode)) {
             sysDept=sysDeptService.getOne(queryWrapper);
+            sysRoleVos = sysRoleService.getRoleVoByDeptId(sysDept.getId());
+            model.addAttribute("sysRoleVos",sysRoleVos);
             model.addAttribute("mode","update");
             model.addAttribute("sysDept",sysDept);
         } else if ("add".equals(mode)) {
@@ -246,10 +251,12 @@ public class HomeController {
             model.addAttribute("sysDept",sysDept);
         } else {
             sysDept=sysDeptService.getOne(queryWrapper);
+            sysRoleVos = sysRoleService.getRoleVo();
+            model.addAttribute("sysRoleVos",sysRoleVos);
             model.addAttribute("mode","default");
             model.addAttribute("sysDept",sysDept);
         }
-
+        model.addAttribute("sysRoleVos",sysRoleVos);
         System.out.println("sysPermission:"+sysDept);
         return "dept/iframeContent";
     }
@@ -463,9 +470,11 @@ public class HomeController {
     public String toBaCustomerAddOrUpdate(@PathVariable String mode,@PathVariable(required = false) Integer id,Model model) {
         if(Const.MODE_ADD.equals(mode)) {
             model.addAttribute("mode",Const.MODE_ADD);
+            BaCustomerVo baCustomerVo = new BaCustomerVo();
+            model.addAttribute("baCustomer",baCustomerVo);
         } else if(Const.MODE_UPDADTE.equals(mode)){
-            BaCustomer baCustomer = baCustomerService.getById(id);
-            model.addAttribute("baCustomer",baCustomer);
+            BaCustomerVo baCustomerVo = baCustomerService.getBaCustomerVoById(id);
+            model.addAttribute("baCustomer",baCustomerVo);
             model.addAttribute("mode",Const.MODE_UPDADTE);
         }
         return "customer/add";

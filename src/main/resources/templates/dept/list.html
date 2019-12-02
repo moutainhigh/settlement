@@ -25,7 +25,7 @@
         </div>
 
         <div class="layui-card-body layui-table-body layui-table-main" >
-
+            <form class="layui-form">
             <div class="layui-field-box">
                 <div class="layui-row layui-col-space10" style="margin-top: 10px;">
                     <div class="layui-col-lg4"><div style="height: 700px;overflow: auto;">
@@ -34,22 +34,25 @@
                 </div>
                     <div class="layui-col-lg8">
                         <div style="height: 700px; width:100%;overflow: auto;">
-                            <iframe th:src="@{/sys-dept/iframeContent}" id="iframe_content" name="iframe_content" frameborder="0" style="width: 100%;height: 99%;"></iframe>
+                            <iframe th:src="@{/sys-dept/iframeContent}"  id="iframe_content" name="iframe_content" frameborder="0" style="width: 100%;height: 99%;"></iframe>
                         </div>
                     </div>
                 </div>
             </div>
+            </form>
         </div>
 
         <script th:inline="javascript">
-
             layui.extend({
                 dtree: '/lib/layui_ext/dtree/dtree'
             }).use(['dtree', 'layer','util'], function(){
-                var dtree = layui.dtree
+                var form = layui.form,
+                    dtree = layui.dtree
                     ,layer = layui.layer
                     ,util = layui.util;
 
+                form.render();
+                form.render('checkbox');
                 var dtree1 = dtree.render({
                     elem: '#demoTree',
                     //skin: "layui",
@@ -64,9 +67,20 @@
                     dataFormat: "list",  //配置data的风格为list
                     //response:{message:"msg",statusCode:0 ,title: "pName" },  //修改response中返回数据的定义 ,childName: "childrens"
                     url: "/sys-dept/dtree/pagedata",
-                    initLevel: "5"
+                    initLevel: "5",
+                    iframeFun: {
+                        iframeDone: function(iframeParam){ //iframe加载完毕后，用于用户自定义事件
+                           // alert(iframeParam);
+                           //  form.render();
+                           //  form.render('checkbox');
+                           //  document.getElementById('iframe_content').form.render();
+                           //  form.render('checkbox');
+                            return ;
+                        }
+                    }
                     // line:true,
                 });
+
                 // 点击按钮获取所有选中节点值
                 $("#add").click(function(){
                    // alert([[${mode}]]);
@@ -78,6 +92,7 @@
                         id=param.nodeId;
                     }
                     document.getElementById('iframe_content').src="/sys-dept/iframeContent?mode=add&id="+id;
+                    // document.getElementById('iframe_content').layui.form.render();
                 })
                 // 点击按钮获取所有选中节点值
                 $("#edit").click(function(){
@@ -99,38 +114,62 @@
                     // var parent=param.parent();
                     // alert(parent.context);
                     if(param.leaf==null) {
-                        layer.msg('请选择要删除的节点', {icon: 6});
+                        layer.msg('请选择要删除的节点', {icon: 5});
                         return ;
                     }
                     if(!param.leaf) {
-                        layer.msg('不是叶子节点不能删除', {icon: 6});
-                        return ;
-                    } else{
-                        layer.confirm('请确认要删除的数据:'+param.context, {icon: 3, title:'提示'}, function(index){
+                        layer.msg('不是叶子节点不能删除', {icon: 5});
+                        return;
+                    }else {
+                            layer.confirm('请确认要删除的数据:'+param.context, {icon: 3, title:'提示'}, function(index){
 
-                            $.ajax({
-                                type:"delete",
-                                url: "/sys-dept/"+param.nodeId,
-                                //data: {id: param.nodeId},
-                                //dataType: "json",
-                                success: function (r) {
-                                    if(r.code=='delete_200') {
-                                        layer.msg('删除成功', {icon: 6});
-                                        dtree.reload("demoTree", {
-                                            url: "/sys-dept/dtree/pagedata",
-                                            //request: {id:pid},
-                                            method: "post",
-                                            initLevel: "5"
-                                        });
-                                    } else {
-                                        layer.msg('删除失败', {icon: 6});
+                                $.ajax({
+                                    type:"delete",
+                                    url: "/sys-dept/"+param.nodeId,
+                                    //data: {id: param.nodeId},
+                                    //dataType: "json",
+                                    success: function (r) {
+                                        if(r.code=='delete_200') {
+                                            layer.msg('删除成功', {icon: 6});
+                                            dtree.reload("demoTree", {
+                                                url: "/sys-dept/dtree/pagedata",
+                                                //request: {id:pid},
+                                                method: "post",
+                                                initLevel: "5"
+                                            });
+                                        } else {
+                                            layer.msg('删除失败', {icon: 6});
+                                        }
                                     }
-                                }
-                            });
+                                });
 
-                            layer.close(index);
-                        });
-                    }
+                                layer.close(index);
+                            });
+                        }
+                    // } else{
+                    //     layer.confirm('请确认要删除的数据:'+param.context, {icon: 3, title:'提示'}, function(index){
+                    //         alert(3);
+                    //         $.ajax({
+                    //             type:"delete",
+                    //             url: "/sys-dept/"+param.nodeId,
+                    //             success: function (r) {
+                    //                 if(r.code=='delete_200') {
+                    //                     layer.msg('删除成功', {icon: 6});
+                    //                     dtree.reload("demoTree", {
+                    //                         url: "/sys-dept/dtree/pagedata",
+                    //                         //request: {id:pid},
+                    //                         method: "post",
+                    //                         initLevel: "5"
+                    //                     });
+                    //                 } else {
+                    //                     layer.msg('删除失败', {icon: 6});
+                    //                 }
+                    //             }
+                    //         });
+                    //
+                    //         layer.close(index);
+                    //     });
+                    // }
                     layer.msg("delete:"+JSON.stringify(params));
                 })
                 // 绑定图标的点击事件
@@ -142,6 +181,8 @@
                 });
 
             });
+            // form.render();
+            // document.getElementById('iframe_content').render();
 
         </script>
 

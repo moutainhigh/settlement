@@ -12,7 +12,7 @@ import com.settlement.vo.ExportParamVo;
  * 导出参数表 服务类
  * </p>
  *
- * @author admin
+ * @author kun
  * @since 2019-11-27
  */
 public interface BaExportParamService extends IService<BaExportParam> {

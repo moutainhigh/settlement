@@ -12,7 +12,7 @@ import com.settlement.vo.FormulaParamVo;
  * 结算公式参数表 服务类
  * </p>
  *
- * @author admin
+ * @author kun
  * @since 2019-11-28
  */
 public interface BaFormulaParamService extends IService<BaFormulaParam> {

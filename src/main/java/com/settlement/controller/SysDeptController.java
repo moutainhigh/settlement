@@ -23,7 +23,7 @@ import java.util.List;
  * 部门表 前端控制器
  * </p>
  *
- * @author admin
+ * @author kun
  * @since 2019-11-07
  */
 @RestController
@@ -61,25 +61,25 @@ public class SysDeptController {
 
     /**
      * 添加
-     * @param sysDept
+     * @param sysDeptVo
      * @return
      */
     @PostMapping("/add")
-    public Result add(SysDept sysDept, HttpSession session){
+    public Result add(SysDeptVo sysDeptVo, HttpSession session){
         SysUser user = (SysUser)session.getAttribute("user");
-        sysDept.setCreateUserId(user.getId());
-        Result r = sysDeptService.add(sysDept);
+        sysDeptVo.setCreateUserId(user.getId());
+        Result r = sysDeptService.add(sysDeptVo);
         return r;
     }
 
     /**
      *修改
-     * @param sysDept
+     * @param sysDeptVo
      * @return
      */
     @PutMapping("/update")
-    public Result update(SysDept sysDept){
-        Result r = sysDeptService.update(sysDept);
+    public Result update(SysDeptVo sysDeptVo){
+        Result r = sysDeptService.update(sysDeptVo);
         return r;
     }
 
@@ -88,7 +88,7 @@ public class SysDeptController {
      * @param id
      * @return
      */
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public Result delete(@PathVariable Integer id){
         Result r = sysDeptService.delete(id);
         return r;

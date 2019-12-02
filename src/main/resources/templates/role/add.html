@@ -162,7 +162,7 @@
         $("#roleCodeIsExist").click(function(){
             var roleCode=$('#roleCode').val();
             if(roleCode.trim().length==0) {
-                layer.msg('角色编码不能为空');
+                layer.msg('角色编码不能为空',{icon:5});
                 return false;
             }
            //异步加载判断是否唯一
@@ -174,7 +174,7 @@
               var mode=[[${mode}]];
 
             //发异步，把数据提
-              if("add" == mode && checkRoleCodeIsExist($('#roleCode').val(),layer,'')) {
+              if("add" == mode && checkRoleCodeIsExist($('#roleCode').val(),layer,'submit')) {
                   $.post('/sys-role/add',data.field,function(r){
                       layer.alert(r.msg, {
                               icon : r.code == 'add_200' ? 6: 5

@@ -7,14 +7,14 @@ import org.springframework.stereotype.Controller;
 
 /**
  * <p>
- * 菜单角色关联表 前端控制器
+ *  前端控制器
  * </p>
  *
  * @author kun
- * @since 2019-11-26
+ * @since 2019-12-01
  */
 @Controller
-@RequestMapping("/sys-permission-role")
-public class SysPermissionRoleController {
+@RequestMapping("/sys-dept-role")
+public class SysDeptRoleController {
 
 }

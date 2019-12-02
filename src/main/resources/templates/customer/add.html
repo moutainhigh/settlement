@@ -4,6 +4,8 @@
     <head>
         <th:bolck th:include="common/header :: header('添加用户')" />
         <link rel="stylesheet" th:href="@{/css/formSelects-v4.css}" />
+        <link rel="stylesheet" th:href="@{/lib/layui_ext/dtree/dtree.css}">
+        <link rel="stylesheet" th:href="@{/lib/layui_ext/dtree/font/dtreefont.css}">
     </head>
     <body>
         <div class="layui-fluid">
@@ -12,10 +14,11 @@
                     <input type="hidden" name="id" th:value="${baCustomer.id}" th:if="${baCustomer!=null}" />
                     <div class="layui-form-item">
                         <div class="layui-form-item">
-                            <label for="dept_id" class="layui-form-label">
+                            <label for="deptId" class="layui-form-label">
                                 <span class="x-red">*</span>部门名称</label>
                             <div class="layui-input-inline">
-                                <select id="dept_id" name="dept_id" xm-select-radio xm-select="deptIdSelect" lay-filter="dept_id" xm-select-max="1" lay-verify="pid">
+<!--                                <ul id="deptId2" class="dtree" data-id="0" ></ul>-->
+                                <select id="deptId" name="deptId" xm-select-radio xm-select="deptSelect" lay-filter="deptId" xm-select-max="1" lay-verify="deptId">
                                 </select>
                             </div>
                         </div>
@@ -49,70 +52,58 @@
             </div>
         </div>
         <script th:src="@{/js/formSelects-v4.js}" type="text/javascript" charset="utf-8"></script>
+        <script th:src="@{/js/customer/customer.js}" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript" th:inline="javascript">
+            var mode=[[${mode}]];
             // 下拉多选框
-            var mode = [[${mode}]];
-            var pIdInit = [[${sysDataDic.pid}]];
-            if(mode=="add"){
-                formSelects.data('deptIdSelect', 'server', {
-                    url: '/ba-customer/deptIdSelect',
-                    success: function(id, url, searchVal, result){
-                        if(0==pIdInit) {
-                            formSelects.value('deptIdSelect', ['0']);
-                        } else {
-                            formSelects.value('deptIdSelect', [pIdInit]);
-                        }
-                    }
-                });
-            } else {
-                //var pIdInit = [[${sysDataDic.pid}]];
-                formSelects.data('deptIdSelect', 'server', {
-                    url: '/ba-customer/deptIdSelect',
-                    success: function(id, url, searchVal, result){
-                        if(0==pIdInit) {
-                            formSelects.value('deptIdSelect', ['0']);
-                        } else {
-                            formSelects.value('deptIdSelect', [pIdInit]);
-                        }
-                    }
-                });
 
+            if('update'==[[${mode}]]) {
+                var pIdInit = [[${baCustomer.deptId}]];
+                formSelects.data('deptSelect', 'server', {
+                    url: '/sys-dept/deptselect',
+                    success: function(id, url, searchVal, result) {
+                        formSelects.value('deptSelect', [pIdInit]);
+                    }
+                });
+            } else{
+                formSelects.data('deptSelect', 'server', {
+                    url: '/sys-dept/deptselect'});
             }
+
             // 表单操作
             layui.use(['form', 'layer','jquery'],
             function() {
                 $ = layui.jquery;
                 var form = layui.form,
-                layer = layui.layer;
+                    layer = layui.layer;
                 form.render();
+                alert(2);
                 //自定义验证规则
                 form.verify({
-                    paramCode: function(value) {
+                    deptId: function(value) {
                         if (value.length < 1) {
-                            return '时间点参数编号至少得1个字符啊';
+                            return '请选择客户所属部门';
                         }
                     },
-                    paramItem: function (value) {
+                    customerName: function(value) {
                         if (value.length < 1) {
-                            return '时间点参数项至少得1个字符啊';
+                            return '客户名称至少得1个字符';
                         }
                     },
-                    paramValue: function (value) {
-                        if (!/^\d+$/.test(value.trim())) {
-                            return '时间点参数值至少1位，且只能是数字';
+                    code: function (value) {
+                        if (value.length < 1) {
+                            return '客户编号至少得1个字符';
                         }
                     },
-                    sort:function (value) {
-                        if (!/^\d+$/.test(value.trim())) {
-                            return '显示顺序至少1位，且只能是数字';
+                    chief: function (value) {
+                        if (value.length < 1) {
+                            return '客户负责人至少得1个字符';
                         }
                     }
-
-
                 });
+
                 //监听提交
                 form.on('submit(add)', function(data){
-                    var mode=[[${mode}]];
 
                     if("add"==mode ) {
                         $.post('/ba-customer/add',data.field,function (r) {

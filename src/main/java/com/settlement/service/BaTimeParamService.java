@@ -11,7 +11,7 @@ import com.settlement.utils.Result;
  * 时间点参数表 服务类
  * </p>
  *
- * @author admin
+ * @author kun
  * @since 2019-11-27
  */
 public interface BaTimeParamService extends IService<BaTimeParam> {
