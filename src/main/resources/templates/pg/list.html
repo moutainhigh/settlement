@@ -65,21 +65,22 @@
            page: true,
            title: '项目组表',
            height: 'full-210',
-         /*  done: function() {
+           done: function() {
                $("[data-field='checkStatus']").css('display','none');
-           },*/
-           // id: 'checkStatus',
-           cols: [[
-               {field:'id',type:'checkbox',fixed:'left'},
-               {field:'pgName',title:'项目组',align:'center',fixed:'left'},
-               {field:'code',title:'项目组编号',align:'center'},
-               /*{field:'customer',title:'客户',align:'center'},*/
-               {field:'checkStatusContent',title:'审核状态',align:'center'},
-               {field:'ownerName',title:'负责人',align:'center'},
-               {field:'enabled',title:'状态',align:'center',templet: '#switchStatus', unresize: true},
-               {field:'createTime',title:'创建日期',align:'center'},
-               {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:200}
-           ]]
+           },
+           cols: [
+                    [
+                       {field:'id',type:'checkbox',fixed:'left'},
+                       {field:'pgName',title:'项目组',align:'center',fixed:'left'},
+                       {field:'code',title:'项目组编号',align:'center'},
+                       {field:'checkStatus',title:'',align:'center'},
+                       {field:'checkStatusContent',title:'审核状态',align:'center'},
+                       {field:'ownerName',title:'负责人',align:'center'},
+                       {field:'enabled',title:'状态',align:'center',templet: '#switchStatus', unresize: true},
+                       {field:'createTime',title:'创建日期',align:'center'},
+                       {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:200}
+                    ]
+                ]
         });
           var $ = layui.$, active = {
               reload: function(){
@@ -100,11 +101,21 @@
               relateSettlement: function(){ //获取选中数据
                   checkBoxCheckedOper('关联结算负责人','/ba-project-group/relate-settlement/',table, layer, 600, 400);
               },
+              addEmp: function() {
+                  checkBoxCheckedOper('员工录入','/ba-project-employee/enter-emp/',table, layer, 1000, 540);
+              }
           };
           $('.layui-btn').on('click', function(){
               var type = $(this).data('type');
               active[type] ? active[type].call(this) : '';
           });
+
+          // checkbox只能单选
+         /* form.on('checkbox', function(data){
+              $("input[type='checkbox']").prop("checked", false);   //全部取消选中
+              $(this).prop("checked", true);                          //勾选当前选中的选择框
+               layui.form.render('checkbox');
+          });*/
 
           //监听状态操作
           form.on('switch(status)', function(data){
@@ -154,7 +165,7 @@
                       });
                   }
               } else {
-                  layer.msg("项目组只有处于【审核已通过】状态才能启用、停用",{icon:5});
+                  layer.msg("项目组只有处于【审核通过】状态才能启用、停用",{icon:5});
                   data.elem.checked=!a;
                   layui.form.render();
               }
@@ -175,13 +186,13 @@
                           layer.close(index);
                       });
                   } else {
-                      layer.msg("项目组处于【待审核】或者【审核已通过】状态，不能删除",{icon:5});
+                      layer.msg("项目组处于【待审核】或者【审核通过】状态，不能删除",{icon:5});
                   }
               } else if(obj.event === 'edit'){
                   if (checkStatus == noPass || checkStatus == null) {
                       xadmin.open('编辑项目组','/ba-project-group/edit/'+ data.id,600,400);
                   } else {
-                      layer.msg("项目组处于【待审核】或者【审核已通过】状态，不能编辑",{icon:5});
+                      layer.msg("项目组处于【待审核】或者【审核通过】状态，不能编辑",{icon:5});
                   }
               }
           });
@@ -214,10 +225,10 @@
           }else if(data.length == 1) {
               //xadmin.open(title,url + data[0].id,w,h);
               // 项目组只有处于审核通过状态才能操作
-             if (data.checkStatus == passCheckStatus) {
+             if (data[0].checkStatus == passCheckStatus) {
                   xadmin.open(title,url + data[0].id,w,h);
               } else {
-                  layer.msg("项目组只有处于【审核已通过】状态才能" + title,{icon:5});
+                  layer.msg("项目组只有处于【审核通过】状态才能" + title,{icon:5});
               }
           }
       }

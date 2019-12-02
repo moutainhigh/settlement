@@ -49,11 +49,11 @@ public class BaProjectGroupController {
      * @auth admin
      * @date  2019-11-20
      * @param projectGroupCo    项目组查询条件
-     * @param model
+     * @param
      * @return
      */
     @GetMapping("/ba-project-group/pagedata")
-    public PageData getProjectGroupList1(ProjectGroupCo projectGroupCo, Model model) {
+    public PageData getProjectGroupList1(ProjectGroupCo projectGroupCo) {
         return this.baProjectGroupService.getProjectGroupList(projectGroupCo);
     }
 

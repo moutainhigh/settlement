@@ -32,22 +32,74 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         queryWrapper.orderByAsc("sort");
         List<SysDept> deptList = this.baseMapper.selectList(queryWrapper);
         List<SelectVo> deptSelectVoList = new ArrayList<SelectVo>();
-        if (deptList.size() > 0) {
-            for (SysDept dept : deptList) {
-                if (dept.getParentId() == Const.DEPT_ROOT_ID) {
-                    SelectVo dsv = new SelectVo(dept.getId(),dept.getDeptName());
-                    dsv.setChildren(new ArrayList<SelectVo>());
-                    for (SysDept  deptChild : deptList) {
-                        if (deptChild.getParentId() == dept.getId()) {
-                            dsv.getChildren().add(new SelectVo(deptChild.getId(), deptChild.getDeptName()));
-                        }
-                    }
-                    deptSelectVoList.add(dsv);
-                }
-            }
+        if (deptList != null && deptList.size() > 0) {
+            deptSelectVoList = buildDeptTree(deptList);
         }
         Result r = new Result(HttpResultEnum.CODE_0.getCode(), HttpResultEnum.CODE_0.getMessage());
         r.setData(deptSelectVoList);
         return r;
+    }
+
+    /**
+     * @description 构建部门下拉框树形结构
+     *
+     * @auth admin
+     * @date 2019-11-29
+     * @param list
+     * @return
+     */
+    private List<SelectVo> buildDeptTree(List<SysDept> list) {
+        List<SelectVo> deptTreeList = new ArrayList<SelectVo>();
+        SelectVo selectVo = null;
+        for (SysDept dept : getLevelOneDept(list)) {
+            selectVo = new SelectVo();
+            selectVo.setValue(dept.getId());
+            selectVo.setName(dept.getDeptName());
+            buildChildTree(selectVo, dept.getId(), list);
+            deptTreeList.add(selectVo);
+        }
+        return deptTreeList;
+    }
+
+    /**
+     * @description 构建子节点树形结构
+     *
+     * @auth admin
+     * @date 2019-11-29
+     * @param sv
+     * @param id
+     * @return
+     */
+    private SelectVo buildChildTree(SelectVo sv, Integer id, List<SysDept> list) {
+        List<SelectVo> childSelectVo = new ArrayList<SelectVo>();
+        SelectVo svo = null;
+        for (SysDept dept : list) {
+            if (dept.getParentId() == id) {
+                svo = new SelectVo();
+                svo.setValue(dept.getId());
+                svo.setName(dept.getDeptName());
+                childSelectVo.add(buildChildTree(svo, dept.getId(), list));
+            }
+        }
+        sv.setChildren(childSelectVo);
+        return sv;
+    }
+
+    /**
+     * @description 获取一级部门
+     *
+     * @auth admin
+     * @date 2019-11-29
+     * @param list
+     * @return
+     */
+    private List<SysDept> getLevelOneDept(List<SysDept> list) {
+        List<SysDept> levelOneList = new ArrayList<SysDept>();
+        for (SysDept dept : list)  {
+            if (dept.getParentId() == Const.DEPT_ROOT_ID) {
+                levelOneList.add(dept);
+            }
+        }
+        return levelOneList;
     }
 }

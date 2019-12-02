@@ -43,4 +43,10 @@ public class Const {
     public final static String CHECK_STATUS_CHECK_PASS = "CHECK_PASS";
     /** 审核状态CHECK_NOTPASS：审核未通过*/
     public final static String CHECK_STATUS_CHECK_NOPASS = "CHECK_NOPASS";
+    /** 员工提交状态S：已提交 */
+    public final static String EMP_SUBMIT_STATUS_S = "S";
+    /** 员工提交状态N：未提交*/
+    public final static String EMP_SUBMIT_STATUS_N = "N";
+    /** 级别填写模式CODE： LEVEL_INPUT_TYPE*/
+    public final static String LEVEL_TYPE_PARENT_CODE = "LEVEL_INPUT_TYPE";
 }

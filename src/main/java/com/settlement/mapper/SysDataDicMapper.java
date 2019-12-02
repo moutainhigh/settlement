@@ -25,4 +25,14 @@ public interface SysDataDicMapper extends BaseMapper<SysDataDic> {
 
    public List<SysDataDicVo> getDataDicVoByPid(@Param(value="dataDicCo") DataDicCo dataDicCo, Page<SysDataDicVo> page);
 
+   /**
+    * @description 根据父CODE查询下拉框
+    *
+    * @auth admin
+    * @date 2019-11-29
+    * @param map
+    * @return
+    */
+   List<SysDataDicVo> getDataDicSelectByParentCode(Map<String, Object> map);
+
 }

@@ -96,7 +96,7 @@ public class CodeGenerator {
         strategy.setLogicDeleteFieldName("deleted");
 
         // 指定生成的bean的数据库表名
-        strategy.setInclude("sys_permission_role");
+        strategy.setInclude("ba_project_employee");
 
         // 驼峰转连字符
         strategy.setControllerMappingHyphenStyle(true);

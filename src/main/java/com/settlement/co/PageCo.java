@@ -14,4 +14,5 @@ public abstract class PageCo {
     Integer page;
 
     Integer limit;
+
 }

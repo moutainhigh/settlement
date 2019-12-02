@@ -275,5 +275,36 @@ public class HomeController {
     }
     /////////////////////////////////////////////////////////////  项目组跳转end  ///////////////////////////////////////////////////////////////////
 
+    /**
+     * @description 员工录入
+     *
+     * @auth admin
+     * @date 2019-11-28
+     * @param pgId
+     * @return
+     */
+    @GetMapping("/ba-project-employee/enter-emp/{pgId}")
+    public String toEnterEmployPage(@PathVariable  Integer pgId, Model model) {
+        model.addAttribute("pgId", pgId);
+        return "emp/enter";
+    }
+
+    /**
+     * 添加员工
+     *
+     * @auth admin
+     * @date 2019-11-29
+     * @param pgId
+     * @param model
+     * @return
+     */
+    @GetMapping("/ba-project-employee/add/{pgId}")
+    public String toAddEmployeePage(@PathVariable Integer pgId, Model model) {
+        // 级别填写模式
+        model.addAttribute("levelTypeSelect", this.sysDataDicService.getDataDicSelectByParentCode(Const.LEVEL_TYPE_PARENT_CODE));
+        model.addAttribute("pgId",pgId);
+        return "emp/add";
+    }
+
 }
 

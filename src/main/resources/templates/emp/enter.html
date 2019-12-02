@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html class="x-admin-sm"  xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <th:bolck th:include="common/header :: header('员工录入')" />
+    </head>
+    <body>
+        <div class="x-nav">
+          <span class="layui-breadcrumb">
+            <a href="/home">首页</a>
+            <a href="">项目组管理</a>
+            <a>项目组</a>
+            <a><cite>员工录入</cite></a>
+          </span>
+          <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
+            <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
+        </div>
+        <div class="layui-fluid">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-md12">
+                    <div class="layui-card">
+                        <div class="layui-card-body">
+                            <form class="layui-form layui-col-space5" onsubmit="return false">
+                                <div class="layui-inline layui-show-xs-block">
+                                    <input type="text" id="keyword" name="keyword"  placeholder="请输入员工姓名" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-inline layui-show-xs-block">
+                                    <button class="layui-btn" id="search" data-type="reload" lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i>查询</button>
+                                </div>
+                            </form>
+                        </div>
+                        <!--<div class="layui-card-header">
+                            <button class="layui-btn" onclick="xadmin.open('添加员工','/ba-project-employee/add',600,400)"><i class="layui-icon"></i>添加</button>
+                            <button class="layui-btn" data-type="relateAssistant"><i class="layui-icon"></i>提交</button>
+                        </div>-->
+                        <div class="layui-card-body layui-table-body layui-table-main" >
+                            <table class="layui-table layui-form" id="dataTable" lay-filter="dataTable">
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </body>
+    <script type="text/html" id="toolBarHead">
+        <div class="layui-btn-container">
+            <button class="layui-btn layui-btn-sm" lay-event="add">添加</button>
+            <button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="submit">提交</button>
+        </div>
+    </script>
+    <script type="text/html" id="toolBar">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+    <script type="text/javascript"  th:inline="javascript">
+        var pgId = [[ ${pgId} ]];
+      layui.use(['laydate','table','form','element'], function(){
+        var laydate = layui.laydate;
+        var  form = layui.form;
+        var table = layui.table;
+        table.render({
+           elem: '#dataTable',
+           url: '/ba-project-employee/pagedata',
+           page: true,
+           title: '员工录入表',
+           height: 'full-210',
+           toolbar: '#toolBarHead',
+           defaultToolbar: ['filter', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+              title: '提示'
+              ,layEvent: 'LAYTABLE_TIPS'
+              ,icon: 'layui-icon-tips'
+          }],
+          where: {
+            pgId : [[ ${pgId} ]]
+          },
+         /*  done: function() {
+               $("[data-field='checkStatus']").css('display','none');
+           },*/
+           // id: 'checkStatus',
+           cols: [
+                    [
+                       {field:'id',type:'checkbox',fixed:'left'},
+                       {field:'empName',title:'姓名',align:'center',fixed:'left'},
+                       {field:'code',title:'员工编号',align:'center'},
+                       {field:'entranceTime',title:'入场时间',align:'center'},
+                       {field:'responsiblePerson',title:'客户负责人',align:'center'},
+                       {field:'uploadRateEmail',title:'客户确认rate邮件',align:'center'},
+                       {field:'sendCopyEmail',title:'抄送邮件地址',align:'center'},
+                       {field:'createTime',title:'创建日期',align:'center'},
+                       {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:200}
+                    ]
+                ]
+        });
+          var $ = layui.$, active = {
+              reload: function(){
+                  var keyword = $('#keyword');
+                  //执行重载
+                  table.reload('dataTable', {
+                      // method : 'post',
+                      page: {
+                          curr: 1 //重新从第 1 页开始
+                      }
+                      ,where: {
+                              keyword: keyword.val(),
+                              pgId: [[ ${pgId} ]]
+                      }
+                  }, 'data');
+              }
+          };
+          $('.layui-btn').on('click', function(){
+              var type = $(this).data('type');
+              active[type] ? active[type].call(this) : '';
+          });
+
+          // 监听头工具栏
+          table.on('toolbar(dataTable)', function(obj) {
+              var checkStatus = table.checkStatus(obj.config.id);
+              var data = checkStatus.data;
+              switch (obj.event) {
+                  case 'add' :
+                      xadmin.open('添加项目组员工','/ba-project-employee/add/' + pgId,770,420)
+                      break;
+                  case 'submit' :
+                      layer.alert('submit');
+                      break;
+              };
+          });
+
+          // 监听工具栏
+         table.on('tool(dataTable)', function(obj){
+              var data = obj.data;
+             var noPass = [[ ${PG_CHECKSTATUS_CHECK_NOPASS} ]];
+             var checkStatus = data.checkStatus;
+              if(obj.event === 'detail'){
+                  layer.msg('ID：'+ data.id + ' 的查看操作');
+              } else if(obj.event === 'del'){
+                  if (checkStatus == noPass || checkStatus == null) {
+                      layer.confirm('真的删除【 '+ data.pgName + '】么?', function(index){
+                          pg_del(data.id);
+                          layer.close(index);
+                      });
+                  } else {
+                      layer.msg("项目组处于【待审核】或者【审核已通过】状态，不能删除",{icon:5});
+                  }
+              } else if(obj.event === 'edit'){
+                  if (checkStatus == noPass || checkStatus == null) {
+                      xadmin.open('编辑项目组','/ba-project-group/edit/'+ data.id,600,400);
+                  } else {
+                      layer.msg("项目组处于【待审核】或者【审核已通过】状态，不能编辑",{icon:5});
+                  }
+              }
+          });
+      });
+
+      /** 项目组-删除*/
+      function pg_del(id){
+          $.ajax({
+              url:"/ba-project-group/del/" + id,
+              type:"DELETE",
+              contentType:"application/json",//设置请求参数类型为json字符串
+              // data: {id:id},
+              dataType:"json",
+              success:function(r){
+                  layer.msg(r.msg,{icon:1,time:1000});
+                  location.reload();
+              }
+          });
+      }
+
+      /** 复选框选中操作 */
+      function checkBoxCheckedOper(title, url, table, layer,w,h) {
+          var checkStatus = table.checkStatus('dataTable')
+              ,data = checkStatus.data;
+          var passCheckStatus = [[ ${PG_CHECKSTATUS_CHECK_PASS} ]];
+          if (data.length == 0) {
+              layer.alert('请先选择一行',{icon : 5});
+          }else if (data.length > 1) {
+              layer.alert('不能多选啊，只能选择一行',{icon : 5});
+          }else if(data.length == 1) {
+              //xadmin.open(title,url + data[0].id,w,h);
+              // 项目组只有处于审核通过状态才能操作
+             if (data.checkStatus == passCheckStatus) {
+                  xadmin.open(title,url + data[0].id,w,h);
+              } else {
+                  layer.msg("项目组只有处于【审核已通过】状态才能" + title,{icon:5});
+              }
+          }
+      }
+    </script>
+</html>

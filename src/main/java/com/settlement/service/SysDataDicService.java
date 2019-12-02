@@ -5,8 +5,10 @@ import com.settlement.co.DataDicCo;
 import com.settlement.entity.SysDataDic;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.settlement.utils.Result;
+import com.settlement.vo.SysDataDicVo;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -59,4 +61,14 @@ public interface SysDataDicService extends IService<SysDataDic> {
     public Result updateStatus(Integer id,boolean enable);
 
     Result dicCodeIsExist(String dicCode);
+
+    /**
+     * @description 跟新PID查询下拉框
+     *
+     * @auth admin
+     * @date 2019-11-29
+     * @param code           父CODE
+     * @return
+     */
+    List<SysDataDicVo> getDataDicSelectByParentCode(String code);
 }

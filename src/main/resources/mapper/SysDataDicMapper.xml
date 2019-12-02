@@ -36,4 +36,16 @@
         </if>
         order by dic.sort
     </select>
+
+    <select id="getDataDicSelectByParentCode" parameterType="java.util.Map" resultType="com.settlement.vo.SysDataDicVo">
+        SELECT
+            sdd.dic_code,
+            sdd.dic_content
+        FROM
+            sys_data_dic sdd
+        WHERE
+            sdd.pid = #{code}
+            and sdd.enabled = #{enabled}
+    </select>
+
 </mapper>
