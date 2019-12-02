@@ -25,6 +25,18 @@ public enum HttpResultEnum {
     DIC_CODE_0("0","数据字典编码不存在，可以添加"),
     DIC_CODE_1("1","数据字典编码已经存在，不可以添加"),
 
+    // 时间点编码
+    Time_PARAM_CODE_0("0","时间点参数编号不存在，可以添加"),
+    Time_PARAM_CODE_1("1","时间点参数编号经存在，不可以添加"),
+
+    // 公式参数编码
+    Formula_PARAM_CODE_0("0","公式参数编号不存在，可以添加"),
+    Formula_PARAM_CODE_1("1","公式参数编号已经存在，不可以添加"),
+
+    // 导出参数编码
+    EXPORT_COL_VALUE_0("0","导出参数字段值不存在，可以添加"),
+    EXPORT_COL_VALUE_1("1","导出参数字段值已经存在，不可以添加"),
+
     LOGIN_CODE_500("login_500","登录失败,用户名或密码错误"),
     LOGIN_CODE_501("login_501","用户名不正确"),
     LOGIN_CODE_502("login_502","密码不正确"),

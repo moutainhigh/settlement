@@ -18,7 +18,7 @@ package com.settlement.entity;
     * 角色表
     * </p>
 *
-* @author admin
+* @author kun
 * @since 2019-11-07
 */
     @Data

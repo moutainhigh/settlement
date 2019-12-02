@@ -16,7 +16,7 @@ package com.settlement.entity;
     * 部门表
     * </p>
 *
-* @author admin
+* @author kun
 * @since 2019-11-07
 */
     @Data
@@ -34,6 +34,8 @@ package com.settlement.entity;
     private String deptName;
 
     private Integer chief;
+
+    private String email;
 
     private Integer parentId;
 

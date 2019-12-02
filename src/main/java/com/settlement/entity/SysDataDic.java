@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
  * 数据字典表
  * </p>
  *
- * @author admin
+ * @author kun
  * @since 2019-11-19
  */
 @Data

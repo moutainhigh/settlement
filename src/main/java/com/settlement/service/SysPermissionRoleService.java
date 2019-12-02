@@ -10,7 +10,7 @@ import com.settlement.vo.SysRoleVo;
  * 菜单角色关联表 服务类
  * </p>
  *
- * @author admin
+ * @author kun
  * @since 2019-11-26
  */
 public interface SysPermissionRoleService extends IService<SysPermissionRole> {

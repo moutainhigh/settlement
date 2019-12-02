@@ -8,75 +8,141 @@
 <div class="layui-fluid">
     <form class="layui-form" >
         <input th:type="hidden" name="_method" value="put" th:if="${mode.equals('update')}" />
-        <input type="hidden" name="id" th:value="${sysPermission.id}" th:if="${mode.equals('update')}" />
+        <input type="hidden" name="id" th:value="${sysDept.id}" th:if="${mode.equals('update')}" />
     <div class="layui-row" layui-form-panel lay-filter="show_form">
 
             <div class="layui-form-item">
                 <div class="layui-form-item">
-                    <label for="parentID" class="layui-form-label">
-                        <span class="x-red">*</span>父ID</label>
+                    <label for="parentId" class="layui-form-label">
+                        <span class="x-red">*</span>上级部门</label>
                     <div class="layui-input-inline">
-                        <input type="text" id="parentId" name="parentId"  th:value="${mode.equals('update')}?${sysPermission.parentId}:${sysPermission.parentId}" required="true" lay-verify="parentId" autocomplete="off" class="layui-input" maxlength="20"></div>
+                        <input type="text" id="parentId" name="parentId" readonly="true" th:value="${mode.equals('update')}?${sysDept.parentId}:${sysDept.parentId}" required="true" lay-verify="parentId" autocomplete="off" class="layui-input" maxlength="20"></div>
                 </div>
 
                 <div  class="layui-form-item">
-                    <label  class="layui-form-label">
-                        <span class="x-red">*</span>pCode</label>
+                    <label  for="deptCode"  class="layui-form-label">
+                        <span class="x-red">*</span>部门编号</label>
                     <div class="layui-input-inline">
-                        <input type="text" id="pCode" name="pCode"  th:value="${mode.equals('update')}?${sysPermission.pCode}:${sysPermission.pCode}" required="" lay-verify="id" autocomplete="off" class="layui-input"></div>
+                        <input type="text" id="deptCode" name="deptCode" th:readonly="${mode.equals('update')}" th:value="${mode.equals('update')}?${sysDept.deptCode}:${sysDept.deptCode}" required="" lay-verify="deptCode" autocomplete="off" class="layui-input"></div>
                 </div>
-                <label for="pName" class="layui-form-label">
-                    <span class="x-red">*</span>菜单名称</label>
+                <label for="deptName" class="layui-form-label">
+                    <span class="x-red">*</span>部门名称</label>
                 <div class="layui-input-inline">
-                    <input type="text" id="pName" name="pName" th:value="${mode.equals('update')}?${sysPermission.PName}" required="" lay-verify="pName" autocomplete="off" class="layui-input"></div>
+                    <input type="text" id="deptName" name="deptName" th:value="${mode.equals('update')}?${sysDept.deptName}" required="" lay-verify="deptName" autocomplete="off" class="layui-input"></div>
                 <div class="layui-form-mid layui-word-aux">
-                    <span class="x-red">*</span>菜单名称</div></div>
+                    <span class="x-red">*</span>部门名称</div></div>
             <div class="layui-form-item">
-                <label  class="layui-form-label">
-                    <span class="x-red">*</span>url</label>
+                <label for="chief" class="layui-form-label">
+                    <span class="x-red">*</span>部门负责人</label>
                 <div class="layui-input-inline">
-                    <input type="text" id="url" name="url" th:value="${mode.equals('update')}?${sysPermission.url}" required="" autocomplete="off" class="layui-input"></div>
+                    <input type="text" id="chief" name="chief" th:value="${mode.equals('update')}?${sysDept.chief}" lay-verify="chief" required="" autocomplete="off" class="layui-input"></div>
                 <div class="layui-form-mid layui-word-aux">
-                    <span class="x-red">*</span>权限控制标识 </div></div>
-
-            <div class="layui-form-item">
-                <label class="layui-form-label">
-                    <span class="x-red">*</span>类型
-                </label>
-                <div class="layui-input-block">
-                    <input type="radio" name="type" th:value="${mode.equals('update')}?${sysPermission.type}" title="菜单" checked>
-                    <input type="radio" name="type" th:value="${mode.equals('update')}?${sysPermission.type}" title="按钮" >
-                </div>
-          </div>
-            <div class="layui-form-item">
-                <label for="permission" class="layui-form-label">
-                    <span class="x-red">*</span>permission</label>
-                <div class="layui-input-inline">
-                    <input type="text" id="permission" name="permission" th:value="${mode.equals('update')}?${sysPermission.permission}" required="" lay-verify="permission" autocomplete="off" class="layui-input"></div>
+                        <span class="x-red">*</span>部门负责人 </div>
             </div>
+
+         <div class="layui-form-item">
+            <label for="email" class="layui-form-label">
+                <span class="x-red">*</span>负责人邮箱</label>
+            <div class="layui-input-inline">
+                <input type="text" id="email" name="email" th:value="${mode.equals('update')}?${sysDept.email}" lay-verify="email" required="" autocomplete="off" class="layui-input"></div>
+            <div class="layui-form-mid layui-word-aux">
+                <span class="x-red">*</span>负责人邮箱 </div></div>
+        <div class="layui-form-item">
+            <label for="remark" class="layui-form-label">
+                <span class="x-red">*</span>备注</label>
+            <div class="layui-input-inline">
+                <input type="text" id="remark" name="remark" th:value="${mode.equals('update')}?${sysDept.remark}" lay-verify="remark" required="" autocomplete="off" class="layui-input"></div>
+            <div class="layui-form-mid layui-word-aux">
+                <span class="x-red">*</span>备注 </div>
+        </div>
+
             <div class="layui-form-item">
                 <label for="sort" class="layui-form-label">
                     <span class="x-red">*</span>显示顺序</label>
                 <div class="layui-input-inline">
-                    <input type="text" id="sort" name="sort" th:value="${mode.equals('update')}?${sysPermission.sort}" required="" lay-verify="sort" autocomplete="off" class="layui-input"></div>
+                    <input type="text" id="sort" name="sort" th:value="${mode.equals('update')}?${sysDept.sort}" required="" lay-verify="sort" autocomplete="off" class="layui-input"></div>
             </div>
+        <div class="layui-form-item">
+            <label for="roles" class="layui-form-label">
+                <span class="x-red">*</span>部门角色</label>
+            <div class="layui-input-inline">
+                <table>
+                    <tr>
+                        <td th:each="role:${sysRoleVos}">
+                <div >
+                     <input type="checkbox" id="roles" name="roles[]" lay-verify="roles" th:checked="${mode.equals('update')}?${role.checked}" lay-skin="primary" th:value="${role.id}" th:title="${role.roleCnName}" />
+                </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
             <div class="layui-form-item">
-                <label for="add" class="layui-form-label"></label>
-                <button class="layui-btn" lay-filter="add" th:text="${mode.equals('add')}?'增加' : '修改'" lay-submit="">增加</button></div>
+                <label  class="layui-form-label"></label>
+                <button class="layui-btn" id="add" lay-filter="add" th:text="${mode.equals('add')}?'增加' : '修改'" lay-submit="">增加</button></div>
 
     </div>
     </form>
 </div>
-
+<script th:src="@{/js/formSelects-v4.js}" type="text/javascript" charset="utf-8"></script>
 <script th:inline="javascript">
+
+
     layui.use('form', function(){
         var form = layui.form;
+        //form.render();
+        //form.render('checkbox');
        var mode=[[${mode}]];
 
+        //自定义验证规则
+        form.verify({
+            parentId: function(value) {
+                if (value.length < 1) {
+                    return '时间点参数编号至少得1个字符啊';
+                }
+            },
+            deptCode: function (value) {
+                if (value.length < 1) {
+                    return '部门编号至少得1个字符';
+                }
+            },
+            deptName: function (value) {
+                if (value.length < 1) {
+                    return '时部门名称至少得1个字符';
+                }
+            },
+            chief: function (value) {
+                if (value.length < 1) {
+                    return '负责负责人至少得1个字符';
+                }
+            },
+            remark: function (value) {
+                if (value.length < 1) {
+                    return '备注信息至少得1个字符';
+                }
+            },
+            sort:function (value) {
+                if (!/^\d+$/.test(value.trim())) {
+                    return '显示顺序至少1位，且只能是数字';
+                }
+            },
+            roles:function(value,item) {
+                var $ = layui.$;
+                var verifyName=$(item).attr('name')
+                    , verifyType=$(item).attr('type')
+                    ,formElem=$(item).parents('.layui-form')//获取当前所在的form元素，如果存在的话
+                    ,verifyElem=formElem.find("input[type='checkbox']")//获取需要校验的元素
+                    ,isTrue= verifyElem.is(':checked');//是否命中校验
+                if(!isTrue || !value){
+                    return "请选择角色！";
+                }
+            }
+       });
         //监听提交
         form.on('submit(add)', function(data){
+            $("#roles")
             if("add"==mode) {
-                $.post('/sys-permission/add',data.field,function (r) {
+                $.post('/sys-dept/add',data.field,function (r) {
                         var pid=$("#parentId").val();
                         if(r.code=='add_200') {
                             var obj1 = window.parent.layui.dtree.getNowParam("demoTree");
@@ -84,7 +150,7 @@
 
                             //window.parent.layui.dtree.changeTreeNodeAdd("refresh");
                             window.parent.layui.dtree.reload("demoTree",{
-                                url: "/sys-permission/dtree/list/pagedata",
+                                url: "/sys-dept/dtree/pagedata",
                                 //request: {id:pid},
                                 method: "post",
                                 initLevel: "5",
@@ -93,26 +159,30 @@
                             });
                             layer.msg('添加成功', {icon: 6});
                         } else {
-                            layer.msg('添加失败', {icon: 6});
+                            layer.msg('添加失败', {icon: 5});
                         }
                     }
                 );
             } else if("update"==mode) {
-                $.post('/sys-permission/update',data.field,function (r) {
-                        if(r.code=='edit_200') {
-                            window.parent.layui.dtree.reload("demoTree",{
-                                url: "/sys-permission/dtree/list/pagedata",
-                                //request: {id:pid},
-                                method: "post",
-                                initLevel: "5"
-                            });
-                            layer.msg("修改成功", {icon: 6});
-
-                        } else {
-                            layer.msg("修改成功", {icon: 6});
-                        }
+                $.ajax({
+                    url:"/sys-dept/update/",
+                    type:"PUT",
+                    data: data.field,
+                    success:function(r){
+                    if(r.code='edit_200') {
+                        window.parent.layui.dtree.reload("demoTree", {
+                            url: "/sys-dept/dtree/pagedata",
+                            //request: {id:pid},
+                            method: "post",
+                            initLevel: "5"
+                        });
+                        layer.msg("修改成功", {icon: 6});
+                    } else {
+                        layer.msg("修改失败", {icon: 5});
                     }
-                );
+
+                    }
+                });
             }
 
             return false;

@@ -10,6 +10,7 @@ import com.settlement.utils.Result;
 import com.settlement.vo.SysRoleVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.ArrayList;
@@ -20,10 +21,11 @@ import java.util.List;
  * 菜单角色关联表 服务实现类
  * </p>
  *
- * @author admin
+ * @author kun
  * @since 2019-11-26
  */
 @Service
+@Transactional
 public class SysPermissionRoleServiceImpl extends ServiceImpl<SysPermissionRoleMapper, SysPermissionRole> implements SysPermissionRoleService {
 
     @Autowired

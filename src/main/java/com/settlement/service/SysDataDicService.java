@@ -16,7 +16,7 @@ import java.util.Map;
  * 数据字典表 服务类
  * </p>
  *
- * @author admin
+ * @author kun
  * @since 2019-11-19
  */
 public interface SysDataDicService extends IService<SysDataDic> {

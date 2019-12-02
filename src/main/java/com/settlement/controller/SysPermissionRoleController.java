@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller;
  * 菜单角色关联表 前端控制器
  * </p>
  *
- * @author admin
+ * @author kun
  * @since 2019-11-26
  */
 @Controller

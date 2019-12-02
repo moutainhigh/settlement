@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
  * 部门表 Mapper 接口
  * </p>
  *
- * @author admin
+ * @author kun
  * @since 2019-11-07
  */
 @Repository

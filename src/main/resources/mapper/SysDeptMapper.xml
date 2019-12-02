@@ -8,6 +8,7 @@
         <result column="dept_code" property="deptCode" />
         <result column="dept_name" property="deptName" />
         <result column="chief" property="chief" />
+        <result column="email" property="email" />
         <result column="enabled" property="enabled" />
         <result column="remark" property="remark" />
         <result column="create_user_id" property="createUserId" />

@@ -16,6 +16,8 @@ import com.settlement.vo.SelectVo;
 import com.settlement.vo.SysDataDicVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,10 +29,11 @@ import java.util.Map;
  * 数据字典表 服务实现类
  * </p>
  *
- * @author admin
+ * @author kun
  * @since 2019-11-19
  */
 @Service
+@Transactional
 public class SysDataDicServiceImpl extends ServiceImpl<SysDataDicMapper, SysDataDic> implements SysDataDicService {
 
     @Autowired
@@ -53,7 +56,7 @@ public class SysDataDicServiceImpl extends ServiceImpl<SysDataDicMapper, SysData
 
        }catch (Exception e) {
            e.printStackTrace();
-
+           TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
        }
         return r;
     }
@@ -80,7 +83,7 @@ public class SysDataDicServiceImpl extends ServiceImpl<SysDataDicMapper, SysData
             }
        } catch (Exception e) {
             e.printStackTrace();
-
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         return r;
 
@@ -107,7 +110,7 @@ public class SysDataDicServiceImpl extends ServiceImpl<SysDataDicMapper, SysData
             }
         } catch (Exception e) {
             e.printStackTrace();
-
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         return r;
     }

@@ -17,7 +17,7 @@ import java.util.Map;
  * 数据字典表 Mapper 接口
  * </p>
  *
- * @author admin
+ * @author kun
  * @since 2019-11-19
  */
 @Repository

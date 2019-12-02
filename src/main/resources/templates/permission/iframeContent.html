@@ -16,14 +16,14 @@
                     <label for="parentID" class="layui-form-label">
                         <span class="x-red">*</span>父ID</label>
                     <div class="layui-input-inline">
-                        <input type="text" id="parentId" name="parentId"  th:value="${mode.equals('update')}?${sysPermission.parentId}:${sysPermission.parentId}" required="true" lay-verify="parentId" autocomplete="off" class="layui-input" maxlength="20"></div>
+                        <input type="text" id="parentId" name="parentId" readonly="true" th:value="${mode.equals('update')}?${sysPermission.parentId}:${sysPermission.parentId}" required="true" lay-verify="parentId" autocomplete="off" class="layui-input" maxlength="20"></div>
                 </div>
 
                 <div  class="layui-form-item">
-                    <label  class="layui-form-label">
-                        <span class="x-red">*</span>pCode</label>
+                    <label  for="pCode" class="layui-form-label">
+                        <span class="x-red">*</span>菜单编码</label>
                     <div class="layui-input-inline">
-                        <input type="text" id="pCode" name="pCode"  th:value="${mode.equals('update')}?${sysPermission.pCode}:${sysPermission.pCode}" required="" lay-verify="id" autocomplete="off" class="layui-input"></div>
+                        <input type="text" id="pCode" name="pCode"  th:value="${mode.equals('update')}?${sysPermission.pCode}:${sysPermission.pCode}" required="" lay-verify="pCode" autocomplete="off" class="layui-input"></div>
                 </div>
                 <label for="pName" class="layui-form-label">
                     <span class="x-red">*</span>菜单名称</label>
@@ -32,15 +32,15 @@
                 <div class="layui-form-mid layui-word-aux">
                     <span class="x-red">*</span>菜单名称</div></div>
             <div class="layui-form-item">
-                <label  class="layui-form-label">
-                    <span class="x-red">*</span>url</label>
+                <label  for="url" class="layui-form-label">
+                    <span class="x-red">*</span>链接url</label>
                 <div class="layui-input-inline">
-                    <input type="text" id="url" name="url" th:value="${mode.equals('update')}?${sysPermission.url}" required="" autocomplete="off" class="layui-input"></div>
+                    <input type="text" id="url" name="url" th:value="${mode.equals('update')}?${sysPermission.url}" required="" lay-verify="url" autocomplete="off" class="layui-input"></div>
                 <div class="layui-form-mid layui-word-aux">
                     <span class="x-red">*</span>权限控制标识 </div></div>
 
             <div class="layui-form-item">
-                <label class="layui-form-label">
+                <label  class="layui-form-label">
                     <span class="x-red">*</span>类型
                 </label>
                 <div class="layui-input-block">
@@ -50,7 +50,7 @@
           </div>
             <div class="layui-form-item">
                 <label for="permission" class="layui-form-label">
-                    <span class="x-red">*</span>permission</label>
+                    <span class="x-red">*</span>权限标识</label>
                 <div class="layui-input-inline">
                     <input type="text" id="permission" name="permission" th:value="${mode.equals('update')}?${sysPermission.permission}" required="" lay-verify="permission" autocomplete="off" class="layui-input"></div>
             </div>
@@ -60,9 +60,15 @@
                 <div class="layui-input-inline">
                     <input type="text" id="sort" name="sort" th:value="${mode.equals('update')}?${sysPermission.sort}" required="" lay-verify="sort" autocomplete="off" class="layui-input"></div>
             </div>
+        <div class="layui-form-item">
+            <label for="icon" class="layui-form-label">
+                <span class="x-red">*</span>菜单图标</label>
+            <div class="layui-input-inline">
+                <input type="text" id="icon" name="sort" th:value="${mode.equals('update')}?${sysPermission.icon}" required="" lay-verify="icon" autocomplete="off" class="layui-input"></div>
+        </div>
             <div class="layui-form-item">
                 <label for="add" class="layui-form-label"></label>
-                <button class="layui-btn" lay-filter="add" th:text="${mode.equals('add')}?'增加' : '修改'" lay-submit="">增加</button></div>
+                <button class="layui-btn" id="add" lay-filter="add" th:text="${mode.equals('add')}?'增加' : '修改'" lay-submit="">增加</button></div>
 
     </div>
     </form>
@@ -73,6 +79,36 @@
         var form = layui.form;
        var mode=[[${mode}]];
 
+        form.render();
+        //自定义验证规则
+        form.verify({
+            pCode: function(value) {
+                if (value.length < 1) {
+                    return '菜单编码至少得1个字符啊';
+                }
+            },
+            pName: function (value) {
+                if (value.length < 1) {
+                    return '菜单名称至少得1个字符啊';
+                }
+            },
+            url: function (value) {
+                if (value.length < 1) {
+                    return '链接url地址至少得1个字符啊';
+                }
+            },
+            permission: function (value) {
+                if (value.length < 1) {
+                    return '权限标识至少得1个字符啊';
+                }
+            },
+            sort:function (value) {
+                if (!/^\d+$/.test(value.trim())) {
+                    return '显示顺序至少1位，且只能是数字';
+                }
+            }
+        });
+
         //监听提交
         form.on('submit(add)', function(data){
             if("add"==mode) {
@@ -81,7 +117,6 @@
                         if(r.code=='add_200') {
                             var obj1 = window.parent.layui.dtree.getNowParam("demoTree");
                             //alert(window.parent.layui.find("demoTree"));
-
                             //window.parent.layui.dtree.changeTreeNodeAdd("refresh");
                             window.parent.layui.dtree.reload("demoTree",{
                                 url: "/sys-permission/dtree/list/pagedata",
@@ -93,7 +128,7 @@
                             });
                             layer.msg('添加成功', {icon: 6});
                         } else {
-                            layer.msg('添加失败', {icon: 6});
+                            layer.msg('添加失败', {icon: 5});
                         }
                     }
                 );
@@ -109,7 +144,7 @@
                             layer.msg("修改成功", {icon: 6});
 
                         } else {
-                            layer.msg("修改成功", {icon: 6});
+                            layer.msg("修改失败", {icon: 5});
                         }
                     }
                 );

@@ -2,6 +2,7 @@ package com.settlement.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.settlement.entity.SysPermission;
 import com.settlement.entity.SysPermissionRole;
 import com.settlement.mapper.SysPermissionMapper;
@@ -9,10 +10,14 @@ import com.settlement.mapper.SysPermissionRoleMapper;
 import com.settlement.service.SysPermissionService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.settlement.utils.Const;
+import com.settlement.utils.HttpResultEnum;
+import com.settlement.utils.Result;
 import com.settlement.vo.SysPermissionVo;
 import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.*;
 
@@ -21,16 +26,23 @@ import java.util.*;
  * 功能菜单表 服务实现类
  * </p>
  *
- * @author admin
+ * @author kun
  * @since 2019-11-07
  */
 @Service
+@Transactional
 public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, SysPermission> implements SysPermissionService {
 
     @Autowired
     private SysPermissionMapper sysPermissionMapper;
     @Autowired
     private SysPermissionRoleMapper sysPermissionRoleMapper;
+
+    /**
+     * 生成菜单
+     * @param roleId
+     * @return
+     */
     @Override
     public List<SysPermissionVo> getMenu(Integer roleId) {
         QueryWrapper<SysPermission> queryWrapper = new QueryWrapper<SysPermission>();
@@ -67,9 +79,16 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
         }
         return leftList;
     }
+
+    /**
+     * 生成菜单树
+     * @return
+     */
     @Override
     public List<SysPermissionVo> getMenu() {
-        List<SysPermission> list = this.baseMapper.selectList(null);
+        QueryWrapper<SysPermission> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("del_flag",Const.DEL_FLAG_N);
+        List<SysPermission> list = this.baseMapper.selectList(queryWrapper);
         List<SysPermissionVo> leftList = new ArrayList<SysPermissionVo>();
         if (list != null && list.size() > 0) {
             for (SysPermission sp : list) {
@@ -91,6 +110,10 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
         return leftList;
     }
 
+    /**
+     * 添加角色时选择的菜单权限
+     * @return
+     */
     public Map<SysPermission,List<Map<SysPermission,List<SysPermission>>>> getPermissons(){
         Map<SysPermission,List<Map<SysPermission,List<SysPermission>>>> maproot = new HashMap<>();
         //1-取得第一级的权限菜单
@@ -112,6 +135,11 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
         return maproot;
     }
 
+    /**
+     * 遍历所有的SysPermission 并把SysPermissionRole中对应的权限设置状态设置为true
+     * @param id
+     * @return
+     */
     @Override
     public Map<SysPermissionVo, List<Map<SysPermissionVo, List<SysPermissionVo>>>> getPermissons(Integer id) {
         //根据角色id查询SysPermissionRole中对应的权限
@@ -142,6 +170,86 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
         return maproot;
     }
 
+    /**
+     * 添加
+     * @param sysPermission
+     * @return
+     */
+    @Override
+    public Result add(SysPermission sysPermission) {
+        Result r = new Result(HttpResultEnum.ADD_CODE_500.getCode(),HttpResultEnum.ADD_CODE_500.getMessage());
+        sysPermission.setCreateTime(new Date());
+        sysPermission.setDelFlag(Const.DEL_FLAG_N);
+        try {
+            Integer ret = this.baseMapper.insert(sysPermission);
+            if (ret != null && ret > 0) {
+                r = new Result(HttpResultEnum.ADD_CODE_200.getCode(), HttpResultEnum.ADD_CODE_200.getMessage());
+            } else {
+                r = new Result(HttpResultEnum.ADD_CODE_500.getCode(), HttpResultEnum.ADD_CODE_500.getMessage());
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+        return  r;
+    }
+
+    /**
+     * 修改
+     * @param sysPermission
+     * @return
+     */
+    @Override
+    public Result update(SysPermission sysPermission) {
+        Result r = new Result(HttpResultEnum.EDIT_CODE_500.getCode(),HttpResultEnum.EDIT_CODE_500.getMessage()) ;
+        UpdateWrapper<SysPermission> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("id",sysPermission.getId());
+        try{
+            Integer ret = this.baseMapper.update(sysPermission,updateWrapper);
+            if(ret!=null && ret>0) {
+                r = new Result(HttpResultEnum.EDIT_CODE_200.getCode(),HttpResultEnum.EDIT_CODE_200.getMessage());
+            } else  {
+                r = new Result(HttpResultEnum.EDIT_CODE_500.getCode(),HttpResultEnum.EDIT_CODE_500.getMessage());
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+        return r;
+    }
+
+    /**
+     * 删除
+     * @param id
+     * @return
+     */
+    @Override
+    public Result delete(Integer id) {
+        Result r = new Result(HttpResultEnum.DEL_CODE_500.getCode(),HttpResultEnum.DEL_CODE_500.getMessage()) ;
+        UpdateWrapper<SysPermission> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.set("del_flag",Const.DEL_FLAG_D);
+        updateWrapper.eq("id",id);
+        try{
+            SysPermission sysPermission = this.baseMapper.selectById(id);
+            Integer ret = this.baseMapper.update(sysPermission,updateWrapper);
+            if (ret!=null && ret>0) {
+                r = new Result(HttpResultEnum.DEL_CODE_200.getCode(),HttpResultEnum.DEL_CODE_200.getMessage());
+            } else {
+                r = new Result(HttpResultEnum.DEL_CODE_500.getCode(),HttpResultEnum.DEL_CODE_500.getMessage());
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+        return r;
+    }
+
+    /**
+     * 根据传入字段和值 生成查询条件 ，并返回查询结果
+     * @param column 数据库表字段
+     * @param parent_id
+     * @return
+     */
     private List<SysPermission> getSysPermissionLists(String column,Integer parent_id){
         QueryWrapper<SysPermission> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(column,parent_id);
@@ -150,6 +258,12 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
         return sysPermissions;
     }
 
+    /**
+     * 修改角色时 sys_permission_role中的数据 更新SysPermissionVo checked为true
+     * @param sysPermissionRoles
+     * @param parent_id
+     * @return
+     */
     private List<SysPermissionVo> getSysPermissionLists2(List<SysPermissionRole> sysPermissionRoles,Integer parent_id){
         //根据parent_id取得子权限菜单
         List<SysPermissionVo> sysPermissionVos = sysPermissionMapper.getSysPermissionVo(parent_id) ;

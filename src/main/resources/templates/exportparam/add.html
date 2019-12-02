@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+    
+    <head>
+        <th:bolck th:include="common/header :: header('添加用户')" />
+        <link rel="stylesheet" th:href="@{/css/formSelects-v4.css}" />
+    </head>
+    <body>
+        <div class="layui-fluid">
+            <div class="layui-row">
+                <form class="layui-form">
+                    <input type="hidden" name="id" th:value="${baExportParam.id}" th:if="${baExportParam!=null}" />
+                    <div class="layui-form-item">
+                        <div class="layui-form-item">
+                            <label for="paramName" class="layui-form-label">
+                                <span class="x-red">*</span>导出参数名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="paramName" name="paramName" th:readonly="${mode.equals('update')}?true" th:value="${mode.equals('update')}?${baExportParam.paramName}" required="" lay-verify="paramName" autocomplete="off"  placeholder="请输入导出参数名称" class="layui-input" maxlength="20">
+                            </div>
+
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="colValue" class="layui-form-label">
+                                <span class="x-red">*</span>数据字典内容</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="colValue" name="colValue" th:value="${mode.equals('update')}?${baExportParam.colValue}"  required="" lay-verify="colValue" autocomplete="off" placeholder="请输入导出参数字段值" class="layui-input" maxlength="20">
+                            </div>
+                            <div class="layui-input-inline">
+                                <button type="button" id="colValueIsExist" th:if="${mode.equals('add')}" lay-filter="colValueIsExist" class="layui-btn layui-btn-primary layui-btn-xs">检查导出参数字段值是否可用</button>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="sort" class="layui-form-label">
+                                <span class="x-red">*</span>显示顺序</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="sort" name="sort" required="" th:value="${mode.equals('update')}?${baExportParam.sort}"  lay-verify="sort" autocomplete="off" placeholder="显示顺序" class="layui-input" maxlength="100">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="add" class="layui-form-label"></label>
+                            <button class="layui-btn" id="add" th:text="${mode.equals('add')}?'增加' : '修改'" lay-filter="add" lay-submit="">增加</button>
+                        </div>
+                   </div>
+                </form>
+            </div>
+        </div>
+        <script type="text/javascript" th:inline="javascript">
+            // 表单操作
+            layui.use(['form', 'layer','jquery'],
+            function() {
+                $ = layui.jquery;
+                var form = layui.form,
+                layer = layui.layer;
+                form.render();
+                //自定义验证规则
+                form.verify({
+                    paramName: function(value) {
+                        if (value.length < 1) {
+                            return '导出参数名称至少得1个字符啊';
+                        }
+                    },
+                    colValue: function (value) {
+                        if (value.length < 1) {
+                            return '导出参数字段值至少得1个字符啊';
+                        }
+                    },
+                    sort: function (value) {
+                        if (!/^\d+$/.test(value.trim())) {
+                            return '显示顺序至少1位，且只能是数字';
+                        }
+                    }
+                });
+
+                $('#colValueIsExist').click(function () {
+                        var colValue= $('#colValue').val();
+                        if(colValue.trim().length==0) {
+                            layer.msg('导出参数名称至少得1个字符啊',{icon:5});
+                            return false;
+                        }
+                        checkColValueIsExist(colValue,layer,'');
+                    }
+                );
+                //监听提交
+                form.on('submit(add)', function(data){
+                    var mode=[[${mode}]];
+
+                    if("add"==mode && checkColValueIsExist($('#colValue').val(),layer,'submit')) {
+                        $.post('/ba-export-param/add',data.field,function (r) {
+                            layer.alert(r.msg, {
+                                    icon : r.code == 'add_200' ? 6: 5
+                                },
+                                function() {
+                                    //关闭当前frame
+                                    xadmin.close();
+                                    // 可以对父窗口进行刷新
+                                    xadmin.father_reload();
+                                });
+                        });
+                    } else if('update'==mode){
+                        $.ajax({
+                            type:"put",
+                            url:'/ba-export-param/update',
+                            data:data.field,
+                            success: function(r){
+                                layer.alert(r.msg, {
+                                        icon : r.code == 'edit_200' ? 6: 5
+                                    },
+                                    function() {
+                                        //关闭当前frame
+                                        xadmin.close();
+                                        // 可以对父窗口进行刷新
+                                        xadmin.father_reload();
+                                    });
+                            }
+                        });
+                    }
+                    return false;
+                });
+
+            });
+            // 检查邮箱是否存在
+            function checkColValueIsExist(colValue, layer,mode) {
+                var flag = true;
+                $.ajaxSettings.async = false;
+                $.get('/ba-export-param/isexist/' + colValue , null , function(r) {
+                    if (r.code == 1)  {
+                        flag = false;
+                        layer.alert(r.msg, {icon: 5});
+                    } else if (mode != 'submit' && r.code == 0) {
+                        layer.alert(r.msg, {icon: 6});
+                    }
+                });
+                $.ajaxSettings.async = true;
+                return flag;
+            }
+        </script>
+    </body>
+</html>
