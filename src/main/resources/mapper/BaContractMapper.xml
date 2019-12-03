@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.settlement.mapper.BaContractMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.settlement.entity.BaContract">
+        <id column="id" property="id" />
+        <result column="contract_no" property="contractNo" />
+        <result column="invoice_issuing" property="invoiceIssuing" />
+        <result column="start_time" property="startTime" />
+        <result column="end_time" property="endTime" />
+        <result column="remark" property="remark" />
+        <result column="create_user_id" property="createUserId" />
+        <result column="create_time" property="createTime" />
+        <result column="customer_id" property="customerId" />
+        <result column="ba_project_group_id" property="baProjectGroupId" />
+        <result column="status" property="status" />
+        <result column="del_flag" property="delFlag" />
+    </resultMap>
+    <select id="getBaContractVos" resultType="com.settlement.vo.BaContractVo" parameterType="com.settlement.co.ContractCo">
+        select c.*,
+        cu.customer_name as customerName,
+        g.pg_name as projectName,
+        u.real_name as createUserName
+        from
+        ba_contract c
+        left join ba_customer cu on c.customer_id=cu.id
+        left join ba_project_group g on c.ba_project_group_id=g.id
+        left join sys_user u on c.create_user_id=u.id
+        where c.del_flag='N'
+        <if test="contractCo.keyword != null">
+            and c.contract_no like CONCAT('%',#{contractCo.keyword},'%')
+        </if>
+        order by c.create_time desc
+     </select>
+
+    <select id="getBaContractVoById" resultType="com.settlement.vo.BaContractVo" parameterType="java.lang.Integer">
+    select c.*,
+        cu.customer_name as customerName,
+        g.pg_name as projectName,
+        u.real_name as createUserName
+     from
+        ba_contract c
+        left join ba_customer cu on c.customer_id=cu.id
+        left join ba_project_group g on c.ba_project_group_id=g.id
+        left join sys_user u on c.create_user_id=u.id
+    where c.del_flag='N'
+    and c.id=#{id}
+    </select>
+
+</mapper>

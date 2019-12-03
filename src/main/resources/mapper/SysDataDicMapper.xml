@@ -17,20 +17,20 @@
 
 
     <select  resultType="com.settlement.vo.SysDataDicVo" id="getDataDicVoByPid">
-    select dic.id as id,
-       dic.dic_code as dicCode,
-       dic.dic_content as dicContent,
-       dic.sort as sort,
-       dic.pid as pid,
-       dic2.dic_content as pidContent,
-       dic.enabled as enabled,
-       dic.create_user_id as createUserId,
-       dic.del_flag as delFlag
-        from sys_data_dic dic,
-        (select id,dic_content from sys_data_dic) dic2
-        where dic.id=dic2.id
-        and dic.pid=#{dataDicCo.pid}
-        and dic.del_flag='N'
+        select dic.id as id,
+        dic.dic_code as dicCode,
+        dic.dic_content as dicContent,
+        dic.sort as sort,
+        dic.pid as pid,
+        dic2.dic_content as pidContent,
+        dic.enabled as enabled,
+        dic.create_user_id as createUserId,
+        dic.del_flag as delFlag
+        from sys_data_dic dic
+        left join (select id,dic_code,dic_content ,pid from sys_data_dic) dic2
+        on dic.pid=dic2.dic_code
+        where dic.pid=#{dataDicCo.pid}
+        and dic.enabled='Y'
         <if test="dataDicCo.keyword!=null">
             and dic.dic_content like CONCAT('%',#{dataDicCo.keyword},'%')
         </if>

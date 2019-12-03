@@ -137,7 +137,7 @@ public class BaCustomerServiceImpl extends ServiceImpl<BaCustomerMapper, BaCusto
                 Integer ret2=baDeptCustomerMapper.delete(queryWrapper);
                 if(ret2!=null && ret2>0) {
                     r.setCode(HttpResultEnum.DEL_CODE_200.getCode());
-
+                    r.setMsg(HttpResultEnum.DEL_CODE_200.getMessage());
                 }
             }
         } catch (Exception e) {

@@ -227,4 +227,17 @@ public class BaProjectGroupServiceImpl extends ServiceImpl<BaProjectGroupMapper,
         pgv.setSettlements(settlement);
         return pgv;
     }
+
+    /**
+     * 根据customerId获得项目组
+     * @param customerId
+     * @return
+     */
+    @Override
+    public List<BaProjectGroup> getGroupsByCustomerId(Integer customerId) {
+        QueryWrapper<BaProjectGroup> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("customer_id",customerId);
+        return  this.baseMapper.selectList(queryWrapper);
+
+    }
 }

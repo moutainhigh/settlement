@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.settlement.utils.Result;
 import com.settlement.vo.ProjectGroupVo;
 
+import java.util.List;
+
 /**
  * <p>
  * 项目表 服务类
@@ -34,4 +36,6 @@ public interface BaProjectGroupService extends IService<BaProjectGroup> {
     ProjectGroupVo getProjectGroupAssistantById(Integer id);
     /** 根据ID查询项目组，结算负责人 */
     ProjectGroupVo getProjectGroupSettlementById(Integer id);
+    /** 根据customerId获得项目组**/
+    List<BaProjectGroup> getGroupsByCustomerId(Integer customerId);
 }

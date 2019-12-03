@@ -176,9 +176,9 @@ public class BaFormulaParamServiceImpl extends ServiceImpl<BaFormulaParamMapper,
         queryWrapper.eq("del_flag",Const.DEL_FLAG_N);
         Integer count = this.baseMapper.selectCount(queryWrapper);
         if(count!=null && count>0) {
-            r = new Result(HttpResultEnum.Formula_PARAM_CODE_1.getCode(),HttpResultEnum.Formula_PARAM_CODE_1.getMessage());
+            r = new Result(HttpResultEnum.FORMULA_PARAM_CODE_1.getCode(),HttpResultEnum.FORMULA_PARAM_CODE_1.getMessage());
         } else {
-            r = new Result(HttpResultEnum.Formula_PARAM_CODE_0.getCode(),HttpResultEnum.Formula_PARAM_CODE_0.getMessage());
+            r = new Result(HttpResultEnum.FORMULA_PARAM_CODE_0.getCode(),HttpResultEnum.FORMULA_PARAM_CODE_0.getMessage());
         }
         return r;
     }

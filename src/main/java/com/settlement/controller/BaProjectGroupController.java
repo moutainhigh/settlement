@@ -13,6 +13,7 @@ import com.settlement.service.BaProjectGroupAssistantService;
 import com.settlement.service.BaProjectGroupService;
 import com.settlement.service.BaProjectGroupSettlementService;
 import com.settlement.utils.Const;
+import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
 import com.settlement.vo.ProjectGroupVo;
 import org.apache.commons.lang3.StringUtils;
@@ -173,5 +174,14 @@ public class BaProjectGroupController {
     @PostMapping("/ba-project-group/relate-settlement")
     public Result relateSettlement(ProjectGroupVo projectGroupVo) {
         return this.baProjectGroupSettlementService.batchInsert(projectGroupVo.getId(), projectGroupVo.getSettlements());
+    }
+
+    @PutMapping("/ba-project-group/groups/{customerId}")
+    public Result getGroupsByCustomerId(@PathVariable(value="customerId") Integer customerId) {
+        Result r = new Result();
+        r.setCode(HttpResultEnum.CODE_0.getCode());
+        r.setMsg(HttpResultEnum.CODE_0.getMessage());
+        r.setData(this.baProjectGroupService.getGroupsByCustomerId(customerId));
+        return r;
     }
 }

@@ -43,9 +43,8 @@
                 <label  class="layui-form-label">
                     <span class="x-red">*</span>类型
                 </label>
-                <div class="layui-input-block">
-                    <input type="radio" name="type" th:value="${mode.equals('update')}?${sysPermission.type}" title="菜单" checked>
-                    <input type="radio" name="type" th:value="${mode.equals('update')}?${sysPermission.type}" title="按钮" >
+                <div class="layui-input-block" th:each="sysDataDic:${sysDataDicVos}">
+                    <input type="radio" name="type" th:value="${sysDataDic.dicCode}" th:title="${sysDataDic.dicContent}" th:checked="${sysDataDic.dicCode}==${sysPermission.type}">
                 </div>
           </div>
             <div class="layui-form-item">
@@ -97,11 +96,11 @@
                     return '链接url地址至少得1个字符啊';
                 }
             },
-            permission: function (value) {
-                if (value.length < 1) {
-                    return '权限标识至少得1个字符啊';
-                }
-            },
+            // permission: function (value) {
+            //     if (value.length < 1) {
+            //         return '权限标识至少得1个字符啊';
+            //     }
+            // },
             sort:function (value) {
                 if (!/^\d+$/.test(value.trim())) {
                     return '显示顺序至少1位，且只能是数字';
