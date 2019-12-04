@@ -5,7 +5,11 @@ import com.settlement.co.CustomerCo;
 import com.settlement.entity.BaCustomer;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.settlement.utils.Result;
+import com.settlement.vo.BaCustomerAndProjectTreeVo;
+import com.settlement.vo.BaCustomerAndProjectVo;
 import com.settlement.vo.BaCustomerVo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -30,4 +34,9 @@ public interface BaCustomerService extends IService<BaCustomer> {
     Result updateEnableStop(Integer id);
     /**根据id查询得到 BaCustomerVo**/
     BaCustomerVo getBaCustomerVoById(Integer id);
+    /**根据用户id查询当前的客户信息和项目组**/
+    List<BaCustomerAndProjectVo> getCustomerAndProjectByUserId(Integer userId);
+    /**根据用户id查询当前的客户信息和项目组生成树**/
+    List<BaCustomerAndProjectTreeVo> getCustomerAndProjectTreeByUserId(Integer userId);
+
 }

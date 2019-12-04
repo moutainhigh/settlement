@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html class="x-admin-sm"  xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <th:bolck th:include="common/header :: header('数据字典管理')" />
+    </head>
+    <body>
+        <div class="x-nav">
+          <span class="layui-breadcrumb">
+            <a href="/home">首页</a>
+            <a href="">考勤管理</a>
+            <a>
+              <cite>考勤申请修改记录</cite></a>
+          </span>
+          <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
+            <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
+        </div>
+        <div class="layui-fluid">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-md12">
+                    <div class="layui-card">
+                        <div class="layui-card-body">
+                            <form class="layui-form layui-col-space5" onsubmit="return false">
+
+                                <div class="layui-inline layui-show-xs-block">
+                                    <input type="text" id="keyword" name="keyword"  placeholder="查询合同编号" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-inline layui-show-xs-block">
+                                    <button class="layui-btn" id="search" data-type="reload" lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i>查询</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="layui-card-header">
+                            <button class="layui-btn" onclick="xadmin.open('添加合同','/ba-apply/modifyinfo',600,550)"><i class="layui-icon"></i>添加</button>
+<!--                            <button type="button" id="delete" class="layui-btn layui-btn-danger" onclick="deleteFun()" lay-demo="reload">删除</button>-->
+                        </div>
+                        <div class="layui-card-body layui-table-body layui-table-main" >
+                            <table class="layui-table layui-form" id="dataTable" lay-filter="dataTable">
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </body>
+    <script type="text/html" id="toolBar">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+    <script type="text/javascript"  th:inline="none">
+      layui.use(['laydate','table','form','element'], function(){
+        var laydate = layui.laydate;
+        var  form = layui.form;
+        var table = layui.table;
+       // var layer = layui.layer;
+        // var $ = layui.jquery;
+        table.render({
+           elem: '#dataTable',
+           url: '/ba-apply/pagedata',
+           // toolbar: '',
+           page: true,
+           title: '导出参数',
+           height: 'full-210',
+           // id: 'userData',
+           cols: [[
+               {field:'id',type:'checkbox',fixed:'left'},
+               {field:'applyType',title:'修改类型',align:'center',fixed:'left'},
+               {field:'applyRemark',title:'申请备注',edit: 'text',align:'center'},
+               {field:'checkStatus',title:'审核状态',edit: 'text',align:'center'},
+               {field:'applyUser',title:'申请人',edit: 'text',align:'center'},
+               {field:'checkUser',title:'审核人',edit: 'text',align:'center'},
+               {field:'applyTime',title:'申请时间',edit: 'text',align:'center'},
+               {field:'checkTime',title:'审核时间',edit: 'text',align:'center'},
+               {field:'checkRemark',title:'审核备注',edit: 'text',align:'center'}
+           ]]
+        });
+
+          var $ = layui.$, active = {
+              reload: function(){
+                  var keyword = $('#keyword');
+                  //执行重载
+                  table.reload('dataTable', {
+                      page: {
+                          curr: 1 //重新从第 1 页开始
+                      }
+                      ,where: {
+                              keyword: keyword.val()
+                      }
+                  }, 'data');
+              },
+          };
+          $('.layui-btn').on('click', function(){
+              var type = $(this).data('type');
+              active[type] ? active[type].call(this) : '';
+          });
+      });
+    </script>
+</html>

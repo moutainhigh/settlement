@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.settlement.mapper.BaWorkAttendanceMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.settlement.entity.BaWorkAttendance">
+        <id column="id" property="id" />
+        <result column="work_days" property="workDays" />
+        <result column="attendance_days" property="attendanceDays" />
+        <result column="absenteeism_days" property="absenteeismDays" />
+        <result column="float_performance" property="floatPerformance" />
+        <result column="bonus" property="bonus" />
+        <result column="check_work_days" property="checkWorkDays" />
+        <result column="work_day_overtime_h" property="workDayOvertimeH" />
+        <result column="weekend_overtime_h" property="weekendOvertimeH" />
+        <result column="festival_overtime_h" property="festivalOvertimeH" />
+        <result column="work_day_overtime_d" property="workDayOvertimeD" />
+        <result column="weekend_overtime_d" property="weekendOvertimeD" />
+        <result column="festival_overtime_d" property="festivalOvertimeD" />
+        <result column="remainder_overtime_lm_h" property="remainderOvertimeLmH" />
+        <result column="month_overtime_h" property="monthOvertimeH" />
+        <result column="take_hours_off" property="takeHoursOff" />
+        <result column="details" property="details" />
+        <result column="remainder_overtime_m_h" property="remainderOvertimeMH" />
+        <result column="taxi_fare" property="taxiFare" />
+        <result column="travel_expenses" property="travelExpenses" />
+        <result column="meals" property="meals" />
+        <result column="telephone_bill" property="telephoneBill" />
+        <result column="overtime_allowance" property="overtimeAllowance" />
+        <result column="other_add_cost" property="otherAddCost" />
+        <result column="other_sub_cost" property="otherSubCost" />
+        <result column="remark" property="remark" />
+        <result column="sub_status" property="subStatus" />
+        <result column="create_time" property="createTime" />
+        <result column="employee_id" property="employeeId" />
+    </resultMap>
+
+</mapper>

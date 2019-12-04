@@ -13,5 +13,19 @@
         <result column="create_time" property="createTime" />
         <result column="del_flag" property="delFlag" />
     </resultMap>
+    <!--根据用户id查询当前的客户信息和项目组-->
+    <select id="getCustomerAndProjectByUserId" parameterType="java.lang.Integer" resultType="com.settlement.vo.BaCustomerAndProjectVo">
+        select
+            c.id as id,
+            c.customer_name as customerName,
+            c.code as code,
+            pg.id as projectId,
+            pg.pg_name as projectName
+            from ba_customer c
+            left join ba_project_group pg on c.id = pg.customer_id
+            left join ba_project_group_assistant pga on pga.pg_id = pg.id
+            where pg.enabled='Y'
+            and pga.assistant_id=#{userId}
 
+    </select>
 </mapper>

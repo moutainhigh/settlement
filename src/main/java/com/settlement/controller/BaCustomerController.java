@@ -1,16 +1,21 @@
 package com.settlement.controller;
 
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.settlement.bo.PageData;
 import com.settlement.co.CustomerCo;
 import com.settlement.entity.SysUser;
 import com.settlement.service.BaCustomerService;
 import com.settlement.utils.Result;
+import com.settlement.utils.Status;
+import com.settlement.vo.BaCustomerAndProjectTreeVo;
 import com.settlement.vo.BaCustomerVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 
 /**
@@ -36,7 +41,23 @@ public class BaCustomerController {
         PageData pageData = baCustomerService.listPageData(customerCo);
         return  pageData;
     }
-
+    @PostMapping("/list/tree1")
+    public Object customerAndProjectTree(){
+        List<BaCustomerAndProjectTreeVo> baCustomerAndProjectTreeVos = baCustomerService.getCustomerAndProjectTreeByUserId(37);
+        JSONObject josn = new JSONObject();
+        Status status = new Status();
+        status.setCode(200);
+        status.setMessage("操作成功");
+        josn.put("status",JSONArray.toJSON(status));
+        josn.put("data", JSONArray.toJSON(baCustomerAndProjectTreeVos));
+        System.out.println(josn.toJSONString());
+        return josn.toJSONString();
+    }
+    @PostMapping("/list/tree2")
+    public List<BaCustomerAndProjectTreeVo> customerAndProjectTree2(){
+        List<BaCustomerAndProjectTreeVo> baCustomerAndProjectTreeVos = baCustomerService.getCustomerAndProjectTreeByUserId(37);
+        return  baCustomerAndProjectTreeVos;
+    }
     /**
      * 添加
      * @param baCustomerVo

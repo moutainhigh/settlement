@@ -16,7 +16,6 @@ public class SelectVo<T, Object> {
     private Integer value;
 
     private String name;
-
     private List<T> children;
 
     public SelectVo() {}

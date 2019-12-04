@@ -15,6 +15,8 @@ import com.settlement.service.BaDeptCustomerService;
 import com.settlement.utils.Const;
 import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
+import com.settlement.vo.BaCustomerAndProjectTreeVo;
+import com.settlement.vo.BaCustomerAndProjectVo;
 import com.settlement.vo.BaCustomerVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.management.BadAttributeValueExpException;
-import java.util.Date;
+import java.util.*;
 
 /**
  * <p>
@@ -202,5 +204,55 @@ public class BaCustomerServiceImpl extends ServiceImpl<BaCustomerMapper, BaCusto
     @Override
     public BaCustomerVo getBaCustomerVoById(Integer id) {
         return this.baseMapper.getBaCustomerVoById(id);
+    }
+
+    /**
+     * 根据用户id查询当前的客户信息和项目组
+     * @author kun
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<BaCustomerAndProjectVo> getCustomerAndProjectByUserId(Integer userId) {
+        return this.baseMapper.getCustomerAndProjectByUserId(userId);
+    }
+
+    /**
+     * 根据用户id查询当前的客户信息和项目组生成树
+     * @author kun
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<BaCustomerAndProjectTreeVo> getCustomerAndProjectTreeByUserId(Integer userId) {
+        List<BaCustomerAndProjectVo> baCustomerAndProjectVos = this.baseMapper.getCustomerAndProjectByUserId(userId);
+        Map<String,BaCustomerAndProjectVo> map = new HashMap<String,BaCustomerAndProjectVo>();
+        List<BaCustomerAndProjectTreeVo> baCustomerAndProjectTreeVos = new ArrayList<>();
+        for(BaCustomerAndProjectVo ba: baCustomerAndProjectVos) {
+            if(map.containsKey(ba.getCode())) {
+                BaCustomerAndProjectTreeVo baVo = new BaCustomerAndProjectTreeVo();
+                baVo.setId(ba.getProjectId());
+                baVo.setTitle(ba.getProjectName());
+                baVo.setParentId(ba.getId());
+                baVo.setCheckArr("0");
+                baCustomerAndProjectTreeVos.add(baVo);
+            } else {
+                map.put(ba.getCode(),ba);
+                BaCustomerAndProjectTreeVo baVo = new BaCustomerAndProjectTreeVo();
+                baVo.setId(ba.getId());
+                baVo.setTitle(ba.getCustomerName());
+                baVo.setParentId(0);
+                baVo.setCheckArr("0");
+                baCustomerAndProjectTreeVos.add(baVo);
+
+                BaCustomerAndProjectTreeVo baChildVo = new BaCustomerAndProjectTreeVo();
+                baChildVo.setId(ba.getProjectId());
+                baChildVo.setTitle(ba.getProjectName());
+                baChildVo.setParentId(ba.getId());
+                baChildVo.setCheckArr("0");
+                baCustomerAndProjectTreeVos.add(baChildVo);
+            }
+        }
+        return baCustomerAndProjectTreeVos;
     }
 }

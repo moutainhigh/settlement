@@ -3,7 +3,6 @@ package com.settlement.co;
 import lombok.Data;
 
 @Data
-public class DataDicCo extends PageCo {
+public class WorkAttendanceCo extends PageCo{
     private String keyword;
-    private String pid;
 }

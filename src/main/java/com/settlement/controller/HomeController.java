@@ -52,6 +52,8 @@ public class HomeController {
     private BaCustomerService baCustomerService;
     @Autowired
     private BaContractService baContractService;
+    @Autowired
+    private BaWorkAttendanceService baWorkAttendanceService;
 
     @GetMapping({"/","/login"})
     public String toLogin() {
@@ -547,7 +549,64 @@ public class HomeController {
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * 考勤管理页面
+     * @return
+     */
+    @GetMapping("/ba-work-attendance/list")
+    public String toWorkAttendance(){
+        return "workattendance/list";
+    }
+    /**
+     * 考勤管理-编辑考勤信息
+     * @return
+     */
+    @GetMapping("/ba-work-attendance/attendlist")
+    public String toAttendList(){
+        return "workattendance/attendlist";
+    }
+    /**
+     * 考勤管理-申请修改
+     * @return
+     */
+    @GetMapping("/ba-work-attendance/applymodify/{ids}")
+    public String toApplymodifyPage(@PathVariable Integer[] ids,Model model){
+        model.addAttribute("workAttendanceIds",ids);
+        return "workattendance/applymodify";
+    }
+
+    /**
+     * 考勤管理-编辑员工考勤
+     * @param id 考勤id
+     * @param model
+     * @return
+     */
+    @GetMapping("/ba-work-attendance/edit/{id}")
+    public String toWorkAttendanceEdit(@PathVariable Integer id, Model model){
+        BaWorkAttendance baWorkAttendance = baWorkAttendanceService.getBaWorkAttendanceVoById(id);
+        model.addAttribute("baWork",baWorkAttendance);
+        return "workattendance/add";
+    }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * 申请修改记录
+     * @return
+     */
+    @GetMapping("/ba-apply/list")
+    public String toApplyList(){
+        return "apply/list";
+    }
+
+    /**
+     * 申请修改考勤记录
+     * @param id
+     * @return
+     */
+    @GetMapping("/ba-apply/workattendance/{id}")
+    public String toApplyWorkAttendanceList(@PathVariable Integer id) {
+        return "apply/attendlist";
+    }
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
