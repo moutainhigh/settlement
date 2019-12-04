@@ -17,7 +17,7 @@
     </resultMap>
 
     <select id="getProjectGroupList" resultType="com.settlement.vo.ProjectGroupVo">
-        SELECT bpg.id, bpg.pg_name, bpg.code, bpg.check_status,bpg.create_time,bpg.enabled,sdd.dic_content as checkStatusContent, su.real_name as ownerName
+        SELECT bpg.id, bpg.pg_name, bpg.code, bpg.check_status,bpg.create_time,bpg.enabled,sdd.dic_content as checkStatusContent, su.real_name as ownerName,bpg.create_user_id
         FROM
             ba_project_group bpg
             LEFT JOIN sys_data_dic sdd ON bpg.check_status = sdd.dic_code

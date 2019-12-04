@@ -1,8 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    #url: jdbc:mysql://10.24.2.23:3306/settlement?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull
-    url: jdbc:mysql://127.0.0.1:3306/settlement?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull
+    url: jdbc:mysql://10.24.2.23:3306/settlement?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull
     username: root
     password: 123456
  ##################以下为druid增加的配置###########################
@@ -56,6 +55,10 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB
 mybatis-plus:
   configuration:
     # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用

@@ -3,7 +3,6 @@
     
     <head>
         <th:bolck th:include="common/header :: header('添加项目组员工')" />
-        <link rel="stylesheet" th:href="@{/css/formSelects-v4.css}" />
     </head>
     <body>
        <div class="layui-fluid">
@@ -15,7 +14,7 @@
                         <div class="layui-collapse" lay-accordion="">
                             <div class="layui-colla-item">
                                 <h2 class="layui-colla-title">必填内容</h2>
-                                <div class="layui-colla-content">
+                                <div class="layui-colla-content layui-show">
                                     <div class="layui-form-item">
                                         <div class="layui-inline">
                                             <label for="empName" class="layui-form-label">
@@ -72,23 +71,29 @@
                                             <label class="layui-form-label">
                                                 <span class="x-red">*</span>结算抄送邮件</label>
                                             <div class="layui-input-inline layui-show-xs-block">
-                                                <input type="text" id="sendCopyEmail" name="sendCopyEmail" required="" lay-verify="email" autocomplete="off"  placeholder="请输入结算发送抄送人邮件地址(客户方)" class="layui-input" maxlength="400">
+                                                <input type="text" id="sendCopyEmail" name="sendCopyEmail" required="" lay-verify="sendCopyEmail" autocomplete="off"  placeholder="请输入结算发送抄送人邮件地址(客户方)" class="layui-input" maxlength="400">
                                             </div>
                                         </div>
                                         <div class="layui-inline">
                                             <label class="layui-form-label">
                                                 <span class="x-red">*</span>级别</label>
                                             <div class="layui-input-inline">
-                                                <select name="posLevel" lay-filter="posLevel">
-                                                    <option value="" selected>请选择</option>
-                                                    <option value="0">写作</option>
-                                                    <option value="1">阅读</option>
-                                                    <option value="2">游戏</option>
-                                                    <option value="3">音乐</option>
-                                                    <option value="4">旅行</option>
-                                                </select>
+                                                <div id="div1">
+                                                    <select id="posLevelSelect" name="posLevel" lay-filter="posLevelSelect" lay-verify="posLevelSelect">
+                                                        <option value="" selected>请选择</option>
+                                                        <option value="0">写作</option>
+                                                        <option value="1">阅读</option>
+                                                        <option value="2">游戏</option>
+                                                        <option value="3">音乐</option>
+                                                        <option value="4">旅行</option>
+                                                    </select>
+                                                </div>
+                                                <div id="div2" style="display: none;">
+                                                    <input  id="posLevelInput"  class="layui-input" required="" lay-verify="posLevelInput" autocomplete="off"  placeholder="请输入级别"  maxlength="20">
+                                                </div>
                                             </div>
-                                            <button type="button" onclick="setPass()" class="layui-btn layui-btn-primary layui-btn-xs">手填</button>
+                                            <button type="button" id="handInputId" onclick="handInput()" class="layui-btn layui-btn-primary layui-btn-xs">手填</button>
+                                            <button type="button" id="frameInputId" onclick="frameInput()" class="layui-btn layui-btn-primary layui-btn-xs" style="display: none;margin-left: -2px;">框架</button>
                                         </div>
                                     </div>
 
@@ -96,7 +101,7 @@
                                         <div class="layui-inline">
                                             <label class="layui-form-label"><span class="x-red">*</span>服务费(月)</label>
                                             <div class="layui-input-inline">
-                                                <input name="priceMonth" readonly="readonly" id="priceMonth" class="layui-input" required="" lay-verify="priceMonth" autocomplete="off"  placeholder=""  maxlength="10">
+                                                <input name="priceMonth" readonly="readonly" id="priceMonth" class="layui-input" required="" lay-verify="priceMonth" autocomplete="off"  placeholder="单价/月"  maxlength="10">
                                             </div>
                                         </div>
                                         <div class="layui-inline">
@@ -120,6 +125,8 @@
                                             </div>
                                         </div>
                                         <div class="layui-inline layui-upload-list">
+                                            <input type="hidden" name="uploadRateEmail" lay-verify="uploadRateEmail" >
+                                            <input type="hidden" name="rateEmailFilename" >
                                             <img class="layui-upload-img" id="demo1" width="600" height="200">
                                             <p id="demoText"></p>
                                         </div>
@@ -138,7 +145,7 @@
                                         <div class="layui-inline">
                                             <label class="layui-form-label">服务费(天)</label>
                                             <div class="layui-input-inline">
-                                                <input name="priceDay" readonly="readonly" id="priceDay" class="layui-input" required="" lay-verify="priceDay" autocomplete="off"  placeholder=""  maxlength="10">
+                                                <input name="priceDay" readonly="readonly" id="priceDay" class="layui-input" required="" lay-verify="priceDay" autocomplete="off"  placeholder="单价/天"  maxlength="10">
                                             </div>
                                         </div>
                                         <div class="layui-inline">
@@ -197,10 +204,6 @@
                             </div>
                         </div>
 
-
-
-
-
                         <div class="layui-form-item">
                             <label for="saveButton" class="layui-form-label"></label>
                             <button class="layui-btn" id="saveButton" lay-filter="saveButton" lay-submit="">增加</button>
@@ -210,8 +213,7 @@
                 </form>
            </div>
         </div>
-       <!-- <script th:src="@{/js/formSelects-v4.js}" type="text/javascript" charset="utf-8"></script>-->
-       <!-- <script th:src="@{/js/pg/pg.js}" type="text/javascript" charset="utf-8"></script>-->
+       <script th:src="@{/js/emp/emp.js}" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript">
             // 表单操作
             layui.use(['laydate','form', 'layer','jquery','upload'],
@@ -225,7 +227,10 @@
                 //普通图片上传
                 var uploadInst = upload.render({
                     elem: '#test1'
-                    ,url: '/upload/'
+                    ,url: '/file/upload'
+                   //  ,method:'POST'
+                    ,field:'file'
+                    ,size: 5*1024 //限制文件大小，单位 KB
                     ,before: function(obj){
                         //预读本地文件示例，不支持ie8
                        obj.preview(function(index, file, result){
@@ -233,11 +238,15 @@
                         });
                     }
                     ,done: function(res){
-                        //如果上传失败
-                        if(res.code > 0){
-                            return layer.msg('上传失败');
+                        // $("input[name='uploadRateEmail']").val('');
+                        // if(res.code != '0'){
+                        if (res.code == '9006') {
+                            //上传成功
+                            $("input[name='uploadRateEmail']").val(res.path);
+                            $("input[name='rateEmailFilename']").val(res.fileName);
                         }
-                        //上传成功
+                        return layer.msg(res.msg,{icon: res.code == '9006' ? 6 : 5});
+                       //   }
                     }
                     ,error: function(){
                         //演示失败状态，并实现重传
@@ -249,7 +258,6 @@
                     }
                 });
 
-
                 laydate.render({
                    elem: '#entranceTime'
                 });
@@ -257,19 +265,63 @@
                 form.render();
                 //自定义验证规则
                 form.verify({
-                    pgName: function(value) {
+                    empName: function(value) {
                         if (value.trim().length < 1) {
-                            return '项目组至少得1个字符啊';
+                            return '员工姓名至少得1个字符啊';
                         }
                     },
                     code: function (value) {
                         if (value.trim().length < 1) {
-                            return '编号至少得1个字符啊';
+                            return '员工编号至少得1个字符啊';
                         }
                     },
-                    checkUserId: function(value) {
+                    entranceTime: function(value) {
                         if (value.length < 1) {
-                            return '客户经理至少得选择一个啊';
+                            return '入场时间至少得1个字符啊';
+                        }
+                    },
+                    place: function(value) {
+                        if (value.length < 1) {
+                            return '员工所在地至少得1个字符啊';
+                        }
+                    },
+                    responsiblePerson: function(value) {
+                        if (value.length < 1) {
+                            return '客户负责人至少得1个字符啊';
+                        }
+                    },
+                    rpEmail: function(value) {
+                        if (value.length < 1) {
+                            return '客户负责人邮件地址至少得1个字符啊';
+                        }
+                    },
+                    sendCopyEmail: function(value) {
+                        if (value.length < 1) {
+                            return '结算发送抄送人邮件地址(客户方)至少得1个字符啊';
+                        }
+                    },
+                    posLevelInput: function(value) {
+                        if ($("#div2").css('display') === 'block') {
+                            if (value.length < 1) {
+                                return '级别至少得1个字符啊';
+                            }
+                        }
+                    },
+                    posLevelSelect: function(value) {
+                        if ($("#div1").css('display') === 'block') {
+                            if (value.length < 1) {
+                                return '级别至少得选择一个啊';
+                            }
+                        }
+                    },
+                    priceMonth: function(value) {
+                        if (value.length < 1) {
+                            return '服务费单价月至少得1个字符啊';
+                        }
+                    },
+                    uploadRateEmail: function(value) {
+                        if (value.length < 1) {
+                            return '请上传客户确认rate邮件啊';
                         }
                     }
                 });
@@ -322,6 +374,7 @@
                     }
                 });
             });
+
         </script>
     </body>
 </html>

@@ -51,10 +51,13 @@ public enum HttpResultEnum {
     QUERY_CODE_200("query_200","查询成功"),
     QUERY_CODE_500("query_500","查询失败"),
 
+    FILE_UPLOAD_CODE_9006("9006","文件上传成功"),
     FILE_UPLOAD_CODE_9000("9000","文件上传失败"),
     FILE_UPLOAD_CODE_9003("9003","文件上传超过限制！"),
     FILE_UPLOAD_CODE_9001("9001","创建文件夹失败"),
-    FILE_UPLOAD_CODE_9002("9002","文件下载失败");
+    FILE_UPLOAD_CODE_9002("9002","文件下载失败"),
+    FILE_UPLOAD_CODE_9004("9004","图片上传格式不正确，支持的格式有jpg、png、jpeg"),
+    FILE_UPLOAD_CODE_9005("9005","图片上传为空");
 
 
     private String code;
