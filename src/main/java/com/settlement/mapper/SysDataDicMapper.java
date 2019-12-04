@@ -6,6 +6,7 @@ import com.settlement.entity.SysDataDic;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.settlement.vo.SysDataDicVo;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
@@ -34,5 +35,13 @@ public interface SysDataDicMapper extends BaseMapper<SysDataDic> {
     * @return
     */
    List<SysDataDicVo> getDataDicSelectByParentCode(Map<String, Object> map);
+
+   /**
+    * 得到根结点数据
+    * @param rootCode
+    * @return
+    */
+   @Select("select * from sys_data_dic where dic_code=#{rootCode}")
+   SysDataDic getRoot(String rootCode);
 
 }

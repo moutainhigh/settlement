@@ -71,4 +71,11 @@ public interface SysDataDicService extends IService<SysDataDic> {
      * @return
      */
     List<SysDataDicVo> getDataDicSelectByParentCode(String code);
+
+    /**
+     * 得到根结点
+     * @param rootCode
+     * @return
+     */
+    SysDataDic getRoot(String rootCode);
 }

@@ -22,7 +22,7 @@ public class Const {
     /** 部门根节点ID */
     public final static Integer DEPT_ROOT_ID = 1;
     /** 数据字典根节点ID */
-    public final static Integer DATA_DIC_ROOT = 0;
+    public final static String DATA_DIC_ROOT = "DIC_ROOT";
     /** 权限菜单根节点ID */
     public final static Integer PERMISSION_ROOT_ID = 0;
     /** 添加标志 */
@@ -49,4 +49,11 @@ public class Const {
     public final static String EMP_SUBMIT_STATUS_N = "N";
     /** 级别填写模式CODE： LEVEL_INPUT_TYPE*/
     public final static String LEVEL_TYPE_PARENT_CODE = "LEVEL_INPUT_TYPE";
+    /** 合同状态 Y*/
+    public final static String CONTRACT_STATUS_Y ="Y";
+    /** 合同状态 N*/
+    public final static String CONTRACT_STATUS_N ="N";
+    ///////////////////////////////////////数据字典/////////////////////////////////////////////////////
+    /**菜单类型根结点**/
+    public final static String PERMISSION_TYPE_CODE="PERMISSION_TYPE";
 }

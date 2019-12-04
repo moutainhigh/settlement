@@ -38,7 +38,8 @@
                             <label for="pid" class="layui-form-label">
                                 <span class="x-red">*</span>父ID</label>
                             <div class="layui-input-inline">
-                                <select id="pid" name="pid" xm-select-radio xm-select="pidSelect" lay-filter="pid" xm-select-max="1" lay-verify="pid">
+                                <select id="pid" name="pid"  lay-filter="pid" lay-verify="pid" th:field="*{sysDataDic.pid}">
+                                     <option th:each="pidSelect:${sysDataDicList}" th:value="${pidSelect.dicCode}" th:text="${pidSelect.dicContent}"></option>
                                 </select>
                             </div>
                         </div>
@@ -52,37 +53,36 @@
                 </form>
             </div>
         </div>
-        <script th:src="@{/js/formSelects-v4.js}" type="text/javascript" charset="utf-8"></script>
         <script th:src="@{/js/dic/dic.js}" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript" th:inline="javascript">
             // 下拉多选框
             var mode = [[${mode}]];
-            var pIdInit = [[${sysDataDic.pid}]];
-            if(mode=="add"){
-                formSelects.data('pidSelect', 'server', {
-                            url: '/sys-data-dic/pidSelect',
-                    success: function(id, url, searchVal, result){
-                        if(0==pIdInit) {
-                            formSelects.value('pidSelect', ['0']);
-                        } else {
-                            formSelects.value('pidSelect', [pIdInit]);
-                        }
-                    }
-                        });
-            } else {
-                //var pIdInit = [[${sysDataDic.pid}]];
-                formSelects.data('pidSelect', 'server', {
-                    url: '/sys-data-dic/pidSelect',
-                    success: function(id, url, searchVal, result){
-                        if(0==pIdInit) {
-                            formSelects.value('pidSelect', ['0']);
-                        } else {
-                            formSelects.value('pidSelect', [pIdInit]);
-                        }
-                    }
-                });
-
-            }
+            // var pIdInit = [[${sysDataDic.pid}]];
+            // if(mode=="add"){
+            //     formSelects.data('pidSelect', 'server', {
+            //                 url: '/sys-data-dic/pidSelect',
+            //         success: function(id, url, searchVal, result){
+            //             if(0==pIdInit) {
+            //                 formSelects.value('pidSelect', ['0']);
+            //             } else {
+            //                 formSelects.value('pidSelect', [pIdInit]);
+            //             }
+            //         }
+            //             });
+            // } else {
+            //     //var pIdInit = [[${sysDataDic.pid}]];
+            //     formSelects.data('pidSelect', 'server', {
+            //         url: '/sys-data-dic/pidSelect',
+            //         success: function(id, url, searchVal, result){
+            //             if(0==pIdInit) {
+            //                 formSelects.value('pidSelect', ['0']);
+            //             } else {
+            //                 formSelects.value('pidSelect', [pIdInit]);
+            //             }
+            //         }
+            //     });
+            //
+            // }
             // 表单操作
             layui.use(['form', 'layer','jquery'],
             function() {
@@ -120,7 +120,6 @@
                     }
                 );
                 form.on('select(pid)',function (data) {
-                        alert('select'+data.value);
                         $.ajax({
                             type:'get',
                             url:'',

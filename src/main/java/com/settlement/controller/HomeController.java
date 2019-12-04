@@ -5,10 +5,7 @@ import com.settlement.entity.*;
 import com.settlement.service.*;
 import com.settlement.utils.Const;
 import com.settlement.utils.Result;
-import com.settlement.vo.BaCustomerVo;
-import com.settlement.vo.SysPermissionVo;
-import com.settlement.vo.SysRoleVo;
-import com.settlement.vo.SysUserVo;
+import com.settlement.vo.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +50,8 @@ public class HomeController {
     private BaFormulaParamService baFormulaParamService;
     @Autowired
     private BaCustomerService baCustomerService;
+    @Autowired
+    private BaContractService baContractService;
 
     @GetMapping({"/","/login"})
     public String toLogin() {
@@ -185,6 +184,9 @@ public class HomeController {
         System.out.println("id:"+id+",mode:"+mode);
         QueryWrapper<SysPermission> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(StringUtils.isNotBlank(id),"id",id);
+        //菜单类型
+        List<SysDataDicVo> sysDataDicVos =sysDataDicService.getDataDicSelectByParentCode(Const.PERMISSION_TYPE_CODE);
+        model.addAttribute("sysDataDicVos",sysDataDicVos);
         //queryWrapper.eq("id",id);
         SysPermission sysPermission = null;
         if("update".equals(mode)) {
@@ -281,18 +283,19 @@ public class HomeController {
     public String toDataDicAdd(@PathVariable(value = "mode") String mode, @PathVariable(value="id",required = false) Integer id, Model model) {
 
        QueryWrapper<SysDataDic> dicQueryWrapper = new QueryWrapper<>();
-        dicQueryWrapper.eq("pid",0);
+        dicQueryWrapper.eq("pid",Const.DATA_DIC_ROOT);
        List<SysDataDic> sysDataDicList = sysDataDicService.list(dicQueryWrapper);
         if(Const.MODE_ADD.equals(mode)) {
-            SysDataDic sysDataDic = new SysDataDic();
-            if(id.equals(Const.DATA_DIC_ROOT)){
-                sysDataDic.setId(Const.DATA_DIC_ROOT);
-                sysDataDic.setPid(0);
-            } else {
-                QueryWrapper<SysDataDic> queryWrapper = new QueryWrapper<>();
-                queryWrapper.eq("id", id);
-                sysDataDic = sysDataDicService.getOne(queryWrapper);
-            }
+//            SysDataDic sysDataDic = new SysDataDic();
+//            if(id.equals(Const.DATA_DIC_ROOT)){
+//                sysDataDic.setId(Const.DATA_DIC_ROOT);
+//                sysDataDic.setPid("0");
+//            } else {
+//                QueryWrapper<SysDataDic> queryWrapper = new QueryWrapper<>();
+//                queryWrapper.eq("id", id);
+//                sysDataDic = sysDataDicService.getOne(queryWrapper);
+//            }
+            SysDataDic sysDataDic = sysDataDicService.getRoot(Const.DATA_DIC_ROOT);
             model.addAttribute("mode","add");
             model.addAttribute("sysDataDic",sysDataDic);
         } else if(Const.MODE_UPDADTE.equals(mode)) {
@@ -509,6 +512,48 @@ public class HomeController {
         model.addAttribute("pgId",pgId);
         return "emp/add";
     }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * 跳转合同页面
+     * @return
+     */
+    @GetMapping("/ba-contract/list")
+    public String toBaContract(){
+        return "contract/list";
+    }
 
+
+    /**
+     * 跳转合同添加页面
+     * @return
+     */
+    @GetMapping("/ba-contract/toAddorUpdate/{mode}/{id}")
+    public String toBaContractAddOrUpdate(@PathVariable String mode,@PathVariable(required = false) Integer id,Model model) {
+
+        List<BaCustomer> baCustomers = baCustomerService.list();
+        if(Const.MODE_ADD.equals(mode)) {
+            model.addAttribute("mode",Const.MODE_ADD);
+            BaContractVo baContract = new BaContractVo();
+            model.addAttribute("baContract",baContract);
+        } else if(Const.MODE_UPDADTE.equals(mode)){
+            BaContractVo baContractVo = baContractService.getBaContractVoById(id);
+            List<BaProjectGroup> baProjectGroups = baProjectGroupService.getGroupsByCustomerId(baContractVo.getCustomerId());
+            model.addAttribute("baProjectGroups",baProjectGroups);
+            model.addAttribute("baContract",baContractVo);
+            model.addAttribute("mode",Const.MODE_UPDADTE);
+        }
+        model.addAttribute("baCustomers",baCustomers);
+        return "contract/add";
+    }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 

@@ -195,7 +195,7 @@ public class SysDataDicServiceImpl extends ServiceImpl<SysDataDicMapper, SysData
         for(SysDataDicVo sysDataDic: sysDataDicList){
 
             sysPageDataDicList.add(sysDataDic);
-            dataDicCo.setPid(sysDataDic.getId());
+            dataDicCo.setPid(sysDataDic.getDicCode());
             List<SysDataDicVo> sysDataDicList2 = sysDataDicMapper.getDataDicVoByPid(dataDicCo,page);
 
             for(SysDataDicVo sysDataDic2: sysDataDicList2){
@@ -260,5 +260,10 @@ public class SysDataDicServiceImpl extends ServiceImpl<SysDataDicMapper, SysData
         map.put("code",code);
         map.put("enabled",Const.ENABLED_Y);
         return this.baseMapper.getDataDicSelectByParentCode(map);
+    }
+
+    @Override
+    public SysDataDic getRoot(String rootCode) {
+        return  this.baseMapper.getRoot(rootCode);
     }
 }

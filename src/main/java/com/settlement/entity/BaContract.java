@@ -3,7 +3,6 @@ package com.settlement.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.time.LocalDateTime;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -13,35 +12,41 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 数据字典表
+ * 合同管理表
  * </p>
  *
  * @author kun
- * @since 2019-11-19
+ * @since 2019-12-03
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class SysDataDic extends Model<SysDataDic> {
+public class BaContract extends Model<BaContract> {
 
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    private String dicCode;
+    private String contractNo;
 
-    private String dicContent;
+    private String invoiceIssuing;
 
-    private Integer sort;
+    private Date startTime;
 
-    private String pid;
+    private Date endTime;
 
-    private String enabled;
+    private String remark;
 
     private Integer createUserId;
 
     private Date createTime;
+
+    private Integer customerId;
+
+    private Integer baProjectGroupId;
+
+    private String status;
 
     private String delFlag;
 
