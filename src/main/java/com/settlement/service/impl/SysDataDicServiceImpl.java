@@ -193,7 +193,8 @@ public class SysDataDicServiceImpl extends ServiceImpl<SysDataDicMapper, SysData
         List<SysDataDicVo> sysDataDicList = sysDataDicMapper.getDataDicVoByPid(dataDicCo,page);
         List<SysDataDicVo> sysPageDataDicList = new ArrayList<>();
         for(SysDataDicVo sysDataDic: sysDataDicList){
-
+            if(sysDataDic.getDicCode().equals(Const.DATA_DIC_ROOT))
+                continue;
             sysPageDataDicList.add(sysDataDic);
             dataDicCo.setPid(sysDataDic.getDicCode());
             List<SysDataDicVo> sysDataDicList2 = sysDataDicMapper.getDataDicVoByPid(dataDicCo,page);
