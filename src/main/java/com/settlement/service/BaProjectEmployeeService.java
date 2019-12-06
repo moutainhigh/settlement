@@ -4,6 +4,8 @@ import com.settlement.bo.PageData;
 import com.settlement.co.ProjectEmployeeCo;
 import com.settlement.entity.BaProjectEmployee;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.settlement.utils.Result;
+import com.settlement.vo.ProjectEmployeeVo;
 
 /**
  * <p>
@@ -16,5 +18,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface BaProjectEmployeeService extends IService<BaProjectEmployee> {
     /** 未提交项目组员工记录 */
     PageData getNoSubmitEmployee(ProjectEmployeeCo projectEmployeeCo);
+    /** 检查员工编号是否存在 */
+    Result checkEmpCodeIsExist(String code);
+    /** 新增员工 */
+    Result insertProjectEmp(ProjectEmployeeVo projectEmployeeVo);
 
 }

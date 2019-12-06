@@ -12,6 +12,7 @@ import java.util.Date;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * <p>
@@ -44,7 +45,8 @@ public class BaProjectEmployee extends Model<BaProjectEmployee> {
     /**
      * 入场时间
      */
-    private LocalDate entranceTime;
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    private Date entranceTime;
 
     /**
      * 证件号码
@@ -75,6 +77,11 @@ public class BaProjectEmployee extends Model<BaProjectEmployee> {
      * 岗位
      */
     private String position;
+
+    /**
+     * 级别模式: F-框架协议 H-手动填写
+     */
+    private String levelMode;
 
     /**
      * 级别

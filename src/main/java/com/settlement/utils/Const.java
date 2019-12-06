@@ -56,4 +56,10 @@ public class Const {
     ///////////////////////////////////////数据字典/////////////////////////////////////////////////////
     /**菜单类型根结点**/
     public final static String PERMISSION_TYPE_CODE="PERMISSION_TYPE";
+    /** 级别填写模式F： 框架协议 */
+    public final static String LEVEL_MODE_F = "F";
+    /** 级别填写模式H：手动填写 */
+    public final static String LEVEL_MODE_H = "H";
+    /** 单位父CODE: UNIT */
+    public final static String UNIT_PARENT_CODE = "UNIT";
 }

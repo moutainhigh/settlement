@@ -74,7 +74,7 @@ public class BaProjectGroupServiceImpl extends ServiceImpl<BaProjectGroupMapper,
 
     @Override
     public Result saveProjectGroup(ProjectGroupVo projectGroupVo) {
-        Result r = null;
+        Result r = new Result(HttpResultEnum.ADD_CODE_500.getCode(), HttpResultEnum.ADD_CODE_500.getMessage());
         try {
             int ret = this.baseMapper.insert(projectGroupVo);
             if (ret > 0) {
@@ -84,7 +84,6 @@ public class BaProjectGroupServiceImpl extends ServiceImpl<BaProjectGroupMapper,
             }
         } catch (Exception e) {
             e.printStackTrace();
-            r = new Result(HttpResultEnum.ADD_CODE_500.getCode(), HttpResultEnum.ADD_CODE_500.getMessage());
         }
         return r;
     }
