@@ -78,4 +78,6 @@ public interface SysDataDicService extends IService<SysDataDic> {
      * @return
      */
     SysDataDic getRoot(String rootCode);
+
+    List<SysDataDicVo> getDataDicListVo();
 }

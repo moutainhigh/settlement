@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.settlement.co.DataDicCo;
 import com.settlement.entity.SysDataDic;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.settlement.vo.SysDataDicListVo;
 import com.settlement.vo.SysDataDicVo;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -43,5 +44,7 @@ public interface SysDataDicMapper extends BaseMapper<SysDataDic> {
     */
    @Select("select * from sys_data_dic where dic_code=#{rootCode}")
    SysDataDic getRoot(String rootCode);
+
+   List<SysDataDicListVo> getDataDicList();
 
 }

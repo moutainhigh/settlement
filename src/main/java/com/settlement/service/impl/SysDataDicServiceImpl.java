@@ -13,6 +13,7 @@ import com.settlement.utils.Const;
 import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
 import com.settlement.vo.SelectVo;
+import com.settlement.vo.SysDataDicListVo;
 import com.settlement.vo.SysDataDicVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -266,5 +267,54 @@ public class SysDataDicServiceImpl extends ServiceImpl<SysDataDicMapper, SysData
     @Override
     public SysDataDic getRoot(String rootCode) {
         return  this.baseMapper.getRoot(rootCode);
+    }
+
+    @Override
+    public List<SysDataDicVo> getDataDicListVo() {
+
+        List<SysDataDicListVo> sysDataDicListVos = sysDataDicMapper.getDataDicList();
+        List<SysDataDicVo> sysDataDicList = new ArrayList<>();
+        Map<String, SysDataDicListVo> map = new HashMap<>();
+        for (SysDataDicListVo sysDataDicListVo : sysDataDicListVos) {
+            if (map.containsKey(sysDataDicListVo.getDicContent())) {
+                SysDataDicVo childDataDicVo = new SysDataDicVo();
+                childDataDicVo.setId(sysDataDicListVo.getChildId());
+                childDataDicVo.setPid(sysDataDicListVo.getDicCode());
+                childDataDicVo.setPidContent(sysDataDicListVo.getDicContent());
+                childDataDicVo.setDicCode(sysDataDicListVo.getChildCode());
+                childDataDicVo.setDicContent(sysDataDicListVo.getChildDicContent());
+                childDataDicVo.setSort(sysDataDicListVo.getChildSort());
+                childDataDicVo.setEnabled(sysDataDicListVo.getChildEnabled());
+                childDataDicVo.setDelFlag(sysDataDicListVo.getChildeDelFlag());
+                sysDataDicList.add(childDataDicVo);
+            } else {
+                map.put(sysDataDicListVo.getDicContent(), sysDataDicListVo);
+                //parent
+                SysDataDicVo sysDataDicVo = new SysDataDicVo();
+                sysDataDicVo.setId(sysDataDicListVo.getId());
+                sysDataDicVo.setPid(Const.DATA_DIC_ROOT);
+                sysDataDicVo.setPidContent("数据字典");
+                sysDataDicVo.setDicCode(sysDataDicListVo.getDicCode());
+                sysDataDicVo.setDicContent(sysDataDicListVo.getDicContent());
+                sysDataDicVo.setSort(sysDataDicListVo.getSort());
+                sysDataDicVo.setEnabled(sysDataDicListVo.getEnabled());
+                sysDataDicVo.setDelFlag(sysDataDicListVo.getDelFlag());
+                sysDataDicList.add(sysDataDicVo);
+
+                SysDataDicVo childDataDicVo = new SysDataDicVo();
+                childDataDicVo.setId(sysDataDicListVo.getChildId());
+                childDataDicVo.setPid(sysDataDicListVo.getDicCode());
+                childDataDicVo.setPidContent(sysDataDicListVo.getDicContent());
+                childDataDicVo.setDicCode(sysDataDicListVo.getChildCode());
+                childDataDicVo.setDicContent(sysDataDicListVo.getChildDicContent());
+                childDataDicVo.setSort(sysDataDicListVo.getChildSort());
+                childDataDicVo.setEnabled(sysDataDicListVo.getChildEnabled());
+                childDataDicVo.setDelFlag(sysDataDicListVo.getChildeDelFlag());
+                sysDataDicList.add(childDataDicVo);
+            }
+        }
+
+        System.out.println(sysDataDicList);
+        return  sysDataDicList;
     }
 }

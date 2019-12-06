@@ -72,7 +72,7 @@ public class SysPermissionController {
      */
     @PostMapping("/ztree/pagedata")
     public Object getPermissionTree() {
-        List<SysPermissionVo> sysPermissions = sysPermissionService.getMenu();
+        List<SysPermissionVo> sysPermissions = sysPermissionService.getPermissionTreeData();
         List<SysPermissionVo> treeDataList = new ArrayList<>();
         //根据id添加到map当中
         Map<Integer,SysPermissionVo> map = new HashMap<>();
@@ -108,7 +108,7 @@ public class SysPermissionController {
      */
     @PostMapping("/dtree/list/pagedata")
     public Object getPermissionDTreeList() {
-        List<SysPermissionVo> sysPermissions = sysPermissionService.getMenu();
+        List<SysPermissionVo> sysPermissions = sysPermissionService.getPermissionTreeData();
 
         JSONObject josn = new JSONObject();
         Status status = new Status();
@@ -123,7 +123,7 @@ public class SysPermissionController {
 
     @PostMapping("/dtree/pagedata")
     public Object getPermissionDTree() {
-        List<SysPermissionVo> sysPermissions = sysPermissionService.getMenu();
+        List<SysPermissionVo> sysPermissions = sysPermissionService.getPermissionTreeData();
         List<SysPermissionVo> treeDataList = new ArrayList<>();
         //根据id添加到map当中
         Map<Integer,SysPermissionVo> map = new HashMap<>();
@@ -154,7 +154,7 @@ public class SysPermissionController {
     }
     @GetMapping("/pagedata3")
     public Object getPermissionTree3() {
-        List<SysPermissionVo> sysPermissions = sysPermissionService.getMenu();
+        List<SysPermissionVo> sysPermissions = sysPermissionService.getPermissionTreeData();
         List<SysPermissionVo> treeDataList = new ArrayList<>();
         //根据id添加到map当中
         Map<Integer,SysPermissionVo> map = new HashMap<>();

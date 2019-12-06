@@ -54,6 +54,8 @@ public class HomeController {
     private BaContractService baContractService;
     @Autowired
     private BaWorkAttendanceService baWorkAttendanceService;
+    @Autowired
+    private BaProjectGroupAssistantService baProjectGroupAssistantService;
 
     @GetMapping({"/","/login"})
     public String toLogin() {
@@ -183,34 +185,23 @@ public class HomeController {
      */
     @GetMapping("/sys-permission/iframeContent")
     public String permissionIframeContent(@RequestParam(required =false,defaultValue = "1") String id, @RequestParam(required = false,defaultValue = "") String mode, Model model) {
-        System.out.println("id:"+id+",mode:"+mode);
-        QueryWrapper<SysPermission> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq(StringUtils.isNotBlank(id),"id",id);
         //菜单类型
         List<SysDataDicVo> sysDataDicVos =sysDataDicService.getDataDicSelectByParentCode(Const.PERMISSION_TYPE_CODE);
         model.addAttribute("sysDataDicVos",sysDataDicVos);
-        //queryWrapper.eq("id",id);
-        SysPermission sysPermission = null;
         if("update".equals(mode)) {
-            sysPermission=sysPermissionService.getOne(queryWrapper);
+            SysPermission sysPermission =sysPermissionService.getById(id);
             model.addAttribute("mode","update");
             model.addAttribute("sysPermission",sysPermission);
         } else if ("add".equals(mode)) {
-            sysPermission = new SysPermission();
-            if(StringUtils.isNotBlank(id)) {
-                sysPermission.setParentId(Integer.parseInt(id));
-            } else {
-                sysPermission.setParentId(0);
-            }
+            SysPermission sysPermission = new SysPermission();
+            sysPermission.setParentId(Integer.parseInt(id));
             model.addAttribute("mode", "add");
             model.addAttribute("sysPermission",sysPermission);
         } else {
-            sysPermission=sysPermissionService.getOne(queryWrapper);
+            SysPermission sysPermission=sysPermissionService.getById(id);
             model.addAttribute("mode","default");
             model.addAttribute("sysPermission",sysPermission);
         }
-
-        System.out.println("sysPermission:"+sysPermission);
         return "permission/iframeContent";
     }
 
@@ -232,36 +223,26 @@ public class HomeController {
      */
     @GetMapping("/sys-dept/iframeContent")
     public String deptIframeContent(@RequestParam(required =false,defaultValue = "1") String id, @RequestParam(required = false,defaultValue = "") String mode, Model model) {
-        System.out.println("id:"+id+",mode:"+mode);
-        QueryWrapper<SysDept> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq(StringUtils.isNotBlank(id),"id",id);
-        //queryWrapper.eq("id",id);
-        SysDept sysDept = null;
         List<SysRoleVo> sysRoleVos = sysRoleService.getRoleVo();
         if("update".equals(mode)) {
-            sysDept=sysDeptService.getOne(queryWrapper);
+            SysDept sysDept=sysDeptService.getById(id);
             sysRoleVos = sysRoleService.getRoleVoByDeptId(sysDept.getId());
             model.addAttribute("sysRoleVos",sysRoleVos);
             model.addAttribute("mode","update");
             model.addAttribute("sysDept",sysDept);
         } else if ("add".equals(mode)) {
-            sysDept = new SysDept();
-            if(StringUtils.isNotBlank(id)) {
-                sysDept.setParentId(Integer.parseInt(id));
-            } else {
-                sysDept.setParentId(0);
-            }
+            SysDept  sysDept = new SysDept();
+            sysDept.setParentId(Integer.parseInt(id));
             model.addAttribute("mode", "add");
             model.addAttribute("sysDept",sysDept);
         } else {
-            sysDept=sysDeptService.getOne(queryWrapper);
+            SysDept sysDept=sysDeptService.getById(id);
             sysRoleVos = sysRoleService.getRoleVo();
             model.addAttribute("sysRoleVos",sysRoleVos);
             model.addAttribute("mode","default");
             model.addAttribute("sysDept",sysDept);
         }
         model.addAttribute("sysRoleVos",sysRoleVos);
-        System.out.println("sysPermission:"+sysDept);
         return "dept/iframeContent";
     }
 
@@ -559,10 +540,17 @@ public class HomeController {
     }
     /**
      * 考勤管理-编辑考勤信息
+     * @param projectId 项目id
      * @return
      */
     @GetMapping("/ba-work-attendance/attendlist")
-    public String toAttendList(){
+    public String toAttendList(@RequestParam(required = false) Integer projectId,Model model){
+
+        if(projectId!=null) {
+            BaProjectGroup baProjectGroup = baProjectGroupService.getById(projectId);
+            BaProjectGroupAssistant baProjectGroupAssistant = baProjectGroupAssistantService.getBaProjectGroupAssistantByGroupId(projectId);
+            model.addAttribute("checkUserId", baProjectGroupAssistant.getAssistantId());
+        }
         return "workattendance/attendlist";
     }
     /**

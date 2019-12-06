@@ -33,7 +33,7 @@
                             <ul id="demoTree" class="dtree" data-id="0"></ul>
                         </div>
 
-                        <div style="width:550px;height: 600px;margin-left:600px">
+                        <div style="width:550px;height: 600px;margin-left:400px">
                             <iframe th:src="@{/sys-permission/iframeContent}"  scrolling="no" id="iframe_content" name="iframe_content" frameborder="0" style="width: 100%;height: 100%;"></iframe>
                         </div>
 
@@ -46,7 +46,6 @@
 
 
         <script th:inline="javascript">
-
             layui.extend({
                 dtree: '/lib/layui_ext/dtree/dtree'
             }).use(['dtree', 'layer','util'], function(){
@@ -68,8 +67,17 @@
                     dataFormat: "list",  //配置data的风格为list
                     //response:{message:"msg",statusCode:0 ,title: "pName" },  //修改response中返回数据的定义 ,childName: "childrens"
                     url: "/sys-permission/dtree/list/pagedata",
-                    initLevel: "5"
-                    // line:true,
+                    initLevel: "2"
+                    ,done:function(res, $obj, first){
+                        //alert(first);
+                        if(first) {
+                            var id = 1;
+                           // $("#demoTree").find("div[dtree-click='itemNodeClick'][dtree-id='demoTree'][data-id='" + id + "']").click();
+                                //alert('3');
+                        } else {
+
+                        }
+                    }
                 });
                 // 点击按钮获取所有选中节点值
                 $("#add").click(function(){
@@ -77,7 +85,8 @@
                     var param = dtree.getNowParam("demoTree"); // 获取当前选中节点
                     var id=0;
                     if(param.nodeId==null) {
-                        id=0;
+                        layer.msg('请选择要添加的根结点',{icon:5});
+                        return;
                     } else {
                         id=param.nodeId;
                     }

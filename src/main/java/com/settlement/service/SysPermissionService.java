@@ -20,7 +20,7 @@ public interface SysPermissionService extends IService<SysPermission> {
     /**根据id获得对应的子菜单**/
     List<SysPermissionVo> getMenu(Integer roleId);
     /**菜单树列表**/
-    List<SysPermissionVo> getMenu();
+    List<SysPermissionVo> getPermissionTreeData();
     /****/
     Map<SysPermission,List<Map<SysPermission,List<SysPermission>>>> getPermissons();
     /****/

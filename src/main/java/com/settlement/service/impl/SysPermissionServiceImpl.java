@@ -46,14 +46,14 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
     @Override
     public List<SysPermissionVo> getMenu(Integer roleId) {
         QueryWrapper<SysPermission> queryWrapper = new QueryWrapper<SysPermission>();
-        queryWrapper.ne("id",0);
+        queryWrapper.ne("id",1);
         queryWrapper.eq("type", Const.MENU_TYPE_M);
         queryWrapper.orderByAsc("sort");
         List<SysPermission> list = this.baseMapper.selectList(queryWrapper);
         List<SysPermissionVo> leftList = new ArrayList<SysPermissionVo>();
         if (list != null && list.size() > 0) {
             for (SysPermission sp : list) {
-                if (sp.getParentId() == 0) {
+                if (sp.getParentId() == 1) {
                     SysPermissionVo spv = new SysPermissionVo();
                     spv.setId(sp.getId());
                     spv.setPName(sp.getPName());
@@ -85,11 +85,14 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
      * @return
      */
     @Override
-    public List<SysPermissionVo> getMenu() {
+    public List<SysPermissionVo> getPermissionTreeData() {
         QueryWrapper<SysPermission> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("del_flag",Const.DEL_FLAG_N);
+        queryWrapper.orderByAsc("sort");
         List<SysPermission> list = this.baseMapper.selectList(queryWrapper);
         List<SysPermissionVo> leftList = new ArrayList<SysPermissionVo>();
+        //添加一个虚拟根结点
+       // leftList.add(PermissionRoot());
         if (list != null && list.size() > 0) {
             for (SysPermission sp : list) {
 
@@ -109,6 +112,7 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
         }
         return leftList;
     }
+
 
     /**
      * 添加角色时选择的菜单权限
@@ -184,6 +188,7 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
             Integer ret = this.baseMapper.insert(sysPermission);
             if (ret != null && ret > 0) {
                 r = new Result(HttpResultEnum.ADD_CODE_200.getCode(), HttpResultEnum.ADD_CODE_200.getMessage());
+                r.setData(sysPermission);
             } else {
                 r = new Result(HttpResultEnum.ADD_CODE_500.getCode(), HttpResultEnum.ADD_CODE_500.getMessage());
             }
@@ -208,6 +213,7 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
             Integer ret = this.baseMapper.update(sysPermission,updateWrapper);
             if(ret!=null && ret>0) {
                 r = new Result(HttpResultEnum.EDIT_CODE_200.getCode(),HttpResultEnum.EDIT_CODE_200.getMessage());
+                r.setData(sysPermission);
             } else  {
                 r = new Result(HttpResultEnum.EDIT_CODE_500.getCode(),HttpResultEnum.EDIT_CODE_500.getMessage());
             }

@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -39,11 +40,9 @@ public class BaWorkAttendanceServiceImpl extends ServiceImpl<BaWorkAttendanceMap
      */
     @Override
     public PageData listPageData(WorkAttendanceCo workAttendanceCo) {
-        Page<BaWorkAttendance> page = new Page<>(workAttendanceCo.getPage(),workAttendanceCo.getLimit());
-        QueryWrapper<BaWorkAttendance> queryWrapper = new QueryWrapper<>();
-        queryWrapper.like(StringUtils.isNotBlank(workAttendanceCo.getKeyword()),"employee_id",workAttendanceCo.getKeyword());
-        this.baseMapper.selectPage(page,queryWrapper);
-
+        Page<BaWorkAttendanceVo> page = new Page<>(workAttendanceCo.getPage(),workAttendanceCo.getLimit());
+        List<BaWorkAttendanceVo> baWorkAttendanceVos = this.baseMapper.getWorkAttendanceVoByProjectId(workAttendanceCo,page);
+        page.setRecords(baWorkAttendanceVos);
         return new PageData(page.getTotal(),page.getRecords());
     }
 

@@ -16,5 +16,7 @@ public interface BaProjectGroupAssistantService extends IService<BaProjectGroupA
 
     /** 批量新增项目组助理 */
     Result batchInsert(Integer pgId, String assistantIds);
+    /**根据项目id查询**/
+    BaProjectGroupAssistant getBaProjectGroupAssistantByGroupId(Integer projectId);
 
 }

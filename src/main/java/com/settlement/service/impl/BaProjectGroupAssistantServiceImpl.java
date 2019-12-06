@@ -58,4 +58,16 @@ public class BaProjectGroupAssistantServiceImpl extends ServiceImpl<BaProjectGro
         }
         return r;
     }
+
+    /**
+     * 根据项目id查询
+     * @param projectId
+     * @return
+     */
+    @Override
+    public BaProjectGroupAssistant getBaProjectGroupAssistantByGroupId(Integer projectId) {
+        QueryWrapper<BaProjectGroupAssistant> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("pg_id",projectId);
+        return  this.baProjectGroupAssistantMapper.selectOne(queryWrapper);
+    }
 }

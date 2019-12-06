@@ -5,12 +5,16 @@ import com.settlement.bo.PageData;
 import com.settlement.co.ApplyCo;
 import com.settlement.co.WorkAttendanceCo;
 import com.settlement.entity.BaApply;
+import com.settlement.entity.SysUser;
 import com.settlement.service.BaApplyService;
 import com.settlement.utils.Result;
 import com.settlement.vo.ApplyWorkAttendanceVo;
 import com.settlement.vo.BaApplyVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
+
 /**
  * <p>
  * 申请修改员工信息表 前端控制器
@@ -53,7 +57,9 @@ public class BaApplyController {
      * @return
      */
     @PostMapping("/add/attendance")
-    public Result addAttendance(BaApplyVo baApplyVo){
+    public Result addAttendance(BaApplyVo baApplyVo, HttpSession session){
+        SysUser user =(SysUser)session.getAttribute("user");
+        baApplyVo.setApplyUser(user.getId());
         Result r = baApplyService.addAttendance(baApplyVo);
         return r;
     }

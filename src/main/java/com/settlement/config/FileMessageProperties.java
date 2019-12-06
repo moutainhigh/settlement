@@ -18,5 +18,11 @@ public class FileMessageProperties {
     private String uploadPath;
 
     private String imageType;
+    /**上传文件类型**/
+    private String fileType;
+    /**考勤文件存储路径**/
+    private String workAttendanceImportPath;
+    /**上传考勤文件大小限制**/
+    private Long workAttendsFileSize;
 
 }

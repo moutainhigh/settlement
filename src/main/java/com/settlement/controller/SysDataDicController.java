@@ -119,4 +119,9 @@ public class SysDataDicController {
     public Result updateEnableStop(@PathVariable(value="id") Integer id){
         return sysDataDicService.updateDataDicStop(id);
     }
+
+    @GetMapping("/pagedata/list")
+    public Result pagedataList(DataDicCo dataDicCo) {
+        return null;
+    }
 }

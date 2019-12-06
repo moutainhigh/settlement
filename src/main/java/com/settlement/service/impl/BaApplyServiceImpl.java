@@ -87,7 +87,7 @@ public class BaApplyServiceImpl extends ServiceImpl<BaApplyMapper, BaApply> impl
             baApplyVo.setApplyTime(new Date());
             BaApply baApply = new BaApply();
             baApply.setApplyType(baApplyVo.getApplyType());
-            baApply.setApplyRemark(baApplyVo.getCheckRemark());
+            baApply.setApplyRemark(baApplyVo.getApplyRemark());
             baApply.setCheckStatus(baApplyVo.getCheckStatus());
             baApply.setApplyTime(new Date());
             baApply.setApplyUser(baApplyVo.getApplyUser());

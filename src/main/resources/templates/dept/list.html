@@ -32,7 +32,7 @@
                             <ul id="demoTree" class="dtree" data-id="0"></ul>
                         </div>
 
-                        <div style="height:610px; width:550px;float:right">
+                        <div style="width:550px;height: 600px;margin-left:400px">
                             <iframe th:src="@{/sys-dept/iframeContent}"  scrolling="no" id="iframe_content" name="iframe_content" frameborder="0" style="width: 100%;height: 100%;"></iframe>
                         </div>
 
@@ -67,17 +67,10 @@
                     //response:{message:"msg",statusCode:0 ,title: "pName" },  //修改response中返回数据的定义 ,childName: "childrens"
                     url: "/sys-dept/dtree/pagedata",
                     initLevel: "5",
-                    iframeFun: {
-                        iframeDone: function(iframeParam){ //iframe加载完毕后，用于用户自定义事件
-                           // alert(iframeParam);
-                           //  form.render();
-                           //  form.render('checkbox');
-                           //  document.getElementById('iframe_content').form.render();
-                           //  form.render('checkbox');
-                            return ;
-                        }
-                    }
-                    // line:true,
+                    done:function(res, $obj, first){
+                        var id=1;
+                        $("#demoTree").find("div[dtree-click='itemNodeClick'][dtree-id='demoTree'][data-id='"+id+"']").click();
+                }
                 });
 
                 // 点击按钮获取所有选中节点值
@@ -86,7 +79,8 @@
                     var param = dtree.getNowParam("demoTree"); // 获取当前选中节点
                     var id=0;
                     if(param.nodeId==null) {
-                        id=0;
+                        layer.msg('请选择要添加的根结点',{icon:5});
+                        return;
                     } else {
                         id=param.nodeId;
                     }

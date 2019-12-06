@@ -35,4 +35,16 @@
         <result column="employee_id" property="employeeId" />
     </resultMap>
 
+    <select id="getWorkAttendanceVoByProjectId" parameterType="com.settlement.co.WorkAttendanceCo" resultType="com.settlement.vo.BaWorkAttendanceVo">
+        select e.emp_name as employeeName
+              ,w.*
+        from
+            ba_work_attendance w,
+            ba_project_employee e
+        where e.del_flag='N'
+            and w.employee_id=e.id
+            and e.pg_id=#{workAttendanceCo.projectId}
+
+
+    </select>
 </mapper>

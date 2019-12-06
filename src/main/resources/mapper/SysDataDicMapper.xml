@@ -48,4 +48,28 @@
             and sdd.enabled = #{enabled}
     </select>
 
+
+    <select id="getDataDicList" resultType="com.settlement.vo.SysDataDicListVo">
+        SELECT
+            p.id,
+            p.dic_code,
+            p.dic_content,
+            p.sort,
+            p.enabled,
+            p.del_flag,
+            c.id as childId,
+            c.dic_code as childCode,
+            c.dic_content as childDicContent,
+            c.sort as childSort,
+            c.enabled as childEnabled,
+            c.del_flag as childDelFlag
+        from sys_data_dic p
+        join sys_data_dic c on p.dic_code=c.pid
+        where p.pid='DIC_ROOT'
+              and p.dic_code != 'DIC_ROOT'
+              and p.del_flag='N'
+              and c.del_flag='N'
+        order by p.sort asc,c.sort asc
+    </select>
+
 </mapper>
