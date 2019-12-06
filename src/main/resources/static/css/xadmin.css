@@ -160,7 +160,7 @@ body{
     left: 0;
     z-index: 2;
     padding-top: 10px;
-    background-color: #EEEEEE;
+    background-color: #222;
     width: 220px;
     max-width: 220px;
     overflow: auto;
@@ -186,6 +186,7 @@ body{
     cursor: pointer;
     border-left: 4px solid transparent;
     transition: all 0.3s;
+    color: #fff;
 }
 .left-nav a:hover{
     background: #009688 !important;
@@ -423,6 +424,7 @@ table th, table td {
     }
     .left-nav{
         width: 60px;
+        color: #fff;
     }
     .left-nav #nav li a i{
         font-size: 18px;
