@@ -14,6 +14,7 @@ import java.util.List;
  */
 @Data
 public class SysDeptVo extends SysDept {
+    private String parentContent;
     private String checkArr;
     private String title;
     private List<Integer> roles ;

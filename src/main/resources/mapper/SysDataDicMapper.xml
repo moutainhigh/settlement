@@ -30,7 +30,7 @@
         left join (select id,dic_code,dic_content ,pid from sys_data_dic) dic2
         on dic.pid=dic2.dic_code
         where dic.pid=#{dataDicCo.pid}
-        and dic.enabled='Y'
+        and dic.del_flag='N'
         <if test="dataDicCo.keyword!=null">
             and dic.dic_content like CONCAT('%',#{dataDicCo.keyword},'%')
         </if>
@@ -45,7 +45,7 @@
             sys_data_dic sdd
         WHERE
             sdd.pid = #{code}
-            and sdd.enabled = #{enabled}
+            and sdd.del_flag='N'
     </select>
 
 

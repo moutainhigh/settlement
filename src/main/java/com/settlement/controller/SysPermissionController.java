@@ -180,26 +180,26 @@ public class SysPermissionController {
 
     /**
      * 添加
-     * @param sysPermission
+     * @param sysPermissionVo
      * @return
      */
     @PostMapping("/add")
-    public Result add(SysPermission sysPermission, HttpSession session){
+    public Result add(SysPermissionVo sysPermissionVo, HttpSession session){
         SysUser user = (SysUser)session.getAttribute("user");
-        sysPermission.setCreateUserId(user.getId());
-        return sysPermissionService.add(sysPermission);
+        sysPermissionVo.setCreateUserId(user.getId());
+        return sysPermissionService.add(sysPermissionVo);
         //redirect:表示重定向到一个地址 redirect:/iframeContent
         //forward 表示转发到一个地址
     }
 
     /**
      * 修改
-     * @param sysPermission
+     * @param sysPermissionVo
      * @return
      */
     @PostMapping("/update")
-    public Result update(SysPermission sysPermission) {
-        return  sysPermissionService.update(sysPermission);
+    public Result update(SysPermissionVo sysPermissionVo) {
+        return  sysPermissionService.update(sysPermissionVo);
     }
 
     /**

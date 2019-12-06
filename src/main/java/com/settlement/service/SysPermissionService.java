@@ -26,11 +26,16 @@ public interface SysPermissionService extends IService<SysPermission> {
     /****/
     Map<SysPermissionVo, List<Map<SysPermissionVo, List<SysPermissionVo>>>> getPermissons(Integer id);
     /**添加**/
-    Result add(SysPermission sysPermission);
+    Result add(SysPermissionVo sysPermissionVo);
     /**添加**/
-    Result update(SysPermission sysPermission);
+    Result update(SysPermissionVo sysPermissionVo);
     /**添加**/
     Result delete(Integer id);
+    /**根据id获得SysPermissionVo**/
+    SysPermissionVo getSysPermissionVoById(Integer id);
+    /**根据id获得SysPermissionVo根结点信息**/
+    SysPermissionVo getRootSysPermissionVoById(Integer id);
+
 
 
 }

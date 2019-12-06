@@ -4,6 +4,7 @@ import com.settlement.entity.SysDept;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.settlement.utils.Result;
 import com.settlement.vo.SysDeptVo;
+import io.swagger.models.auth.In;
 
 import java.util.List;
 
@@ -30,4 +31,8 @@ public interface SysDeptService extends IService<SysDept> {
     Result updateEnableStart(Integer id);
     /**停用状态 **/
     Result updateEnableStop(Integer id);
+    /**根据id获得SysPermissionVo**/
+    SysDeptVo getSysDeptVoById(Integer id);
+    /**根据id获得SysPermissionVo根结点信息**/
+    SysDeptVo getRootSysDeptVoById(String rootCode);
 }

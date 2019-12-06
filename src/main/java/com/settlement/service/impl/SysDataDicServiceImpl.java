@@ -260,7 +260,7 @@ public class SysDataDicServiceImpl extends ServiceImpl<SysDataDicMapper, SysData
     public List<SysDataDicVo> getDataDicSelectByParentCode(String code) {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("code",code);
-        map.put("enabled",Const.ENABLED_Y);
+        //map.put("enabled",Const.ENABLED_Y);
         return this.baseMapper.getDataDicSelectByParentCode(map);
     }
 

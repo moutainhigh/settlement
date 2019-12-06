@@ -15,6 +15,7 @@ import java.util.List;
 @Data
 public class SysPermissionVo extends SysPermission {
 
+    private String parentContent;
     private String checkArr;
     private String title;
     private List<SysPermissionVo> childrens ;

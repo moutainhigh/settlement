@@ -9,14 +9,15 @@
     <form class="layui-form" >
         <input th:type="hidden" name="_method" value="put" th:if="${mode.equals('update')}" />
         <input type="hidden" name="id" th:value="${sysDept.id}" th:if="${mode.equals('update')}" />
+        <input type="hidden" name="parentId" th:value="${sysDept.parentId}" />
     <div class="layui-row" layui-form-panel lay-filter="show_form">
 
             <div class="layui-form-item">
                 <div class="layui-form-item">
-                    <label for="parentId" class="layui-form-label">
+                    <label for="parentContent" class="layui-form-label">
                         <span class="x-red">*</span>上级部门</label>
                     <div class="layui-input-inline">
-                        <input type="text" id="parentId" name="parentId" readonly="true" th:value="${mode.equals('update')}?${sysDept.parentId}:${sysDept.parentId}" required="true" lay-verify="parentId" autocomplete="off" class="layui-input" maxlength="20"></div>
+                        <input type="text" id="parentContent" name="parentContent" readonly="true" th:value="${mode.equals('update')}?${sysDept.parentContent}:${sysDept.parentContent}" required="true" lay-verify="parentContent" autocomplete="off" class="layui-input" maxlength="20"></div>
                 </div>
 
                 <div  class="layui-form-item">

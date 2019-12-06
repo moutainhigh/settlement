@@ -18,4 +18,12 @@
         <result column="del_flag" property="delFlag" />
     </resultMap>
 
+    <select id="getSysPermissionVoById" parameterType="java.lang.Integer" resultType="com.settlement.vo.SysPermissionVo">
+      select p1.p_name as parentContent,
+		p2.*
+    from sys_permission p1
+    inner join sys_permission p2 on p1.id=p2.parent_id
+    where p1.del_flag='N'
+          and p2.id=#{id}
+    </select>
 </mapper>

@@ -6,6 +6,7 @@ import com.settlement.service.*;
 import com.settlement.utils.Const;
 import com.settlement.utils.Result;
 import com.settlement.vo.*;
+import io.swagger.models.auth.In;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -186,21 +187,24 @@ public class HomeController {
      * @return
      */
     @GetMapping("/sys-permission/iframeContent")
-    public String permissionIframeContent(@RequestParam(required =false,defaultValue = "1") String id, @RequestParam(required = false,defaultValue = "") String mode, Model model) {
+    public String permissionIframeContent(@RequestParam(required =false,defaultValue = "1")  Integer id, @RequestParam(required = false,defaultValue = "") String mode, Model model) {
         //菜单类型
         List<SysDataDicVo> sysDataDicVos =sysDataDicService.getDataDicSelectByParentCode(Const.PERMISSION_TYPE_CODE);
         model.addAttribute("sysDataDicVos",sysDataDicVos);
         if("update".equals(mode)) {
-            SysPermission sysPermission =sysPermissionService.getById(id);
+            SysPermissionVo sysPermission =sysPermissionService.getSysPermissionVoById(id);
             model.addAttribute("mode","update");
             model.addAttribute("sysPermission",sysPermission);
         } else if ("add".equals(mode)) {
-            SysPermission sysPermission = new SysPermission();
-            sysPermission.setParentId(Integer.parseInt(id));
+            SysPermissionVo sysPermissionP =sysPermissionService.getSysPermissionVoById(id);
+            SysPermissionVo sysPermission = new SysPermissionVo();
+            sysPermission.setParentId(id);
+            sysPermission.setParentContent(sysPermissionP.getPName());
+            sysPermission.setType(Const.MENU_TYPE_M);
             model.addAttribute("mode", "add");
             model.addAttribute("sysPermission",sysPermission);
         } else {
-            SysPermission sysPermission=sysPermissionService.getById(id);
+            SysPermission sysPermission=sysPermissionService.getRootSysPermissionVoById(Const.PERMISSION_ROOT_ID);
             model.addAttribute("mode","default");
             model.addAttribute("sysPermission",sysPermission);
         }
@@ -224,21 +228,23 @@ public class HomeController {
      * @return
      */
     @GetMapping("/sys-dept/iframeContent")
-    public String deptIframeContent(@RequestParam(required =false,defaultValue = "1") String id, @RequestParam(required = false,defaultValue = "") String mode, Model model) {
+    public String deptIframeContent(@RequestParam(required =false,defaultValue = "1") Integer id, @RequestParam(required = false,defaultValue = "") String mode, Model model) {
         List<SysRoleVo> sysRoleVos = sysRoleService.getRoleVo();
         if("update".equals(mode)) {
-            SysDept sysDept=sysDeptService.getById(id);
+            SysDeptVo sysDept=sysDeptService.getSysDeptVoById(id);
             sysRoleVos = sysRoleService.getRoleVoByDeptId(sysDept.getId());
             model.addAttribute("sysRoleVos",sysRoleVos);
             model.addAttribute("mode","update");
             model.addAttribute("sysDept",sysDept);
         } else if ("add".equals(mode)) {
-            SysDept  sysDept = new SysDept();
-            sysDept.setParentId(Integer.parseInt(id));
+            SysDeptVo sysDept = new SysDeptVo();
+            SysDeptVo sysDeptP=sysDeptService.getSysDeptVoById(id);
+            sysDept.setParentId(id);
+            sysDept.setParentContent(sysDeptP.getDeptName());
             model.addAttribute("mode", "add");
             model.addAttribute("sysDept",sysDept);
         } else {
-            SysDept sysDept=sysDeptService.getById(id);
+            SysDeptVo sysDept=sysDeptService.getRootSysDeptVoById(Const.DEPT_ROOT);
             sysRoleVos = sysRoleService.getRoleVo();
             model.addAttribute("sysRoleVos",sysRoleVos);
             model.addAttribute("mode","default");

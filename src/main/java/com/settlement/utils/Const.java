@@ -24,7 +24,7 @@ public class Const {
     /** 数据字典根节点ID */
     public final static String DATA_DIC_ROOT = "DIC_ROOT";
     /** 权限菜单根节点ID */
-    public final static Integer PERMISSION_ROOT_ID = 0;
+    public final static Integer PERMISSION_ROOT_ID = 1;
     /** 添加标志 */
     public final static String MODE_ADD = "add";
     /** 修改标志 */

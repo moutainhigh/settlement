@@ -16,6 +16,7 @@ import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
 import com.settlement.vo.SelectVo;
 import com.settlement.vo.SysDeptVo;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingDeque;
 
 /**
  * <p>
@@ -290,5 +292,31 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
             r.setMsg(HttpResultEnum.EDIT_CODE_200.getMessage());
         }
         return r;
+    }
+
+    /**
+     * 根据id获得SysDeptVo
+     * @param id
+     * @return
+     */
+    @Override
+    public SysDeptVo getSysDeptVoById(Integer id) {
+        if(1==id) {
+            return this.getRootSysDeptVoById(Const.DEPT_ROOT);
+        } else {
+            return this.baseMapper.getSysDeptVoById(id);
+        }
+    }
+
+    /**
+     * 根据id获得根结点
+     * @param rootCode
+     * @return
+     */
+    @Override
+    public SysDeptVo getRootSysDeptVoById(String rootCode) {
+        SysDeptVo sysDeptVo = this.baseMapper.getRootSysDeptVoById(rootCode);
+        sysDeptVo.setParentContent("结算系统");
+        return  sysDeptVo;
     }
 }

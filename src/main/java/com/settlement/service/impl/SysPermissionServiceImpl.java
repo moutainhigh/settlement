@@ -1,6 +1,5 @@
 package com.settlement.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.settlement.entity.SysPermission;
@@ -13,7 +12,6 @@ import com.settlement.utils.Const;
 import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
 import com.settlement.vo.SysPermissionVo;
-import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -176,19 +174,19 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
 
     /**
      * 添加
-     * @param sysPermission
+     * @param sysPermissionVo
      * @return
      */
     @Override
-    public Result add(SysPermission sysPermission) {
+    public Result add(SysPermissionVo sysPermissionVo) {
         Result r = new Result(HttpResultEnum.ADD_CODE_500.getCode(),HttpResultEnum.ADD_CODE_500.getMessage());
-        sysPermission.setCreateTime(new Date());
-        sysPermission.setDelFlag(Const.DEL_FLAG_N);
+        sysPermissionVo.setCreateTime(new Date());
+        sysPermissionVo.setDelFlag(Const.DEL_FLAG_N);
         try {
-            Integer ret = this.baseMapper.insert(sysPermission);
+            Integer ret = this.baseMapper.insert(sysPermissionVo);
             if (ret != null && ret > 0) {
                 r = new Result(HttpResultEnum.ADD_CODE_200.getCode(), HttpResultEnum.ADD_CODE_200.getMessage());
-                r.setData(sysPermission);
+                r.setData(sysPermissionVo);
             } else {
                 r = new Result(HttpResultEnum.ADD_CODE_500.getCode(), HttpResultEnum.ADD_CODE_500.getMessage());
             }
@@ -201,19 +199,19 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
 
     /**
      * 修改
-     * @param sysPermission
+     * @param sysPermissionVo
      * @return
      */
     @Override
-    public Result update(SysPermission sysPermission) {
+    public Result update(SysPermissionVo sysPermissionVo) {
         Result r = new Result(HttpResultEnum.EDIT_CODE_500.getCode(),HttpResultEnum.EDIT_CODE_500.getMessage()) ;
         UpdateWrapper<SysPermission> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("id",sysPermission.getId());
+        updateWrapper.eq("id",sysPermissionVo.getId());
         try{
-            Integer ret = this.baseMapper.update(sysPermission,updateWrapper);
+            Integer ret = this.baseMapper.update(sysPermissionVo,updateWrapper);
             if(ret!=null && ret>0) {
                 r = new Result(HttpResultEnum.EDIT_CODE_200.getCode(),HttpResultEnum.EDIT_CODE_200.getMessage());
-                r.setData(sysPermission);
+                r.setData(sysPermissionVo);
             } else  {
                 r = new Result(HttpResultEnum.EDIT_CODE_500.getCode(),HttpResultEnum.EDIT_CODE_500.getMessage());
             }
@@ -248,6 +246,32 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         return r;
+    }
+
+    /**
+     * 根据id获得SysPermissionVo
+     * @param id
+     * @return
+     */
+    @Override
+    public SysPermissionVo getSysPermissionVoById(Integer id) {
+        if(1==id){
+            return this.getRootSysPermissionVoById(1);
+        } else {
+            return this.baseMapper.getSysPermissionVoById(id);
+        }
+    }
+
+    /**
+     * 根据id获得SysPermissionVo根结点信息
+     * @param id
+     * @return
+     */
+    @Override
+    public SysPermissionVo getRootSysPermissionVoById(Integer id) {
+        SysPermissionVo sysPermissionVo = this.baseMapper.getRootSysPermissionVoById(id);
+        sysPermissionVo.setParentContent("结算系统");
+        return sysPermissionVo;
     }
 
     /**

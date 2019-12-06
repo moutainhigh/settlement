@@ -22,4 +22,15 @@ public interface SysPermissionMapper extends BaseMapper<SysPermission> {
 
     @Select("select * from sys_permission where parent_id=#{parent_id}" )
     public List<SysPermissionVo> getSysPermissionVo(Integer parent_id);
+
+    /**
+     * 根据id获得SysPermissionVo
+     */
+    public SysPermissionVo getSysPermissionVoById(Integer id);
+
+    /**
+     *根据id获得SysPermissionVo根结点信息
+     */
+    @Select("select * from sys_permission where id=#{id}")
+    SysPermissionVo getRootSysPermissionVoById(Integer id);
 }

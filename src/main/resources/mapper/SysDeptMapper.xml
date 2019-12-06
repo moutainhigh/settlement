@@ -16,4 +16,14 @@
         <result column="del_flag" property="delFlag" />
     </resultMap>
 
+    <select id="getSysDeptVoById" parameterType="java.lang.Integer" resultType="com.settlement.vo.SysDeptVo">
+        select d.dept_name as parentContent,
+		        d2.*
+        from sys_dept d
+        inner join sys_dept d2 on d.id=d2.parent_id
+        where d.del_flag='N'
+              and d2.id=#{id}
+
+    </select>
+
 </mapper>
