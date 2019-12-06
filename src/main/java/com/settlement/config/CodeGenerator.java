@@ -27,7 +27,7 @@ public class CodeGenerator {
         String projectPath = System.getProperty("user.dir");
         gc.setOutputDir(projectPath + "/src/main/java");
         // 设置用户名
-        gc.setAuthor("admin");
+        gc.setAuthor("kun");
         gc.setOpen(true);
         // service命名方式
         gc.setServiceName("%sService");
@@ -96,7 +96,7 @@ public class CodeGenerator {
         strategy.setLogicDeleteFieldName("deleted");
 
         // 指定生成的bean的数据库表名
-        strategy.setInclude("ba_project_employee");
+        strategy.setInclude("ba_");
 
         // 驼峰转连字符
         strategy.setControllerMappingHyphenStyle(true);
