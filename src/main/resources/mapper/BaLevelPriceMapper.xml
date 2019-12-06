@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.settlement.mapper.BaLevelPriceMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.settlement.entity.BaLevelPrice">
+        <id column="id" property="id" />
+        <result column="level_name" property="levelName" />
+        <result column="price" property="price" />
+        <result column="unit" property="unit" />
+        <result column="city" property="city" />
+        <result column="sort" property="sort" />
+        <result column="create_user_id" property="createUserId" />
+        <result column="create_time" property="createTime" />
+        <result column="del_flag" property="delFlag" />
+    </resultMap>
+
+    <!-- 级别下拉框 -->
+    <select id="getLevelPriceByPgId" parameterType="java.util.Map" resultType="com.settlement.vo.LevelPriceVo">
+       SELECT
+            blp.id,
+            blp.level_name
+        FROM
+            ba_level_price blp,
+            ba_pg_lp bgl
+        WHERE
+            blp.id = bgl.level_id
+            and blp.del_flag = #{delFlag}
+            and bgl.pg_id = #{pgId}
+    </select>
+
+    <select id="getLevelPriceById" resultType="com.settlement.vo.LevelPriceVo">
+         SELECT
+            blp.id,
+            blp.level_name,
+            blp.price,
+            blp.unit
+        FROM
+            ba_level_price blp
+        WHERE
+            blp.id = #{id}
+    </select>
+
+</mapper>

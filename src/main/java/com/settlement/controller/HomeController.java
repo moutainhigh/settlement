@@ -55,6 +55,8 @@ public class HomeController {
     @Autowired
     private BaWorkAttendanceService baWorkAttendanceService;
     @Autowired
+    private BaLevelPriceService baLevelPriceService;
+    @Autowired
     private BaProjectGroupAssistantService baProjectGroupAssistantService;
 
     @GetMapping({"/","/login"})
@@ -491,7 +493,11 @@ public class HomeController {
     @GetMapping("/ba-project-employee/add/{pgId}")
     public String toAddEmployeePage(@PathVariable Integer pgId, Model model) {
         // 级别填写模式
-        model.addAttribute("levelTypeSelect", this.sysDataDicService.getDataDicSelectByParentCode(Const.LEVEL_TYPE_PARENT_CODE));
+        // model.addAttribute("levelTypeSelect", this.sysDataDicService.getDataDicSelectByParentCode(Const.LEVEL_TYPE_PARENT_CODE));
+        // 查询项目组关联的级别
+        model.addAttribute("levelPriceList", this.baLevelPriceService.getLevelPriceByPgId(pgId));
+        // 单位
+        model.addAttribute("unitList", sysDataDicService.getDataDicSelectByParentCode(Const.UNIT_PARENT_CODE));
         model.addAttribute("pgId",pgId);
         return "emp/add";
     }

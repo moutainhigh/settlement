@@ -14,6 +14,7 @@
         <result column="rp_email" property="rpEmail" />
         <result column="send_copy_email" property="sendCopyEmail" />
         <result column="position" property="position" />
+        <result column="level_mode" property="levelMode" />
         <result column="pos_level" property="posLevel" />
         <result column="price_month" property="priceMonth" />
         <result column="unit" property="unit" />
@@ -42,6 +43,7 @@
             bpm.pos_level,
             bpm.responsible_person,
             bpm.upload_rate_email,
+            bpm.send_copy_email,
             bpm.rp_email,
             bpm.rate_email_filename,
             bpm.pg_id,

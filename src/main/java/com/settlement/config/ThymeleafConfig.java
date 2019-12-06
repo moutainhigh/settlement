@@ -24,6 +24,8 @@ public class ThymeleafConfig {
             vars.put("PG_CHECKSTATUS_CHECK_PASS",Const.CHECK_STATUS_CHECK_PASS);
             vars.put("PG_CHECKSTATUS_CHECK_PASS",Const.CHECK_STATUS_CHECK_PASS);
             vars.put("PG_CHECKSTATUS_CHECK_NOPASS",Const.CHECK_STATUS_CHECK_NOPASS);
+            vars.put("LEVEL_MODE_F", Const.LEVEL_MODE_F);
+            vars.put("LEVEL_MODE_H", Const.LEVEL_MODE_H);
             viewResolver.setStaticVariables(vars);
 
         }

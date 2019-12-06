@@ -29,6 +29,7 @@
                                             <div class="layui-input-inline">
                                                 <input type="text" id="code" name="code" required="" lay-verify="code" autocomplete="off"  placeholder="请输入员工编号" class="layui-input" maxlength="20">
                                             </div>
+                                            <button type="button" id="checkEmpCode"  class="layui-btn layui-btn-primary layui-btn-xs">检查重复</button>
                                         </div>
                                     </div>
 
@@ -81,19 +82,16 @@
                                                 <div id="div1">
                                                     <select id="posLevelSelect" name="posLevel" lay-filter="posLevelSelect" lay-verify="posLevelSelect">
                                                         <option value="" selected>请选择</option>
-                                                        <option value="0">写作</option>
-                                                        <option value="1">阅读</option>
-                                                        <option value="2">游戏</option>
-                                                        <option value="3">音乐</option>
-                                                        <option value="4">旅行</option>
+                                                        <option th:each="levelPrice : ${levelPriceList}" th:value="${levelPrice.id}" th:text="${levelPrice.levelName}"></option>
                                                     </select>
                                                 </div>
                                                 <div id="div2" style="display: none;">
                                                     <input  id="posLevelInput"  class="layui-input" required="" lay-verify="posLevelInput" autocomplete="off"  placeholder="请输入级别"  maxlength="20">
                                                 </div>
                                             </div>
-                                            <button type="button" id="handInputId" onclick="handInput()" class="layui-btn layui-btn-primary layui-btn-xs">手填</button>
-                                            <button type="button" id="frameInputId" onclick="frameInput()" class="layui-btn layui-btn-primary layui-btn-xs" style="display: none;margin-left: -2px;">框架</button>
+                                            <button type="button" id="handInputId" onclick="levelModeH()" class="layui-btn layui-btn-primary layui-btn-xs">手填</button>
+                                            <button type="button" id="frameInputId" onclick="levelModeF()" class="layui-btn layui-btn-primary layui-btn-xs" style="display: none;margin-left: -2px;">框架</button>
+                                            <input type="hidden"  id="levelMode" name="levelMode"  th:value="${LEVEL_MODE_F}" />
                                         </div>
                                     </div>
 
@@ -108,10 +106,9 @@
                                             <label class="layui-form-label">
                                                 <span class="x-red">*</span>单位</label>
                                             <div class="layui-input-inline">
-                                                <select name="unit" lay-filter="unit">
-                                                    <option value="" selected>请选择</option>
-                                                    <option value="0">元</option>
-                                                    <option value="1">万元</option>
+                                                <select name="unit" id="unit" lay-filter="unit">
+                                                    <option value="" >请选择</option>
+                                                    <option th:each="unit : ${unitList}" th:value="${unit.dicCode}" th:text="${unit.dicContent}"></option>
                                                 </select>
                                             </div>
                                         </div>
@@ -196,7 +193,7 @@
                                         <div class="layui-inline">
                                             <label class="layui-form-label"></label>
                                             <div class="layui-input-inline">
-                                                <!--<input name="" id="" class="layui-input" lay-verify="" autocomplete="off"  placeholder=""  maxlength="10">-->
+                                                <input type="hidden" name="pgId"  th:value="${pgId}">
                                             </div>
                                         </div>
                                     </div>
@@ -214,7 +211,7 @@
            </div>
         </div>
        <script th:src="@{/js/emp/emp.js}" type="text/javascript" charset="utf-8"></script>
-        <script type="text/javascript">
+        <script type="text/javascript" th:inline="javascript">
             // 表单操作
             layui.use(['laydate','form', 'layer','jquery','upload'],
             function() {
@@ -222,7 +219,7 @@
                 var laydate = layui.laydate;
                 var form = layui.form;
                 var layer = layui.layer;
-                var upload = layui.upload;
+                var upload = layui.upload
 
                 //普通图片上传
                 var uploadInst = upload.render({
@@ -319,6 +316,11 @@
                             return '服务费单价月至少得1个字符啊';
                         }
                     },
+                    unit: function(value) {
+                        if (value.length < 1) {
+                            return '单位至少得选择1个啊';
+                        }
+                    },
                     uploadRateEmail: function(value) {
                         if (value.length < 1) {
                             return '请上传客户确认rate邮件啊';
@@ -326,11 +328,26 @@
                     }
                 });
 
+                // 监听级别Select
+                form.on('select(posLevelSelect)', function (data) {
+                    if (data.value != '') {
+                        var id = data.value;
+                        $.get('/ba-level-price/' + id,null,function(r) {
+                            var levelPrice = r.data;
+                            // 服务费
+                            $("#priceMonth").val(levelPrice.price);
+                            // 单位
+                            $("#unit").val(levelPrice.unit);
+                            form.render('select');
+                        });
+                    }
+                });
+
                 //监听保存
                 form.on('submit(saveButton)',
                     function(data) {
-                        if (checkPgIsExist($("#code").val(),layer,'submit')) {
-                            $.post('/ba-project-group/add',data.field, function(r) {
+                        if (checkEmpCodeIsExist($("#code").val(),layer,'submit')) {
+                            $.post('/ba-project-employee/add',data.field, function(r) {
                                 layer.alert(r.msg, {
                                         icon : r.code == 'add_200' ? 6: 5
                                     },
@@ -345,12 +362,12 @@
                         return false;
                     });
 
-                //监听提交
+                //监听增加并提交
                 form.on('submit(submitButton)',
                 function(data) {
-                    layer.confirm('确认提交么?提交后需要审核，项目组、项目组编号将不能编辑', function(index) {
-                        if (checkPgIsExist($("#code").val(), layer, 'submit')) {
-                            $.post('/ba-project-group/addsubmit', data.field, function (r) {
+                    layer.confirm('确认提交么?提交后员工信息将参与考勤、结算，编辑需要申请', function(index) {
+                        if (checkEmpCodeIsExist($("#code").val(), layer, 'submit')) {
+                            $.post('/ba-project-employee/addsubmit', data.field, function (r) {
                                 layer.alert(r.msg, {
                                         icon: r.code == 'add_200' ? 6 : 5
                                     },
@@ -366,15 +383,22 @@
                     return false;
                 });
 
-                // 监听检查项目组是否存在
-                $(document).on('click','#pgIsExist', function(data) {
+                // 监听检查员工是否存在
+                $(document).on('click','#checkEmpCode', function(data) {
                     var code = $("#code").val();
                     if (code.trim() != '') {
-                        checkPgIsExist(code.trim(), layer,'');
+                        checkEmpCodeIsExist(code.trim(), layer,'');
                     }
                 });
             });
 
+            function levelModeH() {
+                handInput([[ ${LEVEL_MODE_H} ]]);
+            }
+
+            function levelModeF() {
+                frameInput([[ ${LEVEL_MODE_F} ]]);
+            }
         </script>
     </body>
 </html>
