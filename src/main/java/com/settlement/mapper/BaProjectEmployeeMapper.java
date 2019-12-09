@@ -22,5 +22,7 @@ import java.util.List;
 public interface BaProjectEmployeeMapper extends BaseMapper<BaProjectEmployee> {
     /** 获取未提交员工极路 */
     List<ProjectEmployeeVo> getNoSubmitProjectEmployeeList(@Param(value="projectEmployeeCo")ProjectEmployeeCo projectEmployeeCo, Page<ProjectEmployeeVo> page);
+    /** 批量更新员工提交状态 */
+    int updateEmpSubStatusBatchById(@Param("emps") List<BaProjectEmployee> emps);
 
 }

@@ -91,7 +91,7 @@ function stopOpen (title,url,w,h,full) {
         shade:0.4,
         title: title,
         content: url,
-        cancel: function (index, layero) {
+        cancel: function (index, layer) {
             parent.location.reload();
         }
     });

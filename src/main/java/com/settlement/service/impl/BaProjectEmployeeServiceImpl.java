@@ -15,6 +15,7 @@ import com.settlement.vo.ProjectEmployeeVo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -62,6 +63,32 @@ public class BaProjectEmployeeServiceImpl extends ServiceImpl<BaProjectEmployeeM
                 r = new Result();
                 r.setCode(HttpResultEnum.ADD_CODE_200.getCode());
                 r.setMsg(HttpResultEnum.ADD_CODE_200.getMessage());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return r;
+    }
+
+    @Override
+    public Result updateEmpSubByBatchId(String ids) {
+        Result r = new Result(HttpResultEnum.CODE_500.getCode(), HttpResultEnum.CODE_500.getMessage());
+        try {
+            if (ids != null && !"".equals(ids)) {
+                List<BaProjectEmployee> list = new ArrayList<BaProjectEmployee>();
+                BaProjectEmployee emp = null;
+                String[] idArr = ids.split(",");
+                for (int i = 0; i < idArr.length; i++) {
+                    emp = new BaProjectEmployee();
+                    emp.setId(Integer.valueOf(idArr[i]));
+                    emp.setSubStatus(Const.EMP_SUBMIT_STATUS_S);
+                    list.add(emp);
+                }
+                int ret = this.baseMapper.updateEmpSubStatusBatchById(list);
+                if (ret > 0) {
+                    r.setCode(HttpResultEnum.CODE_200.getCode());
+                    r.setMsg(HttpResultEnum.CODE_200.getMessage());
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

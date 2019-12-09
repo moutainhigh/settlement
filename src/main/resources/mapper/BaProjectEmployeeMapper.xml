@@ -63,4 +63,13 @@
             order by bpm.create_time
     </select>
 
+    <update id="updateEmpSubStatusBatchById" parameterType="java.util.List">
+        <foreach collection="emps" item="emp" index="index" separator=";">
+            update ba_project_employee
+            set
+                sub_status = #{emp.subStatus}
+            where id = #{emp.id}
+        </foreach>
+    </update>
+
 </mapper>

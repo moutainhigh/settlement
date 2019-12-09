@@ -22,5 +22,6 @@ public interface BaProjectEmployeeService extends IService<BaProjectEmployee> {
     Result checkEmpCodeIsExist(String code);
     /** 新增员工 */
     Result insertProjectEmp(ProjectEmployeeVo projectEmployeeVo);
-
+    /** 员工提交,批量更新*/
+    Result updateEmpSubByBatchId(String ids);
 }

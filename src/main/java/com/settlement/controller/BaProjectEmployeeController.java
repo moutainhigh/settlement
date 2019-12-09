@@ -95,4 +95,17 @@ public class BaProjectEmployeeController {
         return this.baProjectEmployeeService.insertProjectEmp(projectEmployeeVo);
     }
 
+    /**
+     * @description 提交
+     *
+     * @auth admin
+     * @date 2019-12-7
+     * @param ids
+     * @return
+     */
+    @PostMapping("/ba-project-employee/sub")
+    public Result submitProjectEmp(String ids) {
+        return this.baProjectEmployeeService.updateEmpSubByBatchId(ids);
+    }
+
 }

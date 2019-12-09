@@ -38,7 +38,7 @@
                                             <label for="entranceTime" class="layui-form-label">
                                                 <span class="x-red">*</span>入场时间</label>
                                             <div class="layui-input-inline layui-show-xs-block">
-                                                <input  id="entranceTime" name="entranceTime" required="" lay-verify="entranceTime" autocomplete="off"  placeholder="请输入入场时间" class="layui-input" >
+                                                <input  id="entranceTime" name="entranceTime" required="" lay-verify="date" autocomplete="off"  placeholder="请输入入场时间" class="layui-input" >
                                             </div>
                                         </div>
                                         <div class="layui-inline">
@@ -99,7 +99,7 @@
                                         <div class="layui-inline">
                                             <label class="layui-form-label"><span class="x-red">*</span>服务费(月)</label>
                                             <div class="layui-input-inline">
-                                                <input name="priceMonth" readonly="readonly" id="priceMonth" class="layui-input" required="" lay-verify="priceMonth" autocomplete="off"  placeholder="单价/月"  maxlength="10">
+                                                <input name="priceMonth" readonly="readonly" id="priceMonth" class="layui-input" required="" lay-verify="number" autocomplete="off"  placeholder="单价/月"  maxlength="10">
                                             </div>
                                         </div>
                                         <div class="layui-inline">
@@ -142,7 +142,7 @@
                                         <div class="layui-inline">
                                             <label class="layui-form-label">服务费(天)</label>
                                             <div class="layui-input-inline">
-                                                <input name="priceDay" readonly="readonly" id="priceDay" class="layui-input" required="" lay-verify="priceDay" autocomplete="off"  placeholder="单价/天"  maxlength="10">
+                                                <input name="priceDay"  id="priceDay" class="layui-input" required="" lay-verify="" autocomplete="off"  placeholder="单价/天"  maxlength="10">
                                             </div>
                                         </div>
                                         <div class="layui-inline">
@@ -157,7 +157,7 @@
                                         <div class="layui-inline">
                                             <label class="layui-form-label">证件号码</label>
                                             <div class="layui-input-inline">
-                                                <input name="cardNo" id="cardNo" class="layui-input"  lay-verify="cardNo" autocomplete="off"  placeholder=""  maxlength="20">
+                                                <input name="cardNo" id="cardNo" class="layui-input"  lay-verify="" autocomplete="off"  placeholder=""  maxlength="20">
                                             </div>
                                         </div>
                                         <div class="layui-inline">
@@ -178,7 +178,7 @@
                                         <div class="layui-inline">
                                             <label class="layui-form-label">员工月薪</label>
                                             <div class="layui-input-inline">
-                                                <input name="salaryMonth" id="salaryMonth" class="layui-input" lay-verify="salaryMonth" autocomplete="off"  placeholder=""  maxlength="10">
+                                                <input name="salaryMonth" id="salaryMonth" class="layui-input" lay-verify="" autocomplete="off"  placeholder=""  maxlength="10">
                                             </div>
                                         </div>
                                     </div>
@@ -187,7 +187,7 @@
                                         <div class="layui-inline">
                                             <label class="layui-form-label">员工日薪</label>
                                             <div class="layui-input-inline">
-                                                <input name="salaryDay" id="salaryDay" class="layui-input"  lay-verify="salaryDay" autocomplete="off"  placeholder=""  maxlength="20">
+                                                <input name="salaryDay" id="salaryDay" class="layui-input"  lay-verify="" autocomplete="off"  placeholder=""  maxlength="20">
                                             </div>
                                         </div>
                                         <div class="layui-inline">

@@ -43,6 +43,7 @@
             </div>
         </div> 
     </body>
+    <script th:src="@{/js/common/common.js}" type="text/javascript" charset="utf-8"></script>
     <script type="text/html" id="toolBar">
         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
         <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
@@ -73,7 +74,7 @@
                        {field:'id',type:'checkbox',fixed:'left'},
                        {field:'pgName',title:'项目组',align:'center',fixed:'left'},
                        {field:'code',title:'项目组编号',align:'center'},
-                       {field:'checkStatus',title:'',align:'center'},
+                       {field:'checkStatus',title:'',align:'center',hide:true},
                        {field:'checkStatusContent',title:'审核状态',align:'center'},
                        {field:'ownerName',title:'负责人',align:'center'},
                        {field:'enabled',title:'状态',align:'center',templet: '#switchStatus', unresize: true},
@@ -102,7 +103,7 @@
                   checkBoxCheckedOper('关联结算负责人','/ba-project-group/relate-settlement/',table, layer, 600, 400);
               },
               addEmp: function() {
-                  checkBoxCheckedOper('员工录入','/ba-project-employee/enter-emp/',table, layer, 1000, 540);
+                  checkBoxCheckedOper('员工录入','/ba-project-employee/enter-emp/',table, layer, 1000, 560);
               }
           };
           $('.layui-btn').on('click', function(){
@@ -180,7 +181,7 @@
               if(obj.event === 'detail'){
                   layer.msg('ID：'+ data.id + ' 的查看操作');
               } else if(obj.event === 'del'){
-                  if (checkStatus == noPass || checkStatus == null) {
+                  if (checkStatus == noPass || checkStatus == null || checkStatus == '') {
                       layer.confirm('真的删除【 '+ data.pgName + '】么?', function(index){
                           pg_del(data.id);
                           layer.close(index);
@@ -206,11 +207,13 @@
               contentType:"application/json",//设置请求参数类型为json字符串
               // data: {id:id},
               dataType:"json",
+              async: false,
               success:function(r){
-                  layer.msg(r.msg,{icon:1,time:1000});
-                  location.reload();
+                  layer.msg(r.msg,{icon: r.code == 'delete_200' ? 6: 5});
+                  // location.reload();
               }
           });
+          timeout(2000);
       }
 
       /** 复选框选中操作 */
