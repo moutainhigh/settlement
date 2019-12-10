@@ -181,8 +181,8 @@ class SettlementApplicationTests {
 		QueryWrapper<SysPermission> queryWrapper = new QueryWrapper<>();
 		queryWrapper.eq("parent_id",0);
 		//取得第一级的权限菜单
-		List<SysPermissionVo> sysPermissions=sysPermissionMapper.getSysPermissionVo(0);
-		System.out.println(sysPermissions);
+		//List<SysPermissionVo> sysPermissions=sysPermissionMapper.getSysPermissionVo(0);
+		// System.out.println(sysPermissions);
 	}
 
 	@Test

@@ -58,6 +58,8 @@ public class HomeController {
     private BaLevelPriceService baLevelPriceService;
     @Autowired
     private BaProjectGroupAssistantService baProjectGroupAssistantService;
+    @Autowired
+    private BaProjectEmployeeService baProjectEmployeeService;
 
     @GetMapping({"/","/login"})
     public String toLogin() {
@@ -505,6 +507,39 @@ public class HomeController {
         model.addAttribute("unitList", sysDataDicService.getDataDicSelectByParentCode(Const.UNIT_PARENT_CODE));
         model.addAttribute("pgId",pgId);
         return "emp/add";
+    }
+
+    /**
+     * @description 编辑员工页面
+     *
+     * @auth admin
+     * @date 2019-12-10
+     * @param id
+     * @param pgId
+     * @param model
+     * @return
+     */
+    @GetMapping("/ba-project-employee/edit/{id}/{pgId}")
+    public String toEditEmployee(@PathVariable Integer id, @PathVariable Integer pgId, Model model) {
+        model.addAttribute("levelPriceList", this.baLevelPriceService.getLevelPriceByPgId(pgId));
+        // 单位
+        model.addAttribute("unitList", sysDataDicService.getDataDicSelectByParentCode(Const.UNIT_PARENT_CODE));
+        model.addAttribute("emp",this.baProjectEmployeeService.getProjectEmpById(id));
+        return "emp/edit";
+    }
+
+    /**
+     * @description 预览图片
+     *
+     * @auth admin
+     * @date 2019-12-10
+     * @param id
+     * @return
+     */
+    @GetMapping("ba-project-employee/view/{id}")
+    public String toViewImg(@PathVariable Integer id, Model model) {
+        model.addAttribute("imgSrc", this.baProjectEmployeeService.getProjectEmpById(id).getRateEmailFilename());
+        return "emp/view";
     }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /**

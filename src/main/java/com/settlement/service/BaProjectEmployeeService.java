@@ -24,4 +24,10 @@ public interface BaProjectEmployeeService extends IService<BaProjectEmployee> {
     Result insertProjectEmp(ProjectEmployeeVo projectEmployeeVo);
     /** 员工提交,批量更新*/
     Result updateEmpSubByBatchId(String ids);
+    /** 根据ID，删除员工 */
+    Result deleteProjectEmp(Integer id);
+    /** 根据ID，取得项目组员工信息 */
+    BaProjectEmployee getProjectEmpById(Integer id);
+    /** 更新项目组员工 */
+    Result updateProjectEmp(ProjectEmployeeVo projectEmployeeVo);
 }

@@ -40,7 +40,7 @@ public class FileUploadController {
                 // 成功
                 result.setCode(HttpResultEnum.FILE_UPLOAD_CODE_9006.getCode());
                 result.setMsg(HttpResultEnum.FILE_UPLOAD_CODE_9006.getMessage());
-                result.setFileName(map.get("oldFileName").toString());
+                result.setFileName(map.get("fileName").toString());
                 result.setPath(map.get("path").toString());
             } else if (HttpResultEnum.FILE_UPLOAD_CODE_9000.getCode().equals(map.get("result"))) {
                 result.setCode(HttpResultEnum.FILE_UPLOAD_CODE_9000.getCode());

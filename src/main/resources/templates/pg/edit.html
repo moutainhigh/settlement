@@ -48,6 +48,7 @@
             </div>
         </div>
         <script th:src="@{/js/formSelects-v4.js}" type="text/javascript" charset="utf-8"></script>
+        <script th:src="@{/js/common/common.js}" type="text/javascript" charset="utf-8"></script>
         <script th:src="@{/js/pg/pg.js}" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript">
             var oldCode = $("#oldCode").val();
@@ -124,7 +125,7 @@
                 });
             });
 
-            function edit(data, layer, url) {
+           /* function edit(data, layer, url) {
                 // 处理重复提交
                 $.ajax({
                     url: url,
@@ -150,7 +151,7 @@
                         $(".layui-btn").removeAttr('disabled');
                     }
                 });
-            }
+            }*/
         </script>
     </body>
 </html>

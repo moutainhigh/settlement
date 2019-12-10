@@ -42,6 +42,7 @@
         </div> 
     </body>
     <script th:src="@{/js/common/common.js}" type="text/javascript" charset="utf-8"></script>
+    <script th:src="@{/js/emp/emp.js}" type="text/javascript" charset="utf-8"></script>
     <script type="text/html" id="toolBarHead">
         <div class="layui-btn-container">
             <button class="layui-btn layui-btn-sm" lay-event="add">添加</button>
@@ -84,7 +85,7 @@
                        {field:'code',title:'员工编号',align:'center'},
                        {field:'entranceTime',title:'入场时间',align:'center'},
                        {field:'responsiblePerson',title:'客户负责人',align:'center'},
-                       {field:'uploadRateEmail',title:'客户确认rate邮件',align:'center'},
+                       {field:'rateEmailFilename',title:'客户确认rate邮件',align:'center',templet:operImg},
                        {field:'sendCopyEmail',title:'抄送邮件地址',align:'center'},
                        {field:'createTime',title:'创建日期',align:'center'},
                        {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:200}
@@ -129,91 +130,19 @@
           // 监听工具栏
          table.on('tool(dataTable)', function(obj){
               var data = obj.data;
-             var noPass = [[ ${PG_CHECKSTATUS_CHECK_NOPASS} ]];
-             var checkStatus = data.checkStatus;
+              var id = data.id;
               if(obj.event === 'detail'){
                   layer.msg('ID：'+ data.id + ' 的查看操作');
               } else if(obj.event === 'del'){
-                  if (checkStatus == noPass || checkStatus == null) {
-                      layer.confirm('真的删除【 '+ data.empName + '】么?', function(index){
-                          emp_del(data.id);
-                          layer.close(index);
-                      });
-                  } else {
-                      layer.msg("项目组处于【待审核】或者【审核已通过】状态，不能删除",{icon:5});
-                  }
+                  layer.confirm('真的删除【 '+ data.empName + '】么?', function(index){
+                      emp_del(data.id);
+                      layer.close(index);
+                  });
               } else if(obj.event === 'edit'){
-                  if (checkStatus == noPass || checkStatus == null) {
-                      xadmin.open('编辑项目组','/ba-project-group/edit/'+ data.id,600,400);
-                  } else {
-                      layer.msg("项目组处于【待审核】或者【审核已通过】状态，不能编辑",{icon:5});
-                  }
+                  xadmin.open('编辑项目组员工','/ba-project-employee/edit/'+ id + '/' + pgId,800,420);
               }
           });
       });
 
-      /** 员工-删除*/
-      function emp_del(id){
-          $.ajax({
-              url:"/ba-project-employee/del/" + id,
-              type:"DELETE",
-              contentType:"application/json",//设置请求参数类型为json字符串
-              // data: {id:id},
-              dataType:"json",
-              success:function(r){
-                  layer.msg(r.msg,{icon:1,time:1000});
-                  location.reload();
-              }
-          });
-      }
-
-      /** 复选框选中操作 */
-      function checkBoxCheckedOper(title, url, table, layer,w,h) {
-          var checkStatus = table.checkStatus('dataTable')
-              ,data = checkStatus.data;
-          var passCheckStatus = [[ ${PG_CHECKSTATUS_CHECK_PASS} ]];
-          if (data.length == 0) {
-              layer.alert('请先选择一行',{icon : 5});
-          }else if (data.length > 1) {
-              layer.alert('不能多选啊，只能选择一行',{icon : 5});
-          }else if(data.length == 1) {
-              //xadmin.open(title,url + data[0].id,w,h);
-              // 项目组只有处于审核通过状态才能操作
-             if (data.checkStatus == passCheckStatus) {
-                  xadmin.open(title,url + data[0].id,w,h);
-              } else {
-                  layer.msg("项目组只有处于【审核已通过】状态才能" + title,{icon:5});
-              }
-          }
-      }
-
-      /** 员工提交 */
-      function submitEmp(layer,data) {
-          if (data.length == 0) {
-              layer.alert('请先选择一行',{icon : 5});
-          } else {
-              layer.confirm('确认提交么?提交后员工信息将参与考勤、结算，编辑需要申请', function(index){
-                  var ids = '';
-                  for (var i = 0; i < data.length; i++) {
-                      if (i == data.length - 1) {
-                          ids = ids + data[i].id
-                      } else {
-                          ids = ids + data[i].id + ',';
-                      }
-                  }
-                  $.ajax({
-                      url: '/ba-project-employee/sub',
-                      type: 'POST',
-                      async: false,
-                      data: {ids: ids},
-                      success: function(r) {
-                          layer.msg(r.msg,{icon: r.code == '200' ? 6: 5});
-                      }
-                  });
-                  layer.close(index);
-                  timeout(2000);
-              });
-          }
-      }
     </script>
 </html>

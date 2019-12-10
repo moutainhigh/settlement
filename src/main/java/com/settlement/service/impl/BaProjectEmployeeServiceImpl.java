@@ -1,6 +1,7 @@
 package com.settlement.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.settlement.bo.PageData;
 import com.settlement.co.ProjectEmployeeCo;
@@ -89,6 +90,70 @@ public class BaProjectEmployeeServiceImpl extends ServiceImpl<BaProjectEmployeeM
                     r.setCode(HttpResultEnum.CODE_200.getCode());
                     r.setMsg(HttpResultEnum.CODE_200.getMessage());
                 }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return r;
+    }
+
+    @Override
+    public Result deleteProjectEmp(Integer id) {
+        Result r = new Result(HttpResultEnum.DEL_CODE_500.getCode(), HttpResultEnum.DEL_CODE_500.getMessage());
+        try {
+            UpdateWrapper<BaProjectEmployee> updateWrapper = new UpdateWrapper<BaProjectEmployee>();
+            updateWrapper.set("del_flag", Const.DEL_FLAG_D);
+            updateWrapper.eq("id", id);
+            int ret = this.baseMapper.update(new BaProjectEmployee().setId(id), updateWrapper);
+            if (ret > 0) {
+                r.setCode(HttpResultEnum.DEL_CODE_200.getCode());
+                r.setMsg(HttpResultEnum.DEL_CODE_200.getMessage());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return r;
+    }
+
+    @Override
+    public BaProjectEmployee getProjectEmpById(Integer id) {
+        QueryWrapper<BaProjectEmployee> queryWrapper = new QueryWrapper<BaProjectEmployee>();
+        queryWrapper.eq("id",id);
+        BaProjectEmployee emp = this.baseMapper.selectById(id);
+        return emp;
+    }
+
+    @Override
+    public Result updateProjectEmp(ProjectEmployeeVo projectEmployeeVo) {
+        Result r = new Result(HttpResultEnum.EDIT_CODE_500.getCode(),HttpResultEnum.EDIT_CODE_500.getMessage());
+        try {
+            UpdateWrapper<BaProjectEmployee> updateWrapper = new UpdateWrapper<BaProjectEmployee>();
+            updateWrapper.set("emp_name", projectEmployeeVo.getEmpName());
+            updateWrapper.set("entrance_time",projectEmployeeVo.getEntranceTime());
+            updateWrapper.set("card_no",projectEmployeeVo.getCardNo());
+            updateWrapper.set("place",projectEmployeeVo.getPlace());
+            updateWrapper.set("responsible_person",projectEmployeeVo.getResponsiblePerson());
+            updateWrapper.set("rp_email",projectEmployeeVo.getRpEmail());
+            updateWrapper.set("send_copy_email",projectEmployeeVo.getSendCopyEmail());
+            updateWrapper.set("position",projectEmployeeVo.getPosition());
+            updateWrapper.set("level_mode",projectEmployeeVo.getLevelMode());
+            updateWrapper.set("pos_level",projectEmployeeVo.getPosLevel());
+            updateWrapper.set("price_month",projectEmployeeVo.getPriceMonth());
+            updateWrapper.set("unit",projectEmployeeVo.getUnit());
+            updateWrapper.set("price_day",projectEmployeeVo.getPriceDay());
+            updateWrapper.set("claim_expense_person",projectEmployeeVo.getClaimExpensePerson());
+            updateWrapper.set("work_attendence_person",projectEmployeeVo.getWorkAttendencePerson());
+            updateWrapper.set("salary_month",projectEmployeeVo.getSalaryMonth());
+            updateWrapper.set("salary_day",projectEmployeeVo.getSalaryDay());
+            updateWrapper.set("upload_rate_email",projectEmployeeVo.getUploadRateEmail());
+            updateWrapper.set("rate_email_filename",projectEmployeeVo.getRateEmailFilename());
+            updateWrapper.set("sub_status",projectEmployeeVo.getSubStatus());
+            updateWrapper.set("update_time",projectEmployeeVo.getUpdateTime());
+            updateWrapper.eq("id",projectEmployeeVo.getId());
+            int ret = this.baseMapper.update(projectEmployeeVo, updateWrapper);
+            if (ret > 0) {
+                r.setCode(HttpResultEnum.EDIT_CODE_200.getCode());
+                r.setMsg(HttpResultEnum.EDIT_CODE_200.getMessage());
             }
         } catch (Exception e) {
             e.printStackTrace();

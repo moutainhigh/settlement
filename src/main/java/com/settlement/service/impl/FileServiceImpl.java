@@ -50,7 +50,7 @@ public class FileServiceImpl implements FileService {
                 String oldFileName = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(File.separator) + 1);
                 String extensions = oldFileName.substring(oldFileName.lastIndexOf(".") + 1);
                 String newFileName = uuid + "." + extensions;
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
                 String baseDir = sdf.format(new Date());
                 String path = config.getUploadPath() + File.separator + baseDir + File.separator + newFileName;
                 File uploadFile = new File(path);
@@ -61,7 +61,7 @@ public class FileServiceImpl implements FileService {
                 if (file.getSize() > config.getFileSize()) {
                     Thumbnails.of(uploadFile).scale(config.getScaleRatio()).toFile(path);
                 }
-                map.put("oldFileName",oldFileName);
+                map.put("fileName",baseDir + "_" + newFileName);
                 map.put("path",path);
             } else {
                 code = HttpResultEnum.FILE_UPLOAD_CODE_9004.getCode();

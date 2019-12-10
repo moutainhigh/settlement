@@ -90,7 +90,7 @@ public class BaProjectGroupServiceImpl extends ServiceImpl<BaProjectGroupMapper,
 
     @Override
     public Result addProjectGroup(ProjectGroupVo projectGroupVo) {
-        Result r = null;
+        Result  r = new Result(HttpResultEnum.ADD_CODE_500.getCode(), HttpResultEnum.ADD_CODE_500.getMessage());
         try {
             int ret = this.baseMapper.insert(projectGroupVo);
             BaProjectGroupCheck bgc = new BaProjectGroupCheck();
@@ -106,7 +106,6 @@ public class BaProjectGroupServiceImpl extends ServiceImpl<BaProjectGroupMapper,
             }
         } catch (Exception e) {
             e.printStackTrace();
-            r = new Result(HttpResultEnum.ADD_CODE_500.getCode(), HttpResultEnum.ADD_CODE_500.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         return r;
@@ -114,7 +113,7 @@ public class BaProjectGroupServiceImpl extends ServiceImpl<BaProjectGroupMapper,
 
     @Override
     public Result updateProjectGroup(ProjectGroupVo projectGroupVo) {
-        Result r = null ;
+        Result r = new Result(HttpResultEnum.EDIT_CODE_500.getCode(), HttpResultEnum.EDIT_CODE_500.getMessage());
         try {
             UpdateWrapper<BaProjectGroup> updateWrapper = new UpdateWrapper<BaProjectGroup>();
             updateWrapper.set("pg_name",projectGroupVo.getPgName());
@@ -123,20 +122,18 @@ public class BaProjectGroupServiceImpl extends ServiceImpl<BaProjectGroupMapper,
             updateWrapper.eq("id",projectGroupVo.getId());
             int ret = this.baProjectGroupMapper.update(projectGroupVo, updateWrapper);
             if (ret > 0) {
-                r = new Result();
                 r.setCode(HttpResultEnum.EDIT_CODE_200.getCode());
                 r.setMsg(HttpResultEnum.EDIT_CODE_200.getMessage());
             }
         } catch (Exception e) {
             e.printStackTrace();
-            r = new Result(HttpResultEnum.EDIT_CODE_500.getCode(), HttpResultEnum.EDIT_CODE_500.getMessage());
         }
         return r;
     }
 
     @Override
     public Result updateAndSubmitProjectGroup(ProjectGroupVo projectGroupVo) {
-        Result r = null;
+        Result  r = new Result(HttpResultEnum.EDIT_CODE_500.getCode(), HttpResultEnum.EDIT_CODE_500.getMessage());
         try {
             UpdateWrapper<BaProjectGroup> updateWrapper = new UpdateWrapper<BaProjectGroup>();
             updateWrapper.set("pg_name",projectGroupVo.getPgName());
@@ -152,33 +149,29 @@ public class BaProjectGroupServiceImpl extends ServiceImpl<BaProjectGroupMapper,
             bgc.setCheckUserId(projectGroupVo.getCheckUserId());
             int ret1 = baProjectGroupCheckMapper.insert(bgc);
             if (ret > 0 && ret1 > 0) {
-                r = new Result();
                 r.setCode(HttpResultEnum.EDIT_CODE_200.getCode());
                 r.setMsg(HttpResultEnum.EDIT_CODE_200.getMessage());
             }
         } catch (Exception e) {
             e.printStackTrace();
-            r = new Result(HttpResultEnum.EDIT_CODE_500.getCode(), HttpResultEnum.EDIT_CODE_500.getMessage());
         }
         return r;
     }
 
     @Override
     public Result deleteProjectGroup(Integer id) {
-        Result r = null;
+        Result  r = new Result(HttpResultEnum.DEL_CODE_500.getCode(), HttpResultEnum.EDIT_CODE_500.getMessage());
         try {
             UpdateWrapper<BaProjectGroup> updateWrapper = new UpdateWrapper<BaProjectGroup>();
             updateWrapper.set("del_flag",Const.DEL_FLAG_D);
             updateWrapper.eq("id",id);
             int ret = this.baseMapper.update(new BaProjectGroup().setId(id), updateWrapper);
             if (ret > 0) {
-                r = new Result();
                 r.setCode(HttpResultEnum.DEL_CODE_200.getCode());
                 r.setMsg(HttpResultEnum.DEL_CODE_200.getMessage());
             }
         } catch (Exception e) {
             e.printStackTrace();
-            r = new Result(HttpResultEnum.DEL_CODE_500.getCode(), HttpResultEnum.EDIT_CODE_500.getMessage());
         }
         return r;
     }

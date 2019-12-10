@@ -62,6 +62,8 @@ public class Const {
     public final static String LEVEL_MODE_H = "H";
     /** 单位父CODE: UNIT */
     public final static String UNIT_PARENT_CODE = "UNIT";
+    /** 上传图片存放实际路径 */
+    public final static String IMG_UPLOAD_PATH = "file:F:/MyProjectName/";
 
     /**结算时间点参数 结算时间点**/
     public final static String TIME_PRAMA_STOP="B_T_STOP";

@@ -108,4 +108,46 @@ public class BaProjectEmployeeController {
         return this.baProjectEmployeeService.updateEmpSubByBatchId(ids);
     }
 
+    /**
+     * @description 删除员工
+     *
+     * @auth admin
+     * @date 2019-12-9
+     * @param id
+     * @return
+     */
+    @DeleteMapping("/ba-project-employee/del/{id}")
+    public Result deleteProjectEmp(@PathVariable Integer id) {
+        return this.baProjectEmployeeService.deleteProjectEmp(id);
+    }
+
+    /**
+     * @description 修改员工
+     *
+     * @auth admin
+     * @date 2019-12-10
+     * @param projectEmployeeVo
+     * @return
+     */
+    @PutMapping("/ba-project-employee/edit")
+    public Result editProjectEmp(ProjectEmployeeVo projectEmployeeVo) {
+        projectEmployeeVo.setUpdateTime(new Date());
+        projectEmployeeVo.setSubStatus(Const.EMP_SUBMIT_STATUS_N);
+        return this.baProjectEmployeeService.updateProjectEmp(projectEmployeeVo);
+    }
+
+    /**
+     * @description 员工修改并提交
+     *
+     * @auth admin
+     * @date 2019-12-10
+     * @param projectEmployeeVo
+     * @return
+     */
+    @PutMapping("/ba-project-employee/editsubmit")
+    public Result editSubmitProjectEmp(ProjectEmployeeVo projectEmployeeVo) {
+        projectEmployeeVo.setUpdateTime(new Date());
+        projectEmployeeVo.setSubStatus(Const.EMP_SUBMIT_STATUS_S);
+        return this.baProjectEmployeeService.updateProjectEmp(projectEmployeeVo);
+    }
 }

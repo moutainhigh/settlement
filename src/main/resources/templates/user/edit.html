@@ -83,6 +83,7 @@
         </div>
         <script th:src="@{/js/formSelects-v4.js}" type="text/javascript" charset="utf-8"></script>
         <script th:src="@{/js/user/user.js}" type="text/javascript" charset="utf-8"></script>
+        <script th:src="@{/js/common/common.js}" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript" >
             var deptIdInit = [[${userVo.deptId}]];
             // 下拉多选框
@@ -127,8 +128,8 @@
                 form.on('submit(edit)',
                 function(data) {
                     if (checkRole(layer)) {
-
-                        $.ajax({
+                        edit(data, layer, '/sys-user/edit');
+                        /*$.ajax({
                             url:"/sys-user/edit/",
                             type:"PUT",
                             // contentType:"application/json",//设置请求参数类型为json字符串
@@ -145,7 +146,7 @@
                                         xadmin.father_reload();
                                     });
                             }
-                        });
+                        });*/
                     }
                     return false;
                 });
