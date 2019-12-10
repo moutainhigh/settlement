@@ -4,23 +4,55 @@
     <th:bolck th:include="common/header :: header('数据字典管理')" />
 </head>
 <body>
+
 <div class="layui-fluid">
     <div class="layui-row layui-col-space15">
         <div class="layui-col-md12">
             <div class="layui-card">
+                <div class="layui-card-body">
+                    <!--考勤月份-->
+                    <div  style="margin-left: 30%;">
+                        <div class="layui-inline ">
+                            <span class="x-red"></span>考勤月份:
+                        </div>
+                        <div class="layui-inline"  >
+                            <select id="years" name="years"  lay-filter="years" lay-verify="years" style="width: 100px;height: 30px;" >
+                                <option th:each="year:${years}" th:value="${year}" th:text="${year}"></option>
+                            </select>
+                            </div>
+                            <div class="layui-inline ">
+                                <span class="x-red"></span>年
+                            </div>
+                        <div class="layui-inline">
+                            <select id="months" name="months"  lay-filter="months" lay-verify="years" style="width: 100px;height: 30px;">
+                                <option th:each="month:${months}" th:value="${month}" th:text="${month}"></option>
+                            </select>
+                        </div>
+                        <div class="layui-inline ">
+                            <span class="x-red"></span>月
+                        </div>
+                    </div>
+                    <div style="margin-left: 20%; padding-top: 20px;">
+                        <div class="layui-inline layui-show-xs-block">
+                            <lable class="x-red">本月您已经修改1次,还有2次修改机会</lable>
+                        </div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <span class="x-red"></span>结算时间点:
+                        </div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <input type="text" id="start" name="stopTime"  th:value="${stopTime}" readonly autocomplete="off" class="layui-input">
+                        </div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <span class="x-red"></span>结算完成时间点
+                        </div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <input type="text" id="end" name="completeTime" th:value="${compelteTime}" readonly autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
 
-                <div class="layui-card-header">
-                    <form  style="display: inline;" onsubmit="return false">
-                        <div class="layui-inline layui-show-xs-block">
-                            <button type="button" id="import2" data-type="import2" class="layui-btn">批量导入</button>
-                            <input type="text" id="keyword" name="keyword"  placeholder="查询合同编号" autocomplete="off" class="layui-input">
-                        </div>
-                        <div class="layui-inline layui-show-xs-block">
-                            <button class="layui-btn" id="search" data-type="reload" lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i>查询</button>
-                        </div>
-                    </form>
-                   </div>
-                <div class="layui-card-body layui-table-body layui-table-main" >
+                </div>
+
+                <div class="layui-card-body layui-table-body layui-table-main">
                     <table class="layui-table layui-form" id="dataTable" lay-filter="dataTable">
                     </table>
                 </div>
@@ -33,27 +65,39 @@
     <div class="layui-btn-container">
         <button type="button" id="edit" data-type="edit" class="layui-btn"><i class="layui-icon"></i>编辑</button>
         <button type="button" id="import" data-type="import" class="layui-btn">批量导入</button>
-        <button type="button" id="applymodify" data-type="applymodify" class="layui-btn " onclick="deleteFun()" lay-demo="reload">申请修改</button>
-        <button type="button" id="commmit" data-type="commmit" class="layui-btn layui-btn-normal " onclick="deleteFun()" lay-demo="reload">提交</button>
+        <button type="button" id="applymodify" data-type="applymodify" class="layui-btn " lay-demo="reload">申请修改</button>
+        <button type="button" id="commmit" data-type="commmit" class="layui-btn layui-btn-normal "  lay-demo="reload">提交</button>
+        <button type="button" id="generate" data-type="generate" class="layui-btn layui-btn-normal "  lay-demo="reload">生成考勤记录</button>
+        <div class="layui-form layui-col-space5" style="display:inline;float: right;">
+            <div class="layui-inline">
+                <lable class="x-red">本月您已经修改1次,还有2次修改机会</lable>
+            </div>
+            <div class="layui-inline layui-show-xs-block" style="margin-bottom: 8px;" >
+                <input type="text" id="keyword" name="keyword"  readonly='false' value="ddddddd" placeholder="请输入" autocomplete="off" class="layui-input" style="width: 150px">
+            </div>
+            <div class="layui-inline layui-show-xs-block">
+                <button class="layui-btn" id="search"  onclick="search();return false;" data-type="reload" lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i>查询</button>
+            </div>
+        </div>
     </div>
 </script>
 <script type="text/html" id="idselect">
     <input type="checkbox" name="id" value="{{d.id}}"  lay-filter="idselect">
 </script>
 <script type="text/javascript"  th:inline="javascript">
-    layui.use(['table','form','upload'], function(){
+    layui.use(['table','form','upload','jquery'], function(){
         var laydate = layui.laydate;
         var  form = layui.form;
         var table = layui.table;
         var upload = layui.upload;
+        var $ = layui.jquery;
         var obj = window.parent.layui.dtree.getNowParam("projectTree");
-        //alert(obj.nodeId);
-        // var layer = layui.layer;
-        // var $ = layui.jquery;
-        table.render({
+
+       var table1= table.render({
             elem: '#dataTable',
             url: '/ba-work-attendance/pagedata',
             // toolbar: '',
+           // id:"tableReload",
             page: true,
             title: '考勤记录',
             height: 'full-210',
@@ -66,6 +110,8 @@
             where:{
                 checkUserId:[[${checkUserId}]]
                 ,projectId: obj.nodeId
+                ,yearValue:$('#years').children('option:selected').val()
+                ,monthValue:$('#months').children('option:selected').val()
             },
              //id: 'userData',
             cols: [[
@@ -103,12 +149,13 @@
             reload: function(){
                 var keyword = $('#keyword');
                 //执行重载
-                table.reload('dataTable', {
+                table.reload('tableReload', {
                     page: {
                         curr: 1 //重新从第 1 页开始
                     }
                     ,where: {
                         keyword: keyword.val()
+                        ,month:15
                     }
                 }, 'data');
             },
@@ -116,13 +163,34 @@
                 checkBoxCheckedOper('修改考勤记录','/ba-work-attendance/edit/',table,layer,800,450);
             },
             applymodify:function () {
-                applymodifyOper('申请修改','/ba-work-attendance/applymodify/',table,layer,500,450);
+                //判断当月修改的次数
+
+                //项目负责人AM
+                var checkUserId = [[${checkUserId}]];
+                applymodifyOper('申请修改','/ba-work-attendance/applymodify/'+checkUserId,table,layer,500,450);
             },
             commmit:function () {
                 alert('commmit');
             }
-
         };
+
+        //选择月份重新加载数据
+        $('#months').change(function () {
+            var monthvalue=$(this).children('option:selected').val();
+            //执行重载
+            table.reload('dataTable', {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+                ,where: {
+                        monthValue:monthvalue
+
+                }
+            }, 'data');
+
+        });
+
+
         //执行上传
         upload.render({
             elem: '#import' //绑定元素
@@ -146,6 +214,7 @@
             active[type] ? active[type].call(this) : '';
         });
         form.render();
+
 
         // 监听工具栏
         table.on('tool(dataTable)', function(obj){
@@ -179,7 +248,7 @@
             ids2[i]=data[i].id;
         }
         //xadmin.open(title,url + ids2+"/"+checkUserId,w,h);
-        xadmin.open(title,url + ids2,w,h);
+        xadmin.open(title,url + "/"+ ids2,w,h);
     }
     /** 复选框选中操作 */
     function checkBoxCheckedOper(title, url, table, layer,w,h) {
@@ -198,6 +267,11 @@
             //     layer.msg("项目组只有处于【审核通过】状态才能" + title,{icon:5});
             // }
         }
+    }
+
+    function search() {
+
+        alert('search:'+ $("#keyword").val());
     }
 </script>
 </html>

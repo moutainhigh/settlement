@@ -9,16 +9,19 @@
         <div class="layui-fluid">
             <div class="layui-row">
                 <form class="layui-form">
+                    <input type="hidden" name="checkUser"  id="checkUser" th:value="${applyAndCheckUserVo.checkUserId}" />
+                    <input type="hidden" name="applyUser" id="applyUser" th:value="${applyAndCheckUserVo.applyUserId}" />
+                    <input type="hidden" name="ids" id="ids" th:value="${applyAndCheckUserVo.ids}"/>
                     <div class="layui-form-item">
                         <div class="layui-form-item">
-                            <label for="contractNo" class="layui-form-label">
+                            <label class="layui-form-label">
                                 <span class="x-red">*</span>项目负责人</label>
                             <div class="layui-input-inline">
-                                <input type="text" id="contractNo" name="contractNo"  required="" lay-verify="contractNo" autocomplete="off"   class="layui-input" maxlength="20">
+                                <input type="text" id="checkUserName" name="checkUserName" th:value="${applyAndCheckUserVo.checkUserName}" readonly   autocomplete="off"   class="layui-input" maxlength="20">
                             </div>
                         </div>
                         <div class="layui-form-item">
-                            <label for="contractNo" class="layui-form-label">
+                            <label for="applyType" class="layui-form-label">
                                 <span class="x-red">*</span>修改类型</label>
                             <div class="layui-input-inline">
                                 <input type="radio" id="applyType" name="applyType" checked="true" value="WORKATTENDANCE" title="考勤修改" required="" lay-verify="applyType"  maxlength="20">

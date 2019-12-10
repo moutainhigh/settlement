@@ -7,6 +7,7 @@ import com.settlement.bo.PageData;
 import com.settlement.co.CustomerCo;
 import com.settlement.entity.SysUser;
 import com.settlement.service.BaCustomerService;
+import com.settlement.service.SysRoleService;
 import com.settlement.utils.Result;
 import com.settlement.utils.Status;
 import com.settlement.vo.BaCustomerAndProjectTreeVo;
@@ -31,6 +32,8 @@ import java.util.List;
 public class BaCustomerController {
     @Autowired
     private BaCustomerService baCustomerService;
+    @Autowired
+    private SysRoleService roleService;
     /**
      *
      * @param customerCo
@@ -41,22 +44,18 @@ public class BaCustomerController {
         PageData pageData = baCustomerService.listPageData(customerCo);
         return  pageData;
     }
-    @PostMapping("/list/tree1")
-    public Object customerAndProjectTree(){
-        List<BaCustomerAndProjectTreeVo> baCustomerAndProjectTreeVos = baCustomerService.getCustomerAndProjectTreeByUserId(37);
-        JSONObject josn = new JSONObject();
-        Status status = new Status();
-        status.setCode(200);
-        status.setMessage("操作成功");
-        josn.put("status",JSONArray.toJSON(status));
-        josn.put("data", JSONArray.toJSON(baCustomerAndProjectTreeVos));
-        System.out.println(josn.toJSONString());
-        return josn.toJSONString();
-    }
-    @PostMapping("/list/tree2")
-    public List<BaCustomerAndProjectTreeVo> customerAndProjectTree2(){
-        List<BaCustomerAndProjectTreeVo> baCustomerAndProjectTreeVos = baCustomerService.getCustomerAndProjectTreeByUserId(37);
-        return  baCustomerAndProjectTreeVos;
+
+    /**
+     *
+     * @param session
+     * @return
+     */
+    @PostMapping("/list/tree")
+    public Object customerAndProjectTree(HttpSession session){
+        SysUser user = (SysUser)session.getAttribute("user");
+        Integer userId = user.getId();
+        return baCustomerService.getCustomerAndProjectTreeByUserId(37);
+
     }
     /**
      * 添加

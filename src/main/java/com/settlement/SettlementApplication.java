@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.MultipartAutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartResolver;
@@ -21,6 +22,7 @@ import org.springframework.web.util.UrlPathHelper;
 @EnableTransactionManagement
 @SpringBootApplication
 @MapperScan("com.settlement.mapper")
+@EnableScheduling
 public class SettlementApplication {
 
 	public static void main(String[] args) {

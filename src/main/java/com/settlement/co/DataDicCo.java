@@ -6,4 +6,5 @@ import lombok.Data;
 public class DataDicCo extends PageCo {
     private String keyword;
     private String pid;
+    private String delFlag;
 }

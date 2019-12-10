@@ -255,10 +255,13 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
      */
     @Override
     public SysPermissionVo getSysPermissionVoById(Integer id) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("id",id);
+        map.put("delFlag",Const.DEL_FLAG_N);
         if(1==id){
             return this.getRootSysPermissionVoById(1);
         } else {
-            return this.baseMapper.getSysPermissionVoById(id);
+            return this.baseMapper.getSysPermissionVoById(map);
         }
     }
 
@@ -269,7 +272,10 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
      */
     @Override
     public SysPermissionVo getRootSysPermissionVoById(Integer id) {
-        SysPermissionVo sysPermissionVo = this.baseMapper.getRootSysPermissionVoById(id);
+        Map<String,Object> map = new HashMap<>();
+        map.put("id",id);
+        map.put("delFlag",Const.DEL_FLAG_N);
+        SysPermissionVo sysPermissionVo = this.baseMapper.getRootSysPermissionVoById(map);
         sysPermissionVo.setParentContent("结算系统");
         return sysPermissionVo;
     }
@@ -295,8 +301,11 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
      * @return
      */
     private List<SysPermissionVo> getSysPermissionLists2(List<SysPermissionRole> sysPermissionRoles,Integer parent_id){
+        Map<String,Object> map = new HashMap<>();
+        map.put("parentId",parent_id);
+        map.put("delFlag",Const.DEL_FLAG_N);
         //根据parent_id取得子权限菜单
-        List<SysPermissionVo> sysPermissionVos = sysPermissionMapper.getSysPermissionVo(parent_id) ;
+        List<SysPermissionVo> sysPermissionVos = sysPermissionMapper.getSysPermissionVo(map) ;
         //遍历对比sys_permission_role中的permission_id与sys_permission中的id相等则为选中状态
         for(SysPermissionVo sysPermissionVo: sysPermissionVos) {
             sysPermissionVo.setTitle(sysPermissionVo.getPName());

@@ -1,5 +1,7 @@
 package com.settlement.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -9,12 +11,14 @@ import com.settlement.entity.BaCustomer;
 import com.settlement.entity.BaDeptCustomer;
 import com.settlement.mapper.BaCustomerMapper;
 import com.settlement.mapper.BaDeptCustomerMapper;
+import com.settlement.mapper.SysRoleMapper;
 import com.settlement.service.BaCustomerService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.settlement.service.BaDeptCustomerService;
 import com.settlement.utils.Const;
 import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
+import com.settlement.utils.Status;
 import com.settlement.vo.BaCustomerAndProjectTreeVo;
 import com.settlement.vo.BaCustomerAndProjectVo;
 import com.settlement.vo.BaCustomerVo;
@@ -40,7 +44,8 @@ import java.util.*;
 public class BaCustomerServiceImpl extends ServiceImpl<BaCustomerMapper, BaCustomer> implements BaCustomerService {
     @Autowired
     private BaDeptCustomerMapper baDeptCustomerMapper;
-
+    @Autowired
+    private SysRoleMapper sysRoleMapper;
     /**
      * 加载列表页面
      * @param customerCo
@@ -104,8 +109,18 @@ public class BaCustomerServiceImpl extends ServiceImpl<BaCustomerMapper, BaCusto
             QueryWrapper<BaDeptCustomer> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("customer_id",baCustomerVo.getId());
             BaDeptCustomer baDeptCustomer = baDeptCustomerMapper.selectOne(queryWrapper);
-            baDeptCustomer.setDeptId(baCustomerVo.getDeptId());
-            Integer ret2=baDeptCustomerMapper.updateById(baDeptCustomer);
+            Integer ret2 = 0;
+            //查询关联表不存在新增一条
+            if(baDeptCustomer==null) {
+                BaDeptCustomer baDeptCustomer2 = new BaDeptCustomer();
+                baDeptCustomer2.setCustomerId(baCustomerVo.getId());
+                baDeptCustomer2.setDeptId(baCustomerVo.getDeptId());
+                ret2 = baDeptCustomerMapper.insert(baDeptCustomer2);
+            } else {
+                baDeptCustomer.setDeptId(baCustomerVo.getDeptId());
+                ret2 = baDeptCustomerMapper.updateById(baDeptCustomer);
+            }
+
             if(ret2!=null && ret2>0) {
                 r.setCode(HttpResultEnum.EDIT_CODE_200.getCode());
                 r.setMsg(HttpResultEnum.EDIT_CODE_200.getMessage());
@@ -203,7 +218,10 @@ public class BaCustomerServiceImpl extends ServiceImpl<BaCustomerMapper, BaCusto
      */
     @Override
     public BaCustomerVo getBaCustomerVoById(Integer id) {
-        return this.baseMapper.getBaCustomerVoById(id);
+        Map<String,Object> map = new HashMap<>();
+        map.put("delFlag",Const.DEL_FLAG_N);
+        map.put("id",id);
+        return this.baseMapper.getBaCustomerVoById(map);
     }
 
     /**
@@ -214,7 +232,10 @@ public class BaCustomerServiceImpl extends ServiceImpl<BaCustomerMapper, BaCusto
      */
     @Override
     public List<BaCustomerAndProjectVo> getCustomerAndProjectByUserId(Integer userId) {
-        return this.baseMapper.getCustomerAndProjectByUserId(userId);
+        Map<String,Object> map = new HashMap<>();
+        map.put("enabled",Const.ENABLED_Y);
+        map.put("userId",userId);
+        return this.baseMapper.getCustomerAndProjectByUserId(map);
     }
 
     /**
@@ -224,8 +245,15 @@ public class BaCustomerServiceImpl extends ServiceImpl<BaCustomerMapper, BaCusto
      * @return
      */
     @Override
-    public List<BaCustomerAndProjectTreeVo> getCustomerAndProjectTreeByUserId(Integer userId) {
-        List<BaCustomerAndProjectVo> baCustomerAndProjectVos = this.baseMapper.getCustomerAndProjectByUserId(userId);
+    public Object getCustomerAndProjectTreeByUserId(Integer userId) {
+        /**
+         * 1、用户id查询对应的角色
+         * 2、客户经理可以查看所有的项目
+         **/
+        Map<String,Object> mapkey = new HashMap<>();
+        mapkey.put("enabled",Const.ENABLED_Y);
+        mapkey.put("userId",userId);
+        List<BaCustomerAndProjectVo> baCustomerAndProjectVos = this.baseMapper.getCustomerAndProjectByUserId(mapkey);
         Map<String,BaCustomerAndProjectVo> map = new HashMap<String,BaCustomerAndProjectVo>();
         List<BaCustomerAndProjectTreeVo> baCustomerAndProjectTreeVos = new ArrayList<>();
         for(BaCustomerAndProjectVo ba: baCustomerAndProjectVos) {
@@ -253,6 +281,13 @@ public class BaCustomerServiceImpl extends ServiceImpl<BaCustomerMapper, BaCusto
                 baCustomerAndProjectTreeVos.add(baChildVo);
             }
         }
-        return baCustomerAndProjectTreeVos;
+
+        JSONObject josn = new JSONObject();
+        Status status = new Status();
+        status.setCode(200);
+        status.setMessage("操作成功");
+        josn.put("status", JSONArray.toJSON(status));
+        josn.put("data", JSONArray.toJSON(baCustomerAndProjectTreeVos));
+        return josn.toJSONString();
     }
 }

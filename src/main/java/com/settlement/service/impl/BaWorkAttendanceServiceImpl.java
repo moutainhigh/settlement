@@ -16,11 +16,11 @@ import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
 import com.settlement.vo.BaWorkAttendanceVo;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * <p>
@@ -40,6 +40,8 @@ public class BaWorkAttendanceServiceImpl extends ServiceImpl<BaWorkAttendanceMap
      */
     @Override
     public PageData listPageData(WorkAttendanceCo workAttendanceCo) {
+        workAttendanceCo.setDelFlag(Const.DEL_FLAG_N);
+        workAttendanceCo.setSubStatus(Const.EMP_SUBMIT_STATUS_N);
         Page<BaWorkAttendanceVo> page = new Page<>(workAttendanceCo.getPage(),workAttendanceCo.getLimit());
         List<BaWorkAttendanceVo> baWorkAttendanceVos = this.baseMapper.getWorkAttendanceVoByProjectId(workAttendanceCo,page);
         page.setRecords(baWorkAttendanceVos);
@@ -91,13 +93,28 @@ public class BaWorkAttendanceServiceImpl extends ServiceImpl<BaWorkAttendanceMap
         return r;
     }
 
+    /**
+     * 根据id查询
+     * @param id
+     * @return
+     */
     @Override
-    public BaWorkAttendance getBaWorkAttendanceVoById(Integer id) {
-        QueryWrapper<BaWorkAttendance> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("id",id);
-        BaWorkAttendance baWorkAttendance = this.baseMapper.selectOne(queryWrapper);
-        return baWorkAttendance;
+    public BaWorkAttendanceVo getBaWorkAttendanceVoById(Integer id) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("delFlag",Const.DEL_FLAG_N);
+        map.put("id",id);
+        BaWorkAttendanceVo baWorkAttendanceVo = this.baseMapper.getBaWorkAttendanceVoById(map);
+        return baWorkAttendanceVo;
     }
 
-
+    /**
+     * 根据年月查询考勤记录
+     * @param map
+     * @return
+     */
+    @Override
+    public List<BaWorkAttendance> getBaWorkAttendanceVoByNextMonth(Map<String,String> map) {
+        map.put("delFlag",Const.DEL_FLAG_N);
+        return this.baseMapper.getBaWorkAttendanceVoByNextMonth(map);
+    }
 }

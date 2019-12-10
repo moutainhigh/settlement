@@ -15,21 +15,21 @@
                     <label for="employeeId" class="layui-form-label">
                         <span class="x-red">*</span>员工编号</label>
                     <div class="layui-input-inline">
-                        <input type="text" id="employeeId" name="employeeId"  th:value="${baWork.employeeId}" required="" lay-verify="employeeId" autocomplete="off"  placeholder="请输入合同编号" class="layui-input" maxlength="20">
+                        <input type="text" id="employeeId" name="employeeId" readonly th:value="${baWork.employeeId}" required="" lay-verify="employeeId" autocomplete="off"  placeholder="请输入合同编号" class="layui-input" maxlength="20">
                     </div>
                 </div>
                 <div class="layui-inline">
                     <label for="employeeName" class="layui-form-label">
                         <span class="x-red">*</span>员工姓名</label>
                     <div class="layui-input-inline">
-                        <input type="text" id="employeeName" name="employeeName" th:value="${baWork.employeeId}"  required="" lay-verify="employeeName" autocomplete="off" placeholder="请输入开票抬头" class="layui-input" maxlength="20">
+                        <input type="text" id="employeeName" name="employeeName" readonly th:value="${baWork.employeeName}"  required="" lay-verify="employeeName" autocomplete="off" placeholder="请输入开票抬头" class="layui-input" maxlength="20">
                     </div>
                 </div>
                 <div class="layui-inline">
                     <label for="workDays" class="layui-form-label">
                         <span class="x-red">*</span>标准工作天数</label>
                     <div class="layui-input-inline">
-                        <input type="text" id="workDays" name="workDays" th:value="${baWork.workDays}"  required="" lay-verify="workDays" autocomplete="off" placeholder="标准工作天数" class="layui-input" maxlength="20">
+                        <input type="text" id="workDays" name="workDays"  readonly th:value="${baWork.workDays}"  required="" lay-verify="workDays" autocomplete="off" placeholder="标准工作天数" class="layui-input" maxlength="20">
                     </div>
                 </div>
                 <div class="layui-inline">

@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -20,19 +21,19 @@ import java.util.List;
 @Repository
 public interface SysRoleMapper extends BaseMapper<SysRole> {
 
-    @Select("SELECT r.id, r.role_cn_name, r.role_code  FROM sys_role r, sys_user_role ur WHERE r.del_flag = 'N' ur.role_id = r.id AND ur.user_id = #{userId}")
-    List<SysRole> getSysRoleByUserId(Integer userId);
+    @Select("SELECT r.id, r.role_cn_name, r.role_code  FROM sys_role r, sys_user_role ur WHERE r.del_flag = #{delFlag} ur.role_id = r.id AND ur.user_id = #{userId}")
+    List<SysRole> getSysRoleByUserId(Map<String,Object> map);
 
-    @Select("SELECT sr.id, sr.role_cn_name,sr.role_code FROM sys_role sr,sys_dept_role sdr WHERE sr.del_flag = 'N'and sr.id = sdr.role_id and sdr.dept_id = #{deptId}")
-    List<SysRole> getRolesByDeptId(Integer deptId);
+    @Select("SELECT sr.id, sr.role_cn_name,sr.role_code FROM sys_role sr,sys_dept_role sdr WHERE sr.del_flag = #{delFlag} and sr.id = sdr.role_id and sdr.dept_id = #{deptId}")
+    List<SysRole> getRolesByDeptId(Map<String,Object> map);
 
-    @Select("select * from sys_role r where r.del_flag='N'")
-    List<SysRoleVo> getRoleVo();
+    @Select("select * from sys_role r where r.del_flag=#{delFlag}")
+    List<SysRoleVo> getRoleVo(Map<String,Object> map);
 
     @Select("select r.*,dr.dept_id from sys_role r left join sys_dept_role dr" +
             " on r.id=dr.role_id" +
-            " where r.del_flag='N'" +
+            " where r.del_flag=#{delFlag}" +
             " and dr.dept_id=#{deptId}")
-    List<SysRoleVo> getRoleVoByDeptId(Integer deptId);
+    List<SysRoleVo> getRoleVoByDeptId(Map<String,Object> map);
 
 }

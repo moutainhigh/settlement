@@ -22,9 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.LinkedBlockingDeque;
 
 /**
@@ -42,6 +40,10 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     @Autowired
     private SysDeptRoleService sysDeptRoleService;
 
+    /**
+     * 构造部门下拉列表
+     * @return
+     */
     @Override
     public Result getDeptSelect() {
         QueryWrapper<SysDept> queryWrapper = new QueryWrapper<SysDept>();
@@ -301,10 +303,14 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
      */
     @Override
     public SysDeptVo getSysDeptVoById(Integer id) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("id",id);
+        map.put("delFlag",Const.DEL_FLAG_N);
+        map.put("enabled",Const.ENABLED_Y);
         if(1==id) {
             return this.getRootSysDeptVoById(Const.DEPT_ROOT);
         } else {
-            return this.baseMapper.getSysDeptVoById(id);
+            return this.baseMapper.getSysDeptVoById(map);
         }
     }
 
@@ -315,7 +321,11 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
      */
     @Override
     public SysDeptVo getRootSysDeptVoById(String rootCode) {
-        SysDeptVo sysDeptVo = this.baseMapper.getRootSysDeptVoById(rootCode);
+        Map<String,Object> map = new HashMap<>();
+        map.put("rootCode",rootCode);
+        map.put("delFlag",Const.DEL_FLAG_N);
+        map.put("enabled",Const.ENABLED_Y);
+        SysDeptVo sysDeptVo = this.baseMapper.getRootSysDeptVoById(map);
         sysDeptVo.setParentContent("结算系统");
         return  sysDeptVo;
     }

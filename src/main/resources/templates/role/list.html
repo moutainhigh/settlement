@@ -123,15 +123,12 @@
                 // data: {id:id},
                 //dataType:"json",
                 success:function(r){
-                    if("delete_200"==r.code) {
-                        layer.msg('删除成功', {icon: 6});
-                    } else {
-                        layer.msg('删除失败', {icon: 5});
-                    }
-                    //layer.msg(r.msg,{icon:1,time:1000});
-                    location.reload();
+                    //location.reload();
+                    layer.msg(r.msg,{icon: r.code == 'delete_200'? 6 : 5});
+
                 }
             });
+            timeout(2000);
         }
 
 

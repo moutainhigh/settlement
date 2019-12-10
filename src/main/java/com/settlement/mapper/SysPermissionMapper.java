@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -20,17 +21,17 @@ import java.util.List;
 @Repository
 public interface SysPermissionMapper extends BaseMapper<SysPermission> {
 
-    @Select("select * from sys_permission where parent_id=#{parent_id}" )
-    public List<SysPermissionVo> getSysPermissionVo(Integer parent_id);
+    @Select("select * from sys_permission where parent_id=#{parentId} and del_flag=#{delFlag}" )
+    public List<SysPermissionVo> getSysPermissionVo(Map<String,Object> map);
 
     /**
      * 根据id获得SysPermissionVo
      */
-    public SysPermissionVo getSysPermissionVoById(Integer id);
+    public SysPermissionVo getSysPermissionVoById(Map<String,Object> map);
 
     /**
      *根据id获得SysPermissionVo根结点信息
      */
-    @Select("select * from sys_permission where id=#{id}")
-    SysPermissionVo getRootSysPermissionVoById(Integer id);
+    @Select("select * from sys_permission where id=#{id} and del_flag=#{delFlag}")
+    SysPermissionVo getRootSysPermissionVoById(Map<String,Object> map);
 }

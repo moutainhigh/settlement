@@ -37,6 +37,6 @@ public interface BaCustomerService extends IService<BaCustomer> {
     /**根据用户id查询当前的客户信息和项目组**/
     List<BaCustomerAndProjectVo> getCustomerAndProjectByUserId(Integer userId);
     /**根据用户id查询当前的客户信息和项目组生成树**/
-    List<BaCustomerAndProjectTreeVo> getCustomerAndProjectTreeByUserId(Integer userId);
+    Object getCustomerAndProjectTreeByUserId(Integer userId);
 
 }

@@ -39,12 +39,12 @@ public interface SysDataDicMapper extends BaseMapper<SysDataDic> {
 
    /**
     * 得到根结点数据
-    * @param rootCode
+    * @param map
     * @return
     */
-   @Select("select * from sys_data_dic where dic_code=#{rootCode}")
-   SysDataDic getRoot(String rootCode);
+   @Select("select * from sys_data_dic where dic_code=#{rootCode} and del_flag=#{delFlag} and enabled=#{enabled}")
+   SysDataDic getRoot( Map<String, Object> map);
 
-   List<SysDataDicListVo> getDataDicList();
+   List<SysDataDicListVo> getDataDicList(Map<String, Object> mapkey);
 
 }

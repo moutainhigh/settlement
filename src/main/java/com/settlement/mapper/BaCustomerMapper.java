@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -22,16 +23,16 @@ public interface BaCustomerMapper extends BaseMapper<BaCustomer> {
 
     @Select("select c.*,dc.dept_id from ba_customer c " +
             "left join ba_dept_customer dc on c.id=dc.customer_id " +
-            "where c.id=#{id}"
+            "where c.id=#{id} and c.del_flag=#{delFlag}"
     )
-    public BaCustomerVo getBaCustomerVoById(Integer id);
+    public BaCustomerVo getBaCustomerVoById(Map<String,Object> map);
 
     /**
      * 根据用户id查询当前的客户信息和项目组 员工所负责的客户下的项目
-     * @param userId
+     * @param map
      * @return
      */
-    public List<BaCustomerAndProjectVo> getCustomerAndProjectByUserId(Integer userId);
+    public List<BaCustomerAndProjectVo> getCustomerAndProjectByUserId(Map<String,Object> map);
 
 }
 

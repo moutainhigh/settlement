@@ -6,8 +6,6 @@ import com.settlement.service.*;
 import com.settlement.utils.Const;
 import com.settlement.utils.Result;
 import com.settlement.vo.*;
-import io.swagger.models.auth.In;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
 
@@ -563,15 +562,31 @@ public class HomeController {
             BaProjectGroupAssistant baProjectGroupAssistant = baProjectGroupAssistantService.getBaProjectGroupAssistantByGroupId(projectId);
             model.addAttribute("checkUserId", baProjectGroupAssistant.getAssistantId());
         }
+        List<String> years = baTimeParamService.getTimeYearValue();
+        List<String> months = baTimeParamService.getTimeMonthValue();
+
+        String stopTime =baTimeParamService.getStopTimeParam();
+        String compelteTime = baTimeParamService.getCompleteParam();
+
+        model.addAttribute("years",years);
+        model.addAttribute("months",months);
+        model.addAttribute("stopTime",stopTime);
+        model.addAttribute("compelteTime",compelteTime);
         return "workattendance/attendlist";
     }
     /**
      * 考勤管理-申请修改
      * @return
      */
-    @GetMapping("/ba-work-attendance/applymodify/{ids}")
-    public String toApplymodifyPage(@PathVariable Integer[] ids,Model model){
+    @GetMapping("/ba-work-attendance/applymodify/{checkUserId}/{ids}")
+    public String toApplymodifyPage(@PathVariable Integer checkUserId,@PathVariable Integer[] ids,Model model, HttpSession session){
         model.addAttribute("workAttendanceIds",ids);
+        //申请人
+        SysUser applyUser = (SysUser)session.getAttribute("user");
+        //审核人AM
+        SysUser checkUser= sysUserService.getById(checkUserId);
+        ApplyAndCheckUserVo applyAndCheckUserVo = new ApplyAndCheckUserVo(applyUser.getId(),checkUser.getId(),checkUser.getRealName(),ids);
+        model.addAttribute("applyAndCheckUserVo",applyAndCheckUserVo);
         return "workattendance/applymodify";
     }
 
@@ -583,8 +598,8 @@ public class HomeController {
      */
     @GetMapping("/ba-work-attendance/edit/{id}")
     public String toWorkAttendanceEdit(@PathVariable Integer id, Model model){
-        BaWorkAttendance baWorkAttendance = baWorkAttendanceService.getBaWorkAttendanceVoById(id);
-        model.addAttribute("baWork",baWorkAttendance);
+        BaWorkAttendanceVo baWorkAttendanceVo = baWorkAttendanceService.getBaWorkAttendanceVoById(id);
+        model.addAttribute("baWork",baWorkAttendanceVo);
         return "workattendance/add";
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

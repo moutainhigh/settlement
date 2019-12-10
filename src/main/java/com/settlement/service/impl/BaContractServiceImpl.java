@@ -23,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>
@@ -42,6 +44,7 @@ public class BaContractServiceImpl extends ServiceImpl<BaContractMapper, BaContr
      */
     @Override
     public PageData listPageData(ContractCo contractCo) {
+        contractCo.setDelFlag(Const.DEL_FLAG_N);
         Page<BaContractVo> page = new Page<>(contractCo.getPage(),contractCo.getLimit());
         page.setRecords(this.baseMapper.getBaContractVos(contractCo,page));
         return new PageData(page.getTotal(),page.getRecords());
@@ -128,7 +131,10 @@ public class BaContractServiceImpl extends ServiceImpl<BaContractMapper, BaContr
      */
     @Override
     public BaContractVo getBaContractVoById(Integer id) {
-        return this.baseMapper.getBaContractVoById(id);
+        Map<String,Object> map = new HashMap<>();
+        map.put("delFlag",Const.DEL_FLAG_N);
+        map.put("id",id);
+        return this.baseMapper.getBaContractVoById(map);
     }
 
     /**

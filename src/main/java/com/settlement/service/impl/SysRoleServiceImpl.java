@@ -21,7 +21,9 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.awt.geom.QuadCurve2D;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -55,7 +57,9 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      */
     @Override
     public List<SysRoleVo> getRoleVo() {
-        return this.baseMapper.getRoleVo();
+        Map<String,Object> map = new HashMap<>();
+        map.put("delFlag",Const.DEL_FLAG_N);
+        return this.baseMapper.getRoleVo(map);
     }
 
     /**
@@ -65,8 +69,11 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      */
     @Override
     public List<SysRoleVo> getRoleVoByDeptId(Integer deptId) {
-        List<SysRoleVo> sysRoleVos = this.baseMapper.getRoleVo();
-        List<SysRoleVo> sysRoleCheckedVos = this.baseMapper.getRoleVoByDeptId(deptId);
+        Map<String,Object> map = new HashMap<>();
+        map.put("deptId",deptId);
+        map.put("delFlag",Const.DEL_FLAG_N);
+        List<SysRoleVo> sysRoleVos = this.baseMapper.getRoleVo(map);
+        List<SysRoleVo> sysRoleCheckedVos = this.baseMapper.getRoleVoByDeptId(map);
         for(SysRoleVo sysCheckedRoleVo:sysRoleCheckedVos) {
             for(SysRoleVo sysRoleVo:sysRoleVos) {
                 if(sysCheckedRoleVo.getId().equals(sysRoleVo.getId())){
@@ -85,13 +92,19 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      */
     @Override
     public List<SysRole> findRoleByUserId(Integer userId) {
-        return this.baseMapper.getSysRoleByUserId(userId);
+        Map<String,Object> map = new HashMap<>();
+        map.put("userId",userId);
+        map.put("delFlag",Const.DEL_FLAG_N);
+        return this.baseMapper.getSysRoleByUserId(map);
     }
 
     @Override
     public Result getRolesByDeptId(Integer deptId) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("deptId",deptId);
+        map.put("delFlag",Const.DEL_FLAG_N);
         Result r = new Result(HttpResultEnum.CODE_200.getCode(), HttpResultEnum.CODE_200.getMessage());
-        r.setData(this.baseMapper.getRolesByDeptId(deptId));
+        r.setData(this.baseMapper.getRolesByDeptId(map));
         return r;
     }
 

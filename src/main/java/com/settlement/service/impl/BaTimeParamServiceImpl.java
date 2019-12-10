@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import java.util.Date;
+import java.util.*;
 
 /**
  * <p>
@@ -179,5 +179,60 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
             r = new Result(HttpResultEnum.TIME_PARAM_CODE_0.getCode(),HttpResultEnum.TIME_PARAM_CODE_0.getMessage());
         }
         return r;
+    }
+
+    /**
+     * 获得当前年份及上个月和当前月份
+     * @return
+     */
+    @Override
+    public List<String> getTimeYearValue() {
+        List<String> years = new ArrayList<>();
+        Calendar cal = Calendar.getInstance();
+        String year = String.valueOf(cal.get(Calendar.YEAR));
+        years.add(year);
+        return years;
+
+    }
+
+    @Override
+    public List<String> getTimeMonthValue() {
+        List<String> months = new ArrayList<>();
+        Calendar cal = Calendar.getInstance();
+        String currentMonth=String.valueOf(cal.get(Calendar.MONTH)+1);
+        String lastMonth=String.valueOf(cal.get(Calendar.MONTH));
+        months.add(currentMonth);
+        months.add(lastMonth);
+        return months;
+
+    }
+
+    /**
+     * 获得结算考勤时间停止点
+     * @return
+     */
+    @Override
+    public String getStopTimeParam() {
+        return  getTimeParamValue(Const.TIME_PRAMA_STOP);
+    }
+
+    /**
+     * 获得结算考勤时间完成点
+     * @return
+     */
+    @Override
+    public String getCompleteParam() {
+        return  getTimeParamValue(Const.TIME_PRAMA_COMPELETE);
+    }
+
+    private String getTimeParamValue(String param){
+        QueryWrapper<BaTimeParam> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("param_code",param);
+        queryWrapper.eq("enabled",Const.ENABLED_Y);
+        Calendar cal = Calendar.getInstance();
+        String year = String.valueOf(cal.get(Calendar.YEAR));
+        String currentMonth=String.valueOf(cal.get(Calendar.MONTH)+1);
+        String day=this.baseMapper.selectOne(queryWrapper).getParamValue().toString();
+        return year+"-"+currentMonth+"-"+day;
     }
 }

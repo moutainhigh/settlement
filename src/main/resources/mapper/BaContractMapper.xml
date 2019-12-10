@@ -27,14 +27,14 @@
         left join ba_customer cu on c.customer_id=cu.id
         left join ba_project_group g on c.ba_project_group_id=g.id
         left join sys_user u on c.create_user_id=u.id
-        where c.del_flag='N'
+        where c.del_flag=#{contractCo.delFlag}
         <if test="contractCo.keyword != null">
             and c.contract_no like CONCAT('%',#{contractCo.keyword},'%')
         </if>
         order by c.create_time desc
      </select>
 
-    <select id="getBaContractVoById" resultType="com.settlement.vo.BaContractVo" parameterType="java.lang.Integer">
+    <select id="getBaContractVoById" resultType="com.settlement.vo.BaContractVo" parameterType="java.util.Map">
     select c.*,
         cu.customer_name as customerName,
         g.pg_name as projectName,
@@ -44,7 +44,7 @@
         left join ba_customer cu on c.customer_id=cu.id
         left join ba_project_group g on c.ba_project_group_id=g.id
         left join sys_user u on c.create_user_id=u.id
-    where c.del_flag='N'
+    where c.del_flag=#{delFlag}
     and c.id=#{id}
     </select>
 

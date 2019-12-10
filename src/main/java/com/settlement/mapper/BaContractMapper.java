@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.settlement.vo.BaContractVo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -18,7 +19,7 @@ import java.util.List;
  */
 public interface BaContractMapper extends BaseMapper<BaContract> {
     /**根据id获得BaContractVo**/
-    BaContractVo getBaContractVoById(Integer id);
+    BaContractVo getBaContractVoById(Map<String,Object> map);
     /**获得BaContractVo列表**/
     List<BaContractVo> getBaContractVos(ContractCo contractCo, Page<BaContractVo> page);
 }

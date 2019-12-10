@@ -6,6 +6,10 @@ import com.settlement.entity.BaWorkAttendance;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.settlement.utils.Result;
 import com.settlement.vo.BaWorkAttendanceVo;
+import io.swagger.models.auth.In;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -23,5 +27,7 @@ public interface BaWorkAttendanceService extends IService<BaWorkAttendance> {
     /**修改**/
     Result update(BaWorkAttendanceVo baWorkAttendanceVo);
     /**根据id查询**/
-    BaWorkAttendance getBaWorkAttendanceVoById(Integer id);
+    BaWorkAttendanceVo getBaWorkAttendanceVoById(Integer id);
+    /**根据年月查询考勤记录**/
+    List<BaWorkAttendance> getBaWorkAttendanceVoByNextMonth(Map<String, String> map);
 }

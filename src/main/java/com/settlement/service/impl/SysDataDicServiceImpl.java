@@ -189,6 +189,7 @@ public class SysDataDicServiceImpl extends ServiceImpl<SysDataDicMapper, SysData
      */
     @Override
     public PageData listPageData(DataDicCo dataDicCo) {
+        dataDicCo.setDelFlag(Const.DEL_FLAG_N);
         Page<SysDataDicVo> page = new Page<SysDataDicVo>(dataDicCo.getPage(),dataDicCo.getLimit());
         dataDicCo.setPid(Const.DATA_DIC_ROOT);
         List<SysDataDicVo> sysDataDicList = sysDataDicMapper.getDataDicVoByPid(dataDicCo,page);
@@ -260,19 +261,27 @@ public class SysDataDicServiceImpl extends ServiceImpl<SysDataDicMapper, SysData
     public List<SysDataDicVo> getDataDicSelectByParentCode(String code) {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("code",code);
-        //map.put("enabled",Const.ENABLED_Y);
+        map.put("enabled",Const.ENABLED_Y);
+        map.put("delFlag",Const.DEL_FLAG_N);
         return this.baseMapper.getDataDicSelectByParentCode(map);
     }
 
     @Override
     public SysDataDic getRoot(String rootCode) {
-        return  this.baseMapper.getRoot(rootCode);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("rootCode",rootCode);
+        map.put("delFlag",Const.DEL_FLAG_N);
+        map.put("enabled",Const.ENABLED_Y);
+        return  this.baseMapper.getRoot(map);
     }
 
     @Override
     public List<SysDataDicVo> getDataDicListVo() {
-
-        List<SysDataDicListVo> sysDataDicListVos = sysDataDicMapper.getDataDicList();
+        Map<String, Object> mapkey = new HashMap<String, Object>();
+        mapkey.put("delFlag",Const.DEL_FLAG_N);
+        mapkey.put("pid",Const.DATA_DIC_ROOT);
+        mapkey.put("dicCode",Const.DATA_DIC_ROOT);
+        List<SysDataDicListVo> sysDataDicListVos = sysDataDicMapper.getDataDicList(mapkey);
         List<SysDataDicVo> sysDataDicList = new ArrayList<>();
         Map<String, SysDataDicListVo> map = new HashMap<>();
         for (SysDataDicListVo sysDataDicListVo : sysDataDicListVos) {

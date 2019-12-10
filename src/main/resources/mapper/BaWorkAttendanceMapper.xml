@@ -41,10 +41,37 @@
         from
             ba_work_attendance w,
             ba_project_employee e
-        where e.del_flag='N'
+        where e.del_flag=#{workAttendanceCo.delFlag}
+            and w.sub_status=#{workAttendanceCo.subStatus}
             and w.employee_id=e.id
             and e.pg_id=#{workAttendanceCo.projectId}
+            and w.create_time like CONCAT('%',#{workAttendanceCo.yearValue},'-',#{workAttendanceCo.monthValue},'%')
+            <if test="workAttendanceCo.keyword != null">
+                and w.employee_id like CONCAT('%',#{workAttendanceCo.keyword},'%')
+            </if>
 
 
     </select>
+
+    <select id="getBaWorkAttendanceVoById" parameterType="java.util.Map" resultType="com.settlement.vo.BaWorkAttendanceVo">
+        select e.emp_name as employeeName
+              ,w.*
+        from
+            ba_work_attendance w,
+            ba_project_employee e
+        where e.del_flag=#{delFlag}
+            and w.employee_id=e.id
+            and w.id=#{id}
+    </select>
+
+<select id="getBaWorkAttendanceVoByNextMonth" parameterType="java.util.Map" resultType="com.settlement.entity.BaWorkAttendance">
+    select
+         w.*
+    from
+        ba_work_attendance w,
+        ba_project_employee e
+    where e.del_flag=#{delFlag}
+    and w.employee_id=e.id
+    and w.create_time like CONCAT('%',#{yearValue},'-',#{monthValue},'%')
+</select>
 </mapper>

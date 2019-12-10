@@ -30,7 +30,7 @@
         left join (select id,dic_code,dic_content ,pid from sys_data_dic) dic2
         on dic.pid=dic2.dic_code
         where dic.pid=#{dataDicCo.pid}
-        and dic.del_flag='N'
+        and dic.del_flag=#{dataDicCo.delFlag}
         <if test="dataDicCo.keyword!=null">
             and dic.dic_content like CONCAT('%',#{dataDicCo.keyword},'%')
         </if>
@@ -45,11 +45,12 @@
             sys_data_dic sdd
         WHERE
             sdd.pid = #{code}
-            and sdd.del_flag='N'
+            and sdd.del_flag=#{delFlag}
+            and sdd.enabled=#{enabled}
     </select>
 
 
-    <select id="getDataDicList" resultType="com.settlement.vo.SysDataDicListVo">
+    <select id="getDataDicList" resultType="com.settlement.vo.SysDataDicListVo" parameterType="java.util.Map">
         SELECT
             p.id,
             p.dic_code,
@@ -65,10 +66,10 @@
             c.del_flag as childDelFlag
         from sys_data_dic p
         join sys_data_dic c on p.dic_code=c.pid
-        where p.pid='DIC_ROOT'
-              and p.dic_code != 'DIC_ROOT'
-              and p.del_flag='N'
-              and c.del_flag='N'
+        where p.pid=#{pid}
+              and p.dic_code != #{dicCode}
+              and p.del_flag=#{delFlag}
+              and c.del_flag=#{delFlag}
         order by p.sort asc,c.sort asc
     </select>
 
