@@ -1,6 +1,6 @@
 package com.settlement.vo;
 
-import com.settlement.entity.BaProjectEmployee;
+import com.settlement.entity.BaEmployee;
 import lombok.Data;
 
 /**
@@ -12,8 +12,8 @@ import lombok.Data;
  * @date 2019-11-29
  */
 @Data
-public class ProjectEmployeeVo extends BaProjectEmployee {
+public class EmployeeVo extends BaEmployee {
 
-
+    private Integer pgId;
 
 }

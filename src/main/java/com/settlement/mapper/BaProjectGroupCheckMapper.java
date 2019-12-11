@@ -1,8 +1,14 @@
 package com.settlement.mapper;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.settlement.co.ProjectGroupCheckCo;
 import com.settlement.entity.BaProjectGroupCheck;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.settlement.vo.ProjectGroupCheckVo;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,5 +20,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface BaProjectGroupCheckMapper extends BaseMapper<BaProjectGroupCheck> {
+    /** 项目组审核列表页 */
+    List<ProjectGroupCheckVo> getProjectGroupCheckPageList(@Param(value="projectGroupCo") ProjectGroupCheckCo projectGroupCheckCo, Page<ProjectGroupCheckVo> page);
 
 }

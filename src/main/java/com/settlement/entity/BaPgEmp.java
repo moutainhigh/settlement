@@ -13,33 +13,46 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 项目审核表
+ * 
  * </p>
  *
  * @author admin
- * @since 2019-11-22
+ * @since 2019-12-11
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class BaProjectGroupCheck extends Model<BaProjectGroupCheck> {
+public class BaPgEmp extends Model<BaPgEmp> {
 
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    private String checkStatus;
-
-    private String remark;
-
-    private Integer checkUserId;
-
+    /**
+     * 项目组ID
+     */
     private Integer pgId;
 
-    private Date checkTime;
+    /**
+     * 项目组员工ID
+     */
+    private Integer empId;
 
-    private Date applyTime;
+    /**
+     * 入离场状态: I-入场，L-离场
+     */
+    private String status;
+
+    /**
+     * 更新时间
+     */
+    private Date operTime;
+
+    /**
+     * 提交状态
+     */
+    private String subStatus;
 
 
     @Override

@@ -3,9 +3,8 @@ package com.settlement.entity;
 import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
-import java.time.LocalDate;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.time.LocalDateTime;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -25,7 +24,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class BaProjectEmployee extends Model<BaProjectEmployee> {
+public class BaEmployee extends Model<BaEmployee> {
 
     private static final long serialVersionUID = 1L;
 
@@ -134,16 +133,6 @@ public class BaProjectEmployee extends Model<BaProjectEmployee> {
     private String rateEmailFilename;
 
     /**
-     * 提交状态： S-提交，N：未提交
-     */
-    private String subStatus;
-
-    /**
-     * 项目组ID
-     */
-    private Integer pgId;
-
-    /**
      * 创建人
      */
     private Integer createUserId;
@@ -157,11 +146,6 @@ public class BaProjectEmployee extends Model<BaProjectEmployee> {
      * 更新时间
      */
     private Date updateTime;
-
-    /**
-     * 入场状态
-     */
-    private String enterStatus;
 
     /**
      * 删除标志

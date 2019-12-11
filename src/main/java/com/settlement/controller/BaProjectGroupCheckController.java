@@ -1,9 +1,13 @@
 package com.settlement.controller;
 
 
+import com.settlement.bo.PageData;
+import com.settlement.co.ProjectGroupCheckCo;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
@@ -13,8 +17,12 @@ import org.springframework.stereotype.Controller;
  * @author admin
  * @since 2019-11-22
  */
-@Controller
-@RequestMapping("/ba-project-group-check")
+@RestController
 public class BaProjectGroupCheckController {
+
+    @GetMapping("/ba-project-group-check/pagedata")
+    public PageData getPgCheckPage(ProjectGroupCheckCo projectGroupCheckCo) {
+        return null;
+    }
 
 }

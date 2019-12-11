@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.settlement.mapper.BaPgEmpMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.settlement.entity.BaPgEmp">
+        <id column="id" property="id" />
+        <result column="pg_id" property="pgId" />
+        <result column="emp_id" property="empId" />
+        <result column="status" property="status" />
+        <result column="oper_time" property="operTime" />
+        <result column="sub_status" property="subStatus" />
+    </resultMap>
+
+</mapper>

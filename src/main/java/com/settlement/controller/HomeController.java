@@ -59,7 +59,7 @@ public class HomeController {
     @Autowired
     private BaProjectGroupAssistantService baProjectGroupAssistantService;
     @Autowired
-    private BaProjectEmployeeService baProjectEmployeeService;
+    private BaEmployeeService baEmployeeService;
 
     @GetMapping({"/","/login"})
     public String toLogin() {
@@ -524,7 +524,7 @@ public class HomeController {
         model.addAttribute("levelPriceList", this.baLevelPriceService.getLevelPriceByPgId(pgId));
         // 单位
         model.addAttribute("unitList", sysDataDicService.getDataDicSelectByParentCode(Const.UNIT_PARENT_CODE));
-        model.addAttribute("emp",this.baProjectEmployeeService.getProjectEmpById(id));
+        model.addAttribute("emp",this.baEmployeeService.getProjectEmpById(id));
         return "emp/edit";
     }
 
@@ -538,7 +538,7 @@ public class HomeController {
      */
     @GetMapping("ba-project-employee/view/{id}")
     public String toViewImg(@PathVariable Integer id, Model model) {
-        model.addAttribute("imgSrc", this.baProjectEmployeeService.getProjectEmpById(id).getRateEmailFilename());
+        model.addAttribute("imgSrc", this.baEmployeeService.getProjectEmpById(id).getRateEmailFilename());
         return "emp/view";
     }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -660,6 +660,18 @@ public class HomeController {
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @description 项目组审核列表页
+     *
+     * @auth admin
+     * @date 2019-12-10
+     * @return
+     */
+    @GetMapping("/ba-project-group-check/list")
+    public String toPgCheckList() {
+        return "pgcheck/list";
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

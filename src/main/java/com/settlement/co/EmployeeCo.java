@@ -8,7 +8,7 @@ import lombok.Data;
  * </p>
  */
 @Data
-public class ProjectEmployeeCo extends PageCo{
+public class EmployeeCo extends PageCo{
 
     private String keyword;
 

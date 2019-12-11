@@ -10,6 +10,27 @@
         <result column="check_user_id" property="checkUserId" />
         <result column="pg_id" property="pgId" />
         <result column="check_time" property="checkTime" />
+        <result column="apply_time" property="applyTime" />
     </resultMap>
+    <!-- 项目组审核列表 -->
+    <select id="getProjectGroupCheckPageList" parameterType="com.settlement.co.ProjectGroupCheckCo" resultType="com.settlement.vo.ProjectGroupCheckVo">
+      SELECT
+         bpgc.id,
+         bpg.pg_name,
+         bpg.`code`,
+         bpg.create_user_id,
+         su1.real_name as '项目创建人',
+         bpgc.check_status,
+         sdd.dic_content as '审核状态',
+         bpgc.check_time,
+         bpgc.check_user_id,
+         su.real_name as '审核人',
+         bpgc.remark
+        FROM
+         ba_project_group_check bpgc left join ba_project_group bpg on  bpgc.pg_id = bpg.id
+         left join sys_user su on su.id = bpgc.check_user_id
+         left join sys_user su1 on su1.id = bpg.create_user_id
+         left join sys_data_dic sdd on sdd.dic_code = bpgc.check_status
+    </select>
 
 </mapper>

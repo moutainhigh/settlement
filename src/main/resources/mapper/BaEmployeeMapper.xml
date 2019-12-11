@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.settlement.mapper.BaProjectEmployeeMapper">
+<mapper namespace="com.settlement.mapper.BaEmployeeMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.settlement.entity.BaProjectEmployee">
+    <resultMap id="BaseResultMap" type="com.settlement.entity.BaEmployee">
         <id column="id" property="id" />
         <result column="emp_name" property="empName" />
         <result column="code" property="code" />
@@ -25,42 +25,41 @@
         <result column="salary_day" property="salaryDay" />
         <result column="upload_rate_email" property="uploadRateEmail" />
         <result column="rate_email_filename" property="rateEmailFilename" />
-        <result column="sub_status" property="subStatus" />
-        <result column="pg_id" property="pgId" />
         <result column="create_user_id" property="createUserId" />
         <result column="create_time" property="createTime" />
         <result column="update_time" property="updateTime" />
-        <result column="enter_status" property="enterStatus" />
         <result column="del_flag" property="delFlag" />
     </resultMap>
 
-    <select id="getNoSubmitProjectEmployeeList" parameterType="com.settlement.co.ProjectEmployeeCo" resultType="com.settlement.vo.ProjectEmployeeVo">
+    <select id="getNoSubmitEmployeeList" parameterType="com.settlement.co.EmployeeCo" resultType="com.settlement.vo.EmployeeVo">
         SELECT
-            bpm.id,
-            bpm.emp_name,
-            bpm.`code`,
-            bpm.entrance_time,
-            bpm.pos_level,
-            bpm.responsible_person,
-            bpm.upload_rate_email,
-            bpm.send_copy_email,
-            bpm.rp_email,
-            bpm.rate_email_filename,
-            bpm.pg_id,
-            bpm.claim_expense_person,
-            bpm.create_time,
-            bpm.place,
-            bpm.unit
+        be.id,
+        be.emp_name,
+        be.`code`,
+        be.entrance_time,
+        be.pos_level,
+        be.responsible_person,
+        be.upload_rate_email,
+        be.send_copy_email,
+        be.rp_email,
+        be.rate_email_filename,
+        bpe.pg_id,
+        be.claim_expense_person,
+        be.create_time,
+        be.place,
+        be.unit
         FROM
-            ba_project_employee bpm
+        ba_employee be,
+        ba_pg_emp bpe
         WHERE
-            bpm.del_flag = #{projectEmployeeCo.delFlag}
-            and bpm.pg_id = #{projectEmployeeCo.pgId}
-            and bpm.sub_status = #{projectEmployeeCo.submitStatus}
-        <if test="projectEmployeeCo.keyword != null">
-            and CONCAT(emp_name) like CONCAT('%',#{projectEmployeeCo.keyword},'%')
+        be.id = bpe.emp_id
+        and be.del_flag = #{employeeCo.delFlag}
+        and bpe.pg_id = #{employeeCo.pgId}
+        and bpe.sub_status = #{employeeCo.submitStatus}
+        <if test="employeeCo.keyword != null">
+          and CONCAT(be.emp_name) like CONCAT('%',#{employeeCo.keyword},'%')
         </if>
-            order by bpm.create_time
+        order by be.create_time
     </select>
 
     <update id="updateEmpSubStatusBatchById" parameterType="java.util.List">
