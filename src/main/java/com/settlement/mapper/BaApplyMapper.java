@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.settlement.co.ApplyCo;
 import com.settlement.entity.BaApply;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.settlement.vo.BaApplyVo;
 
 import java.util.List;
 
@@ -17,5 +18,5 @@ import java.util.List;
  */
 public interface BaApplyMapper extends BaseMapper<BaApply> {
 
-    List<BaApply> getApplyWorkAttedances(ApplyCo applyCo, Page page);
+    List<BaApplyVo> getApplyWorkAttedances(ApplyCo applyCo, Page page);
 }

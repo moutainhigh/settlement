@@ -75,4 +75,14 @@ public class BaApplyController {
         Result r = baApplyService.addEmployee(baApplyVo);
         return r;
     }
+
+    /**
+     * 验证修改口令
+     * @param baApply
+     * @return
+     */
+    @PostMapping("/verify/passcode")
+    public Result verifyPasscode(BaApply baApply){
+        return baApplyService.verifyPasscode(baApply);
+    }
 }

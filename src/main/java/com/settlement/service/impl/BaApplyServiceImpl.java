@@ -45,7 +45,7 @@ public class BaApplyServiceImpl extends ServiceImpl<BaApplyMapper, BaApply> impl
      */
     @Override
     public PageData listPageData(ApplyCo applyCo) {
-        Page<BaApply> page = new Page<>(applyCo.getPage(),applyCo.getLimit());
+        Page<BaApplyVo> page = new Page<>(applyCo.getPage(),applyCo.getLimit());
         page.setRecords(this.baseMapper.getApplyWorkAttedances(applyCo,page));
         return new PageData(page.getTotal(),page.getRecords());
     }
@@ -150,5 +150,22 @@ public class BaApplyServiceImpl extends ServiceImpl<BaApplyMapper, BaApply> impl
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         return  r;
+    }
+
+    /**
+     * 验证口令
+     * @param baApply
+     * @return
+     */
+    @Override
+    public Result verifyPasscode(BaApply baApply) {
+        Result r = new Result(HttpResultEnum.VERIFY_CODE_500.getCode(),HttpResultEnum.VERIFY_CODE_500.getMessage());;
+        BaApply baApply1 = this.baseMapper.selectById(baApply.getId());
+        if(baApply1!=null && baApply1.getUpdatePassword().trim().equals(baApply.getUpdatePassword().trim())) {
+           r.setCode(HttpResultEnum.VERIFY_CODE_200.getCode());
+           r.setMsg(HttpResultEnum.VERIFY_CODE_200.getMessage());
+           r.setData(baApply.getId());
+        }
+        return r;
     }
 }

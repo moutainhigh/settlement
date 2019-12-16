@@ -15,4 +15,5 @@
             (#{applyAttendance.applyId},#{applyAttendance.attendanceId})
         </foreach>
     </insert>
+
 </mapper>

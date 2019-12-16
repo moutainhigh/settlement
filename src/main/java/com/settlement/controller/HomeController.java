@@ -6,6 +6,7 @@ import com.settlement.service.*;
 import com.settlement.utils.Const;
 import com.settlement.utils.Result;
 import com.settlement.vo.*;
+import net.bytebuddy.asm.Advice;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -58,6 +59,8 @@ public class HomeController {
     private BaLevelPriceService baLevelPriceService;
     @Autowired
     private BaProjectGroupAssistantService baProjectGroupAssistantService;
+    @Autowired
+    private BaApplyService baApplyService;
     @Autowired
     private BaEmployeeService baEmployeeService;
 
@@ -637,6 +640,18 @@ public class HomeController {
         model.addAttribute("baWork",baWorkAttendanceVo);
         return "workattendance/add";
     }
+
+    /**
+     * 考勤申请修改记录-通过审核-修改考勤信息页面
+     * @param id
+     * @param model
+     * @return
+     */
+    @GetMapping("/ba-work-attendance/apply/workattendancelist/{id}")
+   public String toApplyWorkattendanceList(@PathVariable Integer id, Model model) {
+        model.addAttribute("applyId",id);
+        return "apply/applyattendlist";
+    }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
@@ -644,7 +659,9 @@ public class HomeController {
      * @return
      */
     @GetMapping("/ba-apply/list")
-    public String toApplyList(){
+    public String toApplyList(Model model){
+        List<SysDataDic> checkStatusList = sysDataDicService.getCheckStatus();
+        model.addAttribute("checkStatusList",checkStatusList);
         return "apply/list";
     }
 
@@ -658,6 +675,18 @@ public class HomeController {
         return "apply/attendlist";
     }
 
+    /**
+     * 跳转口令验证页面
+     * @param id
+     * @param model
+     * @return
+     */
+    @GetMapping("/ba-apply/passcode/{id}")
+    public String toApplyPassCode(@PathVariable Integer id,Model model){
+        BaApply baApply = baApplyService.getById(id);
+        model.addAttribute("baApply",baApply);
+        return "apply/passcode";
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

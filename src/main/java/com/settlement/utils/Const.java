@@ -37,6 +37,8 @@ public class Const {
     public final static String ROLE_CODE_ASSISTANT = "ASSISTANT";
     /** 结算负责人角色CODE：SETTLEMENT */
     public final static String ROLE_CODE_SETTLEMENT = "SETTLEMENT";
+    /**审核状态父结点**/
+    public static final Object CHECK_STATUS_PARENT_CODE = "PG_CHECKSTATUS";
     /** 审核状态NO_CHECK：待审核 */
     public final static String CHECK_STATUS_NO_CHECK = "NO_CHECK";
     /** 审核状态CHECK_PASS：审核通过*/
@@ -69,4 +71,17 @@ public class Const {
     public final static String TIME_PRAMA_STOP="B_T_STOP";
     /**结算时间点参数 结算完成时间点**/
     public final static String TIME_PRAMA_COMPELETE="B_T_COMPLETE";
+
+    /** 项目提交状态S：已提交 */
+    public final static String PRO_SUBMIT_STATUS_S = "S";
+    /** 项目提交状态N：未提交*/
+    public final static String PRO_SUBMIT_STATUS_N = "N";
+    /**员工项目L: 离场 **/
+    public static final String EMP_ENTRANCE_STATUS_L ="L" ;
+    /**员工项目I: 在场**/
+    public static final String EMP_ENTRANCE_STATUS_I ="I" ;
+    /**员工O: 在职**/
+    public static final String EMP_JOB_STATUS_O = "O";
+    /**员工L: 离职**/
+    public static final String EMP_JOB_STATUS_L = "L";
 }

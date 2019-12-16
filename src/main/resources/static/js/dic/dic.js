@@ -29,7 +29,7 @@ formSelects.on('deptSelect', function(id, vals, val, isAdd, isDisabled){
 },true);
 
 
-// 检查邮箱是否存在
+// 检查是否存在
 function checkDicCodeIsExist(dicCode, layer,mode) {
     var flag = true;
     $.ajaxSettings.async = false;

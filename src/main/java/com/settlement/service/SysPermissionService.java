@@ -31,6 +31,8 @@ public interface SysPermissionService extends IService<SysPermission> {
     Result update(SysPermissionVo sysPermissionVo);
     /**添加**/
     Result delete(Integer id);
+    /**检查编码是否存在**/
+    Result pCodeIsExist(String dicCode);
     /**根据id获得SysPermissionVo**/
     SysPermissionVo getSysPermissionVoById(Integer id);
     /**根据id获得SysPermissionVo根结点信息**/

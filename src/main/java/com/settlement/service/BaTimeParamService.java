@@ -40,5 +40,10 @@ public interface BaTimeParamService extends IService<BaTimeParam> {
     String getStopTimeParam();
     /**获得结算考勤时间完成点**/
     String getCompleteParam();
-
+    /**考勤结算时间点开始-完成区间**/
+    Result judgeWorkattendanceDate();
+    /**考勤结算完成时间点**/
+    Result judgeWorkattendanceCompleteTime();
+    /**考勤结算时间点**/
+    Result judgeWorkattendanceStopTime();
 }

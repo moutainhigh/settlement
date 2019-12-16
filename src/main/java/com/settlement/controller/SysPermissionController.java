@@ -213,6 +213,16 @@ public class SysPermissionController {
     }
 
     /**
+     * 检查菜单编码pCode是否存在
+     * @param pCode
+     * @return
+     */
+    @GetMapping("/isexist/{pCode}")
+    public Result dicCodeIsExist(@PathVariable(value="pCode") String pCode) {
+        Result r = sysPermissionService.pCodeIsExist(pCode);
+        return r;
+    }
+    /**
      * 加载单个结点
      * @param id
      * @return

@@ -7,6 +7,6 @@ import java.sql.Date;
 @Data
 public class ApplyCo extends PageCo{
     private String keyword;
-    private Integer status;
-    private Date applyDate;
+    private String checkStatus;
+    private String applyDate;
 }

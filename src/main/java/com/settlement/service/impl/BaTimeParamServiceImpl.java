@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -225,6 +227,95 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
         return  getTimeParamValue(Const.TIME_PRAMA_COMPELETE);
     }
 
+    /**
+     * 考勤结算时间点开始-完成区间  -1 小于 0 等于 1 大于
+     * @return
+     */
+    @Override
+    public Result judgeWorkattendanceDate() {
+        Result r = new Result();
+        String completeTimeParam = getCompleteParam();
+        String stopTimeParam = getStopTimeParam();
+        int compareCompleteValue = getCompareDateValue(completeTimeParam);
+        int compareStopValue =getCompareDateValue(stopTimeParam);
+        if((0==compareStopValue||1==compareStopValue)) {
+            if(-1==compareCompleteValue) {
+                //结算时间开始 结算完成之间 可以提交 申请修改
+
+            } else {
+                //超过结算时间不做任何操作
+                r.setCode(HttpResultEnum.COMPLETE_TIME_CODE_1.getCode());
+                r.setMsg(HttpResultEnum.COMPLETE_TIME_CODE_1.getMessage());
+            }
+        }  else if(-1==compareStopValue) {
+            //结算时间未开始之前可以编辑、批量导入、提交
+
+        }
+        return r;
+    }
+
+    /**
+     * 考勤结算完成时间点  -1 小于 0 等于 1 大于
+     * @return
+     */
+    @Override
+    public Result judgeWorkattendanceCompleteTime() {
+        Result r = new Result();
+        String completeTimeParam = getCompleteParam();
+        int compareValue = getCompareDateValue(completeTimeParam);
+        if(0==compareValue || 1==compareValue) {
+            r.setCode(HttpResultEnum.COMPLETE_TIME_CODE_1.getCode());
+            r.setMsg(HttpResultEnum.COMPLETE_TIME_CODE_1.getMessage());
+        } else if(-1==compareValue) {
+            r.setCode(HttpResultEnum.COMPLETE_TIME_CODE_0.getCode());
+            r.setMsg(HttpResultEnum.COMPLETE_TIME_CODE_0.getMessage());
+        }
+        return r;
+    }
+
+    /**
+     * 考勤结算时间点  -1 小于 0 等于 1 大于
+     * @return
+     */
+    @Override
+    public Result judgeWorkattendanceStopTime() {
+        Result r = new Result();
+        String stopTimeParam = getStopTimeParam();
+        int compareValue =getCompareDateValue(stopTimeParam);
+        if(0==compareValue || 1==compareValue) {
+            r.setCode(HttpResultEnum.STOP_TIME_CODE_1.getCode());
+            r.setMsg(HttpResultEnum.STOP_TIME_CODE_1.getMessage());
+        } else if(-1==compareValue) {
+            r.setCode(HttpResultEnum.STOP_TIME_CODE_0.getCode());
+            r.setMsg(HttpResultEnum.STOP_TIME_CODE_0.getMessage());
+        }
+        return r;
+    }
+
+    /**
+     * 当前日期和结算时间点进行比较  -1 小于 0 等于 1 大于
+     * @param timeParam
+     * @return
+     */
+    private Integer getCompareDateValue(String timeParam){
+        Date date = new Date();
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        int compareValue = -2;
+        try{
+            Date timeParamDate = df.parse(timeParam);
+            Date nowDate = new Date();
+            df.format(nowDate);
+            compareValue = nowDate.compareTo(timeParamDate);
+        } catch (Exception e) {
+
+        }
+        return compareValue;
+    }
+    /**
+     * 根据时间点参数 返回结算时间
+     * @param param
+     * @return
+     */
     private String getTimeParamValue(String param){
         QueryWrapper<BaTimeParam> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("param_code",param);

@@ -16,4 +16,31 @@
         <result column="check_remark" property="checkRemark" />
     </resultMap>
 
+    <!--加载显示列表页数据-->
+    <select id="getApplyWorkAttedances" parameterType="com.settlement.co.ApplyCo" resultType="com.settlement.vo.BaApplyVo">
+        select a.id as id,
+            d.dic_content as applyTypeContent,
+            a.apply_remark as applyRemark,
+            a.check_status as checkStatus,
+            a.apply_user as applyUser,
+            d1.dic_content as checkStatusContent,
+            u.real_name as checkUserContent,
+            a.apply_time as applyTime,
+            a.check_time as checkTime
+            from
+            (select *
+                from ba_apply ba
+              where 1=1
+                <if test="applyCo.checkStatus != null and applyCo.checkStatus !='' ">
+                    and ba.check_status=#{applyCo.checkStatus}
+                </if>
+                <if test="applyCo.applyDate != null and applyCo.applyDate != '' ">
+                    and ba.apply_time like CONCAT('%',#{applyCo.applyDate},'%')
+                </if>
+        ) a
+        left join sys_data_dic d on a.apply_type = d.dic_code
+        left join sys_data_dic d1 on a.check_status = d1.dic_code
+        left join sys_user u on a.check_user=u.id
+    </select>
+
 </mapper>

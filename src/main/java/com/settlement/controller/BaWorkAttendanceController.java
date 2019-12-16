@@ -25,13 +25,24 @@ public class BaWorkAttendanceController {
     @Autowired
     private BaWorkAttendanceService baWorkAttendanceService;
     /**
-     *
+     * 加载考勤管理页面数据
      * @param workAttendanceCo
      * @return
      */
     @GetMapping("/pagedata")
     public PageData listPageData(WorkAttendanceCo workAttendanceCo){
         PageData pageData = baWorkAttendanceService.listPageData(workAttendanceCo);
+        return  pageData;
+    }
+
+    /**
+     * 考勤申请修改-审核通过-修改考勤页面
+     * @param workAttendanceCo
+     * @return
+     */
+    @GetMapping("/apply/workattend/pagedata")
+    public PageData listApplyAttendPageData(WorkAttendanceCo workAttendanceCo) {
+        PageData pageData = baWorkAttendanceService.getWorkAttendanceByApplyId(workAttendanceCo);
         return  pageData;
     }
 
@@ -48,12 +59,19 @@ public class BaWorkAttendanceController {
 
     /**
      *修改
-     * @param baWorkAttendanceVo
+     * @param baWorkAttendance
      * @return
      */
-    @PutMapping("/update")
-    public Result update(BaWorkAttendanceVo baWorkAttendanceVo){
-        Result r = baWorkAttendanceService.update(baWorkAttendanceVo);
+    @PostMapping("/update")
+    public Result update(BaWorkAttendance baWorkAttendance){
+        Result r = baWorkAttendanceService.update(baWorkAttendance);
+        return r;
+    }
+
+    @PutMapping("/commit/{ids}")
+    public Result commitWorkAttendance(@PathVariable String ids){
+        String[] ids2=ids.split(",");
+        Result r = baWorkAttendanceService.commitWorkAttendance(ids2);
         return r;
     }
 
@@ -63,7 +81,7 @@ public class BaWorkAttendanceController {
      * @return
      */
     @PutMapping("/{id}")
-    public BaWorkAttendance getBaWorkAttendanceVoById(Integer id){
+    public BaWorkAttendance getBaWorkAttendanceVoById(@PathVariable Integer id){
         return this.baWorkAttendanceService.getBaWorkAttendanceVoById(id);
     }
 }

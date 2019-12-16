@@ -32,46 +32,90 @@
         <result column="remark" property="remark" />
         <result column="sub_status" property="subStatus" />
         <result column="create_time" property="createTime" />
+        <result column="pg_id" property="pgId" />
         <result column="employee_id" property="employeeId" />
     </resultMap>
 
+    <!-- 根据项目组id获得当前项目组的员工考勤信息-->
     <select id="getWorkAttendanceVoByProjectId" parameterType="com.settlement.co.WorkAttendanceCo" resultType="com.settlement.vo.BaWorkAttendanceVo">
-        select e.emp_name as employeeName
-              ,w.*
-        from
-            ba_work_attendance w,
-            ba_project_employee e
-        where e.del_flag=#{workAttendanceCo.delFlag}
-            and w.sub_status=#{workAttendanceCo.subStatus}
-            and w.employee_id=e.id
-            and e.pg_id=#{workAttendanceCo.projectId}
-            and w.create_time like CONCAT('%',#{workAttendanceCo.yearValue},'-',#{workAttendanceCo.monthValue},'%')
-            <if test="workAttendanceCo.keyword != null">
-                and w.employee_id like CONCAT('%',#{workAttendanceCo.keyword},'%')
-            </if>
-
+        select
+            e.emp_name as employeeName,
+            w.id ,
+            w.work_days ,
+            w.attendance_days ,
+            w.absenteeism_days ,
+            w.float_performance,
+            w.bonus,
+            w.check_work_days,
+            w.work_day_overtime_h,
+            w.weekend_overtime_h,
+            w.festival_overtime_h,
+            w.work_day_overtime_d,
+            w.weekend_overtime_d,
+            w.festival_overtime_d,
+            w.remainder_overtime_lm_h,
+            w.month_overtime_h,
+            w.take_hours_off,
+            w.details ,
+            w.remainder_overtime_m_h,
+            w.taxi_fare,
+            w.travel_expenses,
+            w.meals,
+            w.telephone_bill,
+            w.overtime_allowance,
+            w.other_add_cost,
+            w.other_sub_cost,
+            w.remark ,
+            w.sub_status,
+            w.create_time,
+            w.pg_id,
+            w.employee_id
+        from ba_work_attendance w
+        inner join ba_pg_emp pe on pe.emp_id=w.employee_id and pe.pg_id=w.pg_id
+        inner join ba_employee e on pe.emp_id=e.id
+        where 1=1
+        and pe.pg_id=#{workAttendanceCo.projectId}
+        and pe.sub_status=#{workAttendanceCo.subStatus}
+        and w.create_time like CONCAT('%',#{workAttendanceCo.yearValue},'-',#{workAttendanceCo.monthValue},'%')
 
     </select>
-
+    <!--根据id获得当前项目组的员工考勤信息-->
     <select id="getBaWorkAttendanceVoById" parameterType="java.util.Map" resultType="com.settlement.vo.BaWorkAttendanceVo">
         select e.emp_name as employeeName
               ,w.*
         from
             ba_work_attendance w,
-            ba_project_employee e
+            ba_employee e
         where e.del_flag=#{delFlag}
             and w.employee_id=e.id
             and w.id=#{id}
+        order by w.sub_status asc
     </select>
-
-<select id="getBaWorkAttendanceVoByNextMonth" parameterType="java.util.Map" resultType="com.settlement.entity.BaWorkAttendance">
-    select
-         w.*
-    from
-        ba_work_attendance w,
-        ba_project_employee e
-    where e.del_flag=#{delFlag}
-    and w.employee_id=e.id
-    and w.create_time like CONCAT('%',#{yearValue},'-',#{monthValue},'%')
-</select>
+    <!--根据年月查询考勤记录-->
+    <select id="getBaWorkAttendanceVoByNextMonth" parameterType="java.util.Map" resultType="com.settlement.entity.BaWorkAttendance">
+        select
+             w.*
+        from
+            ba_work_attendance w,
+            ba_employee e
+        where e.del_flag=#{delFlag}
+        and w.employee_id=e.id
+        and w.create_time like CONCAT('%',#{yearValue},'-',#{monthValue},'%')
+        order by w.sub_status asc
+    </select>
+    <!--根据申请修改的考勤id获得要修改的数据-->
+    <select id="getWorkAttendanceByApplyId" parameterType="com.settlement.co.WorkAttendanceCo" resultType="com.settlement.vo.BaWorkAttendanceVo">
+        select
+            e.emp_name as employeeName,
+            b.*
+        from ba_work_attendance b
+        left join ba_employee e on b.employee_id=e.id
+        where 1=1
+		and e.del_flag=#{workAttendanceCo.delFlag}
+		and b.id in(
+			select a.id from ba_apply_attendance a
+			where a.apply_id=#{workAttendanceCo.applyId}
+		)
+		order by b.sub_status asc
+    </select>
 </mapper>

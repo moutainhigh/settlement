@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html class="x-admin-sm"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:bolck th:include="common/header :: header('数据字典管理')" />
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body layui-table-body layui-table-main">
+                    <table class="layui-table layui-form" id="dataTable" lay-filter="dataTable">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/html" id="toolBarHead">
+    <button type="button" id="commmit" data-type="commmit" class="layui-btn layui-btn-normal "  lay-demo="reload">提交</button>
+</script>
+<script type="text/html" id="toolBar">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+</script>
+<script type="text/html" id="idselect">
+    <input type="checkbox" name="id" value="{{d.id}}"  lay-filter="idselect">
+</script>
+
+<script type="text/javascript"  th:inline="javascript">
+    layui.use(['table','form','upload','jquery'], function(){
+        var laydate = layui.laydate;
+        var  form = layui.form;
+        var table = layui.table;
+        var $ = layui.jquery;
+
+       var table1= table.render({
+            elem: '#dataTable',
+            url: '/ba-work-attendance/apply/workattend/pagedata',
+            // toolbar: '',
+           // id:"tableReload",
+            page: true,
+            title: '考勤记录',
+            height: 'full-60',
+            toolbar: '#toolBarHead',
+            defaultToolbar: ['filter', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+                title: '提示'
+                ,layEvent: 'LAYTABLE_TIPS'
+                ,icon: 'layui-icon-tips'
+            }],
+           where:{
+                applyId:[[${applyId}]]
+           },
+             //id: 'userData',
+            cols: [[
+                {field:'id',type:'checkbox',fixed:'left'},
+                {field:'employeeId',title:'员工编号',align:'center',fixed:'left'},
+                // {field:'employeeName',title:'员工姓名',align:'center'},
+                {field:'workDays',title:'标准工作天数',align:'center'},
+                {field:'absenteeismDays',title:'缺勤天数',align:'center'},
+                {field:'floatPerformance',title:'浮动绩效',align:'center'},
+                {field:'bonus',title:'奖金',align:'center'},
+                {field:'checkWorkDays',title:'核算工作天数',align:'center'},
+                {field:'workDayOvertimeH',title:'工作日加班（小时）',align:'center'},
+                {field:'weekendOvertimeH',title:'周末加班（小时）',align:'center'},
+                {field:'festivalOvertimeH',title:'法定节假日加班（小时）',align:'center'},
+                {field:'工作日加班（天）',title:'工作日加班（天）',align:'center'},
+                {field:'weekendOvertimeD',title:'周末加班（天）',align:'center'},
+                {field:'festivalOvertimeD',title:'法定节假日加班（天）',align:'center'},
+                {field:'remainderOvertimeLmH',title:'上月剩余加班（小时）',align:'center'},
+                {field:'monthOvertimeH',title:'本月加班（小时）',align:'center'},
+                {field:'takeHoursOff',title:'调休（小时）',align:'center'},
+                {field:'details',title:'调休详情',align:'center'},
+                {field:'remainderOvertimeMH',title:'本月剩余加班（小时）',align:'center'},
+                {field:'taxiFare',title:'打车费',align:'center'},
+                {field:'travelExpenses',title:'差旅费',align:'center'},
+                {field:'meals',title:'餐费',align:'center'},
+                {field:'telephoneBill',title:'话费',align:'center'},
+                {field:'overtimeAllowance',title:'加班补助',align:'center'},
+                {field:'otherAddCost',title:'其他加项费用',align:'center'},
+                {field:'otherSubCost',title:'其他减项费用',align:'center'},
+                {field:'remark',title:'备注',align:'center'},
+                {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:60}
+            ]]
+        });
+        //绑定按钮事件
+        $('.layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+        form.render();
+        // 监听工具栏
+        table.on('tool(dataTable)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'detail'){
+                layer.msg('ID：'+ data.id + ' 的查看操作');
+            } else if(obj.event === 'edit'){
+                xadmin.open('编辑考勤信息','/ba-work-attendance/edit/'+ data.id,800,450);
+            }
+        });
+        var $ = layui.$, active = {
+            reload: function(){
+                var keyword = $('#keyword');
+                //执行重载
+                table.reload('tableReload', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,where: {
+                        keyword: keyword.val()
+                        ,month:15
+                    }
+                }, 'data');
+            }
+            // ,edit:function () {
+            //     editWorkAttendanceOper('修改考勤记录', '/ba-work-attendance/edit/', table, layer, 800, 450);
+            // }
+            ,commmit:function () {
+                commitWorkAttendanceOper('/ba-work-attendance/commit/',table,layer);
+            }
+        };
+
+
+    });
+
+    //提交考勤记录
+    function commitWorkAttendanceOper( url, table, layer) {
+        var checkStatus = table.checkStatus('dataTable')
+            ,data = checkStatus.data;
+        var ids2=[];
+        var compelteTime=[[${compelteTime}]];
+        var stopTime=[[${stopTime}]];
+        if (data.length == 0) {
+            layer.alert('请先选择要提交的考勤记录',{icon : 5});
+            return ;
+        }
+        //判断是否在考勤结算时间点提交
+        if(!judgeDate()) {
+            layer.msg('不在考勤时间点内,无法提交考勤记录', {icon: 5});
+            return;
+        }
+        for(var i=0;i<data.length;i++) {
+            ids2[i]=data[i].id;
+        }
+
+        layer.open({
+            content: '确认提交考勤记录数据？'
+            ,btn: ['确定','取消']
+            ,yes: function(index){
+                // 发送ajax请求  提交考勤记录数据
+                $.ajax({
+                    url:url+ids2,
+                    type:'put',
+                    success: function(r){
+                        if("commit_200"==r.code){
+                            layer.close(index);
+                            layer.msg('提交成功', {icon: 6});
+                            //执行重载
+                            table.reload('dataTable', {
+                                page: {
+                                    curr: 1 //重新从第 1 页开始
+                                }
+                            }, 'data');
+                        } else {
+                            layer.msg('提交失败', {icon: 5});
+                        }
+                    }
+                });
+            }
+            ,btn2: function(index){
+                //按钮【按钮二】的回调
+                layui.table.render();
+                layer.close(index);
+            }
+            ,cancel: function(){
+                //右上角关闭回调
+                layui.table.render();
+            }
+        });
+
+    }
+    /** 修改考勤记录操作 */
+    function editWorkAttendanceOper(title, url, table, layer,w,h) {
+        var checkStatus = table.checkStatus('dataTable')
+            ,data = checkStatus.data;
+        if (data.length == 0) {
+            layer.alert('请先选择一行',{icon : 5});
+        }else if (data.length > 1) {
+            layer.alert('不能多选啊，只能选择一行',{icon : 5});
+        }else if(data.length == 1) {
+            //xadmin.open(title,url + data[0].id,w,h);
+            // 项目组只有处于审核通过状态才能操作
+            // if (data[0].checkStatus == passCheckStatus) {
+                 xadmin.open(title,url + data[0].id,w,h);
+            // } else {
+            //     layer.msg("项目组只有处于【审核通过】状态才能" + title,{icon:5});
+            // }
+        }
+    }
+</script>
+</html>

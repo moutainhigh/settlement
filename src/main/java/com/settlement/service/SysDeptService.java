@@ -27,6 +27,8 @@ public interface SysDeptService extends IService<SysDept> {
     Result update(SysDeptVo sysDeptVo);
     /**删除 **/
     Result delete(Integer id);
+    /**检查编码是否存在**/
+    Result deptCodeIsExist(String dicCode);
     /**启用状态 **/
     Result updateEnableStart(Integer id);
     /**停用状态 **/

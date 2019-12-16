@@ -25,4 +25,6 @@ public interface BaWorkAttendanceMapper extends BaseMapper<BaWorkAttendance> {
     BaWorkAttendanceVo getBaWorkAttendanceVoById(Map<String,Object> map);
     /**根据年月查询考勤记录**/
     List<BaWorkAttendance> getBaWorkAttendanceVoByNextMonth(Map<String,String> map);
+    /***根据申请修改的考勤id获得要修改的数据*/
+    List<BaWorkAttendanceVo> getWorkAttendanceByApplyId(WorkAttendanceCo workAttendanceCo, Page<BaWorkAttendanceVo> page);
 }

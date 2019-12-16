@@ -11,7 +11,7 @@
             <div class="layui-card">
                 <div class="layui-card-body">
                     <!--考勤月份-->
-                    <div  style="margin-left: 30%;">
+                    <div class="layui-form">
                         <div class="layui-inline ">
                             <span class="x-red"></span>考勤月份:
                         </div>
@@ -19,10 +19,10 @@
                             <select id="years" name="years"  lay-filter="years" lay-verify="years" style="width: 100px;height: 30px;" >
                                 <option th:each="year:${years}" th:value="${year}" th:text="${year}"></option>
                             </select>
-                            </div>
-                            <div class="layui-inline ">
-                                <span class="x-red"></span>年
-                            </div>
+                        </div>
+                        <div class="layui-inline ">
+                            <span class="x-red"></span>年
+                        </div>
                         <div class="layui-inline">
                             <select id="months" name="months"  lay-filter="months" lay-verify="years" style="width: 100px;height: 30px;">
                                 <option th:each="month:${months}" th:value="${month}" th:text="${month}"></option>
@@ -32,10 +32,8 @@
                             <span class="x-red"></span>月
                         </div>
                     </div>
-                    <div style="margin-left: 20%; padding-top: 20px;">
-                        <div class="layui-inline layui-show-xs-block">
-                            <lable class="x-red">本月您已经修改1次,还有2次修改机会</lable>
-                        </div>
+                    <!--考勤时间点-->
+                    <div class="layui-form" style="margin-top: 10px">
                         <div class="layui-inline layui-show-xs-block">
                             <span class="x-red"></span>结算时间点:
                         </div>
@@ -49,10 +47,21 @@
                             <input type="text" id="end" name="completeTime" th:value="${compelteTime}" readonly autocomplete="off" class="layui-input">
                         </div>
                     </div>
+                 <!--考勤时间点-->
 
-                </div>
+                    <div class="layui-form" style="margin-top: 10px;">
+                        <div class="layui-inline layui-show-xs-block" style="margin-bottom: 8px;" >
+                            <input type="text" id="keyword" name="keyword"  readonly='false' value="ddddddd" placeholder="请输入" autocomplete="off" class="layui-input" style="width: 150px">
+                        </div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <button class="layui-btn" id="search"  onclick="search();return false;" data-type="reload" lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i>查询</button>
+                        </div>
+                        <div class="layui-inline layui-show-xs-block" style="margin-left: 300px;">
+                            <lable class="x-red">本月您已经修改1次,还有21次修改机会</lable>
+                        </div>
+                    </div>
 
-                <div class="layui-card-body layui-table-body layui-table-main">
+                    <div class="layui-form" style="margin-top: 10px;">
                     <table class="layui-table layui-form" id="dataTable" lay-filter="dataTable">
                     </table>
                 </div>
@@ -63,27 +72,19 @@
 </body>
 <script type="text/html" id="toolBarHead">
     <div class="layui-btn-container">
-        <button type="button" id="edit" data-type="edit" class="layui-btn"><i class="layui-icon"></i>编辑</button>
         <button type="button" id="import" data-type="import" class="layui-btn">批量导入</button>
         <button type="button" id="applymodify" data-type="applymodify" class="layui-btn " lay-demo="reload">申请修改</button>
-        <button type="button" id="commmit" data-type="commmit" class="layui-btn layui-btn-normal "  lay-demo="reload">提交</button>
+        <button type="button" id="commmit" data-type="commmit" class="layui-btn layui-btn-normal"  lay-demo="reload">提交</button>
         <button type="button" id="generate" data-type="generate" class="layui-btn layui-btn-normal "  lay-demo="reload">生成考勤记录</button>
-        <div class="layui-form layui-col-space5" style="display:inline;float: right;">
-            <div class="layui-inline">
-                <lable class="x-red">本月您已经修改1次,还有2次修改机会</lable>
-            </div>
-            <div class="layui-inline layui-show-xs-block" style="margin-bottom: 8px;" >
-                <input type="text" id="keyword" name="keyword"  readonly='false' value="ddddddd" placeholder="请输入" autocomplete="off" class="layui-input" style="width: 150px">
-            </div>
-            <div class="layui-inline layui-show-xs-block">
-                <button class="layui-btn" id="search"  onclick="search();return false;" data-type="reload" lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i>查询</button>
-            </div>
-        </div>
     </div>
+</script>
+<script type="text/html" id="toolBar">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
 </script>
 <script type="text/html" id="idselect">
     <input type="checkbox" name="id" value="{{d.id}}"  lay-filter="idselect">
 </script>
+
 <script type="text/javascript"  th:inline="javascript">
     layui.use(['table','form','upload','jquery'], function(){
         var laydate = layui.laydate;
@@ -93,11 +94,11 @@
         var $ = layui.jquery;
         var obj = window.parent.layui.dtree.getNowParam("projectTree");
 
-       var table1= table.render({
+        form.render();
+
+        table.render({
             elem: '#dataTable',
             url: '/ba-work-attendance/pagedata',
-            // toolbar: '',
-           // id:"tableReload",
             page: true,
             title: '考勤记录',
             height: 'full-210',
@@ -116,6 +117,7 @@
              //id: 'userData',
             cols: [[
                 {field:'id',type:'checkbox',fixed:'left'},
+                {field:'subStatus',title:'subStatus',hide:true},
                 {field:'employeeId',title:'员工编号',align:'center',fixed:'left'},
                 // {field:'employeeName',title:'员工姓名',align:'center'},
                 {field:'workDays',title:'标准工作天数',align:'center'},
@@ -141,8 +143,24 @@
                 {field:'overtimeAllowance',title:'加班补助',align:'center'},
                 {field:'otherAddCost',title:'其他加项费用',align:'center'},
                 {field:'otherSubCost',title:'其他减项费用',align:'center'},
-                {field:'remark',title:'备注',align:'center'}
+                {field:'remark',title:'备注',align:'center'},
+                {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:60}
             ]]
+           ,done:function(res,curr,count) {
+               //如果是异步请求数据方式，res即为你接口返回的信息。
+               //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+               for(var i=0;i<count;i++) {
+                   if(res.data[i].subStatus == 'S') {
+                       $($(".layui-table-body.layui-table-main tr")[i]).css("background-color", "#1E9FFF");
+                   }
+               }
+           }
+        });
+
+        //按钮事件绑定
+        $('.layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
         });
 
         var $ = layui.$, active = {
@@ -155,24 +173,33 @@
                     }
                     ,where: {
                         keyword: keyword.val()
-                        ,month:15
                     }
                 }, 'data');
             },
-            edit:function () {
-                checkBoxCheckedOper('修改考勤记录','/ba-work-attendance/edit/',table,layer,800,450);
-            },
             applymodify:function () {
-                //判断当月修改的次数
-
                 //项目负责人AM
                 var checkUserId = [[${checkUserId}]];
                 applymodifyOper('申请修改','/ba-work-attendance/applymodify/'+checkUserId,table,layer,500,450);
             },
             commmit:function () {
-                alert('commmit');
+                commitWorkAttendanceOper('/ba-work-attendance/commit/',table,layer);
             }
         };
+
+        // 监听工具栏
+        table.on('tool(dataTable)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'detail'){
+                layer.msg('ID：'+ data.id + ' 的查看操作');
+            } else if(obj.event === 'edit'){
+                //判断考勤结算时间
+                if(!judgeStopTime()) {
+                    layer.msg('在结算周期内修改考勤必须提交申请',{icon:5});
+                    return;
+                }
+                xadmin.open('编辑考勤信息','/ba-work-attendance/edit/'+ data.id,800,450);
+            }
+        });
 
         //选择月份重新加载数据
         $('#months').change(function () {
@@ -184,7 +211,6 @@
                 }
                 ,where: {
                         monthValue:monthvalue
-
                 }
             }, 'data');
 
@@ -209,68 +235,191 @@
                 layer.msg('网络异常,文件上传失败,请重新导入！',{icon:5});
             }
         });
-        $('.layui-btn').on('click', function(){
-            var type = $(this).data('type');
-            active[type] ? active[type].call(this) : '';
-        });
-        form.render();
 
 
-        // 监听工具栏
-        table.on('tool(dataTable)', function(obj){
-            var data = obj.data;
-            if(obj.event === 'detail'){
-                layer.msg('ID：'+ data.id + ' 的查看操作');
-            } else if(obj.event === 'del'){
-                layer.confirm('真的删除【 '+ data.contractNo + '】么?', function(index){
-                    exportparam_del(data.id);
-                    layer.close(index);
+    });
+    //////////////////////////////JS////////////////////////////////
+    //提交考勤记录
+    function commitWorkAttendanceOper( url, table, layer) {
+        var checkStatus = table.checkStatus('dataTable')
+            ,data = checkStatus.data;
+        var ids2=[];
+        var compelteTime=[[${compelteTime}]];
+        var stopTime=[[${stopTime}]];
+        if (data.length == 0) {
+            layer.alert('请先选择要提交的考勤记录',{icon : 5});
+            return ;
+        }
+
+        //判断是否在考勤结算时间点提交
+        if(!judgeCompleteTime()) {
+            //超过考勤时间不可以提交
+            layer.msg('超过考勤结算时间点,无法提交考勤记录', {icon: 5});
+            return;
+        } else if(getSubStatus(data,'S').length > 0) {
+            //包含已经提交的数据不可以提交
+            var SubmitData=getSubStatus(data,'S');
+            layer.msg("提交过的数据【"+SubmitData+"】不要重复提交",{icon:6});
+            return;
+        }
+        for(var i=0;i<data.length;i++) {
+            ids2[i]=data[i].id;
+            //存在修改的记录，不要重复提交
+        }
+
+        layer.open({
+            content: '确认提交考勤记录数据？'
+            ,btn: ['确定','取消']
+            ,yes: function(index){
+                // 发送ajax请求  提交考勤记录数据
+                $.ajax({
+                    url:url+ids2,
+                    type:'put',
+                    success: function(r){
+                        if("commit_200"==r.code){
+                            layer.close(index);
+                            layer.msg('提交成功', {icon: 6});
+                            //执行重载
+                            table.reload('dataTable', {
+                                page: {
+                                    curr: 1 //重新从第 1 页开始
+                                }
+                            }, 'data');
+                        } else {
+                            layer.msg('提交失败', {icon: 5});
+                        }
+                    }
                 });
-            } else if(obj.event === 'edit'){
-                xadmin.open('编辑合同','/ba-contract/toAddorUpdate/update/'+ data.id,600,550);
-
+            }
+            ,btn2: function(index){
+                //按钮【按钮二】的回调
+                layui.table.render();
+                layer.close(index);
+            }
+            ,cancel: function(){
+                //右上角关闭回调
+                layui.table.render();
             }
         });
-    });
+
+    }
+
     //申请修改记录
     function applymodifyOper(title, url, table, layer,w,h) {
         var checkStatus = table.checkStatus('dataTable')
             ,data = checkStatus.data;
-        //var checkUserId=[[${checkUserId}]];
-        //var ids="";
         var ids2=[];
         if (data.length == 0) {
             layer.alert('请先选择一行',{icon : 5});
             return ;
         }
+        //结算时间之前  //未提交的提示不需要申请修改
+        if(judgeStopTime()) {
+            if( getSubStatus(data,'N').length == data.length){
+                layer.msg("在结算时间之前,未提交的数据,可以直接编辑",{icon:6});
+                return;
+            } else if(getSubStatus(data,'S').length < data.length) {
+                var noSubmitData=getSubStatus(data,'N');
+                layer.msg("未提交过的数据【"+noSubmitData+"】可以直接编辑",{icon:6});
+                return;
+            } else if(getSubStatus(data,'S').length == data.length) {
+                //提交的数据
+                layer.msg("在结算时间之前,已经提交的数据可以申请修改",{icon:6});
+                //判断当月修改的次数
+                for(var i=0;i<data.length;i++) {
+                    //ids+=data[i].id+",";
+                    ids2[i]=data[i].id;
+                }
+                xadmin.open(title,url + "/"+ ids2,w,h);
+            }
+        }
+        //考勤结算周期内
+         if(!judgeStopTime() && judgeCompleteTime()){
+             //判断当月修改的次数
+             //   do...
+            for(var i=0;i<data.length;i++) {
+                //ids+=data[i].id+",";
+                ids2[i]=data[i].id;
+            }
+            xadmin.open(title,url + "/"+ ids2,w,h);
+            return;
+         }
+
+        //结算时间之前,已经提交的可以修改
+
+        //进入结算时间的 判断是否在结算时间之内
+
+        //判断当月修改的次数
+        // for(var i=0;i<data.length;i++) {
+        //     //ids+=data[i].id+",";
+        //     ids2[i]=data[i].id;
+        // }
+        // xadmin.open(title,url + "/"+ ids2,w,h);
+    }
+    //根据提交的状态Y N获得对应的数组列表
+    function getSubStatus(data,subStatusValue) {
+        var idSubStatus=[];
+        var j=0;
         for(var i=0;i<data.length;i++) {
-            //ids+=data[i].id+",";
-            ids2[i]=data[i].id;
+            //提交状态
+            if(data[i].subStatus==subStatusValue){
+                idSubStatus[j++]=data[i].employeeId;
+            }
         }
-        //xadmin.open(title,url + ids2+"/"+checkUserId,w,h);
-        xadmin.open(title,url + "/"+ ids2,w,h);
+        return idSubStatus;
     }
-    /** 复选框选中操作 */
-    function checkBoxCheckedOper(title, url, table, layer,w,h) {
-        var checkStatus = table.checkStatus('dataTable')
-            ,data = checkStatus.data;
-        if (data.length == 0) {
-            layer.alert('请先选择一行',{icon : 5});
-        }else if (data.length > 1) {
-            layer.alert('不能多选啊，只能选择一行',{icon : 5});
-        }else if(data.length == 1) {
-            //xadmin.open(title,url + data[0].id,w,h);
-            // 项目组只有处于审核通过状态才能操作
-            // if (data[0].checkStatus == passCheckStatus) {
-                 xadmin.open(title,url + data[0].id,w,h);
-            // } else {
-            //     layer.msg("项目组只有处于【审核通过】状态才能" + title,{icon:5});
-            // }
-        }
+    //检查是否在结算时间之间
+    function judgeStopTime(){
+        var flag=false;
+        $.ajax({
+            type:'get'
+            ,url:'/ba-time-param/judge/workattendance/stoptime'
+            ,async:false //同步处理
+            ,success:function(r){
+                if(r.code=='1') {
+                    flag = false;
+                }
+                else {
+                    flag = true;
+                }
+            }
+        });
+        return flag;
     }
+    //检查是否在结算时间之间
+    function judgeCompleteTime(){
+        var flag=false;
+        $.ajax({
+            type:'get'
+            ,url:'/ba-time-param/judge/workattendance/completetime'
+            ,async:false //同步处理
+            ,success:function(r){
+                if(r.code=='1') {
+                    flag = false;
+                }
+                else {
+                    flag = true;
+                }
+            }
+        });
+        return flag;
+    }
+    //获得考勤日期
+    function judgeDate() {
+        $.ajax({
+            type:'get'
+            ,url:'/ba-time-param/judge/workattendance/date/'
+            ,success:function(r){
+                if(r.code=='1')
+                    return true;
+                else
+                    return false;
+            }
+        });
+    }
+
 
     function search() {
-
         alert('search:'+ $("#keyword").val());
     }
 </script>

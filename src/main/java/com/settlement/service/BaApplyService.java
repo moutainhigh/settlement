@@ -6,6 +6,9 @@ import com.settlement.entity.BaApply;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.settlement.utils.Result;
 import com.settlement.vo.BaApplyVo;
+import com.settlement.vo.CheckStatusVo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -25,4 +28,7 @@ public interface BaApplyService extends IService<BaApply> {
     Result addAttendance(BaApplyVo baApplyVo);
     /**申请修改员工记录**/
     Result addEmployee(BaApplyVo baApplyVo);
+    /**验证口令**/
+    Result verifyPasscode(BaApply baApply);
+
 }

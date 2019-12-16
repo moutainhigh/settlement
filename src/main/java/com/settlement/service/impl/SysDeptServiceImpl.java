@@ -3,11 +3,7 @@ package com.settlement.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.settlement.entity.SysDept;
-import com.settlement.entity.SysDeptRole;
-import com.settlement.entity.SysRole;
 import com.settlement.mapper.SysDeptMapper;
-import com.settlement.mapper.SysDeptRoleMapper;
-import com.settlement.mapper.SysRoleMapper;
 import com.settlement.service.SysDeptRoleService;
 import com.settlement.service.SysDeptService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -16,14 +12,12 @@ import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
 import com.settlement.vo.SelectVo;
 import com.settlement.vo.SysDeptVo;
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.*;
-import java.util.concurrent.LinkedBlockingDeque;
 
 /**
  * <p>
@@ -250,6 +244,26 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         } catch (Exception e) {
             e.printStackTrace();
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+        return r;
+    }
+
+    /**
+     * 检查部门编码是否存在
+     * @param dicCode
+     * @return
+     */
+    @Override
+    public Result deptCodeIsExist(String dicCode) {
+        Result r = null;
+        QueryWrapper<SysDept> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("dept_code",dicCode);
+        queryWrapper.eq("del_flag",Const.DEL_FLAG_N);
+        Integer count = this.baseMapper.selectCount(queryWrapper);
+        if(count!=null && count>0) {
+            r = new Result(HttpResultEnum.DEPT_CODE_1.getCode(),HttpResultEnum.DEPT_CODE_1.getMessage());
+        } else {
+            r = new Result(HttpResultEnum.DEPT_CODE_0.getCode(),HttpResultEnum.DEPT_CODE_0.getMessage());
         }
         return r;
     }

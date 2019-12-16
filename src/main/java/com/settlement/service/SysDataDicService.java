@@ -5,6 +5,7 @@ import com.settlement.co.DataDicCo;
 import com.settlement.entity.SysDataDic;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.settlement.utils.Result;
+import com.settlement.vo.CheckStatusVo;
 import com.settlement.vo.SysDataDicVo;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -59,7 +60,7 @@ public interface SysDataDicService extends IService<SysDataDic> {
      * 更新数据字典状态
      **/
     public Result updateStatus(Integer id,boolean enable);
-
+    /**检查编码是否存在**/
     Result dicCodeIsExist(String dicCode);
 
     /**
@@ -80,4 +81,6 @@ public interface SysDataDicService extends IService<SysDataDic> {
     SysDataDic getRoot(String rootCode);
 
     List<SysDataDicVo> getDataDicListVo();
+    /**页面审核状态下拉列表**/
+    List<SysDataDic> getCheckStatus();
 }

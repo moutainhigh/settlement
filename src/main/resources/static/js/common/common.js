@@ -8,6 +8,23 @@ function timeout(time) {
     }, time);
 }
 
+
+// 检查编码是否存在
+function checkCodeIsExist(url,code, layer,mode) {
+    var flag = true;
+    $.ajaxSettings.async = false;
+    $.get(url + code,null, function(r) {
+        if (r.code == 1)  {
+            flag = false;
+            layer.alert(r.msg, {icon: 5});
+        } else if (mode != 'submit' && r.code == 0) {
+            layer.alert(r.msg, {icon: 6});
+        }
+    });
+    $.ajaxSettings.async = true;
+    return flag;
+}
+
 /** 修改 */
 function edit(data, layer, url) {
     // 处理重复提交

@@ -1,5 +1,6 @@
 package com.settlement.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.settlement.bo.PageData;
 import com.settlement.co.WorkAttendanceCo;
 import com.settlement.entity.BaWorkAttendance;
@@ -25,9 +26,13 @@ public interface BaWorkAttendanceService extends IService<BaWorkAttendance> {
     /**添加 **/
     Result add(BaWorkAttendanceVo baWorkAttendanceVo);
     /**修改**/
-    Result update(BaWorkAttendanceVo baWorkAttendanceVo);
+    Result update(BaWorkAttendance baWorkAttendance);
     /**根据id查询**/
     BaWorkAttendanceVo getBaWorkAttendanceVoById(Integer id);
     /**根据年月查询考勤记录**/
     List<BaWorkAttendance> getBaWorkAttendanceVoByNextMonth(Map<String, String> map);
+    /**提交考勤记录**/
+    Result commitWorkAttendance(String[] ids);
+    /***根据申请修改的考勤id获得要修改的数据*/
+    PageData getWorkAttendanceByApplyId(WorkAttendanceCo workAttendanceCo);
 }

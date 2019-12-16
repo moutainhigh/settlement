@@ -84,6 +84,8 @@ public class BaWorkAttendance extends Model<BaWorkAttendance> {
 
     private Date createTime;
 
+    private Integer pgId;
+
     private Integer employeeId;
 
 

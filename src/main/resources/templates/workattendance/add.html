@@ -22,7 +22,7 @@
                     <label for="employeeName" class="layui-form-label">
                         <span class="x-red">*</span>员工姓名</label>
                     <div class="layui-input-inline">
-                        <input type="text" id="employeeName" name="employeeName" readonly th:value="${baWork.employeeName}"  required="" lay-verify="employeeName" autocomplete="off" placeholder="请输入开票抬头" class="layui-input" maxlength="20">
+                        <input type="text" id="employeeName" name="employeeName" disabled="true" readonly th:value="${baWork.employeeName}"  required="" lay-verify="employeeName" autocomplete="off" placeholder="请输入开票抬头" class="layui-input" maxlength="20">
                     </div>
                 </div>
                 <div class="layui-inline">
@@ -268,9 +268,27 @@
 
             //监听提交
             form.on('submit(add)', function(data){
+                console.log(data.field);
+                // $.ajax({
+                //     type:'put'
+                //     ,url:'/ba-work-attendance/update'
+                //     ,date:data.field
+                //     ,success:function(r) {
+                //         layer.alert(r.msg, {
+                //                 icon : r.code == 'add_200' ? 6: 5
+                //             },
+                //             function() {
+                //                 //关闭当前frame
+                //                 xadmin.close();
+                //                 // 可以对父窗口进行刷新
+                //                 xadmin.father_reload();
+                //             });
+                //     }
+                //
+                // });
                     $.post('/ba-work-attendance/update',data.field,function (r) {
                         layer.alert(r.msg, {
-                                icon : r.code == 'add_200' ? 6: 5
+                                icon : r.code == 'edit_200' ? 6: 5
                             },
                             function() {
                                 //关闭当前frame
@@ -286,21 +304,6 @@
         });
 
     //form.render();
-    // 检查邮箱是否存在
-    function contractNoIsExist(contractNo, layer,mode) {
-        var flag = true;
-        $.ajaxSettings.async = false;
-        $.get('/ba-contract/isexist/' + contractNo , null , function(r) {
-            if (r.code == 1)  {
-                flag = false;
-                layer.alert(r.msg, {icon: 5});
-            } else if (mode != 'submit' && r.code == 0) {
-                layer.alert(r.msg, {icon: 6});
-            }
-        });
-        $.ajaxSettings.async = true;
-        return flag;
-    }
 </script>
 </body>
 </html>

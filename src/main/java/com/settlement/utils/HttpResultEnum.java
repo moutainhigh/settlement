@@ -24,11 +24,21 @@ public enum HttpResultEnum {
     // 数据字典编码
     DIC_CODE_0("0","数据字典编码不存在，可以添加"),
     DIC_CODE_1("1","数据字典编码已经存在，不可以添加"),
-
+    //菜单编码
+    PERMISSION_CODE_0("0","菜单编码不存在，可以添加"),
+    PERMISSION_CODE_1("1","菜单编码已经存在，不可以添加"),
+    //部门编码
+    DEPT_CODE_0("0","部门编码不存在，可以添加"),
+    DEPT_CODE_1("1","部门编码已经存在，不可以添加"),
     // 时间点编码
     TIME_PARAM_CODE_0("0","时间点参数编号不存在，可以添加"),
     TIME_PARAM_CODE_1("1","时间点参数编号经存在，不可以添加"),
-
+    //考勤时间点
+    STOP_TIME_CODE_0("0","未进入结算时间，可以提交和修改"),
+    STOP_TIME_CODE_1("1","已进入结算时间，不可以提交和修改"),
+    //考勤完成时间点
+    COMPLETE_TIME_CODE_0("0","未进入考勤完成时间，可以提交和修改"),
+    COMPLETE_TIME_CODE_1("1","已超过考勤完成时间，不可以提交和修改"),
     // 公式参数编码
     FORMULA_PARAM_CODE_0("0","公式参数编号不存在，可以添加"),
     FORMULA_PARAM_CODE_1("1","公式参数编号已经存在，不可以添加"),
@@ -54,6 +64,13 @@ public enum HttpResultEnum {
     EDIT_CODE_500("edit_500","修改失败"),
     QUERY_CODE_200("query_200","查询成功"),
     QUERY_CODE_500("query_500","查询失败"),
+    //考勤记录提交状态
+    COMMIT_CODE_200("commit_200","提交成功"),
+    COMMIT_CODE_500("commit_500","提交失败"),
+
+    //口令验证
+    VERIFY_CODE_500("verify_500","口令验证失败"),
+    VERIFY_CODE_200("verify_200","口令验证通过"),
 
     EMP_CODE_0("0","员工不存在，可以添加"),
     EMP_CODE_1("1","员工已经存在，不能添加"),
@@ -65,9 +82,6 @@ public enum HttpResultEnum {
     FILE_UPLOAD_CODE_9002("9002","文件下载失败"),
     FILE_UPLOAD_CODE_9004("9004","图片上传格式不正确，支持的格式有jpg、png、jpeg"),
     FILE_UPLOAD_CODE_9005("9005","图片上传为空");
-
-
-
 
     private String code;
     private String message;

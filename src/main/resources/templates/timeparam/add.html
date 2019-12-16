@@ -13,6 +13,16 @@
                     <div class="layui-form-item">
                         <div class="layui-form-item">
                             <label for="paramCode" class="layui-form-label">
+                                <span class="x-red">*</span>所属项目组</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="projectId" name="projectId" th:readonly="${mode.equals('update')}?true" th:value="${mode.equals('update')}?${baTimeParam.paramCode}" required="" lay-verify="paramCode" autocomplete="off"  placeholder="请输入时间点参数编号" class="layui-input" maxlength="20">
+                            </div>
+                            <div class="layui-input-inline">
+                                <button type="button" id="projectCreate"  lay-filter="projectCreate" class="layui-btn layui-btn-primary layui-btn-xs">创建项目</button>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="paramCode" class="layui-form-label">
                                 <span class="x-red">*</span>时间点参数编号</label>
                             <div class="layui-input-inline">
                                 <input type="text" id="paramCode" name="paramCode" th:readonly="${mode.equals('update')}?true" th:value="${mode.equals('update')}?${baTimeParam.paramCode}" required="" lay-verify="paramCode" autocomplete="off"  placeholder="请输入时间点参数编号" class="layui-input" maxlength="20">

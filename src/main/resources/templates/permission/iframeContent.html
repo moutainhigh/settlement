@@ -26,6 +26,9 @@
                     <div class="layui-input-inline">
                         <input type="text" id="pCode" name="pCode" th:readonly="${mode.equals('update')}" th:value="${mode.equals('update')}?${sysPermission.pCode}:${sysPermission.pCode}" required="" lay-verify="pCode" autocomplete="off" class="layui-input">
                     </div>
+                    <div class="layui-input-inline">
+                        <button type="button" id="pCodeIsExist" th:if="${mode.equals('add')}" lay-filter="pCodeIsExist" class="layui-btn layui-btn-primary layui-btn-xs">检查菜单代码是否可用</button>
+                    </div>
                     <div class="layui-form-mid layui-word-aux">
                         <span class="x-red">*</span>菜单名称添加后不可修改
                     </div>
@@ -79,7 +82,7 @@
     </div>
     </form>
 </div>
-
+<script th:src="@{/js/common/common.js}" type="text/javascript" charset="utf-8"></script>
 <script th:inline="javascript">
     layui.use('form', function(){
         var form = layui.form;
@@ -114,10 +117,18 @@
                 }
             }
         });
-
+        $('#pCodeIsExist').click(function () {
+                var pCode = $('#pCode').val();
+                if(pCode.trim().length==0) {
+                    layer.msg('菜单编码至少得1个字符',{icon:5});
+                    return false;
+                }
+            checkCodeIsExist('/sys-permission/isexist/',pCode,layer,'');
+            }
+        );
         //监听提交
         form.on('submit(add)', function(data){
-            if("add"==mode) {
+            if("add"==mode && checkCodeIsExist('/sys-permission/isexist/',$("#pCode").val(),layer,'submit')) {
                 $.post('/sys-permission/add',data.field,function (r) {
                         var pid=$("#parentId").val();
                         if(r.code=='add_200') {

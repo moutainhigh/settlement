@@ -94,6 +94,16 @@ public class SysDeptController {
         return r;
     }
     /**
+     * 检查部门编码deptCode是否存在
+     * @param deptCode
+     * @return
+     */
+    @GetMapping("/isexist/{deptCode}")
+    public Result dicCodeIsExist(@PathVariable(value="deptCode") String deptCode) {
+        Result r = sysDeptService.deptCodeIsExist(deptCode);
+        return r;
+    }
+    /**
      * 启用
      * @param id
      * @return

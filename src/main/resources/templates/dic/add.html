@@ -116,7 +116,7 @@
                             layer.msg('数据字典编码至少得1个字符',{icon:5});
                             return false;
                         }
-                        checkDicCodeIsExist(dicCode,layer,'');
+                    checkCodeIsExist('/sys-data-dic/isexist/',dicCode,layer,'');
                     }
                 );
                 form.on('select(pid)',function (data) {
@@ -136,7 +136,7 @@
                 form.on('submit(add)', function(data){
                     var mode=[[${mode}]];
 
-                    if("add"==mode && checkDicCodeIsExist($('#dicCode').val(),layer,'submit')) {
+                    if("add"==mode && checkCodeIsExist('/sys-data-dic/isexist/',$('#dicCode').val(),layer,'submit')) {
                         $.post('/sys-data-dic/add',data.field,function (r) {
                             layer.alert(r.msg, {
                                     icon : r.code == 'add_200' ? 6: 5

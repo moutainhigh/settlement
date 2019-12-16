@@ -24,8 +24,13 @@
                     <label  for="deptCode"  class="layui-form-label">
                         <span class="x-red">*</span>部门编号</label>
                     <div class="layui-input-inline">
-                        <input type="text" id="deptCode" name="deptCode" th:readonly="${mode.equals('update')}" th:value="${mode.equals('update')}?${sysDept.deptCode}:${sysDept.deptCode}" required="" lay-verify="deptCode" autocomplete="off" class="layui-input"></div>
+                        <input type="text" id="deptCode" name="deptCode" th:readonly="${mode.equals('update')}" th:value="${mode.equals('update')}?${sysDept.deptCode}:${sysDept.deptCode}" required="" lay-verify="deptCode" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-input-inline">
+                        <button type="button" id="deptCodeIsExist" th:if="${mode.equals('add')}" lay-filter="deptCodeIsExist" class="layui-btn layui-btn-primary layui-btn-xs">检查部门编号是否可用</button>
+                    </div>
                 </div>
+
                 <label for="deptName" class="layui-form-label">
                     <span class="x-red">*</span>部门名称</label>
                 <div class="layui-input-inline">
@@ -86,6 +91,7 @@
     </form>
 </div>
 <script th:src="@{/js/formSelects-v4.js}" type="text/javascript" charset="utf-8"></script>
+<script th:src="@{/js/common/common.js}" type="text/javascript" charset="utf-8"></script>
 <script th:inline="javascript">
 
 
@@ -139,10 +145,20 @@
                 }
             }
        });
+
+        $('#deptCodeIsExist').click(function () {
+                var deptCode = $('#deptCode').val();
+                if(deptCode.trim().length==0) {
+                    layer.msg('菜单编码至少得1个字符',{icon:5});
+                    return false;
+                }
+            checkCodeIsExist('/sys-dept/isexist/',deptCode,layer,'');
+            }
+        );
         //监听提交
         form.on('submit(add)', function(data){
             $("#roles")
-            if("add"==mode) {
+            if("add"==mode && checkCodeIsExist('/sys-dept/isexist/',$("#deptCode").val(),layer,'submit')) {
                 $.post('/sys-dept/add',data.field,function (r) {
                         var pid=$("#parentId").val();
                         if(r.code=='add_200') {

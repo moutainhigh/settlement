@@ -7,10 +7,15 @@ import com.settlement.entity.SysUser;
 import com.settlement.service.BaTimeParamService;
 import com.settlement.utils.Result;
 import com.settlement.bo.PageData;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * <p>
@@ -100,4 +105,28 @@ public class BaTimeParamController {
         return  baTimeParamService.isExist(code);
     }
 
+    /**
+     * 考勤时间点前
+     * @return
+     */
+    @GetMapping("/judge/workattendance/stoptime")
+    public Result judgeWorkattendanceStopTime() {
+        return baTimeParamService.judgeWorkattendanceStopTime();
+    }
+    /**
+     * 考勤完成时间点前
+     * @return
+     */
+    @GetMapping("/judge/workattendance/completetime")
+    public Result judgeWorkattendanceCompleteTime() {
+        return baTimeParamService.judgeWorkattendanceCompleteTime();
+    }
+    /**
+     * 考勤完成时间和考勤完成时间点之间
+     * @return
+     */
+    @GetMapping("/judge/workattendance/date")
+    public Result judgeWorkattendanceDate() {
+        return baTimeParamService.judgeWorkattendanceDate();
+    }
 }

@@ -249,6 +249,26 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
     }
 
     /**
+     *  检查菜单编码pCode是否存在
+     * @param dicCode
+     * @return
+     */
+    @Override
+    public Result pCodeIsExist(String dicCode) {
+        Result r = null;
+        QueryWrapper<SysPermission> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("p_code",dicCode);
+        queryWrapper.eq("del_flag",Const.DEL_FLAG_N);
+        Integer count = this.baseMapper.selectCount(queryWrapper);
+        if(count!=null && count>0) {
+            r = new Result(HttpResultEnum.PERMISSION_CODE_1.getCode(),HttpResultEnum.PERMISSION_CODE_1.getMessage());
+        } else {
+            r = new Result(HttpResultEnum.PERMISSION_CODE_0.getCode(),HttpResultEnum.PERMISSION_CODE_0.getMessage());
+        }
+        return r;
+    }
+
+    /**
      * 根据id获得SysPermissionVo
      * @param id
      * @return

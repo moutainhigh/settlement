@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+    
+    <head>
+        <th:bolck th:include="common/header :: header('添加用户')" />
+        <link rel="stylesheet" th:href="@{/css/formSelects-v4.css}" />
+    </head>
+    <body>
+        <div class="layui-fluid">
+            <div class="layui-row">
+                <form class="layui-form">
+                    <input type="hidden" id="id" name="id" th:value="${baApply.id}" th:if="${baApply!=null}?true" >
+                    <div class="layui-form-item">
+                        <div class="layui-form-item">
+                            <label for="updatePassword" class="layui-form-label">
+                                <span class="x-red">*</span>验证口令:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="updatePassword" name="updatePassword"  required="" lay-verify="updatePassword" autocomplete="off"  placeholder="请输入修改口令" class="layui-input" maxlength="20">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="add" class="layui-form-label"></label>
+                            <button class="layui-btn" id="add"  lay-filter="add" lay-submit="">验证口令</button>
+                        </div>
+                   </div>
+                </form>
+            </div>
+        </div>
+        <script type="text/javascript" th:inline="javascript">
+            // 表单操作
+            layui.use(['form', 'layer','jquery','laydate'],
+            function() {
+                $ = layui.jquery;
+                var form = layui.form,
+                layer = layui.layer,
+                 laydate = layui.laydate;
+
+                form.render();
+                //自定义验证规则
+                form.verify({
+                    updatePassword: function(value) {
+                        if (value.length < 1) {
+                            return '口令至少得1个字符啊';
+                        }
+                    }
+                });
+                //监听提交
+                form.on('submit(add)', function(data){
+                        $.post('/ba-apply/verify/passcode',data.field,function (r) {
+                            if(r.code=='verify_200'){
+                                xadmin.close();
+                                window.parent.xadmin.open('修改考勤信息',"/ba-work-attendance/apply/workattendancelist/"+r.data);
+                            } else {
+                                layer.msg('口令验证失败' ,{icon:5});
+                            }
+                        });
+                    return false;
+                });
+            });
+        </script>
+    </body>
+</html>

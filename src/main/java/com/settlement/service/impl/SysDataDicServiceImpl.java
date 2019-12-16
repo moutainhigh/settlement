@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.settlement.utils.Const;
 import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
+import com.settlement.vo.CheckStatusVo;
 import com.settlement.vo.SelectVo;
 import com.settlement.vo.SysDataDicListVo;
 import com.settlement.vo.SysDataDicVo;
@@ -325,5 +326,17 @@ public class SysDataDicServiceImpl extends ServiceImpl<SysDataDicMapper, SysData
 
         System.out.println(sysDataDicList);
         return  sysDataDicList;
+    }
+
+    /**
+     * 页面审核状态下拉列表
+     * @return
+     */
+    @Override
+    public List<SysDataDic> getCheckStatus() {
+        QueryWrapper<SysDataDic> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("pid",Const.CHECK_STATUS_PARENT_CODE);
+        List<SysDataDic> sysDataDicList = this.baseMapper.selectList(queryWrapper);
+        return sysDataDicList;
     }
 }

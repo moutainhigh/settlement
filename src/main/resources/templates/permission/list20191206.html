@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html class="x-admin-sm"  xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <th:bolck th:include="common/header :: header('用户管理')" />
+
+        <link rel="stylesheet" th:href="@{/lib/layui_ext/dtree/dtree.css}">
+        <link rel="stylesheet" th:href="@{/lib/layui_ext/dtree/font/dtreefont.css}">
+    </head>
+    <body>
+        <div class="x-nav">
+          <span class="layui-breadcrumb">
+            <a href="/home">首页</a>
+            <a href="">系统管理</a>
+            <a>
+              <cite>功能管理</cite></a>
+          </span>
+          <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
+            <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
+        </div>
+        <div class="layui-btn-container">
+            <input type="hidden" th:value="${mode}" id="mode"/>
+            <button type="button" id="add" class="layui-btn layui-btn-sm" lay-demo="getChecked">添加</button>
+            <button type="button" id="edit" class="layui-btn layui-btn-sm" lay-demo="setChecked">修改</button>
+            <button type="button" id="delete" class="layui-btn layui-btn-danger" lay-demo="reload">删除</button>
+        </div>
+
+
+        <div class="layui-card-body layui-table-body layui-table-main" >
+            <form class="layui-form">
+                <div class="layui-field-box">
+                    <div class="layui-row layui-col-space10" style="margin-top: 10px;">
+                        <div style="height: 100%;float:left;overflow: auto">
+                            <ul id="demoTree" class="dtree" data-id="0"></ul>
+                        </div>
+
+                        <div style="width:550px;height: 600px;margin-left:400px">
+                            <iframe th:src="@{/sys-permission/iframeContent}"  scrolling="no" id="iframe_content" name="iframe_content" frameborder="0" style="width: 100%;height: 100%;"></iframe>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+
+
+        <script th:inline="javascript">
+            layui.extend({
+                dtree: '/lib/layui_ext/dtree/dtree'
+            }).use(['dtree', 'layer','util'], function(){
+                var dtree = layui.dtree
+                    ,layer = layui.layer
+                    ,util = layui.util;
+
+                var dtree1 = dtree.render({
+                    elem: '#demoTree',
+                    //skin: "layui",
+                    useIframe: true,  //启用iframe
+                    iframeElem: "#iframe_content",  // iframe的ID
+                    iframeUrl: "/sys-permission/iframeContent", // iframe路由到的地址
+                    iframeLoad: "all", // 表示点击任意节点加载iframe
+                    iframeDefaultRequest: {nodeId: "id"}, // 这里就将nodeId这个参数名称改为了id这个名称
+                    iframeRequest : {"mode" : "update"},
+                    //request: {"mode": [[${mode}]]}, // url 这里就自定义了需要传递的参数
+                    //dataStyle: "layuiStyle",  //使用layui风格的数据格式
+                    dataFormat: "list",  //配置data的风格为list
+                    //response:{message:"msg",statusCode:0 ,title: "pName" },  //修改response中返回数据的定义 ,childName: "childrens"
+                    url: "/sys-permission/dtree/list/pagedata",
+                    initLevel: "2"
+                    ,done:function(res, $obj, first){
+                        //alert(first);
+                        if(first) {
+                            var id = 1;
+                           // $("#demoTree").find("div[dtree-click='itemNodeClick'][dtree-id='demoTree'][data-id='" + id + "']").click();
+                                //alert('3');
+                        } else {
+
+                        }
+                    }
+                });
+                // 点击按钮获取所有选中节点值
+                $("#add").click(function(){
+                   // alert([[${mode}]]);
+                    var param = dtree.getNowParam("demoTree"); // 获取当前选中节点
+                    var id=0;
+                    if(param.nodeId==null) {
+                        layer.msg('请选择要添加的根结点',{icon:5});
+                        return;
+                    } else {
+                        id=param.nodeId;
+                    }
+                    document.getElementById('iframe_content').src="/sys-permission/iframeContent?mode=add&id="+id;
+                })
+                // 点击按钮获取所有选中节点值
+                $("#edit").click(function(){
+                    var param = dtree.getNowParam("demoTree"); // 获取当前选中节点
+                    $.ajax({
+                            type: "get",
+                            url: "/sys-permission/iframeContent",
+                            data: {id: param.nodeId,mode:'edit'},
+                            dataType: "json",
+                            success: function (data) {
+
+                            }
+                        }
+                    );
+                })
+                // 点击按钮获取所有选中节点值
+                $("#delete").click(function(){
+                    var param = dtree.getNowParam("demoTree");
+                    // var parent=param.parent();
+                    // alert(parent.context);
+                    if(param.leaf==null) {
+                        layer.msg('请选择要删除的节点', {icon: 6});
+                        return ;
+                    }
+                    if(!param.leaf) {
+                        layer.msg('不是叶子节点不能删除', {icon: 6});
+                        return ;
+                    } else{
+                        layer.confirm('请确认要删除的数据:'+param.context, {icon: 3, title:'提示'}, function(index){
+
+                            $.ajax({
+                                type:"delete",
+                                url: "/sys-permission/"+param.nodeId,
+                                //data: {id: param.nodeId},
+                                //dataType: "json",
+                                success: function (r) {
+                                    if(r.code=='delete_200') {
+                                        layer.msg('删除成功', {icon: 6});
+                                        dtree.reload("demoTree", {
+                                            url: "/sys-permission/dtree/list/pagedata",
+                                            //request: {id:pid},
+                                            method: "post",
+                                            initLevel: "5"
+                                        });
+                                    } else {
+                                        layer.msg('删除失败', {icon: 6});
+                                    }
+                                }
+                            });
+
+                            layer.close(index);
+                        });
+                    }
+                    layer.msg("delete:"+JSON.stringify(params));
+                })
+                // 绑定图标的点击事件
+                dtree1.on("changeTree(demoTree)",function(obj) {
+                    if (obj.show) {
+                        // 调用内置函数，第二个参数为json数组，如果你不想访问默认的url，你可以自己使用ajax访问你的url，然后将data数据传入进来即可。
+                        dtree1.getChild($(obj.dom).parent("div"), [{"id": "001001", "title": "测试啦", "parentId": "0"}]);
+                    }
+                });
+
+            });
+
+        </script>
+
+        </body>
+</html>

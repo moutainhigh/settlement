@@ -9,7 +9,7 @@
             <a href="/home">首页</a>
             <a href="">考勤管理</a>
             <a>
-              <cite>考勤申请修改记录</cite></a>
+              <cite>审核考勤申请修改记录</cite></a>
           </span>
           <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
             <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
@@ -20,7 +20,7 @@
                     <div class="layui-card">
 
                         <div class="layui-card-header">
-                            <button type="button" id="apply" data-type="apply" class="layui-btn layui-btn-normal ">申请修改信息</button>
+                            <button type="button" id="apply" data-type="apply" class="layui-btn layui-btn-normal ">审核考勤申请修改信息</button>
                             <form style="display: inline;" onsubmit="return false">
                                 <div class="layui-inline" style="margin-left:80px;">
                                     <div class="layui-inline layui-show-xs-block">
@@ -29,7 +29,6 @@
                                     <div class="layui-inline layui-show-xs-block">
                                         <select id="checkStatus" name="checkStatus" style="width: 100px;height: 30px;">
                                             <option value="">请选择</option>
-                                            <option th:each="status:${checkStatusList}" th:value="${status.dicCode}" th:text="${status.dicContent}"></option>
                                         </select>
                                      </div>
                                     <div class="layui-inline layui-show-xs-block">
@@ -56,6 +55,12 @@
     <script type="text/html" id="idselect">
         <input type="checkbox" name="id" value="{{d.id}}"  lay-filter="idselect">
     </script>
+    <script type="text/html" id="toolBarHead">
+        <button type="button" id="commmit" data-type="commmit" class="layui-btn layui-btn-normal "  lay-demo="reload">提交</button>
+    </script>
+    <script type="text/html" id="toolBar">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    </script>
     <script type="text/javascript"  th:inline="none">
       layui.use(['laydate','table','form','element'], function(){
         var laydate = layui.laydate;
@@ -70,21 +75,23 @@
         // var $ = layui.jquery;
         table.render({
            elem: '#dataTable',
-           url: '/ba-apply/pagedata',
+           url: '/ba-apply-workattendance/pagedata',
            // toolbar: '',
            page: true,
            title: '导出参数',
            height: 'full-210',
+            toolbar: '#toolBarHead',
            // id: 'userData',
            cols: [[
                {field:'id',type:'checkbox',fixed:'left'},
-               {field:'applyTypeContent',title:'修改类型',align:'center',fixed:'left'},
-               {field:'applyRemark',title:'申请备注',align:'center'},
+               {field:'applyUserContent',title:'申请人 ',align:'center'},
+               {field:'applyTypeContent',title:'类型',align:'center',fixed:'left'},
+               {field:'applyRemark',title:'描述',align:'center'},
                {field:'checkStatus',title:'',align:'center',hide:true},
                {field:'checkStatusContent',title:'审核状态',align:'center'},
-               {field:'checkUserContent',title:'审核人',align:'center'},
                {field:'applyTime',title:'申请时间',align:'center'},
-               {field:'checkTime',title:'审核时间',align:'center'},
+               {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:60}
+
            ]]
         });
 
