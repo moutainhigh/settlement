@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:bolck th:include="common/header :: header('项目组审核')" />
+    <style>
+        .layui-table tbody tr:hover {background-color: #ffffff;}
+    </style>
+</head>
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>审核说明：项目组只有在审核通过后，才能后续操作；审核通过需要指定项目组所属客户；审核未通过，必须填写备注；
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-form-text">
+                <label  class="layui-form-label">项目组信息</label>
+                <div class="layui-input-block">
+                    <table class="layui-table">
+                        <tbody>
+                            <tr>
+                                <td style="text-align:right;">项目组</td>
+                                <td style="text-align:center;" th:text="${projectGroupCheckVo.pgName}"></td>
+                                <td style="text-align:right;">项目组编号</td>
+                                <td style="text-align:center;" th:text="${projectGroupCheckVo.code}"></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right;">项目组创建人</td>
+                                <td style="text-align:center;" th:text="${projectGroupCheckVo.pgCreateUser}"></td>
+                                <td style="text-align:right;">申请时间</td>
+                                <td style="text-align:center;" th:text="${#dates.format(projectGroupCheckVo.applyTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-form-text">
+                <label  class="layui-form-label">审核信息</label>
+                <div class="layui-input-block">
+                    <table class="layui-table">
+                        <tbody>
+                            <tr>
+                                <td width="23%" style="text-align:right;"><span class="x-red">*</span>审核结果</td>
+                                <td colspan="3">
+                                    <input  name="checkResult" type="radio" th:each="cs:${checkStatusList}" th:value="${cs.dicCode}" th:title="${cs.dicContent}" lay-verify="checkResult" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="23%" style="text-align:right;">备注</td>
+                                <td colspan="3">
+                                    <input type="text" id="remark" name="remark" lay-verify="remark" autocomplete="off"  placeholder="请输入备注" class="layui-input" maxlength="100">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="23%" style="text-align:right;"><span class="x-red"></span>客户</td>
+                                <td colspan="3">
+                                    <select name="customerId" lay-filter="customerId" lay-verify="customerId">
+                                        <option value="">请选择客户</option>
+                                        <option th:each="customer:${customerList}" th:value="${customer.id}" th:text="${customer.customerName}"></option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="layui-form-item">
+                <label class="layui-form-label"></label>
+                <input type="hidden" name="id" th:value="${projectGroupCheckVo.id}">
+                <input type="hidden" name="pgId" th:value="${projectGroupCheckVo.pgId}">
+                <button class="layui-btn" id="confirm" lay-filter="confirm" lay-submit="confirm">确定</button>
+                <button class="layui-btn layui-btn-primary" id="close" lay-filter="close" type="reset">重置</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script th:src="@{/js/common/common.js}" type="text/javascript" charset="utf-8"></script>
+<script th:src="@{/js/pgcheck/check.js}" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript"  th:inline="javascript">
+    var checkResultPass = [[ ${CHECK_RESULT_PASS} ]];
+    var checkResultNoPass = [[ ${CHECK_RESULT_NOPASS} ]];
+    layui.use(['form', 'layer'],
+    function() {
+        $ = layui.jquery;
+        var form = layui.form,
+            layer = layui.layer;
+
+        //自定义验证规则
+        form.verify({
+            checkResult: function() {
+                var value = $("input[name='checkResult']:checked").val();
+                if (value == null || value == '' || value == 'undefined') {
+                    return '审核结果必须选择一个啊';
+                }
+            }
+        });
+
+        //监听提交
+        form.on('submit(confirm)',
+            function(data) {
+                console.log(data);
+                var retObject = checkResultVerify(data.field,checkResultPass,checkResultNoPass,layer);
+                if (retObject.flag) {
+                   defined(data, layer, '/ba-project-group-check');
+                }
+                //发异步，把数据提交给php
+               /* layer.alert("增加成功", {
+                        icon: 6
+                    },
+                    function() {
+                        // 获得frame索引
+                        var index = parent.layer.getFrameIndex(window.name);
+                        //关闭当前frame
+                        parent.layer.close(index);
+                    });*/
+                return false;
+            });
+    });
+
+</script>
+
+</body>
+
+</html>

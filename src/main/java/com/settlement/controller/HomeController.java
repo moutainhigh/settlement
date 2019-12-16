@@ -63,6 +63,8 @@ public class HomeController {
     private BaApplyService baApplyService;
     @Autowired
     private BaEmployeeService baEmployeeService;
+    @Autowired
+    private BaProjectGroupCheckService baProjectGroupCheckService;
 
     @GetMapping({"/","/login"})
     public String toLogin() {
@@ -485,7 +487,7 @@ public class HomeController {
      * @param pgId
      * @return
      */
-    @GetMapping("/ba-project-employee/enter-emp/{pgId}")
+    @GetMapping("/ba-employee/enter-emp/{pgId}")
     public String toEnterEmployPage(@PathVariable  Integer pgId, Model model) {
         model.addAttribute("pgId", pgId);
         return "emp/enter";
@@ -500,7 +502,7 @@ public class HomeController {
      * @param model
      * @return
      */
-    @GetMapping("/ba-project-employee/add/{pgId}")
+    @GetMapping("/ba-employee/add/{pgId}")
     public String toAddEmployeePage(@PathVariable Integer pgId, Model model) {
         // 级别填写模式
         // model.addAttribute("levelTypeSelect", this.sysDataDicService.getDataDicSelectByParentCode(Const.LEVEL_TYPE_PARENT_CODE));
@@ -522,7 +524,7 @@ public class HomeController {
      * @param model
      * @return
      */
-    @GetMapping("/ba-project-employee/edit/{id}/{pgId}")
+    @GetMapping("/ba-employee/edit/{id}/{pgId}")
     public String toEditEmployee(@PathVariable Integer id, @PathVariable Integer pgId, Model model) {
         model.addAttribute("levelPriceList", this.baLevelPriceService.getLevelPriceByPgId(pgId));
         // 单位
@@ -539,7 +541,7 @@ public class HomeController {
      * @param id
      * @return
      */
-    @GetMapping("ba-project-employee/view/{id}")
+    @GetMapping("ba-employee/view/{id}")
     public String toViewImg(@PathVariable Integer id, Model model) {
         model.addAttribute("imgSrc", this.baEmployeeService.getProjectEmpById(id).getRateEmailFilename());
         return "emp/view";
@@ -700,6 +702,41 @@ public class HomeController {
     @GetMapping("/ba-project-group-check/list")
     public String toPgCheckList() {
         return "pgcheck/list";
+    }
+
+    /**
+     * 项目组审核页
+     *
+     * @auth admin
+     * @date 2019-12-12
+     * @param id
+     * @return
+     */
+    @GetMapping("/ba-project-group-check/check/{id}")
+    public String pgCheckPage(@PathVariable Integer id, Model model) {
+        model.addAttribute("projectGroupCheckVo", this.baProjectGroupCheckService.getPgCheckById(id));
+        model.addAttribute("checkStatusList",this.sysDataDicService.getDataDicSelectByParentCode(Const.CHECK_RESULT_CODE));
+        SysUser user = (SysUser)SecurityUtils.getSubject().getPrincipal();
+        model.addAttribute("customerList", this.baCustomerService.getCustomerByDeptId(user.getDeptId()));
+        return "pgcheck/check";
+    }
+
+    /**
+     * @dedscription 项目组审核：详情
+     *
+     * @auth admin
+     * @date 2019-12-13
+     * @param id
+     * @param model
+     * @return
+     */
+    @GetMapping("/ba-project-group-check/{id}")
+    public String pgCheckDetail(@PathVariable(value="id") Integer id, Model model) {
+        ProjectGroupCheckVo pgcv = this.baProjectGroupCheckService.getPgCheckById(id);
+        BaProjectGroup bpg = this.baProjectGroupService.getById(pgcv.getPgId());
+        model.addAttribute("projectGroupCheckVo", pgcv);
+        model.addAttribute("customer",bpg.getCustomerId() == null ? "" : this.baCustomerService.getById(bpg.getCustomerId()));
+        return "pgcheck/detail";
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

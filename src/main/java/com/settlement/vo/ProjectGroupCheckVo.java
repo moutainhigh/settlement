@@ -20,4 +20,12 @@ public class ProjectGroupCheckVo extends BaProjectGroupCheck {
 
     private String checkUser;
 
+    private String pgName;
+
+    private String code;
+
+    private String checkResult;
+
+    private Integer customerId;
+
 }

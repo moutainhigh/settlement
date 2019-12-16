@@ -35,7 +35,7 @@ public class BaEmployeeController {
      * @param employeeCo
      * @return
      */
-    @GetMapping("/ba-project-employee/pagedata")
+    @GetMapping("/ba-employee/pagedata")
     public PageData getNoSubmitPageData(EmployeeCo employeeCo) {
         return this.baEmployeeService.getNoSubmitEmployee(employeeCo);
     }
@@ -48,7 +48,7 @@ public class BaEmployeeController {
      * @param code
      * @return
      */
-    @GetMapping("/ba-project-employee/isexist/{code}")
+    @GetMapping("/ba-employee/isexist/{code}")
     public Result checkEmpCodeIsExist(@PathVariable(value="code") String code) {
         return this.baEmployeeService.checkEmpCodeIsExist(code);
     }
@@ -61,16 +61,17 @@ public class BaEmployeeController {
      * @param employeeVo
      * @return
      */
-    @PostMapping("/ba-project-employee/add")
+    @PostMapping("/ba-employee/add")
     public Result addProjectEmployee(EmployeeVo employeeVo) {
         SysUser user = (SysUser) SecurityUtils.getSubject().getPrincipal();
         Date d = new Date();
         employeeVo.setCreateTime(d);
         employeeVo.setCreateUserId(user.getId());
         employeeVo.setUpdateTime(d);
+        employeeVo.setJobStatus(Const.JOB_STATUS_O);
         // employeeVo.setSubStatus(Const.EMP_SUBMIT_STATUS_N);
         employeeVo.setDelFlag(Const.DEL_FLAG_N);
-        return this.baEmployeeService.insertProjectEmp(employeeVo);
+        return this.baEmployeeService.insertProjectEmp(employeeVo, Const.EMP_SUBMIT_STATUS_N);
     }
 
     /**
@@ -81,29 +82,18 @@ public class BaEmployeeController {
      * @param employeeVo
      * @return
      */
-    @PostMapping("/ba-project-employee/addsubmit")
+    @PostMapping("/ba-employee/addsubmit")
     public Result addAndSubmitProjectEmployee(EmployeeVo employeeVo) {
         SysUser user = (SysUser) SecurityUtils.getSubject().getPrincipal();
         Date d = new Date();
         employeeVo.setCreateTime(d);
         employeeVo.setCreateUserId(user.getId());
         employeeVo.setUpdateTime(d);
+        employeeVo.setJobStatus(Const.JOB_STATUS_O);
+        employeeVo.setEntranceStatus(Const.ENTRANCE_STATUS_I);
        // employeeVo.setSubStatus(Const.EMP_SUBMIT_STATUS_S);
         employeeVo.setDelFlag(Const.DEL_FLAG_N);
-        return this.baEmployeeService.insertProjectEmp(employeeVo);
-    }
-
-    /**
-     * @description 提交
-     *
-     * @auth admin
-     * @date 2019-12-7
-     * @param ids
-     * @return
-     */
-    @PostMapping("/ba-project-employee/sub")
-    public Result submitProjectEmp(String ids) {
-        return this.baEmployeeService.updateEmpSubByBatchId(ids);
+        return this.baEmployeeService.insertProjectEmp(employeeVo, Const.EMP_SUBMIT_STATUS_S);
     }
 
     /**
@@ -114,7 +104,7 @@ public class BaEmployeeController {
      * @param id
      * @return
      */
-    @DeleteMapping("/ba-project-employee/del/{id}")
+    @DeleteMapping("/ba-employee/del/{id}")
     public Result deleteProjectEmp(@PathVariable Integer id) {
         return this.baEmployeeService.deleteProjectEmp(id);
     }
@@ -127,11 +117,11 @@ public class BaEmployeeController {
      * @param employeeVo
      * @return
      */
-    @PutMapping("/ba-project-employee/edit")
+    @PutMapping("/ba-employee/edit")
     public Result editProjectEmp(EmployeeVo employeeVo) {
         employeeVo.setUpdateTime(new Date());
         // employeeVo.setSubStatus(Const.EMP_SUBMIT_STATUS_N);
-        return this.baEmployeeService.updateProjectEmp(employeeVo);
+        return this.baEmployeeService.updateProjectEmp(employeeVo, null);
     }
 
     /**
@@ -142,10 +132,10 @@ public class BaEmployeeController {
      * @param employeeVo
      * @return
      */
-    @PutMapping("/ba-project-employee/editsubmit")
+    @PutMapping("/ba-employee/editsubmit")
     public Result editSubmitProjectEmp(EmployeeVo employeeVo) {
         employeeVo.setUpdateTime(new Date());
         // employeeVo.setSubStatus(Const.EMP_SUBMIT_STATUS_S);
-        return this.baEmployeeService.updateProjectEmp(employeeVo);
+        return this.baEmployeeService.updateProjectEmp(employeeVo, Const.EMP_SUBMIT_STATUS_S);
     }
 }

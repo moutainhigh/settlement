@@ -133,6 +133,16 @@ public class BaEmployee extends Model<BaEmployee> {
     private String rateEmailFilename;
 
     /**
+     * 在职、离职状态
+     */
+    private String jobStatus;
+
+    /**
+     * 入场、离场状态
+     */
+    private String entranceStatus;
+
+    /**
      * 创建人
      */
     private Integer createUserId;

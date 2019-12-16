@@ -28,4 +28,19 @@
             and pga.assistant_id=#{userId}
 
     </select>
+
+    <!-- 根据部门ID取得客户 -->
+    <select id="getBaCustomerByDeptId" parameterType="java.util.Map" resultType="com.settlement.vo.BaCustomerVo">
+        SELECT
+         bc.id,
+         bc.`code`,
+         bc.customer_name
+        FROM
+         ba_customer bc,
+         ba_dept_customer bdc
+        WHERE
+         bc.id = bdc.customer_id
+         and bc.enabled = #{enabled}
+         and bdc.dept_id = #{deptId}
+    </select>
 </mapper>

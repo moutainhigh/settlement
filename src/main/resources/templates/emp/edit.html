@@ -365,9 +365,9 @@
                 //监听修改
                 form.on('submit(saveButton)',
                     function(data) {
-                        edit(data,layer,'/ba-project-employee/edit');
+                        edit(data,layer,'/ba-employee/edit');
                         // if (checkEmpCodeIsExist($("#code").val(),layer,'submit')) {
-                            /*$.post('/ba-project-employee/edit',data.field, function(r) {
+                            /*$.post('/ba-employee/edit',data.field, function(r) {
                                 layer.alert(r.msg, {
                                         icon : r.code == 'edit_200' ? 6: 5
                                     },
@@ -386,9 +386,9 @@
                 form.on('submit(submitButton)',
                 function(data) {
                     layer.confirm('确认提交么?提交后员工信息将参与考勤、结算，编辑需要申请', function(index) {
-                        edit(data,layer, '/ba-project-employee/editsubmit');
+                        edit(data,layer, '/ba-employee/editsubmit');
                       //  if (checkEmpCodeIsExist($("#code").val(), layer, 'submit')) {
-                           /* $.post('/ba-project-employee/editsubmit', data.field, function (r) {
+                           /* $.post('/ba-employee/editsubmit', data.field, function (r) {
                                 layer.alert(r.msg, {
                                         icon: r.code == 'edit_200' ? 6 : 5
                                     },
