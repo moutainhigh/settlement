@@ -387,14 +387,26 @@ public class HomeController {
      */
     @GetMapping("/ba-time-param/toAddorUpdate/{mode}/{id}")
     public String toTimeParamAddOrUpdate(@PathVariable String mode,@PathVariable(required = false) Integer id,Model model) {
+        //时间点类型
+        List<SysDataDicVo> sysDataDicVos =sysDataDicService.getDataDicSelectByParentCode(Const.TIME_PARAM_PARENT);
+        model.addAttribute("sysDataDicVos",sysDataDicVos);
+        List<BaCustomer> baCustomers = baCustomerService.list();
         if(Const.MODE_ADD.equals(mode)) {
+            BaTimeParamVo baTimeParam = new BaTimeParamVo();
+            baTimeParam.setType(Const.TIME_PRAMA_STOP);
+            model.addAttribute("baTimeParam",baTimeParam);
             model.addAttribute("mode",Const.MODE_ADD);
         } else if(Const.MODE_UPDADTE.equals(mode)){
-            BaTimeParam baTimeParam = baTimeParamService.getById(id);
+            BaTimeParamVo baTimeParam = baTimeParamService.getTimeParamVoById(id);
+
+            List<BaProjectGroup> baProjectGroups = (List<BaProjectGroup>)baProjectGroupService.getGroupsByCustomerId(baTimeParam.getCustomerId()).getData();
             model.addAttribute("baTimeParam",baTimeParam);
+            model.addAttribute("baProjectGroups",baProjectGroups);
             model.addAttribute("mode",Const.MODE_UPDADTE);
         }
+        model.addAttribute("baCustomers",baCustomers);
         return "timeparam/add";
+
     }
 
     /**
@@ -471,8 +483,11 @@ public class HomeController {
             BaCustomerVo baCustomerVo = new BaCustomerVo();
             model.addAttribute("baCustomer",baCustomerVo);
         } else if(Const.MODE_UPDADTE.equals(mode)){
+            SysDept sysDept = sysDeptService.getDeptByCustomerId(id);
+            List<SysDeptRoleUserVo> chiefs = (List<SysDeptRoleUserVo>)sysDeptService.getDeptRoleUsers(sysDept.getId()).getData();
             BaCustomerVo baCustomerVo = baCustomerService.getBaCustomerVoById(id);
             model.addAttribute("baCustomer",baCustomerVo);
+            model.addAttribute("chiefs",chiefs);
             model.addAttribute("mode",Const.MODE_UPDADTE);
         }
         return "customer/add";
@@ -569,7 +584,7 @@ public class HomeController {
             model.addAttribute("baContract",baContract);
         } else if(Const.MODE_UPDADTE.equals(mode)){
             BaContractVo baContractVo = baContractService.getBaContractVoById(id);
-            List<BaProjectGroup> baProjectGroups = baProjectGroupService.getGroupsByCustomerId(baContractVo.getCustomerId());
+            List<BaProjectGroup> baProjectGroups =(List<BaProjectGroup>) baProjectGroupService.getGroupsByCustomerId(baContractVo.getCustomerId()).getData();
             model.addAttribute("baProjectGroups",baProjectGroups);
             model.addAttribute("baContract",baContractVo);
             model.addAttribute("mode",Const.MODE_UPDADTE);
@@ -593,18 +608,19 @@ public class HomeController {
      * @return
      */
     @GetMapping("/ba-work-attendance/attendlist")
-    public String toAttendList(@RequestParam(required = false) Integer projectId,Model model){
+    public String toAttendList(Integer projectId,Model model){
 
         if(projectId!=null) {
             BaProjectGroup baProjectGroup = baProjectGroupService.getById(projectId);
             BaProjectGroupAssistant baProjectGroupAssistant = baProjectGroupAssistantService.getBaProjectGroupAssistantByGroupId(projectId);
             model.addAttribute("checkUserId", baProjectGroupAssistant.getAssistantId());
+            model.addAttribute("projectId", projectId);
         }
         List<String> years = baTimeParamService.getTimeYearValue();
         List<String> months = baTimeParamService.getTimeMonthValue();
 
-        String stopTime =baTimeParamService.getStopTimeParam();
-        String compelteTime = baTimeParamService.getCompleteParam();
+        String stopTime =baTimeParamService.getStopTimeParam(projectId);
+        String compelteTime = baTimeParamService.getCompleteParam(projectId);
 
         model.addAttribute("years",years);
         model.addAttribute("months",months);

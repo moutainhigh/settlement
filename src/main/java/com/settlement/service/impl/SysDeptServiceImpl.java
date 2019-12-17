@@ -11,6 +11,7 @@ import com.settlement.utils.Const;
 import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
 import com.settlement.vo.SelectVo;
+import com.settlement.vo.SysDeptRoleUserVo;
 import com.settlement.vo.SysDeptVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -342,5 +343,35 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         SysDeptVo sysDeptVo = this.baseMapper.getRootSysDeptVoById(map);
         sysDeptVo.setParentContent("结算系统");
         return  sysDeptVo;
+    }
+
+    /**
+     * 根据部门id下的角色获得用户
+     * @param deptId
+     * @return
+     */
+    @Override
+    public Result getDeptRoleUsers(Integer deptId){
+        Map<String,Object> map = new HashMap<>();
+        map.put("deptId",deptId);
+        map.put("roleId",Const.ROLE_CODE_AM);
+        Result r = new Result(HttpResultEnum.CODE_1.getCode(),HttpResultEnum.CODE_1.getMessage());
+        List<SysDeptRoleUserVo> sysDeptRoleUserVos = this.baseMapper.getDeptRoleUsers(deptId);
+        if(sysDeptRoleUserVos!=null) {
+            r.setCode(HttpResultEnum.CODE_0.getCode());
+            r.setMsg(HttpResultEnum.CODE_0.getMessage());
+            r.setData(sysDeptRoleUserVos);
+        }
+        return r;
+    }
+
+    /**
+     * 根据客户id获得所在的部门
+     * @param customerId
+     * @return
+     */
+    @Override
+    public SysDept getDeptByCustomerId(Integer customerId) {
+        return this.baseMapper.getDeptByCustomerId(customerId);
     }
 }

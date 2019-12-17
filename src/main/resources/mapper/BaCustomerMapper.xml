@@ -13,6 +13,17 @@
         <result column="create_time" property="createTime" />
         <result column="del_flag" property="delFlag" />
     </resultMap>
+    <!--客户列表-->
+    <select id="listPageData" parameterType="com.settlement.co.CustomerCo" resultType="com.settlement.vo.BaCustomerVo">
+        select c.*
+        ,u.real_name as chiefName
+        from ba_customer c
+        left join sys_user u on c.chief=u.id
+        where c.enabled=#{customerCo.enabled}
+        <if test="customerCo.keyword!=null">
+            and c.customer_name like CONCAT('%',#{customerCo.keyword},'%')
+        </if>
+    </select>
     <!--根据用户id查询当前的客户信息和项目组-->
     <select id="getCustomerAndProjectByUserId" parameterType="java.util.Map" resultType="com.settlement.vo.BaCustomerAndProjectVo">
         select
@@ -25,7 +36,9 @@
             left join ba_project_group pg on c.id = pg.customer_id
             left join ba_project_group_assistant pga on pga.pg_id = pg.id
             where pg.enabled=#{enabled}
-            and pga.assistant_id=#{userId}
+            <if test="{userId!=null}">
+                 and pga.assistant_id=#{userId}
+            </if>
 
     </select>
 </mapper>

@@ -2,10 +2,12 @@ package com.settlement.mapper;
 
 import com.settlement.entity.SysDept;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.settlement.vo.SysDeptRoleUserVo;
 import com.settlement.vo.SysDeptVo;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,4 +25,8 @@ public interface SysDeptMapper extends BaseMapper<SysDept> {
     /**根据id获得SysPermissionVo根结点信息**/
     @Select("select * from sys_dept where dept_code=#{rootCode} and del_flag=#{delFlag} and enabled=#{enabled}")
     SysDeptVo getRootSysDeptVoById(Map<String,Object> map);
+    /**根据部门id下的角色获得用户**/
+    List<SysDeptRoleUserVo> getDeptRoleUsers(Integer deptId);
+    /**根据客户id获得所在的部门**/
+    SysDept getDeptByCustomerId(Integer customerId);
 }

@@ -12,4 +12,5 @@ import lombok.Data;
 @Data
 public class BaCustomerVo extends BaCustomer {
     private Integer deptId;
+    private String chiefName;
 }

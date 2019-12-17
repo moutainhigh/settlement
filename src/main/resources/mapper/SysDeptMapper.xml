@@ -27,4 +27,31 @@
 
     </select>
 
+    <!--根据部门id下的角色获得用户-->
+    <select id="getDeptRoleUsers" parameterType="java.util.Map" resultType="com.settlement.vo.SysDeptRoleUserVo">
+
+        select
+            d.id as deptId
+            ,d.dept_name
+            ,u.id as userId
+            ,u.real_name as userRealName
+            ,r.id as roleId
+            ,r.role_cn_name as roleCnName
+        from sys_dept d
+        left join sys_dept_role dr on d.id = dr.dept_id
+        left join sys_role r on dr.role_id = r.id
+        left join sys_user u on u.dept_id = d.id
+        where 1=1
+        and r.id=#{userId}
+        and d.id=#{deptId}
+
+    </select>
+    <!--根据客户id获得所在的部门-->
+    <select id="getDeptByCustomerId" parameterType="java.util.Map" resultType="com.settlement.entity.SysDept">
+        select
+             *
+        from sys_dept d
+        left join ba_dept_customer dc on d.id = dc.dept_id
+        where dc.customer_id=#{customerId}
+    </select>
 </mapper>

@@ -13,15 +13,7 @@
                 <form class="layui-form">
                     <input type="hidden" name="id" th:value="${baCustomer.id}" th:if="${baCustomer!=null}" />
                     <div class="layui-form-item">
-                        <div class="layui-form-item">
-                            <label for="deptId" class="layui-form-label">
-                                <span class="x-red">*</span>部门名称</label>
-                            <div class="layui-input-inline">
-<!--                                <ul id="deptId2" class="dtree" data-id="0" ></ul>-->
-                                <select id="deptId" name="deptId" xm-select-radio xm-select="deptSelect" lay-filter="deptId" xm-select-max="1" lay-verify="deptId">
-                                </select>
-                            </div>
-                        </div>
+
                         <div class="layui-form-item">
                             <label for="customerName" class="layui-form-label">
                                 <span class="x-red">*</span>客户名称</label>
@@ -37,10 +29,23 @@
                             </div>
                         </div>
                         <div class="layui-form-item">
-                            <label for="chief" class="layui-form-label">
-                                <span class="x-red">*</span>负责人</label>
+                            <label for="deptId" class="layui-form-label">
+                                <span class="x-red">*</span>部门名称</label>
                             <div class="layui-input-inline">
-                                <input type="text" id="chief" name="chief" th:value="${mode.equals('update')}?${baCustomer.chief}"  required="" lay-verify="chief" autocomplete="off" placeholder="请输入负责人" class="layui-input" maxlength="20">
+                                <!--                                <ul id="deptId2" class="dtree" data-id="0" ></ul>-->
+                                <select id="deptId" name="deptId" xm-select-radio xm-select="deptSelect" placeholder="请选择部门" lay-filter="deptId" xm-select-max="1" lay-verify="deptId">
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label for="chief" class="layui-form-label">
+                                <span class="x-red">*</span>部门负责人</label>
+                            <div class="layui-input-inline">
+                                <select id="chief" name="chief" lay-filter="chief" lay-verify="chief" th:field="*{baCustomer.chief}">
+                                    <option value="0">请选择部门负责人</option>
+                                    <option th:if="${mode.equals('update')}"  th:each="user:${chiefs}" th:value="${user.userId}" th:text="${user.userRealName}" />
+                                </select>
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -100,7 +105,31 @@
                         }
                     }
                 });
-
+                //根据选择的客户加载项目
+                //form.on('select(deptId)',function(data){
+                $('#deptId').change(function(){
+                    alert('deptId');
+                    var deptId =1;// data.value;
+                    $.ajax({
+                        type:'put',
+                        url:'/ba-dept/role/users/'+deptId,
+                        success:function(r){
+                            if(r.code=='0') {
+                                var users = r.data;
+                                var chief=$("#chief").empty();
+                                for(var i=0;i<users.length;i++) {
+                                    chief.append("<option value='"+users[i].userId+"'>"+users[i].userRealName+"</option>");
+                                }
+                                form.render();
+                            } else {
+                                layer.msg('负责人据加载失败',{icon:5});
+                            }
+                        }
+                        ,error:function(r) {
+                            layer.msg('负责人数据加载失败',{icon:5});
+                        }
+                    })
+                });
                 //监听提交
                 form.on('submit(add)', function(data){
 

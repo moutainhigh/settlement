@@ -53,12 +53,10 @@ public class BaCustomerServiceImpl extends ServiceImpl<BaCustomerMapper, BaCusto
      */
     @Override
     public PageData listPageData(CustomerCo customerCo) {
-        Page<BaCustomer> page = new Page<>(customerCo.getPage(),customerCo.getLimit());
-        QueryWrapper<BaCustomer> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("del_flag", Const.DEL_FLAG_N);
-        queryWrapper.like(StringUtils.isNotBlank(customerCo.getKeyword()),"param_name",customerCo.getKeyword());
-        this.baseMapper.selectPage(page,queryWrapper);
-
+        customerCo.setDelFlag(Const.DEL_FLAG_N);
+        customerCo.setEnabled(Const.ENABLED_Y);
+        Page<BaCustomerVo> page = new Page<>(customerCo.getPage(),customerCo.getLimit());
+        page.setRecords(this.baseMapper.listPageData(customerCo,page));
         return new PageData(page.getTotal(),page.getRecords());
     }
 

@@ -66,11 +66,12 @@ public class Const {
     public final static String UNIT_PARENT_CODE = "UNIT";
     /** 上传图片存放实际路径 */
     public final static String IMG_UPLOAD_PATH = "file:F:/MyProjectName/";
-
+    /**结算时间点参数 时间点**/
+    public static final String TIME_PARAM_PARENT = "TIME_PARAM";
     /**结算时间点参数 结算时间点**/
-    public final static String TIME_PRAMA_STOP="B_T_STOP";
+    public final static String TIME_PRAMA_STOP="TIME_STOP";
     /**结算时间点参数 结算完成时间点**/
-    public final static String TIME_PRAMA_COMPELETE="B_T_COMPLETE";
+    public final static String TIME_PRAMA_COMPELETE="TIME_COMPLETE";
 
     /** 项目提交状态S：已提交 */
     public final static String PRO_SUBMIT_STATUS_S = "S";

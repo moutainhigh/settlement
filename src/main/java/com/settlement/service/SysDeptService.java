@@ -3,6 +3,7 @@ package com.settlement.service;
 import com.settlement.entity.SysDept;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.settlement.utils.Result;
+import com.settlement.vo.SysDeptRoleUserVo;
 import com.settlement.vo.SysDeptVo;
 import io.swagger.models.auth.In;
 
@@ -37,4 +38,8 @@ public interface SysDeptService extends IService<SysDept> {
     SysDeptVo getSysDeptVoById(Integer id);
     /**根据id获得SysPermissionVo根结点信息**/
     SysDeptVo getRootSysDeptVoById(String rootCode);
+    /**根据部门id下的角色获得用户**/
+    Result getDeptRoleUsers(Integer deptId);
+    /**根据客户id获得所在的部门**/
+    SysDept getDeptByCustomerId(Integer customerId);
 }

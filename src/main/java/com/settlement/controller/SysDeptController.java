@@ -123,4 +123,13 @@ public class SysDeptController {
         return sysDeptService.updateEnableStop(id);
     }
 
+    /**
+     * 根据部门id下的角色获得用户
+     * @param deptId
+     * @return
+     */
+    @GetMapping("/role/users/{deptId}")
+    public Result getDeptRoleUsers(@PathVariable Integer deptId){
+        return sysDeptService.getDeptRoleUsers(deptId);
+    }
 }
