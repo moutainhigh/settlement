@@ -5,6 +5,7 @@ import com.settlement.co.TimeParamCo;
 import com.settlement.entity.BaTimeParam;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.settlement.utils.Result;
+import com.settlement.vo.BaTimeParamVo;
 
 import java.util.List;
 import java.util.Map;
@@ -21,9 +22,9 @@ public interface BaTimeParamService extends IService<BaTimeParam> {
     /**加载列表**/
     PageData listPageData(TimeParamCo timeParamCo);
     /**添加 **/
-    Result addTimeParam(BaTimeParam baTimeParam);
+    Result addTimeParam(BaTimeParamVo baTimeParamVo);
     /**修改**/
-    Result updateTimeParam(BaTimeParam baTimeParam);
+    Result updateTimeParam(BaTimeParamVo baTimeParamVo);
     /**删除 **/
     Result deleteTimeParam(Integer id);
     /**启用状态 **/
@@ -36,14 +37,16 @@ public interface BaTimeParamService extends IService<BaTimeParam> {
     List<String> getTimeYearValue();
     /**获得当前年份上个月和当前月份**/
     List<String> getTimeMonthValue();
-    /**获得结算考勤时间停止点**/
-    String getStopTimeParam();
-    /**获得结算考勤时间完成点**/
-    String getCompleteParam();
+    /** projectId获得结算考勤时间停止点**/
+    String getStopTimeParam(Integer projectId);
+    /**projectId 获得结算考勤时间完成点**/
+    String getCompleteParam(Integer projectId);
     /**考勤结算时间点开始-完成区间**/
-    Result judgeWorkattendanceDate();
+    Result judgeWorkattendanceDate(Integer projectId);
     /**考勤结算完成时间点**/
-    Result judgeWorkattendanceCompleteTime();
+    Result judgeWorkattendanceCompleteTime(Integer projectId);
     /**考勤结算时间点**/
-    Result judgeWorkattendanceStopTime();
+    Result judgeWorkattendanceStopTime(Integer projectId);
+    /**根据id 获得BaTimeParamVo**/
+    BaTimeParamVo getTimeParamVoById(Integer id);
 }

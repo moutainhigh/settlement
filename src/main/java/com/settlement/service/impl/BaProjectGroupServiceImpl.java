@@ -226,10 +226,16 @@ public class BaProjectGroupServiceImpl extends ServiceImpl<BaProjectGroupMapper,
      * @return
      */
     @Override
-    public List<BaProjectGroup> getGroupsByCustomerId(Integer customerId) {
+    public Result getGroupsByCustomerId(Integer customerId) {
+        Result r = new Result(HttpResultEnum.CODE_1.getCode(),HttpResultEnum.CODE_1.getMessage());
         QueryWrapper<BaProjectGroup> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("customer_id",customerId);
-        return  this.baseMapper.selectList(queryWrapper);
-
+        List<BaProjectGroup> baProjectGroups = this.baseMapper.selectList(queryWrapper);
+        if(baProjectGroups!=null) {
+            r.setCode(HttpResultEnum.CODE_0.getCode());
+            r.setMsg(HttpResultEnum.CODE_0.getMessage());
+            r.setData(baProjectGroups);
+        }
+        return r;
     }
 }

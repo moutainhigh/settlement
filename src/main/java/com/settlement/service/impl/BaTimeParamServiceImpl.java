@@ -5,14 +5,18 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.settlement.bo.PageData;
 import com.settlement.co.TimeParamCo;
+import com.settlement.entity.BaPgTimeParam;
 import com.settlement.entity.BaTimeParam;
+import com.settlement.mapper.BaPgTimeParamMapper;
 import com.settlement.mapper.BaTimeParamMapper;
 import com.settlement.service.BaTimeParamService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.settlement.utils.Const;
 import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
+import com.settlement.vo.BaTimeParamVo;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -32,6 +36,9 @@ import java.util.*;
 @Service
 @Transactional
 public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTimeParam> implements BaTimeParamService {
+
+    @Autowired
+    private BaPgTimeParamMapper baPgTimeParamMapper;
     /**
      * 加载列表页面
      * @param timeParamCo
@@ -39,31 +46,40 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
      */
     @Override
     public PageData listPageData(TimeParamCo timeParamCo) {
-        Page<BaTimeParam> page = new Page<>(timeParamCo.getPage(),timeParamCo.getLimit());
-        QueryWrapper<BaTimeParam> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("del_flag", Const.DEL_FLAG_N);
-        queryWrapper.like(StringUtils.isNotBlank(timeParamCo.getKeyword()),"param_value",timeParamCo.getKeyword());
-        this.baseMapper.selectPage(page,queryWrapper);
-
+        timeParamCo.setDelFlag(Const.DEL_FLAG_N);
+        Page<BaTimeParamVo> page = new Page<>(timeParamCo.getPage(),timeParamCo.getLimit());
+        page.setRecords(this.baseMapper.listPageData(timeParamCo,page));
         return new PageData(page.getTotal(),page.getRecords());
     }
 
     /**
      *  添加
-     * @param baTimeParam
+     * @param baTimeParamVo
      * @return
      */
     @Override
-    public Result addTimeParam(BaTimeParam baTimeParam) {
+    public Result addTimeParam(BaTimeParamVo baTimeParamVo) {
         Result r =  new Result(HttpResultEnum.ADD_CODE_500.getCode(),HttpResultEnum.ADD_CODE_500.getMessage());
-        baTimeParam.setDelFlag(Const.DEL_FLAG_N);
+        BaTimeParam baTimeParam = new BaTimeParam();
+        baTimeParam.setParamCode(baTimeParamVo.getParamCode());
+        baTimeParam.setParamItem(baTimeParamVo.getParamItem());
+        baTimeParam.setParamValue(baTimeParamVo.getParamValue());
+        baTimeParam.setType(baTimeParamVo.getType());
         baTimeParam.setEnabled(Const.ENABLED_Y);
+        baTimeParam.setCreateUserId(baTimeParamVo.getCreateUserId());
         baTimeParam.setCreateTime(new Date());
+        baTimeParam.setDelFlag(Const.DEL_FLAG_N);
         try {
             Integer ret = this.baseMapper.insert(baTimeParam);
             if (ret != null && ret > 0) {
-                r.setCode(HttpResultEnum.ADD_CODE_200.getCode());
-                r.setMsg(HttpResultEnum.ADD_CODE_200.getMessage());
+                BaPgTimeParam baPgTimeParam = new BaPgTimeParam();
+                baPgTimeParam.setPgId(baTimeParamVo.getProjectId());
+                baPgTimeParam.setTPId(baTimeParam.getId());
+                Integer ret2 = baPgTimeParamMapper.insert(baPgTimeParam);
+                if(ret2!=null && ret2>0) {
+                    r.setCode(HttpResultEnum.ADD_CODE_200.getCode());
+                    r.setMsg(HttpResultEnum.ADD_CODE_200.getMessage());
+                }
             }
         }catch (Exception e) {
             e.printStackTrace();
@@ -74,19 +90,34 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
 
     /**
      * 修改
-     * @param baTimeParam
+     * @param baTimeParamVo
      * @return
      */
     @Override
-    public Result updateTimeParam(BaTimeParam baTimeParam) {
+    public Result updateTimeParam(BaTimeParamVo baTimeParamVo) {
         Result r = new Result(HttpResultEnum.EDIT_CODE_500.getCode(),HttpResultEnum.EDIT_CODE_500.getMessage());
+        BaTimeParam baTimeParam = this.baseMapper.selectById(baTimeParamVo.getId());
         UpdateWrapper<BaTimeParam> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("id",baTimeParam.getId());
+        baTimeParam.setParamCode(baTimeParamVo.getParamCode());
+        baTimeParam.setParamItem(baTimeParamVo.getParamItem());
+        baTimeParam.setParamValue(baTimeParamVo.getParamValue());
+        baTimeParam.setType(baTimeParamVo.getType());
+        updateWrapper.eq("id",baTimeParamVo.getId());
         try {
             Integer ret = this.baseMapper.update(baTimeParam, updateWrapper);
             if (ret != null && ret > 0) {
-                r.setCode(HttpResultEnum.EDIT_CODE_200.getCode());
-                r.setMsg(HttpResultEnum.EDIT_CODE_200.getMessage());
+                QueryWrapper<BaPgTimeParam> queryWrapper = new QueryWrapper<>();
+                queryWrapper.eq("t_p_id",baTimeParamVo.getId());
+                BaPgTimeParam baPgTimeParam = baPgTimeParamMapper.selectOne(queryWrapper);
+                baPgTimeParam.setPgId(baTimeParamVo.getProjectId());
+
+                UpdateWrapper<BaPgTimeParam> updateWrapper2 = new UpdateWrapper<>();
+                updateWrapper2.eq("id",baPgTimeParam.getId());
+                Integer ret2 = baPgTimeParamMapper.update(baPgTimeParam,updateWrapper2);
+                if(ret2!=null && ret2>0) {
+                    r.setCode(HttpResultEnum.EDIT_CODE_200.getCode());
+                    r.setMsg(HttpResultEnum.EDIT_CODE_200.getMessage());
+                }
             }
         }catch (Exception e) {
             e.printStackTrace();
@@ -214,8 +245,8 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
      * @return
      */
     @Override
-    public String getStopTimeParam() {
-        return  getTimeParamValue(Const.TIME_PRAMA_STOP);
+    public String getStopTimeParam(Integer projectId) {
+        return  getTimeParamValue(projectId,Const.TIME_PRAMA_STOP);
     }
 
     /**
@@ -223,8 +254,8 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
      * @return
      */
     @Override
-    public String getCompleteParam() {
-        return  getTimeParamValue(Const.TIME_PRAMA_COMPELETE);
+    public String getCompleteParam(Integer projectId) {
+        return  getTimeParamValue(projectId,Const.TIME_PRAMA_COMPELETE);
     }
 
     /**
@@ -232,10 +263,10 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
      * @return
      */
     @Override
-    public Result judgeWorkattendanceDate() {
+    public Result judgeWorkattendanceDate(Integer projectId) {
         Result r = new Result();
-        String completeTimeParam = getCompleteParam();
-        String stopTimeParam = getStopTimeParam();
+        String completeTimeParam = getCompleteParam(projectId);
+        String stopTimeParam = getStopTimeParam(projectId);
         int compareCompleteValue = getCompareDateValue(completeTimeParam);
         int compareStopValue =getCompareDateValue(stopTimeParam);
         if((0==compareStopValue||1==compareStopValue)) {
@@ -259,9 +290,9 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
      * @return
      */
     @Override
-    public Result judgeWorkattendanceCompleteTime() {
+    public Result judgeWorkattendanceCompleteTime(Integer projectId) {
         Result r = new Result();
-        String completeTimeParam = getCompleteParam();
+        String completeTimeParam = getCompleteParam(projectId);
         int compareValue = getCompareDateValue(completeTimeParam);
         if(0==compareValue || 1==compareValue) {
             r.setCode(HttpResultEnum.COMPLETE_TIME_CODE_1.getCode());
@@ -278,9 +309,9 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
      * @return
      */
     @Override
-    public Result judgeWorkattendanceStopTime() {
+    public Result judgeWorkattendanceStopTime(Integer projectId) {
         Result r = new Result();
-        String stopTimeParam = getStopTimeParam();
+        String stopTimeParam = getStopTimeParam(projectId);
         int compareValue =getCompareDateValue(stopTimeParam);
         if(0==compareValue || 1==compareValue) {
             r.setCode(HttpResultEnum.STOP_TIME_CODE_1.getCode());
@@ -290,6 +321,19 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
             r.setMsg(HttpResultEnum.STOP_TIME_CODE_0.getMessage());
         }
         return r;
+    }
+
+    /**
+     * 根据id获得BaTimeParamVo
+     * @param id
+     * @return
+     */
+    @Override
+    public BaTimeParamVo getTimeParamVoById(Integer id) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("id",id);
+        map.put("enabled",Const.ENABLED_Y);
+        return this.baseMapper.getTimeParamVoById(map);
     }
 
     /**
@@ -314,16 +358,18 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
     /**
      * 根据时间点参数 返回结算时间
      * @param param
+     * @param projectId
      * @return
      */
-    private String getTimeParamValue(String param){
-        QueryWrapper<BaTimeParam> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("param_code",param);
-        queryWrapper.eq("enabled",Const.ENABLED_Y);
+    private String getTimeParamValue(Integer projectId,String param){
+        Map<String,Object> map = new HashMap<>();
+        map.put("projectId",projectId);
+        map.put("type",param);
+        map.put("enabled",Const.ENABLED_Y);
         Calendar cal = Calendar.getInstance();
         String year = String.valueOf(cal.get(Calendar.YEAR));
         String currentMonth=String.valueOf(cal.get(Calendar.MONTH)+1);
-        String day=this.baseMapper.selectOne(queryWrapper).getParamValue().toString();
+        String day=this.baseMapper.getTimeParamValueByProjectId(map);
         return year+"-"+currentMonth+"-"+day;
     }
 }

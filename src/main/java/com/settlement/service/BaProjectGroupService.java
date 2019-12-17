@@ -37,5 +37,5 @@ public interface BaProjectGroupService extends IService<BaProjectGroup> {
     /** 根据ID查询项目组，结算负责人 */
     ProjectGroupVo getProjectGroupSettlementById(Integer id);
     /** 根据customerId获得项目组**/
-    List<BaProjectGroup> getGroupsByCustomerId(Integer customerId);
+    Result getGroupsByCustomerId(Integer customerId);
 }

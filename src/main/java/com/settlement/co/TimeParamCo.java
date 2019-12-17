@@ -3,5 +3,7 @@ import lombok.Data;
 
 @Data
 public class TimeParamCo  extends PageCo {
-    String keyword;
+    private String keyword;
+    private String enabled;
+    private String delFlag;
 }

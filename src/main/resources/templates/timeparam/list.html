@@ -29,7 +29,7 @@
                             </form>
                         </div>
                         <div class="layui-card-header">
-                            <button class="layui-btn" onclick="xadmin.open('添加时间点参数','/ba-time-param/toAddorUpdate/add/0',600,550)"><i class="layui-icon"></i>添加</button>
+                            <button class="layui-btn" onclick="xadmin.open('添加时间点参数','/ba-time-param/toAddorUpdate/add/0',600,500)"><i class="layui-icon"></i>添加</button>
 <!--                            <button type="button" id="delete" class="layui-btn layui-btn-danger" onclick="deleteFun()" lay-demo="reload">删除</button>-->
                         </div>
                         <div class="layui-card-body layui-table-body layui-table-main" >
@@ -69,6 +69,8 @@
                {field:'paramCode',title:'参数代码',align:'center',fixed:'left'},
                {field:'paramItem',title:'参数项',edit: 'text',align:'center'},
                {field:'paramValue',title:'参数值',edit: 'text',align:'center'},
+               {field:'customerName',title:'客户',edit: 'text',align:'center'},
+               {field:'projectName',title:'项目组',edit: 'text',align:'center'},
                {field:'enabled',title:'状态',align:'center',templet: '#switchStatus', unresize: true},
                {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:200}
            ]]
@@ -168,7 +170,7 @@
                       layer.close(index);
                   });
               } else if(obj.event === 'edit'){
-                  xadmin.open('编辑时间点参数','/ba-time-param/toAddorUpdate/update/'+ data.id,600,550);
+                  xadmin.open('编辑时间点参数','/ba-time-param/toAddorUpdate/update/'+ data.id,600,500);
               }
           });
 

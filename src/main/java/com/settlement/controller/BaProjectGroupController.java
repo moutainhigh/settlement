@@ -176,12 +176,14 @@ public class BaProjectGroupController {
         return this.baProjectGroupSettlementService.batchInsert(projectGroupVo.getId(), projectGroupVo.getSettlements());
     }
 
+    /**
+     * @description 根据客户id获得项目组列表
+     * @auth kun
+     * @param customerId
+     * @return
+     */
     @PutMapping("/ba-project-group/groups/{customerId}")
     public Result getGroupsByCustomerId(@PathVariable(value="customerId") Integer customerId) {
-        Result r = new Result();
-        r.setCode(HttpResultEnum.CODE_0.getCode());
-        r.setMsg(HttpResultEnum.CODE_0.getMessage());
-        r.setData(this.baProjectGroupService.getGroupsByCustomerId(customerId));
-        return r;
+        return this.baProjectGroupService.getGroupsByCustomerId(customerId);
     }
 }

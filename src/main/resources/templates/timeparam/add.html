@@ -12,17 +12,33 @@
                     <input type="hidden" name="id" th:value="${baTimeParam.id}" th:if="${baTimeParam!=null}" />
                     <div class="layui-form-item">
                         <div class="layui-form-item">
-                            <label for="paramCode" class="layui-form-label">
-                                <span class="x-red">*</span>所属项目组</label>
+                            <label for="customerId" class="layui-form-label" style="width: 90px;">
+                                <span class="x-red">*</span>客户</label>
+                            <div class="layui-input-inline" >
+                                <select id="customerId" name="customerId" lay-filter="customerId" lay-verify="customerId" th:field="*{baTimeParam.customerId}">
+                                    <option value="0">请选择客户</option>
+                                    <option th:each="baCustomer:${baCustomers}" th:value="${baCustomer.id}" th:text="${baCustomer.customerName}" >
+                                </select>
+                            </div>
                             <div class="layui-input-inline">
-                                <input type="text" id="projectId" name="projectId" th:readonly="${mode.equals('update')}?true" th:value="${mode.equals('update')}?${baTimeParam.paramCode}" required="" lay-verify="paramCode" autocomplete="off"  placeholder="请输入时间点参数编号" class="layui-input" maxlength="20">
+                                <button type="button" id="customerCreate"  lay-filter="customerCreate" class="layui-btn layui-btn-primary layui-btn-xs">创建客户</button>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="projectId" class="layui-form-label" style="width: 90px;">
+                                <span class="x-red">*</span>项目组</label>
+                            <div class="layui-input-inline">
+                                <select id="projectId" name="projectId" lay-filter="projectId" lay-verify="projectId" th:field="*{baTimeParam.projectId}">
+                                    <option value="0">请选择项目</option>
+                                    <option th:if="${mode.equals('update')}" th:each="project:${baProjectGroups}" th:value="${project.id}" th:text="${project.pgName}">
+                                </select>
                             </div>
                             <div class="layui-input-inline">
                                 <button type="button" id="projectCreate"  lay-filter="projectCreate" class="layui-btn layui-btn-primary layui-btn-xs">创建项目</button>
                             </div>
                         </div>
                         <div class="layui-form-item">
-                            <label for="paramCode" class="layui-form-label">
+                            <label for="paramCode" class="layui-form-label" style="width: 90px;">
                                 <span class="x-red">*</span>时间点参数编号</label>
                             <div class="layui-input-inline">
                                 <input type="text" id="paramCode" name="paramCode" th:readonly="${mode.equals('update')}?true" th:value="${mode.equals('update')}?${baTimeParam.paramCode}" required="" lay-verify="paramCode" autocomplete="off"  placeholder="请输入时间点参数编号" class="layui-input" maxlength="20">
@@ -32,17 +48,25 @@
                             </div>
                         </div>
                         <div class="layui-form-item">
-                            <label for="paramItem" class="layui-form-label">
+                            <label for="paramItem" class="layui-form-label" style="width: 90px;">
                                 <span class="x-red">*</span>时间点参数项</label>
                             <div class="layui-input-inline">
                                 <input type="text" id="paramItem" name="paramItem" th:value="${mode.equals('update')}?${baTimeParam.paramItem}"  required="" lay-verify="paramItem" autocomplete="off" placeholder="请输入时间点参数项内容" class="layui-input" maxlength="20">
                             </div>
                         </div>
                         <div class="layui-form-item">
-                            <label for="paramValue" class="layui-form-label">
+                            <label for="paramValue" class="layui-form-label" style="width: 90px;">
                                 <span class="x-red">*</span>时间点参值</label>
                             <div class="layui-input-inline">
                                 <input type="text" id="paramValue" name="paramValue" th:value="${mode.equals('update')}?${baTimeParam.paramValue}"  required="" lay-verify="paramValue" autocomplete="off" placeholder="请输入时间点参数值内容" class="layui-input" maxlength="20">
+                            </div>
+                        </div>
+                        <div class="layui-form-item layui-form-text">
+                            <label  class="layui-form-label" style="width: 90px;">
+                                <span class="x-red">*</span>时间点类型
+                            </label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="type" th:each="sysDataDic:${sysDataDicVos}" th:value="${sysDataDic.dicCode}" th:title="${sysDataDic.dicContent}" th:checked="${sysDataDic.dicCode}==${baTimeParam.type}">
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -53,8 +77,14 @@
                 </form>
             </div>
         </div>
+        <script th:src="@{/js/formSelects-v4.js}" type="text/javascript" charset="utf-8"></script>
+        <script th:src="@{/js/timeparam/timeparam.js}" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript" th:inline="javascript">
 
+            // 下拉多选框
+            formSelects.data('projectSelect', 'server', {
+                url: '/sys-dept/deptselect'
+            });
             // 表单操作
             layui.use(['form', 'layer','jquery'],
             function() {
@@ -87,7 +117,15 @@
 
 
                 });
-
+                //绑定创建客户按钮
+                $('#customerCreate').click(function () {
+                    xadmin.open('添加客户','/ba-customer/toAddorUpdate/add/0',600,350);
+                });
+                //绑定创建项目按钮
+                $('#projectCreate').click(function () {
+                    xadmin.open('添加项目组','/ba-project-group/add',600,400);
+                });
+                //绑定编码是否存在按钮
                 $('#paramCodeIsExist').click(function () {
                         var paramCode = $('#paramCode').val();
                         if(paramCode.trim().length==0) {
@@ -97,6 +135,31 @@
                         checkParamCodeIsExist(paramCode,layer,'');
                     }
                 );
+                //根据选择的客户加载项目
+                form.on('select(customerId)',function(data){
+                    var customerId = data.value;
+                    $.ajax({
+                        type:'put',
+                        url:'/ba-project-group/groups/'+customerId,
+                        success:function(r){
+                            if(r.code=='0') {
+                                var groups = r.data;
+                                var projectId=$("#projectId").empty();
+                                for(var i=0;i<groups.length;i++) {
+                                    // alert("<option value='"+groups[i].id+"'>"+groups[i].pgName+"</option>");
+                                    projectId.append("<option value='"+groups[i].id+"'>"+groups[i].pgName+"</option>");
+                                }
+                                form.render();
+                            } else {
+                                layer.msg('项目组数据加载失败',{icon:5});
+                            }
+                        }
+                        ,error:function(r) {
+                            layer.msg('项目组数据加载失败',{icon:5});
+                        }
+                    })
+                });
+
                 //监听提交
                 form.on('submit(add)', function(data){
                     var mode=[[${mode}]];
@@ -135,6 +198,7 @@
                 });
 
             });
+
             // 检查邮箱是否存在
             function checkParamCodeIsExist(paramCode, layer,mode) {
                 var flag = true;

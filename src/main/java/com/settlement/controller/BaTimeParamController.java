@@ -7,6 +7,7 @@ import com.settlement.entity.SysUser;
 import com.settlement.service.BaTimeParamService;
 import com.settlement.utils.Result;
 import com.settlement.bo.PageData;
+import com.settlement.vo.BaTimeParamVo;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -44,25 +45,25 @@ public class BaTimeParamController {
 
     /**
      * 添加
-     * @param baTimeParam
+     * @param baTimeParamVo
      * @return
      */
     @PostMapping("/add")
-    public Result addTimeParam(BaTimeParam baTimeParam, HttpSession session){
+    public Result addTimeParam(BaTimeParamVo baTimeParamVo, HttpSession session){
         SysUser user = (SysUser)session.getAttribute("user");
-        baTimeParam.setCreateUserId(user.getId());
-        Result r = baTimeParamService.addTimeParam(baTimeParam);
+        baTimeParamVo.setCreateUserId(user.getId());
+        Result r = baTimeParamService.addTimeParam(baTimeParamVo);
         return r;
     }
 
     /**
      * 修改
-     * @param baTimeParam
+     * @param baTimeParamVo
      * @return
      */
     @PutMapping("/update")
-    public Result updateTimeParam(BaTimeParam baTimeParam){
-        Result r = baTimeParamService.updateTimeParam(baTimeParam);
+    public Result updateTimeParam(BaTimeParamVo baTimeParamVo){
+        Result r = baTimeParamService.updateTimeParam(baTimeParamVo);
         return r;
     }
 
@@ -109,24 +110,24 @@ public class BaTimeParamController {
      * 考勤时间点前
      * @return
      */
-    @GetMapping("/judge/workattendance/stoptime")
-    public Result judgeWorkattendanceStopTime() {
-        return baTimeParamService.judgeWorkattendanceStopTime();
+    @GetMapping("/judge/workattendance/stoptime/{projectId}")
+    public Result judgeWorkattendanceStopTime(@PathVariable Integer projectId) {
+        return baTimeParamService.judgeWorkattendanceStopTime(projectId);
     }
     /**
      * 考勤完成时间点前
      * @return
      */
-    @GetMapping("/judge/workattendance/completetime")
-    public Result judgeWorkattendanceCompleteTime() {
-        return baTimeParamService.judgeWorkattendanceCompleteTime();
+    @GetMapping("/judge/workattendance/completetime/{projectId}")
+    public Result judgeWorkattendanceCompleteTime(@PathVariable Integer projectId) {
+        return baTimeParamService.judgeWorkattendanceCompleteTime(projectId);
     }
     /**
      * 考勤完成时间和考勤完成时间点之间
      * @return
      */
-    @GetMapping("/judge/workattendance/date")
-    public Result judgeWorkattendanceDate() {
-        return baTimeParamService.judgeWorkattendanceDate();
+    @GetMapping("/judge/workattendance/date/{projectId}")
+    public Result judgeWorkattendanceDate(@PathVariable Integer projectId) {
+        return baTimeParamService.judgeWorkattendanceDate(projectId);
     }
 }
