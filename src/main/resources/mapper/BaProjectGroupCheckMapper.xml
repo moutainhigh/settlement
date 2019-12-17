@@ -16,21 +16,53 @@
     <select id="getProjectGroupCheckPageList" parameterType="com.settlement.co.ProjectGroupCheckCo" resultType="com.settlement.vo.ProjectGroupCheckVo">
       SELECT
          bpgc.id,
+         bpgc.pg_id,
          bpg.pg_name,
          bpg.`code`,
          bpg.create_user_id,
-         su1.real_name as '项目创建人',
+         su1.real_name as pgCreateUser,
          bpgc.check_status,
-         sdd.dic_content as '审核状态',
+         sdd.dic_content as checkStatusContent,
          bpgc.check_time,
          bpgc.check_user_id,
-         su.real_name as '审核人',
-         bpgc.remark
+         su.real_name as checkUser,
+         bpgc.remark,
+        bpgc.apply_time
         FROM
          ba_project_group_check bpgc left join ba_project_group bpg on  bpgc.pg_id = bpg.id
          left join sys_user su on su.id = bpgc.check_user_id
          left join sys_user su1 on su1.id = bpg.create_user_id
          left join sys_data_dic sdd on sdd.dic_code = bpgc.check_status
+        <where>
+            <if test="projectGroupCheckCo.keyword != null">
+                CONCAT(bpg.pg_name,bpg.code) like CONCAT('%',#{projectGroupCheckCo.keyword},'%')
+            </if>
+            <if test="projectGroupCheckCo.currentUserId != null">
+                bpgc.check_user_id = #{projectGroupCheckCo.currentUserId}
+            </if>
+        </where>
+        ORDER BY bpgc.check_status desc, bpgc.apply_time desc
     </select>
-
+    <!-- 根据ID，取得项目组审核信息 -->
+    <select id="getPgCheckById" resultType="com.settlement.vo.ProjectGroupCheckVo">
+        SELECT
+          bpgc.id,
+          bpgc.pg_id,
+          bpgc.apply_time,
+          bpg.pg_name,
+          bpg.code,
+          su.real_name as pgCreateUser,
+          bpgc.check_status,
+          bpgc.remark,
+          sdd.dic_content as checkStatusContent,
+          bpgc.check_time,
+          su1.real_name as checkUser
+        FROM
+         ba_project_group_check bpgc left join ba_project_group bpg on bpgc.pg_id = bpg.id
+         left join sys_user su on su.id = bpg.create_user_id
+         left join sys_user su1 on su1.id = bpgc.check_user_id
+         left join sys_data_dic sdd on sdd.dic_code = bpgc.check_status
+        WHERE
+          bpgc.id = #{id}
+    </select>
 </mapper>

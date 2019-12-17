@@ -21,13 +21,11 @@ public interface BaEmployeeService extends IService<BaEmployee> {
     /** 检查员工编号是否存在 */
     Result checkEmpCodeIsExist(String code);
     /** 新增员工 */
-    Result insertProjectEmp(EmployeeVo employeeVo);
-    /** 员工提交,批量更新*/
-    Result updateEmpSubByBatchId(String ids);
+    Result insertProjectEmp(EmployeeVo employeeVo, String subStatus);
     /** 根据ID，删除员工 */
     Result deleteProjectEmp(Integer id);
     /** 根据ID，取得项目组员工信息 */
     BaEmployee getProjectEmpById(Integer id);
     /** 更新项目组员工 */
-    Result updateProjectEmp(EmployeeVo employeeVo);
+    Result updateProjectEmp(EmployeeVo employeeVo, String subStatus);
 }

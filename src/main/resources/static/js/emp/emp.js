@@ -34,7 +34,7 @@ function frameInput(mode) {
 function checkEmpCodeIsExist(code,layer,mode) {
     var flag = true;
     $.ajaxSettings.async = false;
-    $.get('/ba-project-employee/isexist/' + code,null,function (r) {
+    $.get('/ba-employee/isexist/' + code,null,function (r) {
         if (r.code == 1)  {
             flag = false;
             layer.alert(r.msg, {icon: 5});
@@ -48,7 +48,7 @@ function checkEmpCodeIsExist(code,layer,mode) {
 /** 员工-删除*/
 function emp_del(id){
     $.ajax({
-        url:"/ba-project-employee/del/" + id,
+        url:"/ba-employee/del/" + id,
         type:"DELETE",
         contentType:"application/json",//设置请求参数类型为json字符串
         // data: {id:id},
@@ -61,7 +61,7 @@ function emp_del(id){
 }
 
 /** 员工提交 */
-function submitEmp(layer,data) {
+function submitEmp(layer,data,pgId) {
     if (data.length == 0) {
         layer.alert('请先选择一行',{icon : 5});
     } else {
@@ -75,10 +75,10 @@ function submitEmp(layer,data) {
                 }
             }
             $.ajax({
-                url: '/ba-project-employee/sub',
+                url: '/ba-pg-employee/sub',
                 type: 'POST',
                 async: false,
-                data: {ids: ids},
+                data: {ids: ids,pgId: pgId},
                 success: function(r) {
                     layer.msg(r.msg,{icon: r.code == '200' ? 6: 5});
                 }
@@ -94,7 +94,7 @@ function operImg(data) {
     var imgName = data.rateEmailFilename;
     // alert(imgName);
     var src = '/img/' + imgName.replace("_","/");
-    var a = "<a class='layui-btn' onclick=previewImg('"  + data.id + "')>" + imgName + "</a>";
+    var a = "<a href='javascript:(0)' class='layui-table-link' onclick=previewImg('"  + data.id + "')>" + imgName + "</a>";
     // alert(a);
     // var a = "<a onclick='previewImg(' + src + ')'>" + imgName +  "</a>";
    // var img = new Image();
@@ -120,7 +120,7 @@ function operImg(data) {
 }
 
 function previewImg(id) {
-    xadmin.open('图片预览','/ba-project-employee/view/'+ id, 450,450);
+    xadmin.open('图片预览','/ba-employee/view/'+ id, 450,450);
 }
 
 

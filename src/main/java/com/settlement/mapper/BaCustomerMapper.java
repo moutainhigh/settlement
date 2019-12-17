@@ -1,6 +1,5 @@
 package com.settlement.mapper;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.settlement.co.CustomerCo;
 import com.settlement.entity.BaCustomer;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -37,6 +36,17 @@ public interface BaCustomerMapper extends BaseMapper<BaCustomer> {
      List<BaCustomerAndProjectVo> getCustomerAndProjectByUserId(Map<String,Object> map);
     /**客户列表**/
     List<BaCustomerVo> listPageData(CustomerCo customerCo, Page<BaCustomerVo> page);
+
+    /**
+     * 根据部门ID取得客户
+     *
+     * @auth admin
+     * @date 2019-12-12
+     * @param map
+     * @return
+     */
+    List<BaCustomerVo> getBaCustomerByDeptId(Map<String, Object> map);
+
 }
 
 

@@ -288,4 +288,12 @@ public class BaCustomerServiceImpl extends ServiceImpl<BaCustomerMapper, BaCusto
         josn.put("data", JSONArray.toJSON(baCustomerAndProjectTreeVos));
         return josn.toJSONString();
     }
+
+    @Override
+    public List<BaCustomerVo> getCustomerByDeptId(Integer deptId) {
+        Map<String,Object> paramMap = new HashMap<String, Object>();
+        paramMap.put("deptId",deptId);
+        paramMap.put("enabled", Const.ENABLED_Y);
+        return this.baseMapper.getBaCustomerByDeptId(paramMap);
+    }
 }

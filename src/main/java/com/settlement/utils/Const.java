@@ -85,4 +85,20 @@ public class Const {
     public static final String EMP_JOB_STATUS_O = "O";
     /**员工L: 离职**/
     public static final String EMP_JOB_STATUS_L = "L";
+    /** 在职状态 */
+    public final static String JOB_STATUS_O = "O";
+    /** 离职状态 */
+    public final static String JOB_STATUS_L = "L";
+    /** 入场状态 */
+    public final static String ENTRANCE_STATUS_I = "I";
+    /** 离场状态 */
+    public final static String ENTRANCE_STATUS_L = "L";
+    /** 数据字典：项目组审核CODE */
+    public final static String PG_CHECKSTATUS_CODE = "PG_CHECKSTATUS";
+    /** 数据字典： 审核结果CODE */
+    public final static String CHECK_RESULT_CODE = "CHECK_RESULT";
+    /** 数据字典：审核结果：通过-PASS */
+    public final static String CHECK_RESULT_PASS_CODE = "PASS";
+    /** 数据字典：审核结果：不通过-NOPASS */
+    public final static String CHECK_RESULT_NOPASS_CODE = "NOPASS";
 }

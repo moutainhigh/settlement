@@ -53,3 +53,30 @@ function edit(data, layer, url) {
         }
     });
 }
+
+/** 确定 */
+function defined(data, layer, url) {
+    $.ajax({
+        url: url,
+        type:"PUT",
+        data: data.field,
+        // dataType:"json",
+        beforeSend: function () {
+            // 禁用按钮防止重复提交
+            $(".layui-btn").attr({ disabled: "disabled" });
+
+        },
+        success:function(r){
+            layer.alert(r.msg, {
+                    icon : r.code == '200' ? 6: 5
+                },
+                function() {
+                    // 刷新数据，保留在当前页
+                    var index = parent.layer.getFrameIndex(window.name);
+                    parent.layui.table.reload('dataTable');//重载父页表格，参数为表格ID
+                    parent.layer.close(index);
+                });
+            $(".layui-btn").removeAttr('disabled');
+        }
+    });
+}

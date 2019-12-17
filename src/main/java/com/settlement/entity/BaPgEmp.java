@@ -42,7 +42,7 @@ public class BaPgEmp extends Model<BaPgEmp> {
     /**
      * 入离场状态: I-入场，L-离场
      */
-    private String status;
+    private String entranceStatus;
 
     /**
      * 更新时间

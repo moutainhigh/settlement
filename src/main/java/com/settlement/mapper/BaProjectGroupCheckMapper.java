@@ -21,6 +21,7 @@ import java.util.List;
 @Repository
 public interface BaProjectGroupCheckMapper extends BaseMapper<BaProjectGroupCheck> {
     /** 项目组审核列表页 */
-    List<ProjectGroupCheckVo> getProjectGroupCheckPageList(@Param(value="projectGroupCo") ProjectGroupCheckCo projectGroupCheckCo, Page<ProjectGroupCheckVo> page);
-
+    List<ProjectGroupCheckVo> getProjectGroupCheckPageList(@Param(value="projectGroupCheckCo") ProjectGroupCheckCo projectGroupCheckCo, Page<ProjectGroupCheckVo> page);
+    /** 根据ID取的项目组审核记录 */
+    ProjectGroupCheckVo getPgCheckById(Integer id);
 }

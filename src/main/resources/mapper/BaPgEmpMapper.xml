@@ -7,9 +7,17 @@
         <id column="id" property="id" />
         <result column="pg_id" property="pgId" />
         <result column="emp_id" property="empId" />
-        <result column="status" property="status" />
+        <result column="entrance_status" property="entranceStatus" />
         <result column="oper_time" property="operTime" />
         <result column="sub_status" property="subStatus" />
     </resultMap>
 
+    <update id="updateEmpSubStatusBatchById" parameterType="java.util.List">
+        <foreach collection="pgEmps" item="pgEmp" index="index" separator=";">
+            update ba_pg_emp
+            set
+            sub_status = #{pgEmp.subStatus}
+            where emp_id = #{pgEmp.empId} and pg_id = #{pgEmp.pgId}
+        </foreach>
+    </update>
 </mapper>

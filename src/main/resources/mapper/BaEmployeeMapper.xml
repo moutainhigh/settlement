@@ -25,6 +25,8 @@
         <result column="salary_day" property="salaryDay" />
         <result column="upload_rate_email" property="uploadRateEmail" />
         <result column="rate_email_filename" property="rateEmailFilename" />
+        <result column="job_status" property="jobStatus" />
+        <result column="entrance_status" property="entranceStatus" />
         <result column="create_user_id" property="createUserId" />
         <result column="create_time" property="createTime" />
         <result column="update_time" property="updateTime" />
@@ -61,14 +63,5 @@
         </if>
         order by be.create_time
     </select>
-
-    <update id="updateEmpSubStatusBatchById" parameterType="java.util.List">
-        <foreach collection="emps" item="emp" index="index" separator=";">
-            update ba_project_employee
-            set
-                sub_status = #{emp.subStatus}
-            where id = #{emp.id}
-        </foreach>
-    </update>
 
 </mapper>

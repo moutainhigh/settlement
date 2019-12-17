@@ -14,5 +14,7 @@ import lombok.Data;
 public class ProjectGroupCheckCo extends PageCo {
 
     private String keyword;
+    /** 当前登陆用户 */
+    private Integer currentUserId;
 
 }

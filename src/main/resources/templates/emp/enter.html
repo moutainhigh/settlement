@@ -29,7 +29,7 @@
                             </form>
                         </div>
                         <!--<div class="layui-card-header">
-                            <button class="layui-btn" onclick="xadmin.open('添加员工','/ba-project-employee/add',600,400)"><i class="layui-icon"></i>添加</button>
+                            <button class="layui-btn" onclick="xadmin.open('添加员工','/ba-employee/add',600,400)"><i class="layui-icon"></i>添加</button>
                             <button class="layui-btn" data-type="relateAssistant"><i class="layui-icon"></i>提交</button>
                         </div>-->
                         <div class="layui-card-body layui-table-body layui-table-main" >
@@ -61,7 +61,7 @@
         var table = layui.table;
         table.render({
            elem: '#dataTable',
-           url: '/ba-project-employee/pagedata',
+           url: '/ba-employee/pagedata',
            page: true,
            title: '员工录入表',
            height: 'full-210',
@@ -119,10 +119,10 @@
               var data = checkStatus.data;
               switch (obj.event) {
                   case 'add' :
-                      xadmin.open('添加项目组员工','/ba-project-employee/add/' + pgId,800,420)
+                      xadmin.open('添加项目组员工','/ba-employee/add/' + pgId,800,420)
                       break;
                   case 'submit' :
-                      submitEmp(layer,data);
+                      submitEmp(layer,data,pgId);
                       break;
               };
           });
@@ -139,7 +139,7 @@
                       layer.close(index);
                   });
               } else if(obj.event === 'edit'){
-                  xadmin.open('编辑项目组员工','/ba-project-employee/edit/'+ id + '/' + pgId,800,420);
+                  xadmin.open('编辑项目组员工','/ba-employee/edit/'+ id + '/' + pgId,800,420);
               }
           });
       });

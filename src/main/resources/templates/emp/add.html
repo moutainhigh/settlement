@@ -347,7 +347,7 @@
                 form.on('submit(saveButton)',
                     function(data) {
                         if (checkEmpCodeIsExist($("#code").val(),layer,'submit')) {
-                            $.post('/ba-project-employee/add',data.field, function(r) {
+                            $.post('/ba-employee/add',data.field, function(r) {
                                 layer.alert(r.msg, {
                                         icon : r.code == 'add_200' ? 6: 5
                                     },
@@ -367,7 +367,7 @@
                 function(data) {
                     layer.confirm('确认提交么?提交后员工信息将参与考勤、结算，编辑需要申请', function(index) {
                         if (checkEmpCodeIsExist($("#code").val(), layer, 'submit')) {
-                            $.post('/ba-project-employee/addsubmit', data.field, function (r) {
+                            $.post('/ba-employee/addsubmit', data.field, function (r) {
                                 layer.alert(r.msg, {
                                         icon: r.code == 'add_200' ? 6 : 5
                                     },
