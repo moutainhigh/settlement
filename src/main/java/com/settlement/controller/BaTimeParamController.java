@@ -17,6 +17,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -56,6 +57,15 @@ public class BaTimeParamController {
         return r;
     }
 
+    /**
+     * 时间点-保存关联的项目
+     * @param projectIds
+     * @return
+     */
+    @PostMapping("/relate/save")
+    public Result saveRelateProject(Integer[] projectIds,String timeParamId){
+        return baTimeParamService.saveRelateProject(projectIds,timeParamId);
+    }
     /**
      * 修改
      * @param baTimeParamVo

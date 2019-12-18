@@ -1,9 +1,14 @@
 package com.settlement.controller;
 
 
+import com.settlement.service.BaPgTimeParamService;
+import com.settlement.utils.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
@@ -13,8 +18,13 @@ import org.springframework.stereotype.Controller;
  * @author kun
  * @since 2019-12-16
  */
-@Controller
+@RestController
 @RequestMapping("/ba-pg-time-param")
 public class BaPgTimeParamController {
-
+    @Autowired
+    private BaPgTimeParamService baPgTimeParamService;
+    @GetMapping("/checked/{timeParamId}")
+    public Result getCheckedValueByTimeParamId(@PathVariable Integer timeParamId){
+        return  baPgTimeParamService.getCheckedValueByTimeParamId(timeParamId);
+    }
 }

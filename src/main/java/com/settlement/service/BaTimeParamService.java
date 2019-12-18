@@ -49,4 +49,8 @@ public interface BaTimeParamService extends IService<BaTimeParam> {
     Result judgeWorkattendanceStopTime(Integer projectId);
     /**根据id 获得BaTimeParamVo**/
     BaTimeParamVo getTimeParamVoById(Integer id);
+    /**获得当前年月**/
+    String getCurrentMonthYear();
+    /**保存项目的时间点参数**/
+    Result saveRelateProject(Integer[] projectIds, String timeParamId);
 }

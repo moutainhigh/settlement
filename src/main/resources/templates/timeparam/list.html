@@ -29,8 +29,8 @@
                             </form>
                         </div>
                         <div class="layui-card-header">
-                            <button class="layui-btn" onclick="xadmin.open('添加时间点参数','/ba-time-param/toAddorUpdate/add/0',600,500)"><i class="layui-icon"></i>添加</button>
-<!--                            <button type="button" id="delete" class="layui-btn layui-btn-danger" onclick="deleteFun()" lay-demo="reload">删除</button>-->
+                            <button class="layui-btn" onclick="xadmin.open('添加时间点参数','/ba-time-param/toAddorUpdate/add/0',600,400)"><i class="layui-icon"></i>添加</button>
+                            <button type="button" id="relateProject" data-type="relateProject" class="layui-btn layui-btn-normal ">关联项目组</button>
                         </div>
                         <div class="layui-card-body layui-table-body layui-table-main" >
                             <table class="layui-table layui-form" id="dataTable" lay-filter="dataTable">
@@ -69,8 +69,9 @@
                {field:'paramCode',title:'参数代码',align:'center',fixed:'left'},
                {field:'paramItem',title:'参数项',edit: 'text',align:'center'},
                {field:'paramValue',title:'参数值',edit: 'text',align:'center'},
-               {field:'customerName',title:'客户',edit: 'text',align:'center'},
-               {field:'projectName',title:'项目组',edit: 'text',align:'center'},
+               {field:'typeContent',title:'时间点类型',edit: 'text',align:'center'},
+               // {field:'customerName',title:'客户',edit: 'text',align:'center'},
+               // {field:'projectName',title:'项目组',edit: 'text',align:'center'},
                {field:'enabled',title:'状态',align:'center',templet: '#switchStatus', unresize: true},
                {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:200}
            ]]
@@ -89,6 +90,9 @@
                       }
                   }, 'data');
               },
+              relateProject:function(){
+                  relateProjectFun('关联项目时间点','/ba-time-param/relate/project/',table,500,600);
+              }
           };
           $('.layui-btn').on('click', function(){
               var type = $(this).data('type');
@@ -170,7 +174,7 @@
                       layer.close(index);
                   });
               } else if(obj.event === 'edit'){
-                  xadmin.open('编辑时间点参数','/ba-time-param/toAddorUpdate/update/'+ data.id,600,500);
+                  xadmin.open('编辑时间点参数','/ba-time-param/toAddorUpdate/update/'+ data.id,600,400);
               }
           });
 
@@ -187,7 +191,19 @@
 
       });
 
-
+      function relateProjectFun(title,url,table,w,h) {
+              var checkStatus = table.checkStatus('dataTable')
+                  ,data = checkStatus.data;
+              if (data.length == 0) {
+                  layer.alert('请先选择要关联的时间点记录',{icon : 5});
+                  return ;
+              } else if(data.length > 1){
+                  layer.alert('只能选择一条时间点记录关联',{icon : 5});
+                  return ;
+              } else {
+                  xadmin.open(title,url+data[0].id,w,h);
+              }
+      }
       /*数据字典-删除*/
       function timeparam_del(id){
           $.ajax({

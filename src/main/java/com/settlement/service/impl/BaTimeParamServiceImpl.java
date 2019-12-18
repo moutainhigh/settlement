@@ -15,7 +15,6 @@ import com.settlement.utils.Const;
 import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
 import com.settlement.vo.BaTimeParamVo;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,14 +71,8 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
         try {
             Integer ret = this.baseMapper.insert(baTimeParam);
             if (ret != null && ret > 0) {
-                BaPgTimeParam baPgTimeParam = new BaPgTimeParam();
-                baPgTimeParam.setPgId(baTimeParamVo.getProjectId());
-                baPgTimeParam.setTPId(baTimeParam.getId());
-                Integer ret2 = baPgTimeParamMapper.insert(baPgTimeParam);
-                if(ret2!=null && ret2>0) {
-                    r.setCode(HttpResultEnum.ADD_CODE_200.getCode());
-                    r.setMsg(HttpResultEnum.ADD_CODE_200.getMessage());
-                }
+                r.setCode(HttpResultEnum.ADD_CODE_200.getCode());
+                r.setMsg(HttpResultEnum.ADD_CODE_200.getMessage());
             }
         }catch (Exception e) {
             e.printStackTrace();
@@ -88,6 +81,34 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
         return  r;
     }
 
+    /**
+     * 保存项目的时间点参数
+     * @param projectIds
+     * @param timeParamId
+     * @return
+     */
+    @Override
+    public Result saveRelateProject(Integer[] projectIds, String timeParamId) {
+        Result r =  new Result(HttpResultEnum.ADD_CODE_500.getCode(),HttpResultEnum.ADD_CODE_500.getMessage());
+        //先删除关联表数据
+        QueryWrapper<BaPgTimeParam> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("t_p_id",timeParamId);
+        this.baPgTimeParamMapper.delete(queryWrapper);
+        //添加关联表数据
+        List<BaPgTimeParam> baPgTimeParams = new ArrayList<>();
+        for(Integer projectId:projectIds) {
+            BaPgTimeParam baPgTimeParam = new BaPgTimeParam();
+            baPgTimeParam.setPgId(projectId);
+            baPgTimeParam.setTPId(Integer.parseInt(timeParamId));
+            baPgTimeParams.add(baPgTimeParam);
+        }
+        Integer ret = baPgTimeParamMapper.saveBatchs(baPgTimeParams);
+        if(ret!=null && ret>0) {
+            r.setCode(HttpResultEnum.ADD_CODE_200.getCode());
+            r.setMsg(HttpResultEnum.ADD_CODE_200.getMessage());
+        }
+        return r;
+    }
     /**
      * 修改
      * @param baTimeParamVo
@@ -106,18 +127,8 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
         try {
             Integer ret = this.baseMapper.update(baTimeParam, updateWrapper);
             if (ret != null && ret > 0) {
-                QueryWrapper<BaPgTimeParam> queryWrapper = new QueryWrapper<>();
-                queryWrapper.eq("t_p_id",baTimeParamVo.getId());
-                BaPgTimeParam baPgTimeParam = baPgTimeParamMapper.selectOne(queryWrapper);
-                baPgTimeParam.setPgId(baTimeParamVo.getProjectId());
-
-                UpdateWrapper<BaPgTimeParam> updateWrapper2 = new UpdateWrapper<>();
-                updateWrapper2.eq("id",baPgTimeParam.getId());
-                Integer ret2 = baPgTimeParamMapper.update(baPgTimeParam,updateWrapper2);
-                if(ret2!=null && ret2>0) {
                     r.setCode(HttpResultEnum.EDIT_CODE_200.getCode());
                     r.setMsg(HttpResultEnum.EDIT_CODE_200.getMessage());
-                }
             }
         }catch (Exception e) {
             e.printStackTrace();
@@ -335,6 +346,16 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
         map.put("enabled",Const.ENABLED_Y);
         return this.baseMapper.getTimeParamVoById(map);
     }
+
+    @Override
+    public String getCurrentMonthYear() {
+        Calendar cal = Calendar.getInstance();
+        String year=String.valueOf(cal.get(Calendar.YEAR));
+        String month=String.valueOf(cal.get(Calendar.MONTH)+1);
+        return  year+"-"+month;
+    }
+
+
 
     /**
      * 当前日期和结算时间点进行比较  -1 小于 0 等于 1 大于

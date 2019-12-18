@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html class="x-admin-sm"  xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <th:bolck th:include="common/header :: header('数据字典管理')" />
+        <link rel="stylesheet" th:href="@{/lib/layui_ext/dtree/dtree.css}">
+        <link rel="stylesheet" th:href="@{/lib/layui_ext/dtree/font/dtreefont.css}">
+    </head>
+    <body>
+    <div class="layui-card-header">
+        <button type="button" id="saveRelateProject" data-type="saveRelateProject" class="layui-btn layui-btn-normal ">保存</button>
+    </div>
+
+        <div id='container' class="layui-row">
+            <div class="layui-col-xs3 div-scroll" position="left" id="accordion1">
+                <div class="l-scroll layui-card-header" >
+                    <ul id="projectTree" class="dtree" data-id="0" style="margin-top:0px;margin-bottom:10px;">
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+
+    <script type="text/javascript"  th:inline="javascript">
+        layui.extend({
+            dtree: '/lib/layui_ext/dtree/dtree'
+        }).use(['laydate','table','dtree','form','element'], function(){
+        var laydate = layui.laydate,
+             form = layui.form,
+             dtree = layui.dtree,
+             table = layui.table;
+        var timeParamId=[[${id}]];
+        //加载左侧项目组树
+        var dtree1 = dtree.render({
+            elem: '#projectTree',
+            icon: "-1",
+            dataFormat: "list",  //配置data的风格为list
+            url: "/ba-customer/list/tree/",
+            checkbar: true,
+            checkbarData: "choose", // 记录选中（默认）， "change"：记录变更， "all"：记录全部， "halfChoose"："记录选中和半选（V2.5.0新增）"
+            initLevel: "2"
+            ,done:function(res, $obj, first){
+                $.ajax({
+                    type:'get'
+                    ,url:'/ba-pg-time-param/checked/'+timeParamId
+                    ,success:function(r) {
+                        if(r.code=='0') {
+                            dtree.chooseDataInit("projectTree", r.data); // 初始化复选框的值
+                        }
+                    }
+                });
+
+            }
+
+        });
+
+            $("#saveRelateProject").click(function(){
+                var node=[];
+                var index=0;
+
+                var nodes = dtree.getCheckbarNodesParam("projectTree");
+                for(var i=0;i<nodes.length;i++) {
+                    if(nodes[i].leaf) {
+                        node[index++]=nodes[i].nodeId;
+                    }
+                }
+                if(node.length==0) {
+                    layer.msg('请选择要保存的项目',{icon:5});
+                    return;
+                }
+                //保存时间点参数
+                $.ajax({
+                    type:'post'
+                    ,url:'/ba-time-param/relate/save/'
+                    ,data:{projectIds:node,timeParamId:timeParamId}
+                    ,traditional:true
+                    ,success:function(r){
+                        if(r.code=='add_200') {
+                            layer.msg('保存成功',{icon:6});
+                        } else {
+                            layer.msg('保存失败',{icon:5});
+                        }
+                    }
+                });
+                // $.post('/ba-time-param/relate/save2/',{projectIds:node},function(r) {
+                //     if(r.code=='add_200') {
+                //         layer.msg('保存成功',{icon:6});
+                //     } else {
+                //         layer.msg('保存失败',{icon:6});
+                //     }
+                // });
+            });
+      });
+
+
+    </script>
+</html>

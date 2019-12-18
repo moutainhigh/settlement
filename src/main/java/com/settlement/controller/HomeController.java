@@ -384,6 +384,16 @@ public class HomeController {
     }
 
     /**
+     * 时间点-关联项目组
+     * @return
+     */
+    @GetMapping("/ba-time-param/relate/project/{id}")
+    public String toRelateProject(@PathVariable Integer id,Model model){
+        model.addAttribute("id",id);
+        return "timeparam/project";
+    }
+
+    /**
      * 跳转角色添加页面
      * @return
      */
@@ -401,9 +411,9 @@ public class HomeController {
         } else if(Const.MODE_UPDADTE.equals(mode)){
             BaTimeParamVo baTimeParam = baTimeParamService.getTimeParamVoById(id);
 
-            List<BaProjectGroup> baProjectGroups = (List<BaProjectGroup>)baProjectGroupService.getGroupsByCustomerId(baTimeParam.getCustomerId()).getData();
+//            List<BaProjectGroup> baProjectGroups = (List<BaProjectGroup>)baProjectGroupService.getGroupsByCustomerId(baTimeParam.getCustomerId()).getData();
             model.addAttribute("baTimeParam",baTimeParam);
-            model.addAttribute("baProjectGroups",baProjectGroups);
+//            model.addAttribute("baProjectGroups",baProjectGroups);
             model.addAttribute("mode",Const.MODE_UPDADTE);
         }
         model.addAttribute("baCustomers",baCustomers);
@@ -611,19 +621,24 @@ public class HomeController {
      */
     @GetMapping("/ba-work-attendance/attendlist")
     public String toAttendList(Integer projectId,Model model){
-
+        List<String> years = baTimeParamService.getTimeYearValue();
+        List<String> months = baTimeParamService.getTimeMonthValue();
+        Integer applyCount = 0;
+        Integer totalApplyCount = 3;
+        String stopTime =baTimeParamService.getStopTimeParam(projectId);
+        String compelteTime = baTimeParamService.getCompleteParam(projectId);
         if(projectId!=null) {
             BaProjectGroup baProjectGroup = baProjectGroupService.getById(projectId);
             BaProjectGroupAssistant baProjectGroupAssistant = baProjectGroupAssistantService.getBaProjectGroupAssistantByGroupId(projectId);
+            String applyTime= baTimeParamService.getCurrentMonthYear();
+            applyCount = (Integer)baApplyService.getApplyCountByProjectId(projectId,applyTime).getData();
             model.addAttribute("checkUserId", baProjectGroupAssistant.getAssistantId());
             model.addAttribute("projectId", projectId);
         }
-        List<String> years = baTimeParamService.getTimeYearValue();
-        List<String> months = baTimeParamService.getTimeMonthValue();
-
-        String stopTime =baTimeParamService.getStopTimeParam(projectId);
-        String compelteTime = baTimeParamService.getCompleteParam(projectId);
-
+        String tipCountMessage = "本月您已经修改"+applyCount+"次,还有"+(totalApplyCount-applyCount)+"次修改机会";
+        model.addAttribute("tipCountMessage",tipCountMessage);
+        model.addAttribute("totalApplyCount",totalApplyCount);
+        model.addAttribute("applyCount",applyCount);
         model.addAttribute("years",years);
         model.addAttribute("months",months);
         model.addAttribute("stopTime",stopTime);

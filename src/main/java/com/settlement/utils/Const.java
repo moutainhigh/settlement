@@ -101,4 +101,6 @@ public class Const {
     public final static String CHECK_RESULT_PASS_CODE = "PASS";
     /** 数据字典：审核结果：不通过-NOPASS */
     public final static String CHECK_RESULT_NOPASS_CODE = "NOPASS";
+    /** 数据字典：考勤 申请修改类型 */
+    public static final Object APPLY_TYPE = "WORKATTENDANCE";
 }

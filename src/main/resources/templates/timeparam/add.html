@@ -11,32 +11,32 @@
                 <form class="layui-form">
                     <input type="hidden" name="id" th:value="${baTimeParam.id}" th:if="${baTimeParam!=null}" />
                     <div class="layui-form-item">
-                        <div class="layui-form-item">
-                            <label for="customerId" class="layui-form-label" style="width: 90px;">
-                                <span class="x-red">*</span>客户</label>
-                            <div class="layui-input-inline" >
-                                <select id="customerId" name="customerId" lay-filter="customerId" lay-verify="customerId" th:field="*{baTimeParam.customerId}">
-                                    <option value="0">请选择客户</option>
-                                    <option th:each="baCustomer:${baCustomers}" th:value="${baCustomer.id}" th:text="${baCustomer.customerName}" >
-                                </select>
-                            </div>
-                            <div class="layui-input-inline">
-                                <button type="button" id="customerCreate"  lay-filter="customerCreate" class="layui-btn layui-btn-primary layui-btn-xs">创建客户</button>
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label for="projectId" class="layui-form-label" style="width: 90px;">
-                                <span class="x-red">*</span>项目组</label>
-                            <div class="layui-input-inline">
-                                <select id="projectId" name="projectId" lay-filter="projectId" lay-verify="projectId" th:field="*{baTimeParam.projectId}">
-                                    <option value="0">请选择项目</option>
-                                    <option th:if="${mode.equals('update')}" th:each="project:${baProjectGroups}" th:value="${project.id}" th:text="${project.pgName}">
-                                </select>
-                            </div>
-                            <div class="layui-input-inline">
-                                <button type="button" id="projectCreate"  lay-filter="projectCreate" class="layui-btn layui-btn-primary layui-btn-xs">创建项目</button>
-                            </div>
-                        </div>
+<!--                        <div class="layui-form-item">-->
+<!--                            <label for="customerId" class="layui-form-label" style="width: 90px;">-->
+<!--                                <span class="x-red">*</span>客户</label>-->
+<!--                            <div class="layui-input-inline" >-->
+<!--                                <select id="customerId" name="customerId" lay-filter="customerId" lay-verify="customerId" th:field="*{baTimeParam.customerId}">-->
+<!--                                    <option value="0">请选择客户</option>-->
+<!--                                    <option th:each="baCustomer:${baCustomers}" th:value="${baCustomer.id}" th:text="${baCustomer.customerName}" >-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                            <div class="layui-input-inline">-->
+<!--                                <button type="button" id="customerCreate"  lay-filter="customerCreate" class="layui-btn layui-btn-primary layui-btn-xs">创建客户</button>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="layui-form-item">-->
+<!--                            <label for="projectId" class="layui-form-label" style="width: 90px;">-->
+<!--                                <span class="x-red">*</span>项目组</label>-->
+<!--                            <div class="layui-input-inline">-->
+<!--                                <select id="projectId" name="projectId" lay-filter="projectId" lay-verify="projectId" th:field="*{baTimeParam.projectId}">-->
+<!--                                    <option value="0">请选择项目</option>-->
+<!--                                    <option th:if="${mode.equals('update')}" th:each="project:${baProjectGroups}" th:value="${project.id}" th:text="${project.pgName}">-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                            <div class="layui-input-inline">-->
+<!--                                <button type="button" id="projectCreate"  lay-filter="projectCreate" class="layui-btn layui-btn-primary layui-btn-xs">创建项目</button>-->
+<!--                            </div>-->
+<!--                        </div>-->
                         <div class="layui-form-item">
                             <label for="paramCode" class="layui-form-label" style="width: 90px;">
                                 <span class="x-red">*</span>时间点参数编号</label>

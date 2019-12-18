@@ -9,5 +9,11 @@
         <result column="pg_id" property="pgId" />
         <result column="t_p_id" property="tPId" />
     </resultMap>
-
+    <!--批量插入-->
+    <insert id="saveBatchs" parameterType="java.util.List" >
+        insert into ba_pg_time_param(pg_id,t_p_id) values
+        <foreach collection="list" item="baPgTimeParams" index="index" separator=",">
+            (#{baPgTimeParams.pgId},#{baPgTimeParams.tPId})
+        </foreach>
+    </insert>
 </mapper>
