@@ -5,8 +5,10 @@ import com.settlement.co.ApplyCo;
 import com.settlement.entity.BaApply;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.settlement.vo.BaApplyVo;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -19,4 +21,14 @@ import java.util.List;
 public interface BaApplyMapper extends BaseMapper<BaApply> {
 
     List<BaApplyVo> getApplyWorkAttedances(ApplyCo applyCo, Page page);
+    /**获得每个项目的申请修改的次数**/
+    @Select("select " +
+            " count(1)" +
+            " from ba_apply a" +
+            " left join ba_apply_attendance att on a.id = att.apply_id" +
+            " left join ba_work_attendance wa on wa.id = att.attendance_id" +
+            " where a.apply_type=#{applyType}" +
+            " and wa.pg_id=#{projectId}" +
+            " and  DATE_FORMAT(a.apply_time ,'%Y-%m' ) = #{applyTime}")
+    Integer getApplyCountByProjectId(Map<String, Object> map);
 }

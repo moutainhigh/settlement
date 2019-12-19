@@ -85,4 +85,14 @@ public class BaApplyController {
     public Result verifyPasscode(BaApply baApply){
         return baApplyService.verifyPasscode(baApply);
     }
+
+    /**
+     * 获得每个项目的申请修改的次数
+     * @param projectId
+     * @return
+     */
+    @GetMapping("/apply/{count}/{monthValue}")
+    public Result getApplyCountByProjectId(@PathVariable Integer projectId,@PathVariable String monthValue){
+        return baApplyService.getApplyCountByProjectId(projectId,monthValue);
+    }
 }

@@ -9,12 +9,13 @@ import com.settlement.bo.PageData;
 import com.settlement.co.CustomerCo;
 import com.settlement.entity.BaCustomer;
 import com.settlement.entity.BaDeptCustomer;
+import com.settlement.entity.BaPgTimeParam;
 import com.settlement.mapper.BaCustomerMapper;
 import com.settlement.mapper.BaDeptCustomerMapper;
+import com.settlement.mapper.BaPgTimeParamMapper;
 import com.settlement.mapper.SysRoleMapper;
 import com.settlement.service.BaCustomerService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.settlement.service.BaDeptCustomerService;
 import com.settlement.utils.Const;
 import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
@@ -22,13 +23,11 @@ import com.settlement.utils.Status;
 import com.settlement.vo.BaCustomerAndProjectTreeVo;
 import com.settlement.vo.BaCustomerAndProjectVo;
 import com.settlement.vo.BaCustomerVo;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import javax.management.BadAttributeValueExpException;
 import java.util.*;
 
 /**
@@ -46,6 +45,8 @@ public class BaCustomerServiceImpl extends ServiceImpl<BaCustomerMapper, BaCusto
     private BaDeptCustomerMapper baDeptCustomerMapper;
     @Autowired
     private SysRoleMapper sysRoleMapper;
+    @Autowired
+    private BaPgTimeParamMapper baPgTimeParamMapper;
     /**
      * 加载列表页面
      * @param customerCo
@@ -233,7 +234,8 @@ public class BaCustomerServiceImpl extends ServiceImpl<BaCustomerMapper, BaCusto
         Map<String,Object> map = new HashMap<>();
         map.put("enabled",Const.ENABLED_Y);
         map.put("userId",userId);
-        return this.baseMapper.getCustomerAndProjectByUserId(map);
+        List<BaCustomerAndProjectVo> baCustomers = this.baseMapper.getCustomerAndProjectByUserId(map);
+        return baCustomers;
     }
 
     /**

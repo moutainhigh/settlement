@@ -20,9 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * <p>
@@ -168,4 +166,26 @@ public class BaApplyServiceImpl extends ServiceImpl<BaApplyMapper, BaApply> impl
         }
         return r;
     }
+
+    /**
+     * 获得每个项目的申请修改的次数
+     * @param projectId
+     * @return
+     */
+    @Override
+    public Result getApplyCountByProjectId(Integer projectId,String monthValue) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("projectId",projectId);
+        map.put("applyType",Const.APPLY_TYPE);
+        map.put("applyTime",monthValue);
+        Result r = new Result(HttpResultEnum.CODE_1.getCode(),HttpResultEnum.CODE_1.getMessage());
+        Integer count = this.baseMapper.getApplyCountByProjectId(map);
+        if(count!=null) {
+            r.setCode(HttpResultEnum.CODE_0.getCode());
+            r.setMsg(HttpResultEnum.CODE_0.getMessage());
+            r.setData(count);
+        }
+        return  r;
+    }
+
 }
