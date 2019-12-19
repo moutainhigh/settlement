@@ -30,6 +30,7 @@
              dtree = layui.dtree,
              table = layui.table;
         var timeParamId=[[${id}]];
+        var type=[[${type}]];
         //加载左侧项目组树
         var dtree1 = dtree.render({
             elem: '#projectTree',
@@ -68,6 +69,12 @@
                     layer.msg('请选择要保存的项目',{icon:5});
                     return;
                 }
+                //检查选择的项目有没有保存时间点
+               var checkValue = checkTimeParamStatusByProjectIds(node,timeParamId,type);
+                if(checkValue.length>0){
+                    layer.msg(checkValue,{icon:5});
+                    return;
+                }
                 //保存时间点参数
                 $.ajax({
                     type:'post'
@@ -92,6 +99,27 @@
             });
       });
 
+        function checkTimeParamStatusByProjectIds(node,timeParamId,type) {
+            var val='';
+            $.ajax({
+                type:'get'
+                ,url:'/ba-time-param/relate/before/save/'
+                ,data:{projectIds:node,timeParamId:timeParamId,type:type}
+                ,traditional:true
+                ,async:false //同步处理
+                ,success:function(r){
+                    if(r.code=='0') {
+                        var values= r.data;
+                        for(var i=0;i<values.length;i++) {
+                            val+=values[i]+'<br/>';
+                        }
+                    } else {
+                        val= '';
+                    }
+                }
+            });
+            return val;
+        }
 
     </script>
 </html>

@@ -6,4 +6,5 @@ import lombok.Data;
 @Data
 public class BaTimeParamVo extends BaTimeParam {
     private String typeContent;
+    private Integer projectId;
 }

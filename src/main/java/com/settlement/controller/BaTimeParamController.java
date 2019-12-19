@@ -57,6 +57,10 @@ public class BaTimeParamController {
         return r;
     }
 
+    @GetMapping("/relate/before/save/")
+    public Result getTimeParamVoByProjectIdAndType(Integer[] projectIds,String timeParamId,String type){
+        return this.baTimeParamService.checkTimeParamStatusByProjectIds(projectIds,timeParamId,type);
+    }
     /**
      * 时间点-保存关联的项目
      * @param projectIds

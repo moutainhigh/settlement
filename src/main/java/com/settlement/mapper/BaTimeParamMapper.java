@@ -27,4 +27,6 @@ public interface BaTimeParamMapper extends BaseMapper<BaTimeParam> {
     List<BaTimeParamVo> listPageData(TimeParamCo timeParamCo, Page<BaTimeParamVo> page);
     /**根据projectId 和 时间点结参数类型返回结算日期**/
     String getTimeParamValueByProjectId(Map<String, Object> map);
+    /** 根据projectId 和 时间点结参数类型 检查是否保存过相同类型时间点**/
+    List<BaTimeParamVo> getTimeParamVoByProjectIdAndType(Map<String, Object> map);
 }

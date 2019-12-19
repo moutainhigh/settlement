@@ -40,19 +40,14 @@
             t.param_code,
             t.param_item,
             t.param_value,
-             t.type,
+            t.type,
+            d.dic_content as typeContent,
             t.enabled,
             t.create_user_id,
             t.create_time,
-            t.del_flag,
-			c.id as customerId,
-            c.customer_name as customerName,
-            pt.pg_id as projectId,
-            pg.pg_name as projectName
+            t.del_flag
         from ba_time_param t
-        left join ba_pg_time_param pt on t.id = pt.t_p_id
-        left join ba_project_group pg on pt.pg_id = pg.id
-		left join ba_customer c on c.id = pg.customer_id
+        left join sys_data_dic d on d.dic_code=t.type
         where t.id=#{id}
              and t.enabled=#{enabled}
     </select>
@@ -67,5 +62,16 @@
            and tp.enabled=#{enabled}
            and ptg.pg_id=#{projectId}
            and tp.type=#{type}
+    </select>
+
+    <select id="getTimeParamVoByProjectIdAndType" parameterType="java.util.Map" resultType="com.settlement.vo.BaTimeParamVo">
+        SELECT
+            tp.*,
+            ptp.pg_id as projectId
+        from ba_time_param tp
+        left join ba_pg_time_param ptp on tp.id=ptp.t_p_id
+        where tp.type=#{type}
+          and ptp.pg_id=#{projectId}
+          and tp.enabled=#{enabled}
     </select>
 </mapper>

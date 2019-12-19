@@ -6,8 +6,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.settlement.bo.PageData;
 import com.settlement.co.TimeParamCo;
 import com.settlement.entity.BaPgTimeParam;
+import com.settlement.entity.BaProjectGroup;
 import com.settlement.entity.BaTimeParam;
 import com.settlement.mapper.BaPgTimeParamMapper;
+import com.settlement.mapper.BaProjectGroupMapper;
 import com.settlement.mapper.BaTimeParamMapper;
 import com.settlement.service.BaTimeParamService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -38,6 +40,8 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
 
     @Autowired
     private BaPgTimeParamMapper baPgTimeParamMapper;
+    @Autowired
+    private BaProjectGroupMapper baProjectGroupMapper;
     /**
      * 加载列表页面
      * @param timeParamCo
@@ -81,6 +85,50 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
         return  r;
     }
 
+    /**
+     * 检查有没有保存过时间点参数
+     * @param projectIds
+     * @param timeParamId
+     * @return
+     */
+    @Override
+    public Result checkTimeParamStatusByProjectIds(Integer[] projectIds, String timeParamId,String type) {
+        Result r =  new Result(HttpResultEnum.CODE_1.getCode(),HttpResultEnum.CODE_1.getMessage());
+        Map<Integer,List<BaTimeParamVo>> map = new HashMap<>();
+        for(Integer projectId:projectIds) {
+            //查询是否存在同种时间点的数据
+            Map<String,Object> map2 = new HashMap<>();
+            map2.put("type",type);
+            map2.put("projectId",projectId);
+            map2.put("enabled",Const.ENABLED_Y);
+            List<BaTimeParamVo> baPgTimeParams = this.baseMapper.getTimeParamVoByProjectIdAndType(map2);
+            if(baPgTimeParams.size()>1) {
+                //存在已经保存过的时间点
+                map.put(projectId,baPgTimeParams);
+            }
+        }
+        List<String> existProjectId = new ArrayList<>();
+        //取出项目保存过的时间点
+        for(Map.Entry<Integer,List<BaTimeParamVo>> entry: map.entrySet()) {
+            Integer projectId = entry.getKey();
+            for(BaTimeParamVo baTimeParamVo:entry.getValue()) {
+                Integer projectId2 = baTimeParamVo.getProjectId();
+                String paramItem = baTimeParamVo.getParamItem();
+                Integer timeParamId2 = baTimeParamVo.getId();
+//                if(entry.getKey().equals(baTimeParamVo.getProjectId())) {
+                if(projectId.equals(projectId2) && !(timeParamId2.equals(timeParamId))) {
+                   BaProjectGroup baProjectGroup = baProjectGroupMapper.selectById(projectId);
+                    existProjectId.add(baProjectGroup.getPgName()+"已经保存了:【 "+paramItem+"】时间点");
+                }
+            }
+        }
+        if(existProjectId.size()>0) {
+            r.setCode(HttpResultEnum.CODE_0.getCode());
+            r.setMsg(HttpResultEnum.CODE_0.getMessage());
+            r.setData(existProjectId);
+        }
+        return  r;
+    }
     /**
      * 保存项目的时间点参数
      * @param projectIds

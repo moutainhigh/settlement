@@ -67,11 +67,10 @@
            cols: [[
                {field:'id',type:'checkbox',fixed:'left'},
                {field:'paramCode',title:'参数代码',align:'center',fixed:'left'},
-               {field:'paramItem',title:'参数项',edit: 'text',align:'center'},
-               {field:'paramValue',title:'参数值',edit: 'text',align:'center'},
-               {field:'typeContent',title:'时间点类型',edit: 'text',align:'center'},
-               // {field:'customerName',title:'客户',edit: 'text',align:'center'},
-               // {field:'projectName',title:'项目组',edit: 'text',align:'center'},
+               {field:'paramItem',title:'参数项',align:'center'},
+               {field:'paramValue',title:'参数值',align:'center'},
+               {field:'type',title:'type',hide:true},
+               {field:'typeContent',title:'时间点类型',align:'center'},
                {field:'enabled',title:'状态',align:'center',templet: '#switchStatus', unresize: true},
                {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:200}
            ]]
@@ -201,7 +200,7 @@
                   layer.alert('只能选择一条时间点记录关联',{icon : 5});
                   return ;
               } else {
-                  xadmin.open(title,url+data[0].id,w,h);
+                  xadmin.open(title,url+data[0].id+'/'+data[0].type,w,h);
               }
       }
       /*数据字典-删除*/

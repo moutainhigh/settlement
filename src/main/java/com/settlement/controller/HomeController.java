@@ -387,9 +387,10 @@ public class HomeController {
      * 时间点-关联项目组
      * @return
      */
-    @GetMapping("/ba-time-param/relate/project/{id}")
-    public String toRelateProject(@PathVariable Integer id,Model model){
+    @GetMapping("/ba-time-param/relate/project/{id}/{type}")
+    public String toRelateProject(@PathVariable Integer id,@PathVariable String type, Model model){
         model.addAttribute("id",id);
+        model.addAttribute("type",type);
         return "timeparam/project";
     }
 

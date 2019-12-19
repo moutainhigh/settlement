@@ -53,4 +53,7 @@ public interface BaTimeParamService extends IService<BaTimeParam> {
     String getCurrentMonthYear();
     /**保存项目的时间点参数**/
     Result saveRelateProject(Integer[] projectIds, String timeParamId);
+    /**检查有没有保存过时间点参数**/
+    Result checkTimeParamStatusByProjectIds(Integer[] projectIds, String timeParamId,String type);
+
 }
