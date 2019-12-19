@@ -41,6 +41,7 @@
         left join sys_data_dic d on a.apply_type = d.dic_code
         left join sys_data_dic d1 on a.check_status = d1.dic_code
         left join sys_user u on a.check_user=u.id
+        order  by a.check_time desc,a.apply_time desc
     </select>
 
 </mapper>

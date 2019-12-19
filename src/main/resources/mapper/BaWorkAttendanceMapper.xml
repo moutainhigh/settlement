@@ -112,8 +112,9 @@
         left join ba_employee e on b.employee_id=e.id
         where 1=1
 		and e.del_flag=#{workAttendanceCo.delFlag}
+		and b.sub_status=#{workAttendanceCo.subStatus}
 		and b.id in(
-			select a.id from ba_apply_attendance a
+			select a.attendance_id from ba_apply_attendance a
 			where a.apply_id=#{workAttendanceCo.applyId}
 		)
 		order by b.sub_status asc
