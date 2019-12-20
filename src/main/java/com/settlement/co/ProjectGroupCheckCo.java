@@ -17,4 +17,5 @@ public class ProjectGroupCheckCo extends PageCo {
     /** 当前登陆用户 */
     private Integer currentUserId;
 
+    private String delFlag;
 }

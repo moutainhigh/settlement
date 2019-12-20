@@ -95,7 +95,7 @@ public class BaProjectGroupServiceImpl extends ServiceImpl<BaProjectGroupMapper,
             int ret = this.baseMapper.insert(projectGroupVo);
             BaProjectGroupCheck bgc = new BaProjectGroupCheck();
             bgc.setCheckStatus(Const.CHECK_STATUS_NO_CHECK);
-            bgc.setCheckTime(new Date());
+            bgc.setApplyTime(new Date());
             bgc.setPgId(projectGroupVo.getId());
             bgc.setCheckUserId(projectGroupVo.getCheckUserId());
             int ret1 = baProjectGroupCheckMapper.insert(bgc);
@@ -144,7 +144,7 @@ public class BaProjectGroupServiceImpl extends ServiceImpl<BaProjectGroupMapper,
             int ret = this.baProjectGroupMapper.update(projectGroupVo, updateWrapper);
             BaProjectGroupCheck bgc = new BaProjectGroupCheck();
             bgc.setCheckStatus(Const.CHECK_STATUS_NO_CHECK);
-            bgc.setCheckTime(new Date());
+            bgc.setApplyTime(new Date());
             bgc.setPgId(projectGroupVo.getId());
             bgc.setCheckUserId(projectGroupVo.getCheckUserId());
             int ret1 = baProjectGroupCheckMapper.insert(bgc);
@@ -235,6 +235,28 @@ public class BaProjectGroupServiceImpl extends ServiceImpl<BaProjectGroupMapper,
             r.setCode(HttpResultEnum.CODE_0.getCode());
             r.setMsg(HttpResultEnum.CODE_0.getMessage());
             r.setData(baProjectGroups);
+        }
+        return r;
+    }
+
+    @Override
+    public Result checkPgStart(Integer id) {
+        QueryWrapper<BaProjectGroupAssistant> queryWrapperPgAssistant = new QueryWrapper<BaProjectGroupAssistant>();
+        queryWrapperPgAssistant.eq("pg_id",id);
+        int ret = baProjectGroupAssistantMapper.selectCount(queryWrapperPgAssistant);
+        QueryWrapper<BaProjectGroupSettlement> queryWrapperPgSettlement = new QueryWrapper<BaProjectGroupSettlement>();
+        queryWrapperPgSettlement.eq("pg_id",id);
+        int ret1 = this.baProjectGroupSettlementMapper.selectCount(queryWrapperPgSettlement);
+        Result r = new Result();
+        if (ret == 0) {
+            r.setCode(HttpResultEnum.PG_ASSISTANT_0.getCode());
+            r.setMsg(HttpResultEnum.PG_ASSISTANT_0.getMessage());
+        } else if (ret1 == 0) {
+            r.setCode(HttpResultEnum.PG_SETTLEMENT_0.getCode());
+            r.setMsg(HttpResultEnum.PG_SETTLEMENT_0.getMessage());
+        } else if (ret > 0 & ret1 > 0) {
+            r.setCode(HttpResultEnum.CODE_200.getCode());
+            r.setMsg(HttpResultEnum.CODE_200.getMessage());
         }
         return r;
     }

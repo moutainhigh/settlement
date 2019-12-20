@@ -8,6 +8,7 @@ import com.settlement.service.BaProjectGroupSettlementService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
+import com.settlement.vo.ProjectGroupSettlementVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,5 +60,10 @@ public class BaProjectGroupSettlementServiceImpl extends ServiceImpl<BaProjectGr
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         return r;
+    }
+
+    @Override
+    public List<ProjectGroupSettlementVo> getProjectGroupSettlementDetailByPgId(Integer pgId) {
+        return this.baProjectGroupSettlementMapper.selectProjectSettlementByPgId(pgId);
     }
 }

@@ -40,6 +40,7 @@ public class BaProjectGroupCheckServiceImpl extends ServiceImpl<BaProjectGroupCh
 
     @Override
     public PageData getPgCheckPageList(ProjectGroupCheckCo projectGroupCheckCo) {
+        projectGroupCheckCo.setDelFlag(Const.DEL_FLAG_N);
         Page<ProjectGroupCheckVo> page = new Page<ProjectGroupCheckVo>(projectGroupCheckCo.getPage(), projectGroupCheckCo.getLimit());
         page.setRecords(this.baseMapper.getProjectGroupCheckPageList(projectGroupCheckCo, page));
         return new PageData(page.getTotal(),page.getRecords());

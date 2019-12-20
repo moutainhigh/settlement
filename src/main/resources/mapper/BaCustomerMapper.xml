@@ -56,4 +56,16 @@
          and bc.enabled = #{enabled}
          and bdc.dept_id = #{deptId}
     </select>
+    <!-- 根据客户负责人，查询客户 -->
+    <select id="getBaCustomerByChief" parameterType="java.util.Map" resultType="com.settlement.vo.BaCustomerVo">
+        SELECT
+         bc.id,
+         bc.`code`,
+         bc.customer_name
+        FROM
+         ba_customer bc
+        WHERE
+         bc.enabled = #{enabled}
+         and bc.chief = #{chief}
+    </select>
 </mapper>

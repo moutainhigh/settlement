@@ -138,6 +138,10 @@
                       ,btn: ['确定','取消']
                       ,yes: function(index, layero){
                           // 发送ajax请求，更新后台
+                          $.get('',null, function() {
+
+                          })
+
                           data.elem.checked=a;
                           layui.form.render();
                           layer.close(index);

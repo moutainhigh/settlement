@@ -298,4 +298,12 @@ public class BaCustomerServiceImpl extends ServiceImpl<BaCustomerMapper, BaCusto
         paramMap.put("enabled", Const.ENABLED_Y);
         return this.baseMapper.getBaCustomerByDeptId(paramMap);
     }
+
+    @Override
+    public List<BaCustomerVo> getCustomerByChief(Integer chief) {
+        Map<String,Object> paramMap = new HashMap<String, Object>();
+        paramMap.put("chief",chief);
+        paramMap.put("enabled", Const.ENABLED_Y);
+        return this.baseMapper.getBaCustomerByChief(paramMap);
+    }
 }

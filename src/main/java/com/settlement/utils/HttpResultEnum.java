@@ -18,6 +18,8 @@ public enum HttpResultEnum {
     // 项目组
     PG_CODE_0("0","项目组不存在，可以添加"),
     PG_CODE_1("1","项目组已经存在，不可以添加"),
+    PG_ASSISTANT_0("0","项目组未关联助理"),
+    PG_SETTLEMENT_0("0","项目组未关联结算负责人"),
     //角色编码
     ROLE_CODE_0("0","角色编码不存在，可以添加"),
     ROLE_CODE_1("1","角色编码已经存在，不可以添加"),

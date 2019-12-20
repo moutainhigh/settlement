@@ -48,6 +48,16 @@ public interface BaCustomerMapper extends BaseMapper<BaCustomer> {
      */
     List<BaCustomerVo> getBaCustomerByDeptId(Map<String, Object> map);
 
+    /**
+     * @description 根据客户负责人，查询客户
+     *
+     * @auth admin
+     * @date 2019-12-16
+     * @param map
+     * @return
+     */
+    List<BaCustomerVo> getBaCustomerByChief(Map<String, Object> map);
+
 }
 
 

@@ -65,6 +65,8 @@ public class HomeController {
     private BaEmployeeService baEmployeeService;
     @Autowired
     private BaProjectGroupCheckService baProjectGroupCheckService;
+    @Autowired
+    private BaProjectGroupSettlementService baProjectGroupSettlementService;
 
     @GetMapping({"/","/login"})
     public String toLogin() {
@@ -371,6 +373,16 @@ public class HomeController {
     public String toRelateSettlement(@PathVariable Integer id, Model model) {
         model.addAttribute("pg", this.baProjectGroupService.getProjectGroupSettlementById(id));
         return "pg/relate-settlement";
+    }
+
+    @GetMapping("/ba-project-group/start/{id}")
+    public String toStartPg(@PathVariable(value="id") Integer id,Model model) {
+        BaProjectGroup bpg = this.baProjectGroupService.getById(id);
+        model.addAttribute("projectGroupVo", bpg);
+        model.addAttribute("projectGroupAssistantVoList",this.baProjectGroupAssistantService.getProjectGroupAssistantDetailBypgId(id));
+        model.addAttribute("projectSettlementVoList",this.baProjectGroupSettlementService.getProjectGroupSettlementDetailByPgId(id));
+        model.addAttribute("customer",this.baCustomerService.getById(bpg.getCustomerId()));
+        return "pg/start";
     }
     /////////////////////////////////////////////////////////////  项目组跳转end  ///////////////////////////////////////////////////////////////////
 
@@ -749,7 +761,7 @@ public class HomeController {
         model.addAttribute("projectGroupCheckVo", this.baProjectGroupCheckService.getPgCheckById(id));
         model.addAttribute("checkStatusList",this.sysDataDicService.getDataDicSelectByParentCode(Const.CHECK_RESULT_CODE));
         SysUser user = (SysUser)SecurityUtils.getSubject().getPrincipal();
-        model.addAttribute("customerList", this.baCustomerService.getCustomerByDeptId(user.getDeptId()));
+        model.addAttribute("customerList", this.baCustomerService.getCustomerByChief(user.getId()));
         return "pgcheck/check";
     }
 
