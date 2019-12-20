@@ -132,7 +132,7 @@
                 form.on('select(customerId)',function(data){
                     var customerId = data.value;
                     $.ajax({
-                        type:'put',
+                        type:'get',
                         url:'/ba-project-group/groups/'+customerId,
                         success:function(r){
                             if(r.code=='0') {
