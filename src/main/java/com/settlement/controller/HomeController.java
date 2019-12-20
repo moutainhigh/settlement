@@ -8,6 +8,7 @@ import com.settlement.utils.Result;
 import com.settlement.vo.*;
 import net.bytebuddy.asm.Advice;
 import org.apache.shiro.SecurityUtils;
+import org.eclipse.jetty.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -649,6 +650,14 @@ public class HomeController {
             model.addAttribute("projectId", projectId);
         }
         String tipCountMessage = "本月您已经修改"+applyCount+"次,还有"+(totalApplyCount-applyCount)+"次修改机会";
+        String tipStopAndCompelteTime = "";
+        if(stopTime.split("-")[2].equals("null")) {
+            tipStopAndCompelteTime+=" 设置【结算时间点】";
+        }
+        if(compelteTime.split("-")[2].equals("null")) {
+            tipStopAndCompelteTime+=" 设置【结算完成时间点】";
+        }
+        model.addAttribute("tipStopAndCompelteTime",tipStopAndCompelteTime);
         model.addAttribute("tipCountMessage",tipCountMessage);
         model.addAttribute("totalApplyCount",totalApplyCount);
         model.addAttribute("applyCount",applyCount);
