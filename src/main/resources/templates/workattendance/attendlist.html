@@ -46,6 +46,11 @@
                         <div class="layui-inline layui-show-xs-block">
                             <input type="text" id="end" name="completeTime" th:value="${compelteTime}" readonly autocomplete="off" class="layui-input">
                         </div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <lable class="x-red">
+                                <span th:text="${tipStopAndCompelteTime.length()>0}?${tipStopAndCompelteTime}"></span>
+                            </lable>
+                        </div>
                     </div>
                  <!--考勤时间点-->
 
@@ -56,7 +61,7 @@
                         <div class="layui-inline layui-show-xs-block">
                             <button class="layui-btn" id="search"  onclick="search();return false;" data-type="reload" lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i>查询</button>
                         </div>
-                        <div class="layui-inline layui-show-xs-block" style="margin-left: 300px;">
+                        <div class="layui-inline layui-show-xs-block" style="margin-left: 221px;">
                             <lable class="x-red">
                                 <span th:text="${tipCountMessage}"></span>
                             </lable>

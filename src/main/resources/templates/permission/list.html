@@ -113,7 +113,7 @@
                     url: "/sys-permission/dtree/list/pagedata",
                     initLevel: "2"
                     ,done:function(res, $obj, first){
-                        //alert(first);
+                        $("#demoTree").css({ "width": "180px"});
                         if(first) {
                             var id = 1;
                            // $("#demoTree").find("div[dtree-click='itemNodeClick'][dtree-id='demoTree'][data-id='" + id + "']").click();
