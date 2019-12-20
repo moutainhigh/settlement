@@ -46,6 +46,8 @@
     <script id="checkStatusTpl" type="text/html">
         {{#  if(d.checkStatusContent === '审核通过'){ }}
         <span style="color: #71C671;">{{ d.checkStatusContent }}</span>
+        {{#  } else if(d.checkStatusContent === '审核未通过') { }}
+        <span style="color: #EEAD0E;">{{ d.checkStatusContent }}</span>
         {{#  } else { }}
         {{ d.checkStatusContent }}
         {{#  } }}
@@ -108,7 +110,7 @@
               var data = obj.data;
              var checkStatus = data.checkStatus;
               if(obj.event === 'detail'){
-                  layer.msg('ID：'+ data.id + ' 的查看操作');
+                 //  layer.msg('ID：'+ data.id + ' 的查看操作');
                   xadmin.open('查看','/ba-project-group-check/'+ data.id,750,350);
               } else if(obj.event === 'check'){
                   if (checkStatus == checkStatusPass || checkStatus == checkStatusNoPass) {

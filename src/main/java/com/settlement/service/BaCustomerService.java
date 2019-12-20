@@ -40,4 +40,6 @@ public interface BaCustomerService extends IService<BaCustomer> {
     Object getCustomerAndProjectTreeByUserId(Integer userId);
     /** 根据部门ID取得客户 */
     List<BaCustomerVo> getCustomerByDeptId(Integer deptId);
+    /** 根据客户负责人查询客户 */
+    List<BaCustomerVo> getCustomerByChief(Integer chief);
 }

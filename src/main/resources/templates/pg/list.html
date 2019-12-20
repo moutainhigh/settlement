@@ -123,9 +123,11 @@
               // layer.tips(this.value + ' ' + this.name + '：'+ obj.elem.checked, obj.othis);
               var passCheckStatus = [[ ${PG_CHECKSTATUS_CHECK_PASS} ]];
               var id = this.value;
+            //  console.log(data.elem);
+             var rowCheckStatus =  $(this).parent().parent().parent().find('td').eq(3).text();
               var obj = $(data.elem);
               var a = data.elem.checked;
-              if (passCheckStatus == data.checkStatus) {
+              if (passCheckStatus == rowCheckStatus) {
                   if (!a) {
                       layer.open({
                           type: 2,
@@ -136,7 +138,7 @@
                           shade:0.4,
                           title: '项目组停用',
                           content: '/ba-project-group/stop/'+id,
-                          cancel: function (index, layero) {
+                          cancel: function (index, layer) {
                               // parent.location.reload();
                               data.elem.checked = !a;
                               layui.form.render();
@@ -146,13 +148,21 @@
                       layer.open({
                           content: '确定要启用此项目组吗？'
                           ,btn: ['确定','取消']
-                          ,yes: function(index, layer){
+                          ,yes: function(index){
                               // 发送ajax请求，更新后台
+                              // 验证是否关联助理和结算负责人，关联了可以启用，未关联不可启用
+                              $.get('/ba-project-group/start-check/' + id, null,function(r) {
+                                  if (r.code == '200') {
+                                      xadmin.open('启用项目组','/ba-project-group/start/'+ id,600,400);
+                                  } else {
+                                      layer.msg(r.msg, {icon:5});
+                                  }
+                              });
                               data.elem.checked=a;
                               layui.form.render();
                               layer.close(index);
                           }
-                          ,btn2: function(index, layer){
+                          ,btn2: function(index){
                               //按钮【按钮二】的回调
                               data.elem.checked=!a;
                               layui.form.render();

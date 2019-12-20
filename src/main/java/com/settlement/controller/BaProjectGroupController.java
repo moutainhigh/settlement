@@ -182,8 +182,21 @@ public class BaProjectGroupController {
      * @param customerId
      * @return
      */
-    @PutMapping("/ba-project-group/groups/{customerId}")
+    @GetMapping("/ba-project-group/groups/{customerId}")
     public Result getGroupsByCustomerId(@PathVariable(value="customerId") Integer customerId) {
         return this.baProjectGroupService.getGroupsByCustomerId(customerId);
+    }
+
+    /**
+     * @description 项目组启用检查，是否关联助理、结算负责人
+     *
+     * @auth admin
+     * @date 2019-12-19
+     * @param id
+     * @return
+     */
+    @GetMapping("/ba-project-group/start-check/{id}")
+    public Result pgStartCheck(@PathVariable(value="id") Integer id) {
+        return this.baProjectGroupService.checkPgStart(id);
     }
 }

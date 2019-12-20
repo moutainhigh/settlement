@@ -14,3 +14,19 @@ function checkPgIsExist(code, layer,mode) {
     $.ajaxSettings.async = true;
     return flag;
 }
+
+/** 项目组：启用 */
+/*
+function start() {
+    $.ajax({
+        url:"/ba-project-group/start/" + id,
+        type:"GET",
+        contentType:"application/json",//设置请求参数类型为json字符串
+        // data: {id:id},
+        dataType:"json",
+        async: false,
+        success:function(r){
+            layer.msg(r.msg,{icon: r.code == '200'? 6 : 5});
+        }
+    });
+}*/

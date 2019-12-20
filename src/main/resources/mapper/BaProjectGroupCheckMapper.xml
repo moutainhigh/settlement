@@ -34,11 +34,12 @@
          left join sys_user su1 on su1.id = bpg.create_user_id
          left join sys_data_dic sdd on sdd.dic_code = bpgc.check_status
         <where>
+            bpg.del_flag = #{projectGroupCheckCo.delFlag}
             <if test="projectGroupCheckCo.keyword != null">
-                CONCAT(bpg.pg_name,bpg.code) like CONCAT('%',#{projectGroupCheckCo.keyword},'%')
+              and  CONCAT(bpg.pg_name,bpg.code) like CONCAT('%',#{projectGroupCheckCo.keyword},'%')
             </if>
             <if test="projectGroupCheckCo.currentUserId != null">
-                bpgc.check_user_id = #{projectGroupCheckCo.currentUserId}
+              and  bpgc.check_user_id = #{projectGroupCheckCo.currentUserId}
             </if>
         </where>
         ORDER BY bpgc.check_status desc, bpgc.apply_time desc

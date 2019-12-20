@@ -2,6 +2,7 @@ package com.settlement.mapper;
 
 import com.settlement.entity.BaProjectGroupAssistant;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.settlement.vo.ProjectGroupAssistantVo;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -28,5 +29,15 @@ public interface BaProjectGroupAssistantMapper extends BaseMapper<BaProjectGroup
      * @return
      */
     int insertBatch(List<BaProjectGroupAssistant> list);
+
+    /**
+     * @description 根据项目组ID查询助理
+     *
+     * @auth admin
+     * @date 2019-12-9
+     * @param pgId
+     * @return
+     */
+    List<ProjectGroupAssistantVo> selectAssistantByPgId(Integer pgId);
 
 }

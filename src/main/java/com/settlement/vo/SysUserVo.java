@@ -4,14 +4,21 @@ import com.settlement.entity.SysRole;
 import com.settlement.entity.SysUser;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 /**
+ * <p>
+ *     用户Vo
+ * </p>
+ *
+ * @auth admin
+ * @date 2019-12-1
  * Created by Administrator on 2019/11/11.
  */
 @Data
-public class SysUserVo extends SysUser {
+public class SysUserVo extends SysUser implements Serializable {
 
     private SysRole role;
 

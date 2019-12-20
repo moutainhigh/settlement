@@ -7,6 +7,7 @@ import com.settlement.service.BaProjectGroupAssistantService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
+import com.settlement.vo.ProjectGroupAssistantVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,5 +70,10 @@ public class BaProjectGroupAssistantServiceImpl extends ServiceImpl<BaProjectGro
         QueryWrapper<BaProjectGroupAssistant> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("pg_id",projectId);
         return  this.baProjectGroupAssistantMapper.selectOne(queryWrapper);
+    }
+
+    @Override
+    public List<ProjectGroupAssistantVo> getProjectGroupAssistantDetailBypgId(Integer pgId) {
+        return baProjectGroupAssistantMapper.selectAssistantByPgId(pgId);
     }
 }

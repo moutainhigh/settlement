@@ -16,4 +16,15 @@
         </foreach>
     </insert>
 
+    <select id="selectProjectSettlementByPgId" resultType="com.settlement.vo.ProjectGroupSettlementVo">
+        SELECT
+          bpgs.sc_id,
+          su.real_name as settlementName
+        FROM
+         ba_project_group_settlement bpgs,
+         sys_user su
+        WHERE
+         bpgs.sc_id = su.id
+         and pg_id = #{pgId}
+    </select>
 </mapper>
