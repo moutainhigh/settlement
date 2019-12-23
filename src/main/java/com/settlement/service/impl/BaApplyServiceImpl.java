@@ -15,6 +15,7 @@ import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
 import com.settlement.vo.BaApplyVo;
 import io.swagger.models.auth.In;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -186,6 +187,42 @@ public class BaApplyServiceImpl extends ServiceImpl<BaApplyMapper, BaApply> impl
             r.setData(count);
         }
         return  r;
+    }
+
+    /**
+     * 根据id 获得BaApplyVo
+     * @param id
+     * @return
+     */
+    @Override
+    public BaApplyVo getApplyVoById(Integer id) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("id",id);
+        return this.baseMapper.getApplyVoById(map);
+    }
+
+    /**
+     * 审核考勤修改
+     * @param baApplyVo
+     * @return
+     */
+    @Override
+    public Result checkWorkattend(BaApplyVo baApplyVo) {
+        Result r = new Result(HttpResultEnum.CHK_CODE_500.getCode(),HttpResultEnum.CHK_CODE_500.getMessage());
+        BaApply baApply = new BaApply();
+        BeanUtils.copyProperties(baApplyVo,baApply);
+        UpdateWrapper<BaApply> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.set("update_password",baApplyVo.getUpdatePassword());
+        updateWrapper.set("check_remark",baApplyVo.getCheckRemark());
+        updateWrapper.set("check_status",baApplyVo.getCheckStatus());
+        updateWrapper.set("check_time",new Date());
+        updateWrapper.eq("id",baApplyVo.getId());
+        Integer ret =  this.baseMapper.update(baApply,updateWrapper);
+        if(ret!=null && ret>0) {
+            r.setCode(HttpResultEnum.CHK_CODE_200.getCode());
+            r.setMsg(HttpResultEnum.CHK_CODE_200.getMessage());
+        }
+        return r;
     }
 
 }

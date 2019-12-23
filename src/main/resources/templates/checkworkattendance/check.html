@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+    
+    <head>
+        <th:bolck th:include="common/header :: header('添加用户')" />
+        <link rel="stylesheet" th:href="@{/css/formSelects-v4.css}" />
+    </head>
+    <body>
+        <div class="layui-fluid">
+            <div class="layui-row">
+                <form class="layui-form">
+                    <input type="hidden" name="id" th:value="${baApply.id}" th:if="${baApply!=null}" />
+                    <div class="layui-form-item">
+                        <div class="layui-form-item">
+                            <label  class="layui-form-label">
+                                申请人</label>
+                            <div class="layui-input-inline">
+                                <p th:text="${baApply.applyUserContent}" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">
+                                修改申请内容</label>
+                            <div class="layui-input-inline">
+                                <p th:text="${baApply.applyRemark}" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">
+                                <span class="x-red">*</span>审核结果</label>
+                            <div class="layui-input-inline">
+                                <select id="checkStatus" name="checkStatus" style="width: 100px;height: 30px;">
+                                    <option value="">请选择</option>
+                                    <option th:each="status:${checkStatusList}" th:value="${status.dicCode}" th:text="${status.dicContent}"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="updatePassword" class="layui-form-label">
+                                <span class="x-red">*</span>验证口令</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="updatePassword" name="updatePassword" th:value="${baApply.updatePassword}"  required="" lay-verify="updatePassword" autocomplete="off" placeholder="请输入验证口令" class="layui-input" maxlength="20">
+                            </div>
+                        </div>
+                        <div class="layui-form-item layui-form-text">
+                            <label for="checkRemark" class="layui-form-label">审核备注内容</label>
+                            <div class="layui-input-block">
+                                <textarea name="checkRemark" id="checkRemark" placeholder="请输入审核备注内容" class="layui-textarea"></textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="add" class="layui-form-label"></label>
+                            <button class="layui-btn" id="add"  lay-filter="add" lay-submit="">审核</button>
+                        </div>
+                   </div>
+                </form>
+            </div>
+        </div>
+        <script type="text/javascript" th:inline="javascript">
+            // 表单操作
+            layui.use(['form', 'layer','jquery','laydate'],
+            function() {
+                $ = layui.jquery;
+                var form = layui.form,
+                layer = layui.layer,
+                 laydate = layui.laydate;
+
+                //日期
+                laydate.render({
+                    elem: '#startTime'
+                });
+                laydate.render({
+                    elem: '#endTime'
+                });
+                form.render();
+                //自定义验证规则
+                form.verify({
+                    updatePassword: function(value) {
+                        if (value.length < 1) {
+                            return '验证口令至少得1个字符';
+                        }
+                    },
+                    checkRemark: function (value) {
+                        if (value.length < 1) {
+                            return '审核备注内容至少1个字符';
+                        }
+                    }
+                });
+
+                //监听提交
+                form.on('submit(add)', function(data){
+                        $.post('/ba-apply//check/workattend/',data.field,function (r) {
+                            layer.alert(r.msg, {
+                                    icon : r.code == 'chk_200' ? 6: 5
+                                },
+                                function() {
+                                    //关闭当前frame
+                                    xadmin.close();
+                                    // 可以对父窗口进行刷新
+                                    xadmin.father_reload();
+                                });
+                        });
+                    return false;
+                });
+            });
+
+            //form.render();
+            // 检查邮箱是否存在
+            function contractNoIsExist(contractNo, layer,mode) {
+                var flag = true;
+                $.ajaxSettings.async = false;
+                $.get('/ba-contract/isexist/' + contractNo , null , function(r) {
+                    if (r.code == 1)  {
+                        flag = false;
+                        layer.alert(r.msg, {icon: 5});
+                    } else if (mode != 'submit' && r.code == 0) {
+                        layer.alert(r.msg, {icon: 6});
+                    }
+                });
+                $.ajaxSettings.async = true;
+                return flag;
+            }
+        </script>
+    </body>
+</html>

@@ -75,7 +75,7 @@
         // var $ = layui.jquery;
         table.render({
            elem: '#dataTable',
-           url: '/ba-apply-workattendance/pagedata',
+           url: '/ba-apply/check/workattend/pagedata',
            // toolbar: '',
            page: true,
            title: '导出参数',
@@ -85,7 +85,7 @@
            cols: [[
                {field:'id',type:'checkbox',fixed:'left'},
                {field:'applyUserContent',title:'申请人 ',align:'center'},
-               {field:'applyTypeContent',title:'类型',align:'center',fixed:'left'},
+               {field:'applyTypeContent',title:'类型',align:'center'},
                {field:'applyRemark',title:'描述',align:'center'},
                {field:'checkStatus',title:'',align:'center',hide:true},
                {field:'checkStatusContent',title:'审核状态',align:'center'},
@@ -129,11 +129,11 @@
               layer.alert('不能多选啊，只能选择一行',{icon : 5});
           }else if(data.length == 1) {
               // 只有处于审核通过状态才能操作
-              if (data[0].checkStatus == 'CHECK_PASS') {
+              if (data[0].checkStatus != 'CHECK_PASS') {
                     //弹出口令窗口，输入口令 正确可以进行修改
-                    xadmin.open('确认修改口令',"/ba-apply/passcode/"+data[0].id,400,200);
+                    xadmin.open('考勤修改审核',"/ba-apply/check/workattendance/"+data[0].id,400,500);
               } else {
-                  layer.msg("考勤记录只有处于【审核通过】状态才能修改" ,{icon:5});
+                  layer.msg("考勤记录处于【审核通过】状态" ,{icon:5});
               }
           }
       }

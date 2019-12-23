@@ -42,6 +42,27 @@ public class BaApplyController {
     }
 
     /**
+     * 加载考勤审核列表
+     * @param applyCo
+     * @return
+     */
+    @GetMapping("/check/workattend/pagedata")
+    public PageData listCheckPageData(ApplyCo applyCo){
+        PageData pageData = baApplyService.listPageData(applyCo);
+        return  pageData;
+    }
+
+    /**
+     * 审核考勤修改
+     * @param baApplyVo
+     * @return
+     */
+    @PostMapping("/check/workattend")
+    public Result checkWorkattend(BaApplyVo baApplyVo){
+
+        return baApplyService.checkWorkattend(baApplyVo);
+    }
+    /**
      *修改
      * @param baApplyVo
      * @return

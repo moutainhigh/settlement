@@ -710,6 +710,32 @@ public class HomeController {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
+     * 考勤审核
+     * @param model
+     * @return
+     */
+    @GetMapping("/ba-apply-check-workattendance/list")
+    public String toCheckattendanceList(Model model){
+        List<SysDataDic> checkStatusList = sysDataDicService.getCheckStatus();
+        model.addAttribute("checkStatusList",checkStatusList);
+        return "checkworkattendance/list";
+    }
+
+    /**
+     * 审核操作
+     * @param id
+     * @param model
+     * @return
+     */
+    @GetMapping("/ba-apply/check/workattendance/{id}")
+    public String toCheckattendanceList(@PathVariable Integer id, Model model){
+        BaApplyVo baApplyVo = baApplyService.getApplyVoById(id);
+        List<SysDataDic> checkStatusList = sysDataDicService.getCheckStatus();
+        model.addAttribute("baApply",baApplyVo);
+        model.addAttribute("checkStatusList",checkStatusList);
+        return "checkworkattendance/check";
+    }
+    /**
      * 申请修改记录
      * @return
      */

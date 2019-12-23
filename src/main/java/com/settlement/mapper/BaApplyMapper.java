@@ -31,4 +31,7 @@ public interface BaApplyMapper extends BaseMapper<BaApply> {
             " and wa.pg_id=#{projectId}" +
             " and  DATE_FORMAT(a.apply_time ,'%Y-%m' ) = #{applyTime}")
     Integer getApplyCountByProjectId(Map<String, Object> map);
+
+    /**根据id 获得BaApplyVo*/
+    BaApplyVo getApplyVoById(Map<String,Object> map);
 }
