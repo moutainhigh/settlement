@@ -69,7 +69,9 @@ public enum HttpResultEnum {
     //考勤记录提交状态
     COMMIT_CODE_200("commit_200","提交成功"),
     COMMIT_CODE_500("commit_500","提交失败"),
-
+    //审核
+    CHK_CODE_200("chk_200","审核成功"),
+    CHK_CODE_500("chk_500","审核失败"),
     //口令验证
     VERIFY_CODE_500("verify_500","口令验证失败"),
     VERIFY_CODE_200("verify_200","口令验证通过"),
@@ -84,6 +86,7 @@ public enum HttpResultEnum {
     FILE_UPLOAD_CODE_9002("9002","文件下载失败"),
     FILE_UPLOAD_CODE_9004("9004","图片上传格式不正确，支持的格式有jpg、png、jpeg"),
     FILE_UPLOAD_CODE_9005("9005","图片上传为空");
+
 
     private String code;
     private String message;

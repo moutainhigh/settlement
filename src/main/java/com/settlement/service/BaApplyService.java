@@ -32,4 +32,8 @@ public interface BaApplyService extends IService<BaApply> {
     Result verifyPasscode(BaApply baApply);
     /**获得每个项目的申请修改的次数**/
     Result getApplyCountByProjectId(Integer projectId,String monthValue);
+    /**根据id 获得BaApplyVo**/
+    BaApplyVo getApplyVoById(Integer id);
+    /**审核考勤修改**/
+    Result checkWorkattend(BaApplyVo baApplyVo);
 }

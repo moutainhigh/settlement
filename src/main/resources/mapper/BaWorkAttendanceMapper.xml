@@ -75,8 +75,10 @@
         inner join ba_employee e on pe.emp_id=e.id
         where 1=1
         and pe.pg_id=#{workAttendanceCo.projectId}
-        and pe.sub_status=#{workAttendanceCo.subStatus}
         and w.create_time like CONCAT('%',#{workAttendanceCo.yearValue},'-',#{workAttendanceCo.monthValue},'%')
+        <if test="workAttendanceCo.keyWord!=null" >
+            and CONCAT(w.employee_id,e.emp_name) like CONCAT('%',#{workAttendanceCo.keyword},'%')
+        </if>
 
     </select>
     <!--根据id获得当前项目组的员工考勤信息-->

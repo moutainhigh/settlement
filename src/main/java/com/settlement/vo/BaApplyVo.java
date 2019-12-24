@@ -9,4 +9,5 @@ public class BaApplyVo extends BaApply {
     private String applyTypeContent;
     private String checkStatusContent;
     private String checkUserContent;
+    private String applyUserContent;
 }

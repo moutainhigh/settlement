@@ -1,66 +1,66 @@
-<!DOCTYPE html>
-<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
-    
-    <head>
-        <th:bolck th:include="common/header :: header('添加用户')" />
-        <link rel="stylesheet" th:href="@{/css/formSelects-v4.css}" />
-    </head>
-    <body>
-        <div class="layui-fluid">
-            <div class="layui-row">
-                <form class="layui-form">
-                    <input type="hidden" name="id" th:value="${baContract.id}" th:if="${baContract!=null}" />
-                    <div class="layui-form-item">
-                        <div class="layui-form-item">
-                            <label for="contractNo" class="layui-form-label">
-                                <span class="x-red">*</span>合同编号</label>
-                            <div class="layui-input-inline">
-                                <input type="text" id="contractNo" name="contractNo" th:readonly="${mode.equals('update')}?true" th:value="${mode.equals('update')}?${baContract.contractNo}" required="" lay-verify="contractNo" autocomplete="off"  placeholder="请输入合同编号" class="layui-input" maxlength="20">
-                            </div>
-                            <div class="layui-input-inline">
-                                <button type="button" id="contractNoIsExist" th:if="${mode.equals('add')}" lay-filter="contractNoIsExist" class="layui-btn layui-btn-primary layui-btn-xs">检查合同编号是否可用</button>
-                            </div>
+<span class="x-red">*</span<!DOCTYPE html>
+                                <html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
 
-                        </div>
-                        <div class="layui-form-item">
-                            <label for="invoiceIssuing" class="layui-form-label">
-                                <span class="x-red">*</span>开票抬头</label>
-                            <div class="layui-input-inline">
-                                <input type="text" id="invoiceIssuing" name="invoiceIssuing" th:value="${mode.equals('update')}?${baContract.invoiceIssuing}"  required="" lay-verify="invoiceIssuing" autocomplete="off" placeholder="请输入开票抬头" class="layui-input" maxlength="20">
-                            </div>
+                                <head>
+                                    <th:bolck th:include="common/header :: header('添加用户')" />
+                                    <link rel="stylesheet" th:href="@{/css/formSelects-v4.css}" />
+                                </head>
+                                <body>
+                                <div class="layui-fluid">
+                                    <div class="layui-row">
+                                        <form class="layui-form">
+                                            <input type="hidden" name="id" th:value="${baContract.id}" th:if="${baContract!=null}" />
+                                            <div class="layui-form-item">
+                                                <div class="layui-form-item">
+                                                    <label for="contractNo" class="layui-form-label">
+                                                        <span class="x-red">*</span>合同编号</label>
+                                                    <div class="layui-input-inline">
+                                                        <input type="text" id="contractNo" name="contractNo" th:readonly="${mode.equals('update')}?true" th:value="${mode.equals('update')}?${baContract.contractNo}" required="" lay-verify="contractNo" autocomplete="off"  placeholder="请输入合同编号" class="layui-input" maxlength="20">
+                                                    </div>
+                                                    <div class="layui-input-inline">
+                                                        <button type="button" id="contractNoIsExist" th:if="${mode.equals('add')}" lay-filter="contractNoIsExist" class="layui-btn layui-btn-primary layui-btn-xs">检查合同编号是否可用</button>
+                                                    </div>
 
-                        </div>
-                        <div class="layui-form-item">
-                            <label for="customerId" class="layui-form-label">
-                                <span class="x-red">*</span>客户</label>
+                                                </div>
+                                                <div class="layui-form-item">
+                                                    <label for="invoiceIssuing" class="layui-form-label">
+                                                        <span class="x-red">*</span>开票抬头</label>
+                                                    <div class="layui-input-inline">
+                                                        <input type="text" id="invoiceIssuing" name="invoiceIssuing" th:value="${mode.equals('update')}?${baContract.invoiceIssuing}"  required="" lay-verify="invoiceIssuing" autocomplete="off" placeholder="请输入开票抬头" class="layui-input" maxlength="20">
+                                                    </div>
 
-                            <div class="layui-input-inline" >
-                                <select id="customerId" name="customerId" lay-filter="customerId" lay-verify="customerId" th:field="*{baContract.customerId}">
-                                    <option value="0">请选择客户</option>
-                                     <option th:each="baCustomer:${baCustomers}" th:value="${baCustomer.id}" th:text="${baCustomer.customerName}" >
-                                </select>
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label for="baProjectGroupId" class="layui-form-label">
-                                <span class="x-red">*</span>项目组</label>
-                            <div class="layui-input-inline">
-                                <select id="baProjectGroupId" name="baProjectGroupId" lay-filter="baProjectGroupId" lay-verify="baProjectGroupId" th:field="*{baContract.baProjectGroupId}">
-                                    <option value="0">请选择项目</option>
-                                    <option th:if="${mode.equals('update')}" th:each="project:${baProjectGroups}" th:value="${project.id}" th:text="${project.pgName}">
-                                </select>
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label for="startTime" class="layui-form-label">
-                                <span class="x-red">*</span>开始日期</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="startTime" id="startTime" lay-verify="startTime" lay-filter="startTime" th:value="${mode.equals('update')}?${#dates.format(baContract.startTime,'yyyy-MM-dd')}" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label for="endTime" class="layui-form-label">
-                                <span class="x-red">*</span>结束日期</label>
+                                                </div>
+                                                <div class="layui-form-item">
+                                                    <label for="customerId" class="layui-form-label">
+                                                        <span class="x-red">*</span>客户</label>
+
+                                                    <div class="layui-input-inline" >
+                                                        <select id="customerId" name="customerId" lay-filter="customerId" lay-verify="customerId" th:field="*{baContract.customerId}">
+                                                            <option value="0">请选择客户</option>
+                                                            <option th:each="baCustomer:${baCustomers}" th:value="${baCustomer.id}" th:text="${baCustomer.customerName}" >
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="layui-form-item">
+                                                    <label for="baProjectGroupId" class="layui-form-label">
+                                                        <span class="x-red">*</span>项目组</label>
+                                                    <div class="layui-input-inline">
+                                                        <select id="baProjectGroupId" name="baProjectGroupId" lay-filter="baProjectGroupId" lay-verify="baProjectGroupId" th:field="*{baContract.baProjectGroupId}">
+                                                            <option value="0">请选择项目</option>
+                                                            <option th:if="${mode.equals('update')}" th:each="project:${baProjectGroups}" th:value="${project.id}" th:text="${project.pgName}">
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="layui-form-item">
+                                                    <label for="startTime" class="layui-form-label">
+                                                        <span class="x-red">*</span>开始日期</label>
+                                                    <div class="layui-input-inline">
+                                                        <input type="text" name="startTime" id="startTime" lay-verify="startTime" lay-filter="startTime" th:value="${mode.equals('update')}?${#dates.format(baContract.startTime,'yyyy-MM-dd')}" autocomplete="off" class="layui-input">
+                                                    </div>
+                                                </div>
+                                                <div class="layui-form-item">
+                                                    <label for="endTime" class="layui-form-label">
+                                                        >结束日期</label>
                             <div class="layui-input-inline">
                                 <input type="text" name="endTime" id="endTime" lay-verify="endTime" lay-filter="endTime"  th:value="${mode.equals('update')}?${#dates.format(baContract.endTime,'yyyy-MM-dd')}" autocomplete="off" class="layui-input">
                             </div>

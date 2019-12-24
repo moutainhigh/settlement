@@ -23,6 +23,7 @@
             a.apply_remark as applyRemark,
             a.check_status as checkStatus,
             a.apply_user as applyUser,
+            u1.real_name as applyUserContent,
             d1.dic_content as checkStatusContent,
             u.real_name as checkUserContent,
             a.apply_time as applyTime,
@@ -41,7 +42,29 @@
         left join sys_data_dic d on a.apply_type = d.dic_code
         left join sys_data_dic d1 on a.check_status = d1.dic_code
         left join sys_user u on a.check_user=u.id
+        left join sys_user u1 on a.apply_user=u1.id
         order  by a.check_time desc,a.apply_time desc
     </select>
 
+<!--    根据id 获得BaApplyVo-->
+    <select id="getApplyVoById" parameterType="java.util.Map" resultType="com.settlement.vo.BaApplyVo">
+        select a.id as id,
+        d.dic_content as applyTypeContent,
+        a.apply_remark as applyRemark,
+        a.check_status as checkStatus,
+        a.apply_user as applyUser,
+        u1.real_name as applyUserContent,
+        d1.dic_content as checkStatusContent,
+        u.real_name as checkUserContent,
+        a.apply_time as applyTime,
+        a.check_time as checkTime
+        from ba_apply a
+        left join sys_data_dic d on a.apply_type = d.dic_code
+        left join sys_data_dic d1 on a.check_status = d1.dic_code
+        left join sys_user u on a.check_user=u.id
+        left join sys_user u1 on a.apply_user=u1.id
+        where a.id=#{id}
+        order  by a.check_time desc,a.apply_time desc
+
+    </select>
 </mapper>
