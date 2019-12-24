@@ -81,6 +81,8 @@ public class Const {
     public static final String EMP_ENTRANCE_STATUS_L ="L" ;
     /**员工项目I: 在场**/
     public static final String EMP_ENTRANCE_STATUS_I ="I" ;
+    /** 员工项目N：未入场 */
+    public final static String EMP_ENTRANCE_STATUS_N = "N";
     /**员工O: 在职**/
     public static final String EMP_JOB_STATUS_O = "O";
     /**员工L: 离职**/
@@ -103,4 +105,8 @@ public class Const {
     public final static String CHECK_RESULT_NOPASS_CODE = "NOPASS";
     /** 数据字典：考勤 申请修改类型 */
     public static final Object APPLY_TYPE = "WORKATTENDANCE";
+    /** 员工申请修改状态A：申请修改中 */
+    public final static String EMP_APPLY_UPDATE_STATUS_A = "A";
+    /** 员工申请修改状态F：修改完成 */
+    public final static String EMP_APPLY_UPDATE_STATUS_F = "F";
 }
