@@ -51,6 +51,22 @@ public class BaWorkAttendanceServiceImpl extends ServiceImpl<BaWorkAttendanceMap
     }
 
     /**
+     * 考勤申请修改页面数据
+     * @param workAttendanceCo
+     * @return
+     */
+    @Override
+    public PageData listApplyPageData(WorkAttendanceCo workAttendanceCo) {
+        workAttendanceCo.setDelFlag(Const.DEL_FLAG_N);
+        /**查询条件-当前项目审核 S**/
+        workAttendanceCo.setSubStatus(Const.PRO_SUBMIT_STATUS_S);
+        Page<BaWorkAttendanceVo> page = new Page<>(workAttendanceCo.getPage(),workAttendanceCo.getLimit());
+        List<BaWorkAttendanceVo> baWorkAttendanceVos = this.baseMapper.getWorkAttendanceVoByProjectId(workAttendanceCo,page);
+        page.setRecords(baWorkAttendanceVos);
+        return new PageData(page.getTotal(),page.getRecords());
+    }
+
+    /**
      *  添加
      * @param baWorkAttendanceVo
      * @return
@@ -156,4 +172,6 @@ public class BaWorkAttendanceServiceImpl extends ServiceImpl<BaWorkAttendanceMap
         page.setRecords(baWorkAttendanceVos);
         return new PageData(page.getTotal(),page.getRecords());
     }
+
+
 }

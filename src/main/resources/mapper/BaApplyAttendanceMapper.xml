@@ -7,12 +7,15 @@
         <id column="id" property="id" />
         <result column="apply_id" property="applyId" />
         <result column="attendance_id" property="attendanceId" />
-    </resultMap>
+        <result column="update_status" property="updateStatus" />
+        <result column="oper_time" property="operTime" />
 
+    </resultMap>
+    <!--批量插入考勤申请修改-->
     <insert id="insertBatch" parameterType="java.util.List">
-        INSERT INTO ba_apply_attendance(apply_id, attendance_id) VALUES
+        INSERT INTO ba_apply_attendance(apply_id, attendance_id,update_status,oper_time) VALUES
         <foreach collection="list" item="applyAttendance" index="index" separator=",">
-            (#{applyAttendance.applyId},#{applyAttendance.attendanceId})
+            (#{applyAttendance.applyId},#{applyAttendance.attendanceId},#{applyAttendance.updateStatus},#{applyAttendance.operTime})
         </foreach>
     </insert>
 

@@ -10,8 +10,12 @@
         <div class="layui-col-md12">
             <div class="layui-card">
                 <div class="layui-card-body">
+                    <div class="layui-collapse" lay-accordion="">
+                        <div class="layui-colla-item">
+                            <h2 class="layui-colla-title">查询条件</h2>
+                            <div class="layui-colla-content">
                     <!--考勤月份-->
-                    <div class="layui-form">
+                    <div class="layui-form-item">
                         <div class="layui-inline ">
                             <span class="x-red"></span>考勤月份:
                         </div>
@@ -32,43 +36,56 @@
                             <span class="x-red"></span>月
                         </div>
                     </div>
-                    <!--考勤时间点-->
-                    <div class="layui-form" style="margin-top: 10px">
-                        <div class="layui-inline layui-show-xs-block">
-                            <span class="x-red"></span>结算时间点:
+                    <div class="layui-form" style="margin-top: 8px;">
+                        <div class="layui-inline" >
+                            <input type="text" id="keyword" name="keyword"  value="" placeholder="请输入" autocomplete="off" class="layui-input" style="width: 200px">
                         </div>
-                        <div class="layui-inline layui-show-xs-block">
-                            <input type="text" id="start" name="stopTime"  th:value="${stopTime}" readonly autocomplete="off" class="layui-input">
-                        </div>
-                        <div class="layui-inline layui-show-xs-block">
-                            <span class="x-red"></span>结算完成时间点
-                        </div>
-                        <div class="layui-inline layui-show-xs-block">
-                            <input type="text" id="end" name="completeTime" th:value="${compelteTime}" readonly autocomplete="off" class="layui-input">
-                        </div>
-                        <div class="layui-inline layui-show-xs-block">
-                            <lable class="x-red">
-                                <span th:text="${tipStopAndCompelteTime.length()>0}?${tipStopAndCompelteTime}"></span>
-                            </lable>
+                        <div class="layui-inline" >
+                            <button class="layui-btn" id="search" data-type="reload" lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i>查询</button>
                         </div>
                     </div>
                  <!--考勤时间点-->
-
-                    <div class="layui-form" style="margin-top: 10px;">
-                        <div class="layui-inline layui-show-xs-block" style="margin-bottom: 8px;" >
-                            <input type="text" id="keyword" name="keyword"  readonly='false' value="ddddddd" placeholder="请输入" autocomplete="off" class="layui-input" style="width: 150px">
-                        </div>
-                        <div class="layui-inline layui-show-xs-block">
-                            <button class="layui-btn" id="search"  onclick="search();return false;" data-type="reload" lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i>查询</button>
-                        </div>
-                        <div class="layui-inline layui-show-xs-block" style="margin-left: 221px;">
-                            <lable class="x-red">
-                                <span th:text="${tipCountMessage}"></span>
-                            </lable>
-                        </div>
+<!--                        <div class="layui-inline layui-show-xs-block" style="margin-left: 221px;">-->
+<!--                            <lable class="x-red">-->
+<!--                                <span th:text="${tipCountMessage}"></span>-->
+<!--                            </lable>-->
+<!--                        </div>-->
                     </div>
+                </div>
+            </div>
+            <div class="layui-form" style="margin-top: 8px;">
+                <!--考勤时间点-->
+                <div class="layui-inline" style="margin-bottom: 8px;">
+                    <div class="layui-inline layui-show-xs-block">
+                        <span class="x-red"></span>结算时间点:
+                    </div>
+                    <div class="layui-inline layui-show-xs-block">
+                        <lable class="x-black">
+                            <span th:text="${stopTime}"></span>
+                        </lable>
+                    </div>
+                    <div class="layui-inline layui-show-xs-block">
+                        <span class="x-red"></span>结算完成时间点
+                    </div>
+                    <div class="layui-inline layui-show-xs-block">
+                        <lable class="x-black">
+                            <span th:text="${compelteTime}"></span>
+                        </lable>
+                    </div>
+                    <div  class="layui-inline layui-show-xs-block" style="position: relative; left:430px;border: 1px solid #1E9FFF;">
+                        <lable class="x-red" style="float:right;">
+                            <span th:text="${tipCountMessage}"></span>
+                        </lable>
+                    </div>
+                            <!--                            <div class="layui-inline layui-show-xs-block">-->
+                            <!--                                <lable class="x-red">-->
+                            <!--                                    <span th:text="${tipStopAndCompelteTime.length()>0}?${tipStopAndCompelteTime}"></span>-->
+                            <!--                                </lable>-->
+                            <!--                            </div>-->
+                </div>
+            </div>
 
-                    <div class="layui-form" style="margin-top: 10px;">
+                    <div class="layui-form-item" style="margin-top: 2px;">
                     <table class="layui-table layui-form" id="dataTable" lay-filter="dataTable">
                     </table>
                 </div>
@@ -83,6 +100,7 @@
         <button type="button" id="applymodify" data-type="applymodify" class="layui-btn " lay-demo="reload">申请修改</button>
         <button type="button" id="commmit" data-type="commmit" class="layui-btn layui-btn-normal"  lay-demo="reload">提交</button>
         <button type="button" id="generate" data-type="generate" class="layui-btn layui-btn-normal "  lay-demo="reload">生成考勤记录</button>
+        <button type="button" id="sync" data-type="sync" class="layui-btn layui-btn-normal "  lay-demo="reload">同步项目考勤</button>
     </div>
 </script>
 <script type="text/html" id="toolBar">
@@ -162,6 +180,10 @@
                        $($(".layui-table-body.layui-table-main tr")[i]).css("background-color", "#1E9FFF");
                    }
                }
+               //th hover
+                $('th').hover(function(){
+                    $("th").css("background-color","yellow");
+                });
            }
         });
 
@@ -175,7 +197,7 @@
             reload: function(){
                 var keyword = $('#keyword');
                 //执行重载
-                table.reload('tableReload', {
+                table.reload('dataTable', {
                     page: {
                         curr: 1 //重新从第 1 页开始
                     }
@@ -184,7 +206,9 @@
                     }
                 }, 'data');
             },
-
+            sync:function(){
+                syncOper('/ba-employee',projectId);
+            },
             //提交考勤记录
             commmit:function () {
                 commitWorkAttendanceOper('/ba-work-attendance/commit/',projectId,table,layer);
@@ -193,12 +217,6 @@
             applymodify:function () {
                 //项目负责人AM
                 var checkUserId = [[${checkUserId}]];
-                var totalApplyCount = [[${totalApplyCount}]];
-                var applyCount = [[${applyCount}]];
-                if(applyCount>totalApplyCount) {
-                    layer.msg('您已经超过本月修改申请的次数',{icon:5});
-                    return;
-                }
                 applyModify('申请修改','/ba-work-attendance/applymodify/'+checkUserId,projectId,table,layer,500,450);
             },
             //生成考勤记录
@@ -250,6 +268,8 @@
                     layer.msg('在结算周期内修改考勤必须提交申请',{icon:5});
                     return;
                 }
+                //判断修改次数
+
                 //判断修改状态
 
                 //判断提交状态
@@ -285,6 +305,10 @@
 
     });
     //////////////////////////////JS////////////////////////////////
+    function checkTimeParam(){
+
+    }
+
 
     //申请修改记录
     function applyModify(title,url,projectId,table,layer,w,h) {
@@ -292,10 +316,16 @@
             ,data = checkStatus.data;
         var ids2=[];
         if (data.length == 0) {
-            layer.alert('请先选择要提交的考勤记录',{icon : 5});
+            layer.alert('请先选择要修改的考勤记录',{icon : 5});
             return ;
         }
-
+        //判断当月修改的次数
+        var totalApplyCount = [[${totalApplyCount}]];
+        var applyCount = [[${applyCount}]];
+        if(applyCount>=totalApplyCount) {
+            // layer.msg('您已经超过本月修改申请的次数',{icon:5});
+            // return;
+        }
         //结算时间之前  //未提交的提示不需要申请修改
         if(judgeStopTime(projectId)) {
             if( getSubStatus(data,'N').length == data.length){
@@ -317,19 +347,22 @@
             }
         } else{
             //超过考勤时间不可以提交
-            layer.msg('超过考勤结算时间点,无法提交考勤记录', {icon: 5});
+            //layer.msg('超过考勤结算时间点,无法提交考勤记录', {icon: 5});
+            //return;
         }
 
         //考勤结算周期内
          if(!judgeStopTime(projectId) && judgeCompleteTime(projectId)){
-             //判断当月修改的次数
-             //   do...
+
             for(var i=0;i<data.length;i++) {
                 //ids+=data[i].id+",";
                 ids2[i]=data[i].id;
             }
             xadmin.open(title,url + "/"+ ids2,w,h);
             return;
+         } else {
+             layer.msg('超过考勤结算完成时间点,无法修改考勤记录', {icon: 5});
+             return;
          }
         //结算时间之前,已经提交的可以修改
 
@@ -474,11 +507,6 @@
                     return false;
             }
         });
-    }
-
-
-    function search() {
-        alert('search:'+ $("#keyword").val());
     }
 </script>
 </html>

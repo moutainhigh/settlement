@@ -29,7 +29,9 @@ public class WorkAttendanceCo extends PageCo{
     /**查询条件-当前月份**/
     private String currentYearMonth;
     /**查询条件-当前月份**/
-    private String  leaveTime;
+    private String leaveTime;
+    /**考勤申请修改的状态**/
+    private String updateStatus;
 
 
 }

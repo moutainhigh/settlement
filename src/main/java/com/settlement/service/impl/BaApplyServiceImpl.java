@@ -101,6 +101,7 @@ public class BaApplyServiceImpl extends ServiceImpl<BaApplyMapper, BaApply> impl
                     BaApplyAttendance baApplyAttendance = new BaApplyAttendance();
                     baApplyAttendance.setApplyId(baApply.getId());
                     baApplyAttendance.setAttendanceId(applyAttendanceId);
+                    baApplyAttendance.setUpdateStatus(Const.EMP_APPLY_UPDATE_STATUS_A);
                     list.add(baApplyAttendance);
                 }
                 Integer ret2 = baApplyAttendanceMapper.insertBatch(list);

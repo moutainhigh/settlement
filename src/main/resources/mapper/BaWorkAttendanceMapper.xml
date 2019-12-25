@@ -109,16 +109,14 @@
     <select id="getWorkAttendanceByApplyId" parameterType="com.settlement.co.WorkAttendanceCo" resultType="com.settlement.vo.BaWorkAttendanceVo">
         select
             e.emp_name as employeeName,
+            a.update_status as updateStatus,
             b.*
-        from ba_work_attendance b
-        left join ba_employee e on b.employee_id=e.id
-        where 1=1
-		and e.del_flag=#{workAttendanceCo.delFlag}
-		and b.sub_status=#{workAttendanceCo.subStatus}
-		and b.id in(
-			select a.attendance_id from ba_apply_attendance a
-			where a.apply_id=#{workAttendanceCo.applyId}
-		)
-		order by b.sub_status asc
+        from ba_apply_attendance a
+        inner join ba_work_attendance b on b.id=a.attendance_id
+        inner join ba_employee e on b.employee_id=e.id
+        where a.apply_id=1
+            and e.del_flag=#{workAttendanceCo.delFlag}
+            and b.sub_status=#{workAttendanceCo.subStatus}
+        order by b.sub_status asc
     </select>
 </mapper>

@@ -35,4 +35,6 @@ public interface BaWorkAttendanceService extends IService<BaWorkAttendance> {
     Result commitWorkAttendance(String[] ids);
     /***根据申请修改的考勤id获得要修改的数据*/
     PageData getWorkAttendanceByApplyId(WorkAttendanceCo workAttendanceCo);
+    /**考勤申请修改页面数据**/
+    PageData listApplyPageData(WorkAttendanceCo workAttendanceCo);
 }

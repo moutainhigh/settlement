@@ -34,6 +34,16 @@ public class BaWorkAttendanceController {
         PageData pageData = baWorkAttendanceService.listPageData(workAttendanceCo);
         return  pageData;
     }
+    /**
+     * 考勤申请修改页面数据
+     * @param workAttendanceCo
+     * @return
+     */
+    @GetMapping("/apply/pagedata")
+    public PageData listApplyPageData(WorkAttendanceCo workAttendanceCo){
+        PageData pageData = baWorkAttendanceService.listApplyPageData(workAttendanceCo);
+        return  pageData;
+    }
 
     /**
      * 考勤申请修改-审核通过-修改考勤页面
@@ -58,7 +68,7 @@ public class BaWorkAttendanceController {
     }
 
     /**
-     *修改
+     *　考勤修改
      * @param baWorkAttendance
      * @return
      */
@@ -68,6 +78,11 @@ public class BaWorkAttendanceController {
         return r;
     }
 
+    /**
+     * 考勤提交
+     * @param ids
+     * @return
+     */
     @PutMapping("/commit/{ids}")
     public Result commitWorkAttendance(@PathVariable String ids){
         String[] ids2=ids.split(",");
