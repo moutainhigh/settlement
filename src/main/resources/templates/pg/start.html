@@ -97,16 +97,6 @@
         var form = layui.form,
             layer = layui.layer;
 
-        //自定义验证规则
-        form.verify({
-            checkResult: function() {
-                var value = $("input[name='checkResult']:checked").val();
-                if (value == null || value == '' || value == 'undefined') {
-                    return '审核结果必须选择一个啊';
-                }
-            }
-        });
-
         $(document).on('click','#close', function(data) {
             var index = parent.layer.getFrameIndex(window.name);
             parent.layui.table.reload('dataTable');
@@ -116,11 +106,9 @@
         //监听提交
         form.on('submit(confirm)',
             function(data) {
-                console.log(data);
-                var retObject = checkResultVerify(data.field,checkResultPass,checkResultNoPass,layer);
-                if (retObject.flag) {
-                   defined(data, layer, '/ba-project-group-check');
-                }
+                alert(data.field.id);
+                // var id =
+                start('/ba-project-group/start/'+data.field.id);
                 //发异步，把数据提交给php
                /* layer.alert("增加成功", {
                         icon: 6

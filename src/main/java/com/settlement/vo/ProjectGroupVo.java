@@ -22,4 +22,6 @@ public class ProjectGroupVo extends BaProjectGroup implements Serializable {
 
     private String settlements;
 
+    private String checkUserName;
+
 }

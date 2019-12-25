@@ -16,6 +16,7 @@
         <result column="position" property="position" />
         <result column="level_mode" property="levelMode" />
         <result column="pos_level" property="posLevel" />
+        <result column="pos_level_input" property="posLevelInput" />
         <result column="price_month" property="priceMonth" />
         <result column="unit" property="unit" />
         <result column="price_day" property="priceDay" />
@@ -30,10 +31,11 @@
         <result column="create_user_id" property="createUserId" />
         <result column="create_time" property="createTime" />
         <result column="update_time" property="updateTime" />
+        <result column="apply_update_status" property="applyUpdateStatus" />
         <result column="del_flag" property="delFlag" />
     </resultMap>
 
-    <select id="getNoSubmitEmployeeList" parameterType="com.settlement.co.EmployeeCo" resultType="com.settlement.vo.EmployeeVo">
+    <select id="getEmployeeList" parameterType="com.settlement.co.EmployeeCo" resultType="com.settlement.vo.EmployeeVo">
         SELECT
         be.id,
         be.emp_name,
@@ -57,11 +59,31 @@
         be.id = bpe.emp_id
         and be.del_flag = #{employeeCo.delFlag}
         and bpe.pg_id = #{employeeCo.pgId}
-        and bpe.sub_status = #{employeeCo.submitStatus}
-        <if test="employeeCo.keyword != null">
+        and bpe.entrance_status = #{employeeCo.entranceStatus}
+        <if test="employeeCo.keyword != null and employeeCo.keyword !='' ">
           and CONCAT(be.emp_name) like CONCAT('%',#{employeeCo.keyword},'%')
         </if>
         order by be.create_time
     </select>
 
+
+    <update id="updateBatchEntranceStatusById" parameterType="java.util.List">
+        <foreach collection="emps" item="emp" index="index" separator=";">
+            update ba_employee
+            set
+            entrance_status = #{emp.entranceStatus},
+            update_time = #{emp.updateTime}
+            where id = #{emp.id}
+        </foreach>
+    </update>
+    <!-- 批量修改员工申请状态 -->
+    <update id="updateApplyEmpStatusBatch" parameterType="java.util.List">
+        <foreach collection="emps" item="emp" index="index" separator=";">
+            update ba_employee
+            set
+            apply_update_status = #{emp.applyUpdateStatus},
+            update_time = #{emp.updateTime}
+            where id = #{emp.id}
+        </foreach>
+    </update>
 </mapper>

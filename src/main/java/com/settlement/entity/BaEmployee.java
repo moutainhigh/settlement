@@ -85,7 +85,12 @@ public class BaEmployee extends Model<BaEmployee> {
     /**
      * 级别
      */
-    private String posLevel;
+    private Integer posLevel;
+
+    /**
+     * 级别-手填
+     */
+    private String posLevelInput;
 
     /**
      * 单价月
@@ -151,6 +156,11 @@ public class BaEmployee extends Model<BaEmployee> {
      * 创建时间
      */
     private Date createTime;
+
+    /**
+     * 申请修改状态
+     */
+    private String applyUpdateStatus;
 
     /**
      * 更新时间

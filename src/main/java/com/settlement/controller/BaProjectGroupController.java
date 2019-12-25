@@ -199,4 +199,17 @@ public class BaProjectGroupController {
     public Result pgStartCheck(@PathVariable(value="id") Integer id) {
         return this.baProjectGroupService.checkPgStart(id);
     }
+
+    /**
+     * @description 项目组启用
+     *
+     * @auth admin
+     * @date 2019-12-20
+     * @param id
+     * @return
+     */
+    @PutMapping("/ba-project-group/start/{id}")
+    public Result pgStart(@PathVariable(value="id") Integer id) {
+        return this.baProjectGroupService.updatePgStart(id);
+    }
 }

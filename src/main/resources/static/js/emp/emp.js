@@ -2,11 +2,11 @@
 function handInput(mode) {
     // mode = [[ ${LEVEL_MODE_H} ]];
     $("#div1").hide();
-    $("#posLevelSelect").removeAttr("name");
+   // $("#posLevelSelect").removeAttr("name");
     $("#posLevelSelect").val('');
     $("#div2").show();
     $("#posLevelInput").val('');
-    $("#posLevelInput").attr("name","posLevel");
+    //$("#posLevelInput").attr("name","posLevel");
     $("#priceMonth").val('');
     $("#priceMonth").removeAttr("readonly");
     $("#handInputId").hide();
@@ -18,10 +18,10 @@ function handInput(mode) {
 /** 级别 框架选择 */
 function frameInput(mode) {
     $("#div1").show();
-    $("#posLevelSelect").attr("name","posLevel");
+    //$("#posLevelSelect").attr("name","posLevel");
     $("#posLevelSelect").val('');
     $("#div2").hide();
-    $("#posLevelInput").removeAttr("name");
+   // $("#posLevelInput").removeAttr("name");
     $("#priceMonth").val('');
     $("#priceMonth").attr("readonly","readonly");
     $("#handInputId").show();
@@ -122,5 +122,15 @@ function operImg(data) {
 function previewImg(id) {
     xadmin.open('图片预览','/ba-employee/view/'+ id, 450,450);
 }
+
+/** 员工申请修改 */
+function apply(data, layer, url) {
+    if (data.length === 0) {
+        layer.alert("请先选择一行",{icon:5});
+    } else {
+        xadmin.open('员工申请修改',url,800,420);
+    }
+}
+
 
 

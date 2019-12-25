@@ -108,7 +108,7 @@ public class SysUserController {
     public Result userIsExist(@PathVariable  String email) {
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<SysUser>();
         queryWrapper.eq("email",email);
-        queryWrapper.eq("del_flag", Const.DEL_FLAG_N);
+       //  queryWrapper.eq("del_flag", Const.DEL_FLAG_N);
         SysUser sysUser = sysUserService.getOne(queryWrapper);
         Result r = null;
         if (sysUser == null) {

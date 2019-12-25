@@ -431,6 +431,7 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
      * @return
      */
     private String getTimeParamValue(Integer projectId,String param){
+        // 需要处理超过当前月天数，取当前月最后一天
         Map<String,Object> map = new HashMap<>();
         map.put("projectId",projectId);
         map.put("type",param);
@@ -441,4 +442,5 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
         String day=this.baseMapper.getTimeParamValueByProjectId(map);
         return year+"-"+currentMonth+"-"+day;
     }
+
 }

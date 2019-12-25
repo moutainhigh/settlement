@@ -37,7 +37,24 @@ public class BaEmployeeController {
      */
     @GetMapping("/ba-employee/pagedata")
     public PageData getNoSubmitPageData(EmployeeCo employeeCo) {
-        return this.baEmployeeService.getNoSubmitEmployee(employeeCo);
+         employeeCo.setEntranceStatus(Const.EMP_ENTRANCE_STATUS_N);
+        employeeCo.setDelFlag(Const.ENABLED_N);
+        return this.baEmployeeService.getEmployeeList(employeeCo);
+    }
+
+    /**
+     * @description 已提交员工
+     *
+     * @auth admin
+     * @date 2019-12-20
+     * @param employeeCo
+     * @return
+     */
+    @GetMapping("/ba-employee/ent-pagedata")
+    public PageData getSubmitPageData(EmployeeCo employeeCo) {
+        employeeCo.setEntranceStatus(Const.ENTRANCE_STATUS_I);
+        employeeCo.setDelFlag(Const.ENABLED_N);
+        return this.baEmployeeService.getEmployeeList(employeeCo);
     }
 
     /**
@@ -69,9 +86,9 @@ public class BaEmployeeController {
         employeeVo.setCreateUserId(user.getId());
         employeeVo.setUpdateTime(d);
         employeeVo.setJobStatus(Const.JOB_STATUS_O);
-        // employeeVo.setSubStatus(Const.EMP_SUBMIT_STATUS_N);
+        employeeVo.setEntranceStatus(Const.EMP_ENTRANCE_STATUS_N);
         employeeVo.setDelFlag(Const.DEL_FLAG_N);
-        return this.baEmployeeService.insertProjectEmp(employeeVo, Const.EMP_SUBMIT_STATUS_N);
+        return this.baEmployeeService.insertProjectEmp(employeeVo);
     }
 
     /**
@@ -91,9 +108,8 @@ public class BaEmployeeController {
         employeeVo.setUpdateTime(d);
         employeeVo.setJobStatus(Const.JOB_STATUS_O);
         employeeVo.setEntranceStatus(Const.ENTRANCE_STATUS_I);
-       // employeeVo.setSubStatus(Const.EMP_SUBMIT_STATUS_S);
         employeeVo.setDelFlag(Const.DEL_FLAG_N);
-        return this.baEmployeeService.insertProjectEmp(employeeVo, Const.EMP_SUBMIT_STATUS_S);
+        return this.baEmployeeService.insertProjectEmp(employeeVo);
     }
 
     /**
@@ -119,9 +135,7 @@ public class BaEmployeeController {
      */
     @PutMapping("/ba-employee/edit")
     public Result editProjectEmp(EmployeeVo employeeVo) {
-        employeeVo.setUpdateTime(new Date());
-        // employeeVo.setSubStatus(Const.EMP_SUBMIT_STATUS_N);
-        return this.baEmployeeService.updateProjectEmp(employeeVo, null);
+        return this.baEmployeeService.updateProjectEmp(employeeVo);
     }
 
     /**
@@ -134,8 +148,7 @@ public class BaEmployeeController {
      */
     @PutMapping("/ba-employee/editsubmit")
     public Result editSubmitProjectEmp(EmployeeVo employeeVo) {
-        employeeVo.setUpdateTime(new Date());
-        // employeeVo.setSubStatus(Const.EMP_SUBMIT_STATUS_S);
-        return this.baEmployeeService.updateProjectEmp(employeeVo, Const.EMP_SUBMIT_STATUS_S);
+        return this.baEmployeeService.updateProjectEmpSubmit(employeeVo);
     }
+
 }

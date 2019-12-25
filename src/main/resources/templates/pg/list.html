@@ -45,7 +45,7 @@
     </body>
     <script th:src="@{/js/common/common.js}" type="text/javascript" charset="utf-8"></script>
     <script type="text/html" id="toolBar">
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">员工详情</a>
         <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
     </script>
@@ -79,7 +79,7 @@
                        {field:'ownerName',title:'负责人',align:'center'},
                        {field:'enabled',title:'状态',align:'center',templet: '#switchStatus', unresize: true},
                        {field:'createTime',title:'创建日期',align:'center'},
-                       {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:200}
+                       {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:240}
                     ]
                 ]
         });
@@ -103,7 +103,7 @@
                   checkBoxCheckedOper('关联结算负责人','/ba-project-group/relate-settlement/',table, layer, 600, 400);
               },
               addEmp: function() {
-                  checkBoxCheckedOper('员工录入','/ba-employee/enter-emp/',table, layer, 1000, 520);
+                  checkBoxCheckedOper('员工录入','/ba-employee/enter-emp/',table, layer, 1000, 545);
               }
           };
           $('.layui-btn').on('click', function(){
@@ -125,38 +125,18 @@
               var id = this.value;
             //  console.log(data.elem);
              var rowCheckStatus =  $(this).parent().parent().parent().find('td').eq(3).text();
+             var pgName = $(this).parent().parent().parent().find('td').eq(1).text();
               var obj = $(data.elem);
               var a = data.elem.checked;
               if (passCheckStatus == rowCheckStatus) {
                   if (!a) {
                       layer.open({
-                          type: 2,
-                          area: [750+'px', 550 +'px'],
-                          fix: false, //不固定
-                          maxmin: true,
-                          shadeClose: true,
-                          shade:0.4,
-                          title: '项目组停用',
-                          content: '/ba-project-group/stop/'+id,
-                          cancel: function (index, layer) {
-                              // parent.location.reload();
-                              data.elem.checked = !a;
-                              layui.form.render();
-                          }
-                      })
-                  } else {
-                      layer.open({
-                          content: '确定要启用此项目组吗？'
+                          content: '确定要停用【' + pgName + '】项目组吗？'
                           ,btn: ['确定','取消']
                           ,yes: function(index){
                               // 发送ajax请求，更新后台
-                              // 验证是否关联助理和结算负责人，关联了可以启用，未关联不可启用
-                              $.get('/ba-project-group/start-check/' + id, null,function(r) {
-                                  if (r.code == '200') {
-                                      xadmin.open('启用项目组','/ba-project-group/start/'+ id,600,400);
-                                  } else {
-                                      layer.msg(r.msg, {icon:5});
-                                  }
+                              $.get('',null, function() {
+
                               });
                               data.elem.checked=a;
                               layui.form.render();
@@ -174,6 +154,29 @@
                               layui.form.render();
                           }
                       });
+                  } else {
+                      $.get('/ba-project-group/start-check/' + id, null,function(r) {
+                          if (r.code == '200') {
+                              // xadmin.open('启用项目组','/ba-project-group/start/'+ id,600,400);
+                              layer.open({
+                                  type: 2,
+                                  area: [750+'px', 400 +'px'],
+                                  fix: false, //不固定
+                                  maxmin: true,
+                                  shadeClose: true,
+                                  shade:0.4,
+                                  title: '项目组启用',
+                                  content: '/ba-project-group/start/'+id,
+                                  cancel: function (index, layer) {
+                                      // parent.location.reload();
+                                      data.elem.checked = !a;
+                                      layui.form.render();
+                                  }
+                              })
+                          } else {
+                              layer.msg(r.msg, {icon:5});
+                          }
+                      });
                   }
               } else {
                   layer.msg("项目组只有处于【审核通过】状态才能启用、停用",{icon:5});
@@ -189,7 +192,8 @@
              var noPass = [[ ${PG_CHECKSTATUS_CHECK_NOPASS} ]];
              var checkStatus = data.checkStatus;
               if(obj.event === 'detail'){
-                  layer.msg('ID：'+ data.id + ' 的查看操作');
+                 //  layer.msg('ID：'+ data.id + ' 的查看操作');
+                  xadmin.open('入场员工详情','/ba-employee/entrance-emp/' + data.id,1000,545);
               } else if(obj.event === 'del'){
                   if (checkStatus == noPass || checkStatus == null || checkStatus == '') {
                       layer.confirm('真的删除【 '+ data.pgName + '】么?', function(index){

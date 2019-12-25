@@ -54,6 +54,35 @@ function edit(data, layer, url) {
     });
 }
 
+/** 启用 */
+function start(url) {
+    $.ajax({
+        url: url,
+        type:"PUT",
+        // contentType:"application/json",//设置请求参数类型为json字符串
+        // data: data.field,
+        // dataType:"json",
+        beforeSend: function () {
+            // 禁用按钮防止重复提交
+            $(".layui-btn").attr({ disabled: "disabled" });
+
+        },
+        success:function(r){
+            layer.alert(r.msg, {
+                    icon : r.code == '200' ? 6: 5
+                },
+                function() {
+                    // 刷新数据，保留在当前页
+                    var index = parent.layer.getFrameIndex(window.name);
+                    parent.layui.table.reload('dataTable');//重载父页表格，参数为表格ID
+                    parent.layer.close(index);
+                });
+            $(".layui-btn").removeAttr('disabled');
+        }
+    });
+}
+
+
 /** 确定 */
 function defined(data, layer, url) {
     $.ajax({
@@ -79,4 +108,17 @@ function defined(data, layer, url) {
             $(".layui-btn").removeAttr('disabled');
         }
     });
+}
+
+/** 批量选择，拼接id */
+function createIds(obj) {
+    var ids = '';
+    for (var i = 0; i < obj.length; i++) {
+        if (i == obj.length - 1) {
+            ids = ids + obj[i].id;
+        } else {
+            ids = ids + obj[i].id + ',';
+        }
+    }
+    return ids;
 }

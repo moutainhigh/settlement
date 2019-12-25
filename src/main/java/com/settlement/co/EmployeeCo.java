@@ -14,8 +14,10 @@ public class EmployeeCo extends PageCo{
 
     private Integer pgId;
 
-    private String submitStatus;
+   // private String submitStatus;
 
     private String delFlag;
+
+    private String entranceStatus;
 
 }

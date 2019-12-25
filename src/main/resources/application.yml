@@ -79,5 +79,8 @@ server:
   servlet:
     session:
       timeout: 1800s
-
-
+#日志配置
+logging:
+  config: classpath:config/logback-dev.xml
+  level:
+    learning: info

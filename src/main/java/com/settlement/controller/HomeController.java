@@ -6,9 +6,8 @@ import com.settlement.service.*;
 import com.settlement.utils.Const;
 import com.settlement.utils.Result;
 import com.settlement.vo.*;
-import net.bytebuddy.asm.Advice;
+import org.apache.ibatis.annotations.Param;
 import org.apache.shiro.SecurityUtils;
-import org.eclipse.jetty.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -533,6 +532,24 @@ public class HomeController {
     }
 
     /**
+     * @description 入场员工
+     *
+     * @auth admin
+     * @date 2019-12-20
+     * @param pgId
+     * @param model
+     * @return
+     */
+    @GetMapping("/ba-employee/entrance-emp/{pgId}")
+    public String toDetailEmpPage(@PathVariable  Integer pgId, Model model) {
+        model.addAttribute("pgId", pgId);
+        // 结算时间点，结算完成时间点
+        model.addAttribute("stopTimeParam", this.baTimeParamService.getStopTimeParam(pgId));
+        model.addAttribute("completeTimeParam", this.baTimeParamService.getCompleteParam(pgId));
+        return "emp/entrance";
+    }
+
+    /**
      * 添加员工
      *
      * @auth admin
@@ -580,10 +597,35 @@ public class HomeController {
      * @param id
      * @return
      */
-    @GetMapping("ba-employee/view/{id}")
+    @GetMapping("/ba-employee/view/{id}")
     public String toViewImg(@PathVariable Integer id, Model model) {
         model.addAttribute("imgSrc", this.baEmployeeService.getProjectEmpById(id).getRateEmailFilename());
         return "emp/view";
+    }
+
+    /**
+     * @description 员工申请修改
+     *
+     * @auth admin
+     * @date 2019-12-23
+     * @param ids              员工ID
+     * @param pgId             项目组ID
+     * @param model
+     * @return
+     */
+    @GetMapping("/ba-employee/apply/{ids}/{pgId}")
+    public String toEmpApplyPage(@PathVariable(value="ids") String ids, @PathVariable(value="pgId") Integer pgId, Model model) {
+        BaProjectGroup bpg = this.baProjectGroupService.getById(pgId);
+        SysUser checkUser = this.sysUserService.getById(bpg.getCheckUserId());
+        ProjectGroupVo bpgv = new ProjectGroupVo();
+        bpgv.setId(bpg.getId());
+        bpgv.setPgName(bpg.getPgName());
+        bpgv.setCheckUserId(bpg.getCheckUserId());
+        bpgv.setCheckUserName(checkUser.getRealName());
+        model.addAttribute("pgVo",bpgv);
+        model.addAttribute("empIds",ids);
+        model.addAttribute("empList", this.baEmployeeService.getApplyUpdateEmps(ids));
+        return "emp/apply";
     }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
@@ -819,6 +861,18 @@ public class HomeController {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @description 申请修改审核列表
+     *
+     * @auth admin
+     * @date 2019-12-24
+     * @return
+     */
+    @GetMapping("/ba-apply-check/list")
+    public String toApplyCheckPage() {
+        return "applycheck/list";
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
