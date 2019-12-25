@@ -260,4 +260,24 @@ public class BaProjectGroupServiceImpl extends ServiceImpl<BaProjectGroupMapper,
         }
         return r;
     }
+
+    @Override
+    public Result updatePgStart(Integer id) {
+        Result r = new Result(HttpResultEnum.CODE_500.getCode(), HttpResultEnum.CODE_500.getMessage());
+        try {
+            UpdateWrapper<BaProjectGroup> updateWrapper = new UpdateWrapper<BaProjectGroup>();
+            updateWrapper.eq("id",id);
+            BaProjectGroup bpg = new BaProjectGroup();
+            bpg.setEnabled(Const.ENABLED_Y);
+            int ret = this.baseMapper.update(bpg, updateWrapper);
+            if (ret > 0) {
+                r.setCode(HttpResultEnum.CODE_200.getCode());
+                r.setMsg(HttpResultEnum.CODE_200.getMessage());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return r;
+    }
+
 }

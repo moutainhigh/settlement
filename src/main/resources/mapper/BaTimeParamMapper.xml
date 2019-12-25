@@ -58,8 +58,8 @@
             tp.param_value
        from ba_time_param tp
        left join ba_pg_time_param ptg on tp.id = ptg.t_p_id
-       where 1=1
-           and tp.enabled=#{enabled}
+       where
+            tp.enabled=#{enabled}
            and ptg.pg_id=#{projectId}
            and tp.type=#{type}
     </select>

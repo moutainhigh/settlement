@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html class="x-admin-sm"  xmlns:th="http://www.thymeleaf.org">
+    <head th:fragment="applyemp">
+        <!--<th:bolck th:include="common/header :: header('审核管理')" />-->
+    </head>
+    <body>
+        <div class="x-nav">
+          <span class="layui-breadcrumb">
+            <a href="/home">首页</a>
+            <a href="">审核管理</a>
+            <a>
+              <cite>申请修改审核</cite></a>
+          </span>
+          <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
+            <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
+        </div>
+        <div class="layui-fluid">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-md12">
+                    <div class="layui-card">
+
+                        <div class="layui-card-header">
+                            <button type="button" id="apply" data-type="apply" class="layui-btn layui-btn-normal ">审核考勤申请修改信息1111</button>
+                            <form style="display: inline;" onsubmit="return false">
+                                <div class="layui-inline" style="margin-left:80px;">
+                                    <div class="layui-inline layui-show-xs-block">
+                                        <label  class="layui-form-label">状态:</label>
+                                    </div>
+                                    <div class="layui-inline layui-show-xs-block">
+                                        <select id="checkStatus" name="checkStatus" style="width: 100px;height: 30px;">
+                                            <option value="">请选择</option>
+                                        </select>
+                                     </div>
+                                    <div class="layui-inline layui-show-xs-block">
+                                        <label  class="layui-form-label">申请时间:</label>
+                                    </div>
+                                    <div class="layui-inline layui-show-xs-block">
+                                        <input type="text" name="applyDate" id="applyDate" lay-verify="applyDate" lay-filter="applyDate"  autocomplete="off" class="layui-input">
+                                    </div>
+                                    <div class="layui-inline layui-show-xs-block">
+                                        <button class="layui-btn" id="search" data-type="reload" lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i>查询</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="layui-card-body layui-table-body layui-table-main" >
+                            <table class="layui-table layui-form" id="dataTable" lay-filter="dataTable">
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </body>
+    <script type="text/html" id="idselect">
+        <input type="checkbox" name="id" value="{{d.id}}"  lay-filter="idselect">
+    </script>
+    <script type="text/html" id="toolBarHead">
+        <button type="button" id="commmit" data-type="commmit" class="layui-btn layui-btn-normal "  lay-demo="reload">提交</button>
+    </script>
+    <script type="text/html" id="toolBar">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    </script>
+    <script type="text/javascript"  th:inline="none">
+      layui.use(['laydate','table','form','element'], function(){
+        var laydate = layui.laydate;
+        var  form = layui.form;
+        var table = layui.table;
+
+          //渲染申请日期
+          laydate.render({
+              elem: '#applyDate'
+          });
+       // var layer = layui.layer;
+        // var $ = layui.jquery;
+        table.render({
+           elem: '#dataTable',
+           url: '/ba-apply/check/workattend/pagedata',
+           // toolbar: '',
+           page: true,
+           title: '导出参数',
+           height: 'full-210',
+            toolbar: '#toolBarHead',
+           // id: 'userData',
+           cols: [[
+               {field:'id',type:'checkbox',fixed:'left'},
+               {field:'applyUserContent',title:'申请人 ',align:'center'},
+               {field:'applyTypeContent',title:'类型',align:'center'},
+               {field:'applyRemark',title:'描述',align:'center'},
+               {field:'checkStatus',title:'',align:'center',hide:true},
+               {field:'checkStatusContent',title:'审核状态',align:'center'},
+               {field:'applyTime',title:'申请时间',align:'center'},
+               {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:60}
+
+           ]]
+        });
+
+          var $ = layui.$, active = {
+              reload: function(){
+                  var applyDate = $('#applyDate').val();
+                  var checkStatus = $('#checkStatus').val();
+                  //执行重载
+                  table.reload('dataTable', {
+                      page: {
+                          curr: 1 //重新从第 1 页开始
+                      }
+                      ,where: {
+                          checkStatus:checkStatus
+                          ,applyDate: applyDate
+                      }
+                  }, 'data');
+              },
+              apply:function () {
+                  applyWorkAttendanceOper('',table,layer);
+              }
+          };
+          $('.layui-btn').on('click', function(){
+              var type = $(this).data('type');
+              active[type] ? active[type].call(this) : '';
+          });
+      });
+      /** 修改考勤记录操作 */
+      function applyWorkAttendanceOper(url, table, layer) {
+          var checkStatus = table.checkStatus('dataTable')
+              ,data = checkStatus.data;
+          if (data.length == 0) {
+              layer.alert('请先选择一行',{icon : 5});
+          }else if (data.length > 1) {
+              layer.alert('不能多选啊，只能选择一行',{icon : 5});
+          }else if(data.length == 1) {
+              // 只有处于审核通过状态才能操作
+              if (data[0].checkStatus != 'CHECK_PASS') {
+                    //弹出口令窗口，输入口令 正确可以进行修改
+                    xadmin.open('考勤修改审核',"/ba-apply/check/workattendance/"+data[0].id,400,500);
+              } else {
+                  layer.msg("考勤记录处于【审核通过】状态" ,{icon:5});
+              }
+          }
+      }
+    </script>
+</html>

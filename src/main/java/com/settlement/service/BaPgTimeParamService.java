@@ -15,4 +15,6 @@ import com.settlement.utils.Result;
 public interface BaPgTimeParamService extends IService<BaPgTimeParam> {
     /**时间点树勾选状态**/
     Result getCheckedValueByTimeParamId(Integer timeParamId);
+
+
 }

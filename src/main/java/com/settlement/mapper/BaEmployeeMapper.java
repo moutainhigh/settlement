@@ -21,6 +21,11 @@ import java.util.List;
 @Repository
 public interface BaEmployeeMapper extends BaseMapper<BaEmployee> {
     /** 获取未提交员工极路 */
-    List<EmployeeVo> getNoSubmitEmployeeList(@Param(value="employeeCo") EmployeeCo employeeCo, Page<EmployeeVo> page);
-
+    List<EmployeeVo> getEmployeeList(@Param(value="employeeCo") EmployeeCo employeeCo, Page<EmployeeVo> page);
+    /** 批量更新员工入场状态 */
+    int updateBatchEntranceStatusById(@Param(value="emps") List<BaEmployee> emps);
+    /** 批量修改员工申请状态 */
+    int updateApplyEmpStatusBatch(@Param(value="emps") List<BaEmployee> emps);
+    /** 提交员工记录 */
+    // List<EmployeeVo> getSubmitEmployeeList(@Param(value="employeeCo") EmployeeCo employeeCo, Page<EmployeeVo> page);
 }

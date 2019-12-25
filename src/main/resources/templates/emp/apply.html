@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:bolck th:include="common/header :: header('员工申请修改')" />
+    <style>
+        .layui-table tbody tr:hover {background-color: #ffffff;}
+    </style>
+</head>
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>员工申请修改说明：项目组只有在审核通过后，才能后续操作；审核通过需要指定项目组所属客户；审核未通过，必须填写备注；
+                </div>
+            </div>
+
+            <!--<div class="layui-form-item layui-form-text">
+                <label  class="layui-form-label">项目组信息</label>
+                <div class="layui-input-block">
+                    <table class="layui-table">
+                        <tbody>
+                            <tr>
+                                <td style="text-align:right;">项目组</td>
+                                <td style="text-align:center;" th:text="${pgVo.pgName}"></td>
+                                <td style="text-align:right;">项目组编号</td>
+                                <td style="text-align:center;" th:text="${pgVo.code}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>-->
+            <div class="layui-collapse" lay-accordion="">
+                <div class="layui-colla-item">
+                    <h2 class="layui-colla-title">申请修改员工信息</h2>
+                    <div class="layui-colla-content">
+                        <div class="layui-form-item layui-form-text">
+                            <label  class="layui-form-label">申请修改员工</label>
+                            <div class="layui-input-block">
+                                <table class="layui-table">
+                                    <tbody>
+                                    <tr style="text-align: center;">
+                                        <td colspan="2" >员工编号</td>
+                                        <td colspan="2" >员工姓名</td>
+                                    </tr>
+                                    <tr th:each="emp, empStat: ${empList}" style="text-align: center;">
+                                        <!--<input type="hidden" name="empIds" th:value="${emp.id}">-->
+                                        <td colspan="2" th:text="${emp.code}"></td>
+                                        <td colspan="2" th:text="${emp.empName}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-form-text">
+                <label  class="layui-form-label">申请信息</label>
+                <div class="layui-input-block">
+                    <table class="layui-table">
+                        <tbody>
+                            <tr>
+                                <td width="23%" style="text-align:right;"><span class="x-red">*</span>审核人</td>
+                                <td colspan="3" th:text="${pgVo.checkUserName}" style="text-align: center;"></td>
+                            </tr>
+                            <tr>
+                                <td width="23%" style="text-align:right;"><span class="x-red">*</span>备注</td>
+                                <td colspan="3">
+                                    <textarea lay-verify="applyRemark" name="applyRemark" class="layui-textarea" placeholder="请输入备注"></textarea>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="layui-form-item">
+                <label class="layui-form-label"></label>
+                <input type="hidden" name="pgId" th:value="${pgVo.id}">
+                <input type="hidden" name="checkUserId" th:value="${pgVo.checkUserId}">
+                <input type="hidden" name="empIds" th:value="${empIds}" >
+                <button class="layui-btn" id="confirm" lay-filter="confirm" lay-submit="confirm">申请</button>
+               <!-- <button class="layui-btn layui-btn-primary" id="close" lay-filter="close" type="reset">重置</button>-->
+            </div>
+        </form>
+    </div>
+</div>
+<script th:src="@{/js/common/common.js}" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript"  th:inline="javascript">
+    layui.use(['form', 'layer'],
+    function() {
+        $ = layui.jquery;
+        var form = layui.form,
+            layer = layui.layer;
+
+        //自定义验证规则
+        form.verify({
+            applyRemark: function(value) {
+                if (value == null || value == '' || value == 'undefined') {
+                    return '备注必须添加简要说明';
+                }
+            }
+        });
+
+        //监听提交
+        form.on('submit(confirm)',
+            function(data) {
+                console.log(data);
+                $.ajax({
+                    url: '/ba-emp-apply-check/apply',
+                    type:"POST",
+                    data: data.field,
+                    // dataType:"json",
+                    beforeSend: function () {
+                        // 禁用按钮防止重复提交
+                        $(".layui-btn").attr({ disabled: "disabled" });
+
+                    },
+                    success:function(r){
+                        layer.alert(r.msg, {
+                                icon : r.code == '200' ? 6: 5
+                            },
+                            function() {
+                                // 刷新数据，保留在当前页
+                                var index = parent.layer.getFrameIndex(window.name);
+                                parent.layui.table.reload('dataTable');//重载父页表格，参数为表格ID
+                                parent.layer.close(index);
+                            });
+                        $(".layui-btn").removeAttr('disabled');
+                    }
+                });
+                return false;
+            });
+    });
+
+</script>
+
+</body>
+
+</html>

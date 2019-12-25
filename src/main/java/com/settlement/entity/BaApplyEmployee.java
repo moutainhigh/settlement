@@ -13,41 +13,36 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 
+ * 申请员工关联
  * </p>
  *
  * @author admin
- * @since 2019-12-11
+ * @since 2019-12-23
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class BaPgEmp extends Model<BaPgEmp> {
+public class BaApplyEmployee extends Model<BaApplyEmployee> {
 
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    /**
-     * 项目组ID
-     */
-    private Integer pgId;
+    private Integer applyId;
 
-    /**
-     * 项目组员工ID
-     */
     private Integer empId;
 
     /**
-     * 入离场状态: I-入场，L-离场
+     * 修改状态
      */
-    private String entranceStatus;
+    private String updateStatus;
 
     /**
-     * 更新时间
+     * 操作时间
      */
     private Date operTime;
+
 
     @Override
     protected Serializable pkVal() {

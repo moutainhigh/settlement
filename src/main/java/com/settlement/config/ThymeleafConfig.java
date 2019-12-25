@@ -28,6 +28,8 @@ public class ThymeleafConfig {
             vars.put("CHECK_RESULT_NOPASS", Const.CHECK_RESULT_NOPASS_CODE);
             vars.put("LEVEL_MODE_F", Const.LEVEL_MODE_F);
             vars.put("LEVEL_MODE_H", Const.LEVEL_MODE_H);
+            vars.put("TIME_PARAM_STOP",Const.TIME_PRAMA_STOP);
+            vars.put("TIME_PARAM_COMPLETE", Const.TIME_PRAMA_COMPELETE);
             viewResolver.setStaticVariables(vars);
         }
     }

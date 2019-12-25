@@ -20,7 +20,7 @@ import java.util.List;
 @Repository
 public interface BaProjectGroupMapper extends BaseMapper<BaProjectGroup> {
 
-
+    /** 项目组列表数据 */
     List<ProjectGroupVo> getProjectGroupList(@Param(value="projectGroupCo") ProjectGroupCo projectGroupCo, Page<ProjectGroupVo> page);
 
 }

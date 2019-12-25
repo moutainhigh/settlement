@@ -17,12 +17,12 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author admin
- * @since 2019-12-11
+ * @since 2019-12-23
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class BaPgEmp extends Model<BaPgEmp> {
+public class BaEmpApplyCheck extends Model<BaEmpApplyCheck> {
 
     private static final long serialVersionUID = 1L;
 
@@ -30,24 +30,50 @@ public class BaPgEmp extends Model<BaPgEmp> {
     private Integer id;
 
     /**
-     * 项目组ID
+     * 申请修改备注
+     */
+    private String applyRemark;
+
+    /**
+     * 申请日期
+     */
+    private Date applyTime;
+
+    /**
+     * 项目组
      */
     private Integer pgId;
 
     /**
-     * 项目组员工ID
+     * 申请人
      */
-    private Integer empId;
+    private Integer applyUserId;
 
     /**
-     * 入离场状态: I-入场，L-离场
+     * 审核状态
      */
-    private String entranceStatus;
+    private String checkStatus;
 
     /**
-     * 更新时间
+     * 审核人
      */
-    private Date operTime;
+    private Integer checkUserId;
+
+    /**
+     * 审核日期
+     */
+    private Date checkTime;
+
+    /**
+     * 修改口令
+     */
+    private String updateToken;
+
+    /**
+     * 审核备注
+     */
+    private String checkRemark;
+
 
     @Override
     protected Serializable pkVal() {

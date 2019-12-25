@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.settlement.mapper.BaEmpApplyCheckMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.settlement.entity.BaEmpApplyCheck">
+        <id column="id" property="id" />
+        <result column="apply_remark" property="applyRemark" />
+        <result column="apply_time" property="applyTime" />
+        <result column="apply_user_id" property="applyUserId" />
+        <result column="check_status" property="checkStatus" />
+        <result column="check_user_id" property="checkUserId" />
+        <result column="check_time" property="checkTime" />
+        <result column="update_token" property="updateToken" />
+        <result column="check_remark" property="checkRemark" />
+    </resultMap>
+
+    <!-- 员工申请信息列表 -->
+    <select id="getEmpApplyCheckList" parameterType="com.settlement.co.EmpApplyCo" resultType="com.settlement.vo.EmpApplyCheckVo">
+        SELECT
+         beac.id,
+         beac.apply_remark,
+         beac.apply_time,
+         beac.check_status,
+         beac.check_time,
+         beac.check_remark,
+         sdd.dic_content as checkStatusContent,
+         su.real_name as applyUserContent,
+         su1.real_name as checkUserContent
+        FROM
+         ba_emp_apply_check beac left join sys_data_dic sdd on beac.check_status = sdd.dic_code
+         left join sys_user su on beac.apply_user_id = su.id
+         left join sys_user su1 on beac.check_user_id = su1.id
+         order by beac.apply_time DESC
+    </select>
+
+</mapper>

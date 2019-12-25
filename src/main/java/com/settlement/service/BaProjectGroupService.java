@@ -40,4 +40,6 @@ public interface BaProjectGroupService extends IService<BaProjectGroup> {
     Result getGroupsByCustomerId(Integer customerId);
     /** 启用项目组，检查是否已经关联助理、结算负责人 */
     Result checkPgStart(Integer id);
+    /** 项目组启用 */
+    Result updatePgStart(Integer id);
 }

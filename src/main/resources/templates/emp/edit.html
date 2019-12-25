@@ -86,11 +86,11 @@
                                                     </select>
                                                 </div>
                                                 <div id="div2">
-                                                    <input  id="posLevelInput" th:value="${emp.posLevel}"  class="layui-input" required="" lay-verify="posLevelInput" autocomplete="off"  placeholder="请输入级别"  maxlength="20">
+                                                    <input  id="posLevelInput" name="posLevelInput" th:value="${emp.posLevelInput}"  class="layui-input" required="" lay-verify="posLevelInput" autocomplete="off"  placeholder="请输入级别"  maxlength="20">
                                                 </div>
                                             </div>
                                             <button type="button" id="handInputId" class="layui-btn layui-btn-primary layui-btn-xs">手填</button>
-                                            <button type="button" id="frameInputId"  class="layui-btn layui-btn-primary layui-btn-xs" style="display: none;margin-left: -2px;">框架</button>
+                                            <button type="button" id="frameInputId"  class="layui-btn layui-btn-primary layui-btn-xs" style="margin-left: -2px;">框架</button>
                                             <input type="hidden"  id="levelMode" name="levelMode"  th:value="${emp.levelMode}" />
                                         </div>
                                     </div>
@@ -220,10 +220,14 @@
             if (levelMode == levelModeH) {
                 $("#div2").show();
                 $("#div1").hide();
+                $("#handInputId").hide();
+                $("#frameInputId").show();
                 $("#priceMonth").removeAttr("readonly");
             } else {
                 $("#div2").hide();
                 $("#div1").show();
+                $("#handInputId").show();
+                $("#frameInputId").hide();
                 $("#priceMonth").attr("readonly","readonly");
             }
             // 表单操作

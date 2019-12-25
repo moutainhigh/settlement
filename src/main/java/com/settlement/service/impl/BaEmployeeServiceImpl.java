@@ -15,6 +15,7 @@ import com.settlement.utils.Const;
 import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
 import com.settlement.vo.EmployeeVo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,14 +40,13 @@ public class BaEmployeeServiceImpl extends ServiceImpl<BaEmployeeMapper, BaEmplo
     private BaPgEmpMapper baPgEmpMapper;
 
     @Override
-    public PageData getNoSubmitEmployee(EmployeeCo employeeCo) {
-        employeeCo.setSubmitStatus(Const.EMP_SUBMIT_STATUS_N);
-        employeeCo.setDelFlag(Const.ENABLED_N);
+    public PageData getEmployeeList(EmployeeCo employeeCo) {
         Page<EmployeeVo> page = new Page<EmployeeVo>(employeeCo.getPage(), employeeCo.getLimit());
-        List<EmployeeVo> list = this.baseMapper.getNoSubmitEmployeeList(employeeCo,page);
+        List<EmployeeVo> list = this.baseMapper.getEmployeeList(employeeCo,page);
         page.setRecords(list);
         return new PageData(page.getTotal(),page.getRecords());
     }
+
 
     @Override
     public Result checkEmpCodeIsExist(String code) {
@@ -63,7 +63,7 @@ public class BaEmployeeServiceImpl extends ServiceImpl<BaEmployeeMapper, BaEmplo
     }
 
     @Override
-    public Result insertProjectEmp(EmployeeVo employeeVo ,String subStatus) {
+    public Result insertProjectEmp(EmployeeVo employeeVo) {
         Result r = new Result(HttpResultEnum.ADD_CODE_500.getCode(), HttpResultEnum.ADD_CODE_500.getMessage());
         try {
             int ret = this.baseMapper.insert(employeeVo);
@@ -71,13 +71,13 @@ public class BaEmployeeServiceImpl extends ServiceImpl<BaEmployeeMapper, BaEmplo
             bpe.setEmpId(employeeVo.getId());
             bpe.setPgId(employeeVo.getPgId());
             bpe.setOperTime(new Date());
-            bpe.setSubStatus(subStatus);
-            if (Const.ENTRANCE_STATUS_I.equals(employeeVo.getEntranceStatus())) {
-                bpe.setEntranceStatus(Const.ENTRANCE_STATUS_I);
+            if (Const.EMP_ENTRANCE_STATUS_I.equals(employeeVo.getEntranceStatus())) {
+                bpe.setEntranceStatus(Const.EMP_ENTRANCE_STATUS_I);
+            } else if (Const.EMP_ENTRANCE_STATUS_N.equals(employeeVo.getEntranceStatus()))  {
+                bpe.setEntranceStatus(Const.EMP_ENTRANCE_STATUS_N);
             }
             int ret1 = this.baPgEmpMapper.insert(bpe);
             if (ret > 0 && ret1 > 0) {
-                r = new Result();
                 r.setCode(HttpResultEnum.ADD_CODE_200.getCode());
                 r.setMsg(HttpResultEnum.ADD_CODE_200.getMessage());
             }
@@ -116,11 +116,11 @@ public class BaEmployeeServiceImpl extends ServiceImpl<BaEmployeeMapper, BaEmplo
     }
 
     @Override
-    public Result updateProjectEmp(EmployeeVo employeeVo, String subStatus) {
+    public Result updateProjectEmp(EmployeeVo employeeVo) {
         Result r = new Result(HttpResultEnum.EDIT_CODE_500.getCode(),HttpResultEnum.EDIT_CODE_500.getMessage());
         try {
             UpdateWrapper<BaEmployee> updateWrapper = new UpdateWrapper<BaEmployee>();
-            updateWrapper.set("emp_name", employeeVo.getEmpName());
+            /*updateWrapper.set("emp_name", employeeVo.getEmpName());
             updateWrapper.set("entrance_time", employeeVo.getEntranceTime());
             updateWrapper.set("card_no", employeeVo.getCardNo());
             updateWrapper.set("place", employeeVo.getPlace());
@@ -140,24 +140,39 @@ public class BaEmployeeServiceImpl extends ServiceImpl<BaEmployeeMapper, BaEmplo
             updateWrapper.set("upload_rate_email", employeeVo.getUploadRateEmail());
             updateWrapper.set("rate_email_filename", employeeVo.getRateEmailFilename());
             // updateWrapper.set("sub_status", employeeVo.getSubStatus());
-            updateWrapper.set("update_time", employeeVo.getUpdateTime());
+            updateWrapper.set("update_time", employeeVo.getUpdateTime());*/
+            employeeVo.setUpdateTime(new Date());
             updateWrapper.eq("id", employeeVo.getId());
             int ret = this.baseMapper.update(employeeVo, updateWrapper);
-            int ret1 = 0;
-            if (Const.EMP_SUBMIT_STATUS_S.equals(subStatus)) {
-                UpdateWrapper<BaPgEmp> updateWrapper1 = new UpdateWrapper<BaPgEmp>();
-                updateWrapper1.set("sub_status",subStatus);
-                updateWrapper1.set("entrance_status", Const.ENTRANCE_STATUS_I);
-                updateWrapper1.eq("pg_id",employeeVo.getPgId());
-                updateWrapper1.eq("emp_id",employeeVo.getId());
-                BaPgEmp bge = new BaPgEmp();
-                bge.setPgId(employeeVo.getPgId());
-                bge.setSubStatus(subStatus);
-                bge.setEmpId(employeeVo.getId());
-                bge.setEntranceStatus(Const.ENTRANCE_STATUS_I);
-                ret1 = this.baPgEmpMapper.update(bge, updateWrapper1);
-            }
             if (ret > 0) {
+                r.setCode(HttpResultEnum.EDIT_CODE_200.getCode());
+                r.setMsg(HttpResultEnum.EDIT_CODE_200.getMessage());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return r;
+    }
+
+    @Override
+    public Result updateProjectEmpSubmit(EmployeeVo employeeVo) {
+        Result r = new Result(HttpResultEnum.EDIT_CODE_500.getCode(),HttpResultEnum.EDIT_CODE_500.getMessage());
+        try {
+            employeeVo.setUpdateTime(new Date());
+            employeeVo.setEntranceStatus(Const.EMP_ENTRANCE_STATUS_I);
+            UpdateWrapper<BaEmployee> updateWrapper = new UpdateWrapper<BaEmployee>();
+            updateWrapper.eq("id", employeeVo.getId());
+            int ret = this.baseMapper.update(employeeVo, updateWrapper);
+            UpdateWrapper<BaPgEmp> updateWrapper1 = new UpdateWrapper<BaPgEmp>();
+            BaPgEmp bpe = new BaPgEmp();
+            bpe.setEntranceStatus(Const.EMP_ENTRANCE_STATUS_I);
+            bpe.setEmpId(employeeVo.getId());
+            bpe.setOperTime(new Date());
+            bpe.setPgId(employeeVo.getPgId());
+            updateWrapper1.eq("pg_id",bpe.getPgId());
+            updateWrapper1.eq("emp_id",bpe.getEmpId());
+            int ret1 = this.baPgEmpMapper.update(bpe, updateWrapper1);
+            if (ret > 0 && ret1 > 0) {
                 r.setCode(HttpResultEnum.EDIT_CODE_200.getCode());
                 r.setMsg(HttpResultEnum.EDIT_CODE_200.getMessage());
             }
@@ -166,5 +181,23 @@ public class BaEmployeeServiceImpl extends ServiceImpl<BaEmployeeMapper, BaEmplo
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         return r;
+    }
+
+    @Override
+    public List<EmployeeVo> getApplyUpdateEmps(String ids) {
+        List<EmployeeVo> empList = new ArrayList<EmployeeVo>();
+        if (StringUtils.isNotBlank(ids)) {
+            String[] idArr = ids.split(",");
+            EmployeeVo ev = null;
+            for (int i = 0 ; i < idArr.length; i++) {
+                BaEmployee be = this.baseMapper.selectById(Integer.valueOf(idArr[i]));
+                ev = new EmployeeVo();
+                ev.setId(be.getId());
+                ev.setEmpName(be.getEmpName());
+                ev.setCode(be.getCode());
+                empList.add(ev);
+            }
+        }
+        return empList;
     }
 }
