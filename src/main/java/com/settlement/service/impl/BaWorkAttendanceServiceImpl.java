@@ -42,8 +42,6 @@ public class BaWorkAttendanceServiceImpl extends ServiceImpl<BaWorkAttendanceMap
     @Override
     public PageData listPageData(WorkAttendanceCo workAttendanceCo) {
         workAttendanceCo.setDelFlag(Const.DEL_FLAG_N);
-        /**查询条件-当前项目审核 S**/
-        workAttendanceCo.setSubStatus(Const.PRO_SUBMIT_STATUS_S);
         Page<BaWorkAttendanceVo> page = new Page<>(workAttendanceCo.getPage(),workAttendanceCo.getLimit());
         List<BaWorkAttendanceVo> baWorkAttendanceVos = this.baseMapper.getWorkAttendanceVoByProjectId(workAttendanceCo,page);
         page.setRecords(baWorkAttendanceVos);
@@ -59,11 +57,42 @@ public class BaWorkAttendanceServiceImpl extends ServiceImpl<BaWorkAttendanceMap
     public PageData listApplyPageData(WorkAttendanceCo workAttendanceCo) {
         workAttendanceCo.setDelFlag(Const.DEL_FLAG_N);
         /**查询条件-当前项目审核 S**/
-        workAttendanceCo.setSubStatus(Const.PRO_SUBMIT_STATUS_S);
+        workAttendanceCo.setSubStatus(Const.SUB_STATUS_S);
         Page<BaWorkAttendanceVo> page = new Page<>(workAttendanceCo.getPage(),workAttendanceCo.getLimit());
         List<BaWorkAttendanceVo> baWorkAttendanceVos = this.baseMapper.getWorkAttendanceVoByProjectId(workAttendanceCo,page);
         page.setRecords(baWorkAttendanceVos);
         return new PageData(page.getTotal(),page.getRecords());
+    }
+
+    /**
+     * 生成考勤记录
+     * @param ids
+     * @param pgId
+     * @return
+     */
+    @Override
+    public Result generateWorkAttendance(String ids, Integer pgId) {
+        List<BaWorkAttendance> baWorkAttendances = new ArrayList<>();
+        Result r = new Result(HttpResultEnum.GEN_CODE_500.getCode(),HttpResultEnum.GEN_CODE_500.getMessage());
+        if (StringUtils.isNotBlank(ids)) {
+            String[] idArr = ids.split(",");
+            for(String id:idArr) {
+                BaWorkAttendance baWorkAttendance = new BaWorkAttendance();
+                baWorkAttendance.setWorkDays(21.5f);
+                baWorkAttendance.setEmployeeId(Integer.parseInt(id));
+                baWorkAttendance.setPgId(pgId);
+                baWorkAttendance.setSubStatus(Const.SUB_STATUS_N);
+                baWorkAttendance.setCreateTime(new Date());
+                baWorkAttendances.add(baWorkAttendance);
+            }
+            Integer ret = this.baseMapper.insertBatch(baWorkAttendances);
+            if(ret!=null && ret>0) {
+                r.setCode(HttpResultEnum.GEN_CODE_200.getCode());
+                r.setMsg(HttpResultEnum.GEN_CODE_200.getMessage());
+            }
+        }
+
+        return r;
     }
 
     /**

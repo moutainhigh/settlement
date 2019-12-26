@@ -17,4 +17,6 @@ import com.settlement.vo.BaCustomerVo;
 public interface BaApplyAttendanceService extends IService<BaApplyAttendance> {
     /**添加申请修改记录**/
     Result add(BaApplyAttendance baApplyAttendance);
+    /**检查数据是否有修改中的数据,不能提交**/
+    Result checkApplyModify(Integer[] ids);
 }

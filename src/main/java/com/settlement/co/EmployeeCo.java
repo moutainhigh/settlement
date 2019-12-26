@@ -2,6 +2,8 @@ package com.settlement.co;
 
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  * <p>
  *     项目组员工Co
@@ -19,5 +21,7 @@ public class EmployeeCo extends PageCo{
     private String delFlag;
 
     private String entranceStatus;
+
+    private Date currentTime;
 
 }

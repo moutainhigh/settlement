@@ -12,8 +12,8 @@
         <input type="hidden" name="parentId" th:value="${sysPermission.parentId}" />
     <div class="layui-row" layui-form-panel lay-filter="show_form">
 
-            <div class="layui-form-item">
-                <div class="layui-form-item">
+            <div class="layui-form-item" >
+                <div class="layui-form-item" th:if="${sysPermission.id}!=1">
                     <label for="parentContent" class="layui-form-label">
                         <span class="x-red">*</span>上级菜单</label>
                     <div class="layui-input-inline">
@@ -37,17 +37,13 @@
                     <span class="x-red">*</span>菜单名称</label>
                 <div class="layui-input-inline">
                     <input type="text" id="pName" name="pName" th:value="${mode.equals('update')}?${sysPermission.PName}" required="" lay-verify="pName" autocomplete="off" class="layui-input"></div>
-                <div class="layui-form-mid layui-word-aux">
-                    <span class="x-red">*</span>菜单名称
-                </div>
             </div>
             <div class="layui-form-item">
                 <label  for="url" class="layui-form-label">
                     <span class="x-red">*</span>链接url</label>
                 <div class="layui-input-inline">
                     <input type="text" id="url" name="url" th:value="${mode.equals('update')}?${sysPermission.url}" required="" lay-verify="url" autocomplete="off" class="layui-input"></div>
-                <div class="layui-form-mid layui-word-aux">
-                    <span class="x-red">*</span>权限控制标识 </div></div>
+                </div>
 
             <div class="layui-form-item layui-form-text">
                 <label  class="layui-form-label">
@@ -161,17 +157,11 @@
                                 initLevel: "2",
                                 done: function(data, $obj, first){
                                    // window.parent.layui.dtree.openTo(30,true);
-                                    var parentId = r.data.parentId;
-                                    var id= r.data.id;
-                                    var parentNode = window.parent.layui.$("#demoTree").find("div[dtree-click='itemNodeClick'][dtree-id='demoTree'][data-id='" + parentId + "']");
-                                    //console.log(data);
-                                    //console.log($obj);
-                                    // alert(parentNode);
-                                    console.dirxml(parentNode);
-                                    // alert(parentNode.childElementCount);
-                                    // alert(parentNode.length);
-                                    // alert(1);
-                                    window.parent.layui.$("#demoTree").find("div[dtree-click='itemNodeClick'][dtree-id='demoTree'][data-id='" + id + "']").click();
+                                   //  var parentId = r.data.parentId;
+                                   //  var id= r.data.id;
+                                   //  var parentNode = window.parent.layui.$("#demoTree").find("div[dtree-click='itemNodeClick'][dtree-id='demoTree'][data-id='" + parentId + "']");
+                                   //  console.dirxml(parentNode);
+                                   //  window.parent.layui.$("#demoTree").find("div[dtree-click='itemNodeClick'][dtree-id='demoTree'][data-id='" + id + "']").click();
                                 }
                             });
                             layer.msg("修改成功", {icon: 6});

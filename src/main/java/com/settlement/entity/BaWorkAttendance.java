@@ -30,7 +30,7 @@ public class BaWorkAttendance extends Model<BaWorkAttendance> {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    private Integer workDays;
+    private Float workDays;
 
     private Float attendanceDays;
 

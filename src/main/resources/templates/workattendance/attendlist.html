@@ -35,8 +35,19 @@
                         <div class="layui-inline ">
                             <span class="x-red"></span>月
                         </div>
+
+
                     </div>
                     <div class="layui-form" style="margin-top: 8px;">
+                        <div class="layui-inline ">
+                            <span class="x-red"></span>提交状态:
+                        </div>
+                        <div class="layui-inline">
+                            <select id="subStatus" name="subStatus"  lay-filter="subStatus" lay-verify="subStatus" style="width: 80px;height: 30px;">
+                                <option value="">请选择</option>
+                                <option th:each="status:${subStatusList}" th:value="${status.dicCode}" th:text="${status.dicContent}"></option>
+                            </select>
+                        </div>
                         <div class="layui-inline" >
                             <input type="text" id="keyword" name="keyword"  value="" placeholder="请输入" autocomplete="off" class="layui-input" style="width: 200px">
                         </div>
@@ -56,23 +67,25 @@
             <div class="layui-form" style="margin-top: 8px;">
                 <!--考勤时间点-->
                 <div class="layui-inline" style="margin-bottom: 8px;">
-                    <div class="layui-inline layui-show-xs-block">
-                        <span class="x-red"></span>结算时间点:
-                    </div>
-                    <div class="layui-inline layui-show-xs-block">
-                        <lable class="x-black">
-                            <span th:text="${stopTime}"></span>
-                        </lable>
-                    </div>
-                    <div class="layui-inline layui-show-xs-block">
-                        <span class="x-red"></span>结算完成时间点
-                    </div>
-                    <div class="layui-inline layui-show-xs-block">
-                        <lable class="x-black">
-                            <span th:text="${compelteTime}"></span>
-                        </lable>
-                    </div>
-                    <div  class="layui-inline layui-show-xs-block" style="position: relative; left:430px;border: 1px solid #1E9FFF;">
+                    <button class="layui-btn layui-btn-warm"  lay-submit="" ><i class="layui-icon"></i>结算时间点：<span th:text="${stopTime}"></span></button>
+                    <button class="layui-btn layui-btn-warm"  lay-submit="" ><i class="layui-icon"></i>结算完成时间点：<span th:text="${compelteTime}"></span></button>
+<!--                    <div class="layui-inline layui-show-xs-block">-->
+<!--                        <span class="x-red"></span>结算时间点:-->
+<!--                    </div>-->
+<!--                    <div class="layui-inline layui-show-xs-block">-->
+<!--                        <lable class="x-black">-->
+<!--                            <span th:text="${stopTime}"></span>-->
+<!--                        </lable>-->
+<!--                    </div>-->
+<!--                    <div class="layui-inline layui-show-xs-block">-->
+<!--                        <span class="x-red"></span>结算完成时间点-->
+<!--                    </div>-->
+<!--                    <div class="layui-inline layui-show-xs-block">-->
+<!--                        <lable class="x-black">-->
+<!--                            <span th:text="${compelteTime}"></span>-->
+<!--                        </lable>-->
+<!--                    </div>-->
+                    <div  class="layui-inline layui-show-xs-block" style="border: 1px solid #1E9FFF;">
                         <lable class="x-red" style="float:right;">
                             <span th:text="${tipCountMessage}"></span>
                         </lable>
@@ -96,11 +109,10 @@
 </body>
 <script type="text/html" id="toolBarHead">
     <div class="layui-btn-container">
-        <button type="button" id="import" data-type="import" class="layui-btn">批量导入</button>
-        <button type="button" id="applymodify" data-type="applymodify" class="layui-btn " lay-demo="reload">申请修改</button>
-        <button type="button" id="commmit" data-type="commmit" class="layui-btn layui-btn-normal"  lay-demo="reload">提交</button>
-        <button type="button" id="generate" data-type="generate" class="layui-btn layui-btn-normal "  lay-demo="reload">生成考勤记录</button>
-        <button type="button" id="sync" data-type="sync" class="layui-btn layui-btn-normal "  lay-demo="reload">同步项目考勤</button>
+        <button  id="import" lay-event="import" class="layui-btn">批量导入</button>
+        <button  lay-event="applymodify" class="layui-btn" >申请修改</button>
+        <button  lay-event="commmit" class="layui-btn layui-btn-normal"  >提交</button>
+        <button  lay-event="generate" class="layui-btn layui-btn-normal " >生成考勤记录</button>
     </div>
 </script>
 <script type="text/html" id="toolBar">
@@ -112,15 +124,13 @@
 
 <script type="text/javascript"  th:inline="javascript">
     layui.use(['table','form','upload','jquery'], function(){
-        var laydate = layui.laydate;
-        var  form = layui.form;
+        var form = layui.form;
         var table = layui.table;
         var upload = layui.upload;
         var $ = layui.jquery;
+
         var projectTreeObj = window.parent.layui.dtree.getNowParam("projectTree");
         var projectId = projectTreeObj.nodeId;
-
-        form.render();
 
         table.render({
             elem: '#dataTable',
@@ -145,8 +155,9 @@
                 {field:'id',type:'checkbox',fixed:'left'},
                 {field:'subStatus',title:'subStatus',hide:true},
                 {field:'employeeId',title:'员工编号',align:'center'},
-                // {field:'employeeName',title:'员工姓名',align:'center'},
+                //{field:'employeeName',title:'员工姓名',align:'center'},
                 {field:'workDays',title:'标准工作天数',align:'center'},
+                {field:'attendanceDays',title:'出勤天数',align:'center'},
                 {field:'absenteeismDays',title:'缺勤天数',align:'center'},
                 {field:'floatPerformance',title:'浮动绩效',align:'center'},
                 {field:'bonus',title:'奖金',align:'center'},
@@ -169,33 +180,34 @@
                 {field:'overtimeAllowance',title:'加班补助',align:'center'},
                 {field:'otherAddCost',title:'其他加项费用',align:'center'},
                 {field:'otherSubCost',title:'其他减项费用',align:'center'},
-                {field:'remark',title:'备注',align:'center'},
-                {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:60}
+                {field:'remark',title:'备注',align:'center'}
+                ,{fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:60}
             ]]
            ,done:function(res,curr,count) {
                //如果是异步请求数据方式，res即为你接口返回的信息。
                //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
-               for(var i=0;i<count;i++) {
-                   if(res.data[i].subStatus == 'S') {
-                       $($(".layui-table-body.layui-table-main tr")[i]).css("background-color", "#1E9FFF");
-                   }
-               }
+               // for(var i=0;i<count;i++) {
+               //     if(res.data[i].subStatus == 'S') {
+               //         $($(".layui-table-body.layui-table-main tr")[i]).css("background-color", "#1E9FFF");
+               //     }
+               // }
                //th hover
-                $('th').hover(function(){
-                    $("th").css("background-color","yellow");
-                });
+               //  $('th').hover(function(){
+               //      $("th").css("background-color","yellow");
+               //  });
            }
         });
 
         //按钮事件绑定
-        $('.layui-btn').on('click', function(){
-            var type = $(this).data('type');
-            active[type] ? active[type].call(this) : '';
-        });
+            $('.layui-btn').on('click', function(){
+                var type = $(this).data('type');
+                active[type] ? active[type].call(this) : '';
+            });
 
         var $ = layui.$, active = {
             reload: function(){
                 var keyword = $('#keyword');
+                var subStatus=$('#subStatus').children('option:selected').val();
                 //执行重载
                 table.reload('dataTable', {
                     page: {
@@ -203,83 +215,36 @@
                     }
                     ,where: {
                         keyword: keyword.val()
+                        ,subStatus: subStatus
                     }
                 }, 'data');
-            },
-            sync:function(){
-                syncOper('/ba-employee',projectId);
-            },
-            //提交考勤记录
-            commmit:function () {
-                commitWorkAttendanceOper('/ba-work-attendance/commit/',projectId,table,layer);
-            },
-            //申请修改
-            applymodify:function () {
-                //项目负责人AM
-                var checkUserId = [[${checkUserId}]];
-                applyModify('申请修改','/ba-work-attendance/applymodify/'+checkUserId,projectId,table,layer,500,450);
-            },
-            //生成考勤记录
-            generate:function (){
-                if(!judgeStopTime(projectId)) {
-                    layer.msg('在结算周期内不可以生成考勤记录',{icon:5});
-                    return;
-                }
-            },
-            import:function (){
-                if(!judgeStopTime(projectId)) {
-                    layer.msg('在结算周期内不可以批量导入,请在结算周期前导入',{icon:5});
-                    return;
-                } else {
-                    $('#import').attr("id",'import2');
-                    upload.render({
-                        elem: '#import2' //绑定元素
-                        ,url: '/file/upload/workattendance' //上传接口
-                        ,method: 'POST'
-                        ,accept: 'file'
-                        ,exts: 'xls|xlsx|csv' //只允许上传excel文件
-                        ,size: 200*1024 //文件大小
-                        ,before: function(obj){
-                        }
-                        ,done: function(res){//上传完毕回调
-                            return layer.msg(res.msg,{icon: res.code == '9006' ? 6 : 5});
-                        }
-                        ,error: function(){//请求异常回调
-                            layer.msg('网络异常,文件上传失败,请重新导入！',{icon:5});
-                        }
-                    });
-                }
             }
         };
-
+        //监听事件
+        table.on('toolbar(dataTable)', function(obj){
+            //var checkStatus = table.checkStatus(obj.config.id);
+            switch(obj.event){
+                case 'applymodify':
+                    //项目负责人AM
+                    var checkUserId = [[${checkUserId}]];
+                    applyModify('申请修改','/ba-work-attendance/applymodify/'+checkUserId,projectId,table,layer,500,450);
+                    break;
+                case 'commmit':
+                    commitWorkAttendanceOper('/ba-work-attendance/commit/',projectId,table,layer);
+                    break;
+                case 'generate':
+                    generateFun(projectId);
+                    break;
+                case 'import':
+                    importFun(projectId,upload);
+                    break;
+            };
+        });
         // 监听工具栏
         table.on('tool(dataTable)', function(obj){
             var data = obj.data;
-            if(obj.event === 'detail'){
-                layer.msg('ID：'+ data.id + ' 的查看操作');
-            } else if(obj.event === 'edit'){
-                //判断考勤完成时间
-                if(!judgeCompleteTime(projectId)) {
-                    layer.msg('超过考勤结算周期内无法修改',{icon:5});
-                    return;
-                }
-                //判断考勤结算时间
-                if(!judgeStopTime(projectId)) {
-                    layer.msg('在结算周期内修改考勤必须提交申请',{icon:5});
-                    return;
-                }
-                //判断修改次数
-
-                //判断修改状态
-
-                //判断提交状态
-                if(checkSubStatus(data.subStatus,'S')) {
-                    //layer.msg('已提交修改申请的数据请到【考勤申请修改记录】中修改',{icon:5});
-                    layer.msg('已提交的数据请通过【申请修改】来操作修改',{icon:5});
-                    return;
-                }
-
-                xadmin.open('编辑考勤信息','/ba-work-attendance/edit/'+ data.id,800,450);
+            if(obj.event === 'edit'){
+                editFun(projectId,data);
             }
         });
 
@@ -298,13 +263,35 @@
 
         });
 
-
-        //执行上传
-
-
+        form.render();
 
     });
     //////////////////////////////JS////////////////////////////////
+
+    function editFun(projectId,data){
+        //判断考勤完成时间
+        if(!judgeCompleteTime(projectId)) {
+            layer.msg('超过考勤结算周期内无法修改',{icon:5});
+            return;
+        }
+        //判断考勤结算时间
+        if(!judgeStopTime(projectId)) {
+            layer.msg('在结算周期内修改考勤必须提交申请',{icon:5});
+            return;
+        }
+        //判断修改次数
+
+        //判断修改状态
+
+        //判断提交状态
+        if(checkSubStatus(data.subStatus,'S')) {
+            //layer.msg('已提交修改申请的数据请到【考勤申请修改记录】中修改',{icon:5});
+            layer.msg('已提交的数据请通过【申请修改】来操作修改',{icon:5});
+            return;
+        }
+
+        xadmin.open('编辑考勤信息','/ba-work-attendance/edit/'+ data.id,800,450);
+    }
     function checkTimeParam(){
 
     }
@@ -318,6 +305,9 @@
         if (data.length == 0) {
             layer.alert('请先选择要修改的考勤记录',{icon : 5});
             return ;
+        }
+        for(var i=0;i<data.length;i++) {
+            ids2[i]=data[i].id;
         }
         //判断当月修改的次数
         var totalApplyCount = [[${totalApplyCount}]];
@@ -339,25 +329,21 @@
                 //提交的数据
                 layer.msg("在结算时间之前,已经提交的数据可以申请修改",{icon:6});
                 //判断当月修改的次数
-                for(var i=0;i<data.length;i++) {
-                    //ids+=data[i].id+",";
-                    ids2[i]=data[i].id;
-                }
                 xadmin.open(title,url + "/"+ ids2,w,h);
+                return;
             }
         } else{
             //超过考勤时间不可以提交
             //layer.msg('超过考勤结算时间点,无法提交考勤记录', {icon: 5});
             //return;
         }
-
+        // 修改中的数据不能提交
+        if(checkApplyModify(ids2)) {
+            layer.msg("申请修改中的数据不能提交",{icon:5});
+            return;
+        }
         //考勤结算周期内
          if(!judgeStopTime(projectId) && judgeCompleteTime(projectId)){
-
-            for(var i=0;i<data.length;i++) {
-                //ids+=data[i].id+",";
-                ids2[i]=data[i].id;
-            }
             xadmin.open(title,url + "/"+ ids2,w,h);
             return;
          } else {
@@ -402,7 +388,11 @@
             ids2[i]=data[i].id;
             //存在修改的记录，不要重复提交
         }
-
+        // 修改中的数据不能提交
+        if (checkApplyModify(ids2)) {
+            layer.msg("申请修改中的数据不能提交",{icon:5});
+            return;
+        }
         layer.open({
             content: '确认提交考勤记录数据？'
             ,btn: ['确定','取消']
@@ -439,7 +429,68 @@
         });
 
     }
+    //生成考勤记录
+    function generateFun(projectId) {
+        if (!judgeStopTime(projectId)) {
+            layer.msg('在结算周期内不可以生成考勤记录', {icon: 5});
+            return;
+        } else {
+            xadmin.open('生成考勤数据','/ba-work-attendance/generate/'+projectId,700,500);
+        }
+    }
+    //导入
+    function importFun(projectId,upload) {
+        if(!judgeStopTime(projectId)) {
+            layer.msg('在结算周期内不可以批量导入,请在结算周期前导入',{icon:5});
+            return;
+        } else {
+            $('#import').attr("id",'import2');
+            upload.render({
+                elem: '#import2' //绑定元素
+                ,url: '/file/upload/workattendance' //上传接口
+                ,method: 'POST'
+                ,accept: 'file'
+                ,exts: 'xls|xlsx|csv' //只允许上传excel文件
+                ,size: 200*1024 //文件大小
+                ,before: function(obj){
+                }
+                ,done: function(res){//上传完毕回调
+                    return layer.msg(res.msg,{icon: res.code == '9006' ? 6 : 5});
+                }
+                ,error: function(){//请求异常回调
+                    layer.msg('网络异常,文件上传失败,请重新导入！',{icon:5});
+                }
+            });
+        }
+    }
+    //检查考勤是否在申请修改中
+    // 0 存在修改数据
+    // 1 不存在修改数据
+    function checkApplyModify(ids) {
+        var flag=false;
+        $.ajax({
+            type:'get'
+            ,url:'/ba-apply-attendance/check/apply/modify/'+ids
+            ,async:false //同步处理
+            ,success:function(r){
+                if(r.code=='1') {
+                    flag = false;
+                }
+                else {
+                    var data=r.data;
+                    var attendanceIds=[];
+                    for(var i=0;i<data.length;i++) {
+                        attendanceIds[i]= data[i].attendanceId;
+                    }
+                    alert(attendanceIds);
+                    flag = true;
+                }
+            }
+        });
+        alert('checkApplyModify:'+flag);
+        return flag;
 
+    }
     //根据提交的状态S N获得对应的数组列表
     function getSubStatus(data,subStatusValue) {
         var idSubStatus=[];

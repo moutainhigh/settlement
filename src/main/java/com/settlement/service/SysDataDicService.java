@@ -83,4 +83,6 @@ public interface SysDataDicService extends IService<SysDataDic> {
     List<SysDataDicVo> getDataDicListVo();
     /**页面审核状态下拉列表**/
     List<SysDataDic> getCheckStatus();
+    /**获得当前的结点下子结点的排序值**/
+    Result getChildSort(String pid);
 }

@@ -37,4 +37,6 @@ public interface BaWorkAttendanceService extends IService<BaWorkAttendance> {
     PageData getWorkAttendanceByApplyId(WorkAttendanceCo workAttendanceCo);
     /**考勤申请修改页面数据**/
     PageData listApplyPageData(WorkAttendanceCo workAttendanceCo);
+    /**生成考勤记录**/
+    Result generateWorkAttendance(String ids, Integer pgId);
 }

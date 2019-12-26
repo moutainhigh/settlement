@@ -47,4 +47,6 @@ public interface SysDataDicMapper extends BaseMapper<SysDataDic> {
 
    List<SysDataDicListVo> getDataDicList(Map<String, Object> mapkey);
 
+   @Select("select max(sort) from sys_data_dic where pid=#{pid}")
+    Integer getChildSort(String pid);
 }

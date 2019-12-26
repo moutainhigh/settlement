@@ -78,6 +78,7 @@
             </div>
         </div>
         <script th:src="@{/js/formSelects-v4.js}" type="text/javascript" charset="utf-8"></script>
+        <script th:src="@{/js/common/common.js}" type="text/javascript" charset="utf-8"></script>
         <script th:src="@{/js/timeparam/timeparam.js}" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript" th:inline="javascript">
 
@@ -170,10 +171,7 @@
                                     icon : r.code == 'add_200' ? 6: 5
                                 },
                                 function() {
-                                    //关闭当前frame
-                                    xadmin.close();
-                                    // 可以对父窗口进行刷新
-                                    xadmin.father_reload();
+                                    reloadTable('dataTable');
                                 });
                         });
                     } else if('update'==mode){
@@ -186,10 +184,7 @@
                                         icon : r.code == 'edit_200' ? 6: 5
                                     },
                                     function() {
-                                        //关闭当前frame
-                                        xadmin.close();
-                                        // 可以对父窗口进行刷新
-                                        xadmin.father_reload();
+                                        reloadTable('dataTable');
                                     });
                             }
                         });

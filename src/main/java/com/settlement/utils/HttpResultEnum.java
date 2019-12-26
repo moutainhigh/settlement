@@ -51,7 +51,7 @@ public enum HttpResultEnum {
 
     //合同编号
     CONTRACT_NO_0("0","合同编号不存在，可以添加"),
-    CONTRACT_NO_1("0","合同编号已经存在，不可以添加"),
+    CONTRACT_NO_1("1","合同编号已经存在，不可以添加"),
 
     LOGIN_CODE_500("login_500","登录失败,用户名或密码错误"),
     LOGIN_CODE_501("login_501","用户名不正确"),
@@ -66,7 +66,10 @@ public enum HttpResultEnum {
     EDIT_CODE_500("edit_500","修改失败"),
     QUERY_CODE_200("query_200","查询成功"),
     QUERY_CODE_500("query_500","查询失败"),
-    //考勤记录提交状态
+
+    GEN_CODE_500("gen_500","生成考勤记录失败"),
+    GEN_CODE_200("gen_200","生成考勤记录成功"),
+        //考勤记录提交状态
     COMMIT_CODE_200("commit_200","提交成功"),
     COMMIT_CODE_500("commit_500","提交失败"),
     //审核
@@ -86,6 +89,7 @@ public enum HttpResultEnum {
     FILE_UPLOAD_CODE_9002("9002","文件下载失败"),
     FILE_UPLOAD_CODE_9004("9004","图片上传格式不正确，支持的格式有jpg、png、jpeg"),
     FILE_UPLOAD_CODE_9005("9005","图片上传为空");
+
 
 
     private String code;

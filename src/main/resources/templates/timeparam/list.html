@@ -42,13 +42,13 @@
         </div> 
     </body>
     <script type="text/html" id="toolBar">
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
         <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
     </script>
     <script type="text/html" id="switchStatus">
         <input type="checkbox" name="status" value="{{d.id}}" lay-skin="switch" lay-text="启用|停用" lay-filter="status" {{ d.enabled == 'Y' ? 'checked' : '' }}>
     </script>
+    <script th:src="@{/js/common/common.js}" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript"  th:inline="none">
       layui.use(['laydate','table','form','element'], function(){
         var laydate = layui.laydate;
@@ -72,7 +72,7 @@
                {field:'type',title:'type',hide:true},
                {field:'typeContent',title:'时间点类型',align:'center'},
                {field:'enabled',title:'状态',align:'center',templet: '#switchStatus', unresize: true},
-               {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:200}
+               {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:130}
            ]]
         });
 
@@ -165,9 +165,7 @@
           // 监听工具栏
          table.on('tool(dataTable)', function(obj){
               var data = obj.data;
-              if(obj.event === 'detail'){
-                  layer.msg('ID：'+ data.id + ' 的查看操作');
-              } else if(obj.event === 'del'){
+              if(obj.event === 'del'){
                   layer.confirm('真的删除【 '+ data.paramValue + '】么?', function(index){
                       timeparam_del(data.id);
                       layer.close(index);
@@ -217,8 +215,7 @@
                   } else {
                       layer.msg('删除失败', {icon: 5});
                   }
-                  //layer.msg(r.msg,{icon:1,time:1000});
-                  location.reload();
+                  timeout(1000);
               }
           });
       }

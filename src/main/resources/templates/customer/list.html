@@ -29,7 +29,7 @@
                             </form>
                         </div>
                         <div class="layui-card-header">
-                            <button class="layui-btn" onclick="xadmin.open('添加客户','/ba-customer/toAddorUpdate/add/0',600,550)"><i class="layui-icon"></i>添加</button>
+                            <button class="layui-btn" onclick="xadmin.open('添加客户','/ba-customer/toAddorUpdate/add/0',400,350)"><i class="layui-icon"></i>添加</button>
 <!--                            <button type="button" id="delete" class="layui-btn layui-btn-danger" onclick="deleteFun()" lay-demo="reload">删除</button>-->
                         </div>
                         <div class="layui-card-body layui-table-body layui-table-main" >
@@ -42,13 +42,13 @@
         </div> 
     </body>
     <script type="text/html" id="toolBar">
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
         <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
     </script>
     <script type="text/html" id="switchStatus">
         <input type="checkbox" name="status" value="{{d.id}}" lay-skin="switch" lay-text="启用|停用" lay-filter="status" {{ d.enabled == 'Y' ? 'checked' : '' }}>
     </script>
+    <script th:src="@{/js/common/common.js}" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript"  th:inline="none">
       layui.use(['laydate','table','form','element'], function(){
         var laydate = layui.laydate;
@@ -65,12 +65,12 @@
            height: 'full-210',
            // id: 'userData',
            cols: [[
-               {field:'id',type:'checkbox',fixed:'left'},
+               {field:'id',hide:true},
                {field:'customerName',title:'客户名称',align:'center',fixed:'left'},
                {field:'code',title:'客户编码',edit: 'text',align:'center'},
                {field:'chiefName',title:'负责人',edit: 'text',align:'center'},
                {field:'enabled',title:'状态',align:'center',templet: '#switchStatus', unresize: true},
-               {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:200}
+               {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:130}
            ]]
         });
 
@@ -163,12 +163,13 @@
               if(obj.event === 'detail'){
                   layer.msg('ID：'+ data.id + ' 的查看操作');
               } else if(obj.event === 'del'){
+
                   layer.confirm('真的删除【 '+ data.customerName + '】么?', function(index){
-                      timeparam_del(data.id);
+                      customer_del(data.id);
                       layer.close(index);
                   });
               } else if(obj.event === 'edit'){
-                  xadmin.open('编辑客户','/ba-customer/toAddorUpdate/update/'+ data.id,600,550);
+                  xadmin.open('编辑客户','/ba-customer/toAddorUpdate/update/'+ data.id,400,350);
               }
           });
 
@@ -186,8 +187,8 @@
       });
 
 
-      /*数据字典-删除*/
-      function timeparam_del(id){
+      /*-删除*/
+      function customer_del(id){
           $.ajax({
               url:"/ba-customer/delete/" + id,
               type:"delete",
@@ -200,8 +201,7 @@
                   } else {
                       layer.msg('删除失败', {icon: 5});
                   }
-                  //layer.msg(r.msg,{icon:1,time:1000});
-                  location.reload();
+                  timeout(100);
               }
           });
       }

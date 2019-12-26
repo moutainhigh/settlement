@@ -1,5 +1,6 @@
 package com.settlement.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.settlement.entity.BaApplyAttendance;
 import com.settlement.mapper.BaApplyAttendanceMapper;
 import com.settlement.service.BaApplyAttendanceService;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+
+import java.util.List;
 
 /**
  * <p>
@@ -40,6 +43,25 @@ public class BaApplyAttendanceServiceImpl extends ServiceImpl<BaApplyAttendanceM
         } catch (Exception e) {
             e.printStackTrace();
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+        return r;
+    }
+
+    /**
+     * 检查数据是否有修改中的数据,不能提交
+     * @param ids
+     * @return
+     */
+    @Override
+    public Result checkApplyModify(Integer[] ids) {
+        Result r = new Result(HttpResultEnum.CODE_1.getCode(),HttpResultEnum.CODE_1.getMessage());
+        QueryWrapper<BaApplyAttendance> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("attendance_id",ids);
+        List<BaApplyAttendance> baApplyAttendances = this.baseMapper.selectList(queryWrapper);
+        if(baApplyAttendances!=null && baApplyAttendances.size()>0) {
+            r.setCode(HttpResultEnum.CODE_0.getCode());
+            r.setMsg(HttpResultEnum.CODE_0.getMessage());
+            r.setData(baApplyAttendances);
         }
         return r;
     }

@@ -79,6 +79,7 @@
                 </form>
             </div>
         </div>
+        <script th:src="@{/js/common/common.js}" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript" th:inline="javascript">
             // 表单操作
             layui.use(['form', 'layer','jquery','laydate'],
@@ -97,37 +98,37 @@
                 });
                 form.render();
                 //自定义验证规则
-                // form.verify({
-                //     contractNo: function(value) {
-                //         if (value.length < 1) {
-                //             return '合同编号至少得1个字符啊';
-                //         }
-                //     },
-                //     invoiceIssuing: function (value) {
-                //         if (value.length < 1) {
-                //             return '开票抬头至少得1个字符啊';
-                //         }
-                //     },
-                //     customerId: function (value) {
-                //         if (value.length < 1) {
-                //             return '请选择客户';
-                //         }
-                //     },
-                //     baProjectGroupId: function (value) {
-                //         if (value.length < 1) {
-                //             return '请选择项目组';
-                //         }
-                //     },
-                //     startTime: function (value) {
-                //         if (value.length < 1) {
-                //             return '请选择开始日期';
-                //         }
-                //     },endTime: function (value) {
-                //         if (value.length < 1) {
-                //             return '请选择结束日期';
-                //         }
-                //     }
-                // });
+                form.verify({
+                    contractNo: function(value) {
+                        if (value.length < 1) {
+                            return '合同编号至少得1个字符啊';
+                        }
+                    },
+                    invoiceIssuing: function (value) {
+                        if (value.length < 1) {
+                            return '开票抬头至少得1个字符啊';
+                        }
+                    },
+                    customerId: function (value) {
+                        if (value.length < 1) {
+                            return '请选择客户';
+                        }
+                    },
+                    baProjectGroupId: function (value) {
+                        if (value.length < 1) {
+                            return '请选择项目组';
+                        }
+                    },
+                    startTime: function (value) {
+                        if (value.length < 1) {
+                            return '请选择开始日期';
+                        }
+                    },endTime: function (value) {
+                        if (value.length < 1) {
+                            return '请选择结束日期';
+                        }
+                    }
+                });
                 //根据选择的客户加载项目
                 form.on('select(customerId)',function(data){
                     var customerId = data.value;
@@ -159,22 +160,21 @@
                             layer.msg('合同编号不能为空',{icon:5});
                             return false;
                         }
-                    contractNoIsExist(contractNo,layer,'');
+                    checkCodeIsExist('/ba-contract/isexist/',contractNo,layer,'' );
+                    //contractNoIsExist(contractNo,layer,'');
                     }
                 );
                 //监听提交
                 form.on('submit(add)', function(data){
                     var mode=[[${mode}]];
-                    if("add"==mode && contractNoIsExist($('#contractNo').val(),layer,'submit')) {
+                    var contractNo= $('#contractNo').val();
+                    if("add"==mode && checkCodeIsExist('/ba-contract/isexist/',contractNo,layer,'submit')) {
                         $.post('/ba-contract/add',data.field,function (r) {
                             layer.alert(r.msg, {
                                     icon : r.code == 'add_200' ? 6: 5
                                 },
                                 function() {
-                                    //关闭当前frame
-                                    xadmin.close();
-                                    // 可以对父窗口进行刷新
-                                    xadmin.father_reload();
+                                    reloadTable('dataTable');
                                 });
                         });
                     } else if('update'==mode){
@@ -187,10 +187,7 @@
                                         icon : r.code == 'edit_200' ? 6: 5
                                     },
                                     function() {
-                                        //关闭当前frame
-                                        xadmin.close();
-                                        // 可以对父窗口进行刷新
-                                        xadmin.father_reload();
+                                        reloadTable('dataTable');
                                     });
                             }
                         });
@@ -201,21 +198,21 @@
             });
 
             //form.render();
-            // 检查邮箱是否存在
-            function contractNoIsExist(contractNo, layer,mode) {
-                var flag = true;
-                $.ajaxSettings.async = false;
-                $.get('/ba-contract/isexist/' + contractNo , null , function(r) {
-                    if (r.code == 1)  {
-                        flag = false;
-                        layer.alert(r.msg, {icon: 5});
-                    } else if (mode != 'submit' && r.code == 0) {
-                        layer.alert(r.msg, {icon: 6});
-                    }
-                });
-                $.ajaxSettings.async = true;
-                return flag;
-            }
+            // 检查是否存在
+            // function contractNoIsExist(contractNo, layer,mode) {
+            //     var flag = true;
+            //     $.ajaxSettings.async = false;
+            //     $.get('/ba-contract/isexist/' + contractNo , null , function(r) {
+            //         if (r.code == 1)  {
+            //             flag = false;
+            //             layer.alert(r.msg, {icon: 5});
+            //         } else if (mode != 'submit' && r.code == 0) {
+            //             layer.alert(r.msg, {icon: 6});
+            //         }
+            //     });
+            //     $.ajaxSettings.async = true;
+            //     return flag;
+            // }
         </script>
     </body>
 </html>

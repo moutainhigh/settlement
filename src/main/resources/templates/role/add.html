@@ -49,7 +49,7 @@
                 </div>
                 <div class="layui-form-item">
                     <label for="remark" class="layui-form-label">
-                        <span class="x-red">*</span>角色标记
+                        <span class="x-red">*</span>角色备注
                     </label>
                     <div class="layui-input-inline">
                         <input type="text" id="remark" name="remark" th:value="${sysRole!=null}?${sysRole.remark}" required="" lay-verify="required"
@@ -154,7 +154,7 @@
               },
               remark: function(value){
                   if(value.length < 5){
-                      return '角色标记至少得5个字符啊';
+                      return '角色备注至少得5个字符啊';
                   }
               }
           });

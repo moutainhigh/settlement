@@ -41,7 +41,6 @@
         </div> 
     </body>
     <script type="text/html" id="toolBar">
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
         <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
     </script>
@@ -59,13 +58,13 @@
               height: 'full-210',
               // id: 'userData',
               cols: [[
-                  {field: 'id', type: 'checkbox', fixed: 'left'},
+                  {field: 'id', hide:true},
                   {field: 'roleCnName', title: '角色中文名', align: 'center'},
                   {field: 'roleEnName', title: '角色英文名', align: 'center'},
                   {field: 'roleCode', title: '角色代码', align: 'center'},
                   {field: 'remark', title: '角色标记', align: 'center'},
                   {field: 'createTime', title: '创建时间', align: 'center'},
-                  {fixed: 'right', title: '操作', align: 'center', toolbar: '#toolBar', width: 200}
+                  {fixed: 'right', title: '操作', align: 'center', toolbar: '#toolBar', width: 130}
               ]]
           });
           var $ = layui.$, active = {
@@ -92,9 +91,7 @@
           // 监听工具栏
           table.on('tool(dataTable)', function (obj) {
               var data = obj.data;
-              if (obj.event === 'detail') {
-                  layer.msg('ID：' + data.id + ' 的查看操作');
-              } else if (obj.event === 'del') {
+              if (obj.event === 'del') {
                   layer.confirm('真的删除【 ' + data.roleCnName + '】么?', function (index) {
                       role_del(data.id);
                       layer.close(index);
@@ -125,7 +122,7 @@
                 success:function(r){
                     //location.reload();
                     layer.msg(r.msg,{icon: r.code == 'delete_200'? 6 : 5});
-
+                    location.reload();
                 }
             });
             timeout(2000);
