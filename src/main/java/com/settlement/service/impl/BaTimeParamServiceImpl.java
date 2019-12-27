@@ -17,6 +17,7 @@ import com.settlement.utils.Const;
 import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
 import com.settlement.vo.BaTimeParamVo;
+import org.eclipse.jetty.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -305,7 +306,8 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
      */
     @Override
     public String getStopTimeParam(Integer projectId) {
-        return  getTimeParamValue(projectId,Const.TIME_PRAMA_STOP);
+        String stopTime=getTimeParamValue(projectId,Const.TIME_PRAMA_STOP);
+        return StringUtil.isNotBlank(stopTime)?stopTime:"";
     }
 
     /**
@@ -314,7 +316,8 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
      */
     @Override
     public String getCompleteParam(Integer projectId) {
-        return  getTimeParamValue(projectId,Const.TIME_PRAMA_COMPELETE);
+        String completeTime = getTimeParamValue(projectId,Const.TIME_PRAMA_COMPELETE);
+        return StringUtil.isNotBlank(completeTime)?completeTime:"";
     }
 
     /**
@@ -440,7 +443,45 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
         String year = String.valueOf(cal.get(Calendar.YEAR));
         String currentMonth=String.valueOf(cal.get(Calendar.MONTH)+1);
         String day=this.baseMapper.getTimeParamValueByProjectId(map);
-        return year+"-"+currentMonth+"-"+day;
+        return StringUtil.isNotBlank(day)?(year+"-"+currentMonth+"-"+day):"";
     }
 
+    private String judgeMonthDay(String year,String currentMonth,String day){
+        int yearValue = Integer.parseInt(year);
+        switch (currentMonth) {
+            case "01":
+            case "03":
+            case "05":
+            case "07":
+            case "08":
+            case "10":
+            case "12":
+                day=judgeDay(day,31);
+                break;
+            case "04":
+            case "06":
+            case "09":
+            case "11":
+                day=judgeDay(day,30);
+                break;
+            case "02":
+                if(0==yearValue%4 && 0!=yearValue%100 || 0 == yearValue%400){
+                    day=judgeDay(day,29);
+                 } else{
+                    day=judgeDay(day,28);
+                 }
+                break;
+
+        }
+        return day;
+    }
+
+    private String judgeDay(String dayParam,int monthDay) {
+        int day = Integer.parseInt(dayParam);
+        if(day<=monthDay) {
+            return dayParam;
+        } else {
+            return String.valueOf(monthDay);
+        }
+    }
 }

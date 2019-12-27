@@ -79,6 +79,9 @@
         <if test="workAttendanceCo.keyWord!=null" >
             and CONCAT(w.employee_id,e.emp_name) like CONCAT('%',#{workAttendanceCo.keyword},'%')
         </if>
+        <if test="workAttendanceCo.subStatus!=null and workAttendanceCo.subStatus!=''" >
+            and w.sub_status=#{workAttendanceCo.subStatus}
+        </if>
 
     </select>
     <!--根据id获得当前项目组的员工考勤信息-->
@@ -119,4 +122,12 @@
             and b.sub_status=#{workAttendanceCo.subStatus}
         order by b.sub_status asc
     </select>
+    <!-- 生成考勤记录-->
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into ba_work_attendance(work_days,employee_id,pg_id,sub_status,create_time) values
+        <foreach collection="list" item="baWorkAttendance" index="" separator=",">
+            (#{baWorkAttendance.workDays},#{baWorkAttendance.employeeId},#{baWorkAttendance.pgId},#{baWorkAttendance.subStatus},#{baWorkAttendance.createTime})
+        </foreach>
+
+    </insert>
 </mapper>

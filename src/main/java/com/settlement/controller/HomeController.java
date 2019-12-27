@@ -7,6 +7,7 @@ import com.settlement.utils.Const;
 import com.settlement.utils.Result;
 import com.settlement.vo.*;
 import org.apache.shiro.SecurityUtils;
+import org.eclipse.jetty.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -213,7 +214,7 @@ public class HomeController {
             model.addAttribute("mode", "add");
             model.addAttribute("sysPermission",sysPermission);
         } else {
-            SysPermission sysPermission=sysPermissionService.getRootSysPermissionVoById(Const.PERMISSION_ROOT_ID);
+            SysPermissionVo sysPermission = new SysPermissionVo(); //sysPermissionService.getRootSysPermissionVoById(Const.PERMISSION_ROOT_ID);
             model.addAttribute("mode","default");
             model.addAttribute("sysPermission",sysPermission);
         }
@@ -253,7 +254,7 @@ public class HomeController {
             model.addAttribute("mode", "add");
             model.addAttribute("sysDept",sysDept);
         } else {
-            SysDeptVo sysDept=sysDeptService.getRootSysDeptVoById(Const.DEPT_ROOT);
+            SysDeptVo sysDept= new SysDeptVo();//sysDeptService.getRootSysDeptVoById(Const.DEPT_ROOT);
             sysRoleVos = sysRoleService.getRoleVo();
             model.addAttribute("sysRoleVos",sysRoleVos);
             model.addAttribute("mode","default");
@@ -296,6 +297,8 @@ public class HomeController {
 //                sysDataDic = sysDataDicService.getOne(queryWrapper);
 //            }
             SysDataDic sysDataDic = sysDataDicService.getRoot(Const.DATA_DIC_ROOT);
+            Integer sort=(Integer)sysDataDicService.getChildSort(Const.DATA_DIC_ROOT).getData();
+            sysDataDic.setSort(sort);
             model.addAttribute("mode","add");
             model.addAttribute("sysDataDic",sysDataDic);
         } else if(Const.MODE_UPDADTE.equals(mode)) {
@@ -681,6 +684,7 @@ public class HomeController {
     public String toAttendList(Integer projectId,Model model){
         List<String> years = baTimeParamService.getTimeYearValue();
         List<String> months = baTimeParamService.getTimeMonthValue();
+        List<SysDataDicVo> subStatusList = sysDataDicService.getDataDicSelectByParentCode(Const.SUB_STATUS);
         Integer applyCount = 0;
         Integer totalApplyCount = 3;
         String stopTime =baTimeParamService.getStopTimeParam(projectId);
@@ -695,12 +699,19 @@ public class HomeController {
         }
         String tipCountMessage = "本月您已经修改"+applyCount+"次,还有"+(totalApplyCount-applyCount)+"次修改机会";
         String tipStopAndCompelteTime = "";
-        if(stopTime.split("-")[2].equals("null")) {
-            tipStopAndCompelteTime+=" 设置【结算时间点】";
+//        if(stopTime.split("-")[2].equals("null")) {
+//            tipStopAndCompelteTime+=" 设置【结算时间点】";
+//        }
+//        if(compelteTime.split("-")[2].equals("null")) {
+//            tipStopAndCompelteTime+=" 设置【结算完成时间点】";
+//        }
+        if(!StringUtil.isNotBlank(stopTime)) {
+            stopTime="尚未设置【结算时间点】";
         }
-        if(compelteTime.split("-")[2].equals("null")) {
-            tipStopAndCompelteTime+=" 设置【结算完成时间点】";
+        if(!StringUtil.isNotBlank(compelteTime)) {
+            compelteTime=" 尚未设置【结算完成时间点】";
         }
+        model.addAttribute("subStatusList",subStatusList);
         model.addAttribute("tipStopAndCompelteTime",tipStopAndCompelteTime);
         model.addAttribute("tipCountMessage",tipCountMessage);
         model.addAttribute("totalApplyCount",totalApplyCount);
@@ -740,6 +751,17 @@ public class HomeController {
         return "workattendance/add";
     }
 
+    /**
+     * 考勤管理-生成考勤记录
+     * @param projectId
+     * @param model
+     * @return
+     */
+    @GetMapping("/ba-work-attendance/generate/{projectId}")
+    public String toGenerateWorkAttendance(@PathVariable Integer projectId,Model model){
+        model.addAttribute("pgId",projectId);
+        return "workattendance/generate";
+    }
     /**
      * 考勤申请修改记录-通过审核-修改考勤信息页面
      * @param id

@@ -34,4 +34,6 @@ public interface BaEmployeeService extends IService<BaEmployee> {
     Result updateProjectEmpSubmit(EmployeeVo employeeVo);
     /** 获取申请员工信息 */
     List<EmployeeVo> getApplyUpdateEmps(String ids);
+    /**根据pgId查询新入职未生成考勤记录的员工**/
+    PageData getGenerateWorkattendPageData(EmployeeCo employeeCo);
 }

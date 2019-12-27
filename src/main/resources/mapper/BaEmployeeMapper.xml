@@ -86,4 +86,34 @@
             where id = #{emp.id}
         </foreach>
     </update>
+
+    <select id="getGenerateWorkattendPageData" parameterType="com.settlement.co.EmployeeCo" resultType="com.settlement.vo.EmployeeVo">
+    select
+	    ee.id
+	    ,ee.emp_name as empName
+	    ,ee.`code` as code
+	    ,ee.pg_id as pgId
+	    ,ee.entrance_time as entranceTime
+     from
+        (select
+            pe.pg_id
+            ,e.id
+            ,e.`code`
+            ,e.emp_name
+            ,e.entrance_time
+        from ba_employee e
+        inner join ba_pg_emp pe on e.id=pe.emp_id
+        where pe.pg_id=#{employeeCo.pgId}
+            and e.del_flag = #{employeeCo.delFlag}
+            and pe.entrance_status = #{employeeCo.entranceStatus}
+		) ee
+    where (
+        select
+            count(1)
+        from ba_work_attendance w
+        where w.pg_id=#{employeeCo.pgId}
+             and w.employee_id=ee.id
+             and DATE_FORMAT(w.create_time,'%Y-%m')=DATE_FORMAT(#{employeeCo.currentTime},'%Y-%m')
+             )=0
+    </select>
 </mapper>

@@ -29,7 +29,7 @@
                             </form>
                         </div>
                         <div class="layui-card-header">
-                            <button class="layui-btn" onclick="xadmin.open('添加数据字典','/sys-data-dic/toAddOrUpdate/add/0',600,550)"><i class="layui-icon"></i>添加</button>
+                            <button class="layui-btn" onclick="xadmin.open('添加数据字典','/sys-data-dic/toAddOrUpdate/add/0',600,400)"><i class="layui-icon"></i>添加</button>
 <!--                            <button type="button" id="delete" class="layui-btn layui-btn-danger" onclick="deleteFun()" lay-demo="reload">删除</button>-->
                         </div>
                         <div class="layui-card-body layui-table-body layui-table-main" >
@@ -42,7 +42,6 @@
         </div> 
     </body>
     <script type="text/html" id="toolBar">
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
         <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
     </script>
@@ -65,13 +64,13 @@
            height: 'full-210',
            // id: 'userData',
            cols: [[
-               {field:'id',type:'checkbox',fixed:'left'},
+               {field:'id',hide:true},
                {field:'dicCode',title:'字典代码',align:'center',fixed:'left'},
                {field:'dicContent',title:'字典内容',edit: 'text',align:'center'},
                {field:'sort',title:'排序',edit: 'text',align:'center'},
                {field:'pidContent',title:'父结点',align:'center'},
                {field:'enabled',title:'状态',align:'center',templet: '#switchStatus', unresize: true},
-               {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:200}
+               {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:130}
            ]]
         });
 
@@ -107,25 +106,46 @@
               var id = this.value;
               var obj = $(data.elem);
               var a = data.elem.checked;
+              console.log(data);
+              console.log(obj.parent);
+              console.log(obj.parent.parent);
               //alert(id+":"+a);
               if (!a) {
                   // 发送ajax请求，enabled停用 更新后台
-                  $.ajax({
-                      url:'/sys-data-dic/enable/stop/'+id,
-                      type:'put',
-                      success: function(data){
-                          if("edit_200"==data.code){
-                            layer.msg('停用成功', {icon: 6});
-                            data.elem.checked = a;
-                            layui.form.render();
+                  layer.open({
+                      content: '确定要停用此数据字典吗？'
+                      ,btn: ['确定','取消']
+                      ,yes: function(index){
+                          // 发送ajax请求，enabled停用 更新后台
+                          $.ajax({
+                              url:'/sys-data-dic/enable/stop/'+id,
+                              type:'put',
+                              success: function(data){
+                                  if("edit_200"==data.code){
+                                      layer.msg('停用成功', {icon: 6});
+                                      data.elem.checked = a;
+                                      layui.form.render();
 
-                          }else {
-                              data.elem.checked = !a;
-                              layui.form.render();
-                              layer.msg('停用失败', {icon: 5});
-                          }
-                     }
+                                  }else {
+                                      data.elem.checked = !a;
+                                      layui.form.render();
+                                      layer.msg('停用失败', {icon: 5});
+                                  }
+                              }
+                          });
+                      }
+                      ,btn2: function(index){
+                          data.elem.checked = !a;
+                          layui.form.render();
+                          layer.close(index);
+                      }
+                      ,cancel: function(){
+                          //右上角关闭回调
+                          data.elem.checked=!a;
+                          layui.form.render();
+                      }
                   });
+
               } else {
                   layer.open({
                       content: '确定要启用此数据字典吗？'
@@ -178,15 +198,13 @@
           // 监听工具栏
          table.on('tool(dataTable)', function(obj){
               var data = obj.data;
-              if(obj.event === 'detail'){
-                  layer.msg('ID：'+ data.id + ' 的查看操作');
-              } else if(obj.event === 'del'){
+              if(obj.event === 'del'){
                   layer.confirm('真的删除【 '+ data.dicContent + '】么?', function(index){
                       datadic_del(data.id);
                       layer.close(index);
                   });
               } else if(obj.event === 'edit'){
-                  xadmin.open('编辑数据字典','/sys-data-dic/toAddOrUpdate/update/'+ data.id,600,550);
+                  xadmin.open('编辑数据字典','/sys-data-dic/toAddOrUpdate/update/'+ data.id,600,400);
               }
           });
 

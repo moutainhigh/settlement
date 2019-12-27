@@ -77,7 +77,7 @@ public class SysDataDicServiceImpl extends ServiceImpl<SysDataDicMapper, SysData
             updateWrapper.set("dic_content",sysDataDic.getDicContent());
             updateWrapper.set("sort",sysDataDic.getSort());
             updateWrapper.set("pid",sysDataDic.getPid());
-            updateWrapper.set("del_flag",sysDataDic.getDelFlag());
+            updateWrapper.eq("id",sysDataDic.getId());
             Integer ret=sysDataDicMapper.update(sysDataDic,updateWrapper);
             if(ret!=null && ret>0) {
                 r.setCode(HttpResultEnum.EDIT_CODE_200.getCode());
@@ -141,7 +141,7 @@ public class SysDataDicServiceImpl extends ServiceImpl<SysDataDicMapper, SysData
     }
 
     /**
-     * 信用数据字典
+     * 停用数据字典
      * @param id
      * @return
      */
@@ -153,9 +153,20 @@ public class SysDataDicServiceImpl extends ServiceImpl<SysDataDicMapper, SysData
         updateWrapper.set("enabled", Const.ENABLED_N);
         SysDataDic sysDataDic = new SysDataDic();
         sysDataDic.setId(id);
-
         Integer ret = sysDataDicMapper.update(sysDataDic,updateWrapper);
+
         if(ret!=null && ret>0) {
+            Map<String,Object> map = new HashMap<>();
+            map.put("pid",this.baseMapper.selectById(id).getDicCode());
+            List<SysDataDic> sysDataDicList = this.baseMapper.selectByMap(map);
+            if(sysDataDicList!=null && sysDataDicList.size()>0) {
+                for(SysDataDic sysDataDic1: sysDataDicList){
+                    UpdateWrapper<SysDataDic> updateWrapper2 = new UpdateWrapper<>();
+                    updateWrapper2.eq("id",sysDataDic1.getId());
+                    updateWrapper2.set("enabled", Const.ENABLED_N);
+                    this.baseMapper.update(sysDataDic1,updateWrapper2);
+                }
+            }
             r.setCode(HttpResultEnum.EDIT_CODE_200.getCode());
             r.setMsg(HttpResultEnum.EDIT_CODE_200.getMessage());
         }
@@ -338,5 +349,24 @@ public class SysDataDicServiceImpl extends ServiceImpl<SysDataDicMapper, SysData
         queryWrapper.eq("pid",Const.CHECK_STATUS_PARENT_CODE);
         List<SysDataDic> sysDataDicList = this.baseMapper.selectList(queryWrapper);
         return sysDataDicList;
+    }
+
+    /**
+     * 获得当前的结点下子结点的排序值
+     * @param pid
+     * @return
+     */
+    @Override
+    public Result getChildSort(String pid) {
+        Result r = new Result(HttpResultEnum.CODE_1.getCode(),HttpResultEnum.CODE_1.getMessage());
+        Integer sort = this.baseMapper.getChildSort(pid);
+        if(sort!=null && sort>0) {
+            r.setData(sort+1);
+            r.setMsg(HttpResultEnum.CODE_0.getMessage());
+            r.setCode(HttpResultEnum.CODE_0.getCode());
+        } else {
+            r.setData(1);
+        }
+        return r;
     }
 }

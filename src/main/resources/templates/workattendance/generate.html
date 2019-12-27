@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html class="x-admin-sm"  xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <th:bolck th:include="common/header :: header('员工详情')" />
+    </head>
+    <body>
+
+        <div class="layui-fluid">
+            <div class="layui-form" style="margin-top: 8px;">
+                <div class="layui-inline" >
+                    <input type="text" id="keyword" name="keyword"  value="" placeholder="请输入" autocomplete="off" class="layui-input" style="width: 200px">
+                </div>
+                <div class="layui-inline" >
+                    <button class="layui-btn" id="search" data-type="reload" lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i>查询</button>
+                </div>
+            </div>
+
+            <div class="layui-form-item" style="margin-top: 2px;">
+                <table class="layui-table layui-form" id="dataTable" lay-filter="dataTable">
+                </table>
+            </div>
+        </div>
+    </body>
+    <script th:src="@{/js/common/common.js}" type="text/javascript" charset="utf-8"></script>
+    <script type="text/html" id="toolBarHead">
+        <div class="layui-btn-container">
+            <button class="layui-btn layui-btn-sm" lay-event="generate">生成考勤记录</button>
+            <!-- <button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="submit">提交</button>-->
+        </div>
+    </script>
+    <script type="text/html" id="toolBar">
+        <a class="layui-btn layui-btn-xs" lay-event="apply">申请修改</a>
+    </script>
+    <script type="text/javascript"  th:inline="javascript">
+        var pgId = [[ ${pgId} ]];
+      layui.use(['laydate','table','form','element'], function(){
+        var laydate = layui.laydate;
+        var  form = layui.form;
+        var table = layui.table;
+        table.render({
+           elem: '#dataTable',
+           url: '/ba-employee/generate-workattend-pagedata',
+           page: true,
+           title: '入场员工详情表',
+           height: 'full-100',
+           toolbar: '#toolBarHead',
+           defaultToolbar: ['filter', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+              title: '提示'
+              ,layEvent: 'LAYTABLE_TIPS'
+              ,icon: 'layui-icon-tips'
+          }],
+          where: {
+            pgId : [[ ${pgId} ]]
+          },
+         /*  done: function() {
+               $("[data-field='checkStatus']").css('display','none');
+           },*/
+           // id: 'checkStatus',
+           cols: [
+                    [
+                       {field:'id',type:'checkbox',fixed:'left'},
+                       {field:'empName',title:'姓名',align:'center',fixed:'left'},
+                       {field:'code',title:'员工编号',align:'center'},
+                       {field:'entranceTime',title:'入场时间',align:'center'},
+                       {field:'createTime',title:'创建日期',align:'center'}
+                      /* {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:100}*/
+                    ]
+                ]
+        });
+          var $ = layui.$, active = {
+              reload: function(){
+                  var keyword = $('#keyword');
+                  //执行重载
+                  table.reload('dataTable', {
+                      // method : 'post',
+                      page: {
+                          curr: 1 //重新从第 1 页开始
+                      }
+                      ,where: {
+                              keyword: keyword.val(),
+                              pgId: [[ ${pgId} ]]
+                      }
+                  }, 'data');
+              }
+          };
+          $('.layui-btn').on('click', function(){
+              var type = $(this).data('type');
+              active[type] ? active[type].call(this) : '';
+          });
+
+          // 监听工具栏
+         table.on('toolbar(dataTable)', function(obj){
+             var checkStatus = table.checkStatus(obj.config.id);
+             var data = checkStatus.data;
+             switch (obj.event) {
+                 case 'generate' :
+                     //var ids = createIds(data);
+                     generateWorkAttendance(data,layer,'/ba-work-attendance/generate');
+                     break;
+             };
+          });
+      });
+        //生成考勤记录
+      function generateWorkAttendance(data,layer,url) {
+          if (data.length === 0) {
+              layer.alert("请先选择一行",{icon:5});
+          } else {
+              layer.confirm('确认生成当月考勤记录', function(index){
+                  var ids = createIds(data);
+                  $.ajax({
+                      url: url,
+                      type: 'POST',
+                      async: false,
+                      data: {ids: ids,pgId: pgId},
+                      success: function(r) {
+                          layer.msg(r.msg,{icon: r.code == 'gen_200' ? 6: 5});
+                      }
+                  });
+                  //layer.close(index);
+                  timeout(2000);
+                  window.parent.parent.$("#projectTree").find("div[dtree-click='itemNodeClick'][dtree-id='projectTree'][data-id='"+pgId+"']").click();
+              });
+          }
+      }
+    </script>
+</html>

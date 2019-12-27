@@ -13,7 +13,7 @@
     <div class="layui-row" layui-form-panel lay-filter="show_form">
 
             <div class="layui-form-item">
-                <div class="layui-form-item">
+                <div class="layui-form-item" th:if="${sysDept.id}!=1">
                     <label for="parentContent" class="layui-form-label">
                         <span class="x-red">*</span>上级部门</label>
                     <div class="layui-input-inline">
@@ -35,15 +35,12 @@
                     <span class="x-red">*</span>部门名称</label>
                 <div class="layui-input-inline">
                     <input type="text" id="deptName" name="deptName" th:value="${mode.equals('update')}?${sysDept.deptName}" required="" lay-verify="deptName" autocomplete="off" class="layui-input"></div>
-                <div class="layui-form-mid layui-word-aux">
-                    <span class="x-red">*</span>部门名称</div></div>
+                </div>
             <div class="layui-form-item">
                 <label for="chief" class="layui-form-label">
                     <span class="x-red">*</span>部门负责人</label>
                 <div class="layui-input-inline">
                     <input type="text" id="chief" name="chief" th:value="${mode.equals('update')}?${sysDept.chief}" lay-verify="chief" required="" autocomplete="off" class="layui-input"></div>
-                <div class="layui-form-mid layui-word-aux">
-                        <span class="x-red">*</span>部门负责人 </div>
             </div>
 
          <div class="layui-form-item">
@@ -51,15 +48,12 @@
                 <span class="x-red">*</span>负责人邮箱</label>
             <div class="layui-input-inline">
                 <input type="text" id="email" name="email" th:value="${mode.equals('update')}?${sysDept.email}" lay-verify="email" required="" autocomplete="off" class="layui-input"></div>
-            <div class="layui-form-mid layui-word-aux">
-                <span class="x-red">*</span>负责人邮箱 </div></div>
+            </div>
         <div class="layui-form-item">
             <label for="remark" class="layui-form-label">
                 <span class="x-red">*</span>备注</label>
             <div class="layui-input-inline">
                 <input type="text" id="remark" name="remark" th:value="${mode.equals('update')}?${sysDept.remark}" lay-verify="remark" required="" autocomplete="off" class="layui-input"></div>
-            <div class="layui-form-mid layui-word-aux">
-                <span class="x-red">*</span>备注 </div>
         </div>
 
             <div class="layui-form-item">

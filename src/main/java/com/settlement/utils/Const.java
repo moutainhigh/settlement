@@ -72,11 +72,12 @@ public class Const {
     public final static String TIME_PRAMA_STOP="TIME_STOP";
     /**结算时间点参数 结算完成时间点**/
     public final static String TIME_PRAMA_COMPELETE="TIME_COMPLETE";
-
-    /** 项目提交状态S：已提交 */
-    public final static String PRO_SUBMIT_STATUS_S = "S";
-    /** 项目提交状态N：未提交*/
-    public final static String PRO_SUBMIT_STATUS_N = "N";
+    /** 考勤提交状态父：已提交  未提交 */
+    public final static String SUB_STATUS= "SUB_STATUS";
+    /** 考勤提交状态S：已提交 */
+    public final static String SUB_STATUS_S = "S";
+    /** 考勤提交状态N：未提交*/
+    public final static String SUB_STATUS_N = "N";
     /**员工项目L: 离场 **/
     public static final String EMP_ENTRANCE_STATUS_L ="L" ;
     /**员工项目I: 在场**/

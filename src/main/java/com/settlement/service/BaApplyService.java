@@ -36,4 +36,5 @@ public interface BaApplyService extends IService<BaApply> {
     BaApplyVo getApplyVoById(Integer id);
     /**审核考勤修改**/
     Result checkWorkattend(BaApplyVo baApplyVo);
+
 }

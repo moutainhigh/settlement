@@ -26,6 +26,8 @@ public interface BaEmployeeMapper extends BaseMapper<BaEmployee> {
     int updateBatchEntranceStatusById(@Param(value="emps") List<BaEmployee> emps);
     /** 批量修改员工申请状态 */
     int updateApplyEmpStatusBatch(@Param(value="emps") List<BaEmployee> emps);
+    /**根据pgId查询新入职未生成考勤记录的员工**/
+    List<EmployeeVo> getGenerateWorkattendPageData(EmployeeCo employeeCo, Page<EmployeeVo> page);
     /** 提交员工记录 */
     // List<EmployeeVo> getSubmitEmployeeList(@Param(value="employeeCo") EmployeeCo employeeCo, Page<EmployeeVo> page);
 }

@@ -9,7 +9,17 @@
         <div class="layui-fluid">
             <div class="layui-row">
                 <form class="layui-form">
+                    <input type="hidden" name="id" th:if="${mode.equals('update')}" th:value="${sysDataDic.id}">
                     <div class="layui-form-item">
+                        <div class="layui-form-item">
+                            <label for="pid" class="layui-form-label">
+                                <span class="x-red">*</span>父ID</label>
+                            <div class="layui-input-inline">
+                                <select id="pid" name="pid"  lay-filter="pid" lay-verify="pid" th:field="*{sysDataDic.pid}">
+                                    <option th:each="pidSelect:${sysDataDicList}" th:value="${pidSelect.dicCode}" th:text="${pidSelect.dicContent}"></option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="layui-form-item">
                             <label for="dicCode" class="layui-form-label">
                                 <span class="x-red">*</span>数据字典代码</label>
@@ -31,18 +41,10 @@
                             <label for="sort" class="layui-form-label">
                                 <span class="x-red">*</span>显示顺序</label>
                             <div class="layui-input-inline">
-                                <input type="text" id="sort" name="sort" required="" th:value="${mode.equals('update')}?${sysDataDic.sort}"  lay-verify="sort" autocomplete="off" placeholder="显示顺序" class="layui-input" maxlength="100">
+                                <input type="text" id="sort" name="sort" required="" th:value="${mode.equals('update')}?${sysDataDic.sort}:${sysDataDic.sort}"  lay-verify="sort" autocomplete="off" placeholder="显示顺序" class="layui-input" maxlength="100">
                             </div>
                         </div>
-                        <div class="layui-form-item">
-                            <label for="pid" class="layui-form-label">
-                                <span class="x-red">*</span>父ID</label>
-                            <div class="layui-input-inline">
-                                <select id="pid" name="pid"  lay-filter="pid" lay-verify="pid" th:field="*{sysDataDic.pid}">
-                                     <option th:each="pidSelect:${sysDataDicList}" th:value="${pidSelect.dicCode}" th:text="${pidSelect.dicContent}"></option>
-                                </select>
-                            </div>
-                        </div>
+
 
 
                         <div class="layui-form-item">
@@ -54,6 +56,7 @@
             </div>
         </div>
         <script th:src="@{/js/dic/dic.js}" type="text/javascript" charset="utf-8"></script>
+        <script th:src="@{/js/common/common.js}" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript" th:inline="javascript">
             // 下拉多选框
             var mode = [[${mode}]];
@@ -119,12 +122,13 @@
                     checkCodeIsExist('/sys-data-dic/isexist/',dicCode,layer,'');
                     }
                 );
+                //下拉列表事件监听
                 form.on('select(pid)',function (data) {
                         $.ajax({
                             type:'get',
-                            url:'',
+                            url:'/sys-data-dic/child/sort/'+data.value,
                             success:function(r){
-
+                                $('#sort').val(r.data);
                             }
 
                         });
@@ -135,7 +139,6 @@
                 //监听提交
                 form.on('submit(add)', function(data){
                     var mode=[[${mode}]];
-
                     if("add"==mode && checkCodeIsExist('/sys-data-dic/isexist/',$('#dicCode').val(),layer,'submit')) {
                         $.post('/sys-data-dic/add',data.field,function (r) {
                             layer.alert(r.msg, {

@@ -47,7 +47,22 @@ public class BaEmployeeServiceImpl extends ServiceImpl<BaEmployeeMapper, BaEmplo
         return new PageData(page.getTotal(),page.getRecords());
     }
 
-
+    /**
+     * 根据pgId查询新入职未生成考勤记录的员工
+     * @author kun
+     * @param employeeCo
+     * @return
+     */
+    @Override
+    public PageData getGenerateWorkattendPageData(EmployeeCo employeeCo) {
+        Page<EmployeeVo> page = new Page<EmployeeVo>(employeeCo.getPage(), employeeCo.getLimit());
+        employeeCo.setDelFlag(Const.DEL_FLAG_N);
+        employeeCo.setCurrentTime(new Date());
+        employeeCo.setEntranceStatus(Const.ENTRANCE_STATUS_I);
+        List<EmployeeVo> list = this.baseMapper.getGenerateWorkattendPageData(employeeCo,page);
+        page.setRecords(list);
+        return new PageData(page.getTotal(),page.getRecords());
+    }
     @Override
     public Result checkEmpCodeIsExist(String code) {
         Result r = new Result(HttpResultEnum.EMP_CODE_1.getCode(), HttpResultEnum.EMP_CODE_1.getMessage());
@@ -200,4 +215,6 @@ public class BaEmployeeServiceImpl extends ServiceImpl<BaEmployeeMapper, BaEmplo
         }
         return empList;
     }
+
+
 }

@@ -57,6 +57,16 @@ public class BaWorkAttendanceController {
     }
 
     /**
+     * 生成考勤记录
+     * @param ids
+     * @param pgId
+     * @return
+     */
+    @PostMapping("/generate")
+    public Result generateWorkAttendance(String ids, Integer pgId) {
+        return  baWorkAttendanceService.generateWorkAttendance(ids,pgId);
+    }
+    /**
      * 添加
      * @param baWorkAttendanceVo
      * @return

@@ -91,6 +91,15 @@ public class SysDataDicController {
    }
 
     /**
+     * 获得当前的结点下子结点的排序值
+     * @param pid
+     * @return
+     */
+   @GetMapping("/child/sort/{pid}")
+   public Result getChildSort(@PathVariable String pid){
+        return sysDataDicService.getChildSort(pid);
+   }
+    /**
      * 检查dicCode是否存在
      * @param dicCode
      * @return

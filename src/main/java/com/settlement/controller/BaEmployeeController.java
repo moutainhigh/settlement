@@ -58,6 +58,19 @@ public class BaEmployeeController {
     }
 
     /**
+     * 根据pgId查询新入职未生成考勤记录的员工
+     * @auth kun
+     * @param employeeCo
+     * @return
+     */
+    @GetMapping("/ba-employee/generate-workattend-pagedata")
+    public PageData getGenerateWorkattendPageData(EmployeeCo employeeCo) {
+        employeeCo.setEntranceStatus(Const.ENTRANCE_STATUS_I);
+        employeeCo.setDelFlag(Const.ENABLED_N);
+        return this.baEmployeeService.getGenerateWorkattendPageData(employeeCo);
+    }
+
+    /**
      * @description  检查员工编号是否存在
      *
      * @auth admin

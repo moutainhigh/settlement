@@ -7,7 +7,13 @@ function timeout(time) {
      //    parent.layer.close(index);
     }, time);
 }
-
+/**停留刷新在当前页面**/
+function reloadTable(tableName){
+    // 刷新数据，保留在当前页
+    var index = parent.layer.getFrameIndex(window.name);
+    parent.layui.table.reload(tableName);//重载父页表格，参数为表格ID
+    parent.layer.close(index);
+}
 
 // 检查编码是否存在
 function checkCodeIsExist(url,code, layer,mode) {

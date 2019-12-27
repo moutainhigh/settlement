@@ -33,7 +33,7 @@ package com.settlement.entity;
 
     private String deptName;
 
-    private Integer chief;
+    private String chief;
 
     private String email;
 

@@ -46,6 +46,7 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
         QueryWrapper<SysPermission> queryWrapper = new QueryWrapper<SysPermission>();
         queryWrapper.ne("id",1);
         queryWrapper.eq("type", Const.MENU_TYPE_M);
+        queryWrapper.eq("del_flag",Const.DEL_FLAG_N);
         queryWrapper.orderByAsc("sort");
         List<SysPermission> list = this.baseMapper.selectList(queryWrapper);
         List<SysPermissionVo> leftList = new ArrayList<SysPermissionVo>();
