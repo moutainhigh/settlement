@@ -109,7 +109,7 @@
                 console.log(data);
                 var retObject = checkResultVerify(data.field,checkResultPass,checkResultNoPass,layer);
                 if (retObject.flag) {
-                   defined(data, layer, '/ba-project-group-check');
+                   check(data, layer, '/ba-project-group-check');
                 }
                 //发异步，把数据提交给php
                /* layer.alert("增加成功", {

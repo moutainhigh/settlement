@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html class="x-admin-sm"  xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <th:bolck th:include="common/header :: header('项目组管理')" />
+    </head>
+    <body>
+        <div class="x-nav">
+          <span class="layui-breadcrumb">
+            <a href="/home">首页</a>
+            <a href="">项目组管理</a>
+            <a>
+              <cite>申请修改员工记录</cite></a>
+          </span>
+          <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
+            <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
+        </div>
+        <div class="layui-fluid">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-md12">
+                    <div class="layui-card">
+                        <div class="layui-card-body">
+                            <form class="layui-form layui-col-space5" onsubmit="return false">
+                                <div class="layui-inline layui-show-xs-block">
+                                    <input type="text" id="applyDate" name="applyDate"  placeholder="请选择申请时间" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-inline layui-show-xs-block">
+                                    <select name="checkStatus" id="checkStatus">
+                                        <option value="">请选择审核状态</option>
+                                        <option th:each="checkStatus : ${checkStatusList}" th:value="${checkStatus.dicCode}" th:text="${checkStatus.dicContent}"></option>
+                                    </select>
+                                </div>
+                                <div class="layui-inline layui-show-xs-block">
+                                    <button class="layui-btn" id="search" data-type="reload" lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i>查询</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="layui-card-header">
+                            <button class="layui-btn" data-type="edit"><i class="layui-icon">&#xe642;</i>修改</button>
+                        </div>
+                        <div class="layui-card-body layui-table-body layui-table-main" >
+                            <table class="layui-table layui-form" id="dataTable" lay-filter="dataTable">
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script id="checkStatusTpl" type="text/html">
+        {{#  if(d.checkStatusContent === '审核通过'){ }}
+        <span style="color: #71C671;font-weight: bold;">{{ d.checkStatusContent }}</span>
+        {{#  } else if(d.checkStatusContent === '审核未通过') { }}
+        <span style="color: #EEAD0E;font-weight: bold;">{{ d.checkStatusContent }}</span>
+        {{#  } else { }}
+        {{ d.checkStatusContent }}
+        {{#  } }}
+    </script>
+    <script type="text/javascript" th:inline="javascript">
+        var checkStatusPass = [[ ${PG_CHECKSTATUS_CHECK_PASS} ]];
+        var checkStatusNoPass = [[ ${PG_CHECKSTATUS_CHECK_NOPASS} ]];
+
+        layui.use(['element','table','laydate'],function() {
+            var $ = layui.jquery, table = layui.table, element = layui.element, laydate=layui.laydate;
+            //常规用法
+            laydate.render({
+                elem: '#applyDate'
+            });
+            table.render({
+                elem: '#dataTable',
+                url: '/ba-emp-apply-check/apply-pagedata',
+                // toolbar: '',
+                page: true,
+                // title: '导出参数',
+                height: 'full-210',
+                // id: 'userData',
+                cols: [
+                    [
+                        {field:'id',type:'checkbox',fixed:'left'},
+                        {field:'applyUserContent',title:'申请人 ',align:'center'},
+                        {field:'pgName',title:'项目组 ',align:'center'},
+                        //  {field:'applyTypeContent',title:'类型',align:'center'},
+                        {field:'applyRemark',title:'申请描述',align:'center'},
+                        /* {field:'checkStatus',title:'审核状态',align:'center',hide:true},*/
+                        {field:'applyTime',title:'申请时间',align:'center'},
+                        {field:'checkStatusContent',title:'审核状态',align:'center',templet: '#checkStatusTpl'},
+                        {field:'checkTime',title:'审核时间',align:'center'},
+                        {field:'checkRemark',title:'审核备注',align:'center'}
+                    ]
+                ]
+            });
+
+            var $ = layui.$, active = {
+                reload: function(){
+                    var applyDate = $('#applyDate');
+                    var checkStatus = $('#checkStatus');
+                    //执行重载
+                    table.reload('dataTable', {
+                        // method : 'post',
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
+                        ,where: {
+                            applyDate: applyDate.val(),
+                            checkStatus: checkStatus.val()
+                        }
+                    }, 'data');
+                },
+                edit: function(){ //获取选中数据
+                    alert(123);
+                   // checkBoxCheckedOper('关联助理','/ba-project-group/relate-assistant/',table, layer, 600, 400);
+                },
+            };
+            $('.layui-btn').on('click', function(){
+                var type = $(this).data('type');
+                active[type] ? active[type].call(this) : '';
+            });
+
+            // 员工申请修改监听审核、详细
+            table.on('tool(dataTable)', function(obj){
+
+               /* else if(obj.event === 'check'){
+                    if (checkStatus == checkStatusPass || checkStatus == checkStatusNoPass) {
+                        layer.msg("记录处于【审核通过】或者【审核未通过】状态，不能审核",{icon:5});
+                    } else {
+                        xadmin.open('申请修改审核','/ba-emp-apply-check/check/'+ id,800,400);
+                    }
+                }*/
+            });
+
+        })
+    </script>
+</html>

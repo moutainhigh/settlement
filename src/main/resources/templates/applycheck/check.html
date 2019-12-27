@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:bolck th:include="common/header :: header('员工申请修改审核')" />
+    <style>
+        .layui-table tbody tr:hover {background-color: #ffffff;}
+    </style>
+</head>
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>审核说明：请及时审核；审核通过，请填写口令；审核未通过，必须填写备注；
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-form-text">
+                <label  class="layui-form-label">审核信息</label>
+                <div class="layui-input-block">
+                    <table class="layui-table">
+                        <tbody>
+                            <tr>
+                                <td width="23%" style="text-align:right;"><span class="x-red">*</span>审核结果</td>
+                                <td colspan="3">
+                                    <input  name="checkResult" type="radio" th:each="cs:${checkStatusList}" th:value="${cs.dicCode}" th:title="${cs.dicContent}" lay-verify="checkResult" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="23%" style="text-align:right;">口令</td>
+                                <td colspan="3">
+                                    <input type="text" id="updatePassword" name="updatePassword" lay-verify="updatePassword" autocomplete="off"  placeholder="审核通过，请输入口令" class="layui-input" maxlength="20">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="23%" style="text-align:right;">备注</td>
+                                <td colspan="3">
+                                    <input type="text" id="checkRemark" name="checkRemark" lay-verify="checkRemark" autocomplete="off"  placeholder="审核未通过，请输入备注" class="layui-input" maxlength="100">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="layui-form-item">
+                <label class="layui-form-label"></label>
+                <input type="hidden" name="id" th:value="${id}">
+                <button class="layui-btn" id="confirm" lay-filter="check" lay-submit="check">审核</button>
+                <!--<button class="layui-btn layui-btn-primary" id="close" lay-filter="close" type="reset">重置</button>-->
+            </div>
+        </form>
+    </div>
+</div>
+<script th:src="@{/js/common/common.js}" type="text/javascript" charset="utf-8"></script>
+<script th:src="@{/js/applycheck/applycheck.js}" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript"  th:inline="javascript">
+    var checkResultPass = [[ ${CHECK_RESULT_PASS} ]];
+    var checkResultNoPass = [[ ${CHECK_RESULT_NOPASS} ]];
+    layui.use(['form', 'layer'],
+    function() {
+        $ = layui.jquery;
+        var form = layui.form,
+            layer = layui.layer;
+
+        //自定义验证规则
+        form.verify({
+            checkResult: function() {
+                var value = $("input[name='checkResult']:checked").val();
+                if (value == null || value == '' || value == 'undefined') {
+                    return '审核结果必须选择一个啊';
+                }
+            }
+        });
+
+        //监听提交
+        form.on('submit(check)',
+            function(data) {
+                console.log(data);
+                var retObject = checkResultVerify(data.field,checkResultPass,checkResultNoPass,layer);
+                if (retObject.flag) {
+                   check(data, layer, '/ba-emp-apply-check');
+                }
+                return false;
+            });
+    });
+
+</script>
+
+</body>
+
+</html>

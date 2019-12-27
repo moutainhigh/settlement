@@ -19,4 +19,53 @@
         </foreach>
     </insert>
 
+    <!-- 查询申请修改的员工信息 -->
+    <select id="getApplyEmpList" parameterType="com.settlement.co.EmpApplyCo" resultType="com.settlement.vo.EmployeeVo">
+            SELECT
+             be.id,
+             be.emp_name,
+             be.`code`,
+             be.entrance_time,
+             be.responsible_person,
+             be.rate_email_filename,
+             be.pos_level,
+             blp.level_name as pos_level_input,
+             be.level_mode,
+             be.place,
+             be.price_month,
+             be.send_copy_email,
+             be.unit
+            FROM
+             ba_apply_employee bae,
+             ba_employee be,
+             ba_level_price blp
+            WHERE
+             bae.emp_id = be.id
+             AND blp.id = be.pos_level
+             AND bae.apply_id = #{empApplyCo.applyId}
+             AND be.level_mode = #{empApplyCo.levelModeF}
+           UNION ALL
+            SELECT
+             be.id,
+             be.emp_name,
+             be.`code`,
+             be.entrance_time,
+             be.responsible_person,
+             be.rate_email_filename,
+             be.pos_level,
+             be.pos_level_input,
+             be.level_mode,
+             be.place,
+             be.price_month,
+             be.send_copy_email,
+             be.unit
+            FROM
+             ba_apply_employee bae,
+             ba_employee be
+            WHERE
+             bae.emp_id = be.id
+             AND bae.apply_id = #{empApplyCo.applyId}
+             AND be.level_mode = #{empApplyCo.levelModeH}
+    </select>
+
 </mapper>

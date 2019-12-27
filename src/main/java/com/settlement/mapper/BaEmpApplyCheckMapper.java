@@ -1,12 +1,10 @@
 package com.settlement.mapper;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.settlement.co.EmpApplyCo;
-import com.settlement.co.ProjectGroupCo;
+import com.settlement.co.EmpApplyCheckCo;
 import com.settlement.entity.BaEmpApplyCheck;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.settlement.vo.EmpApplyCheckVo;
-import com.settlement.vo.ProjectGroupVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -21,6 +19,6 @@ import java.util.List;
  */
 public interface BaEmpApplyCheckMapper extends BaseMapper<BaEmpApplyCheck> {
     /** 员工申请页面数据 */
-    List<EmpApplyCheckVo> getEmpApplyCheckList(@Param(value="empApplyCo") EmpApplyCo empApplyCo, Page<EmpApplyCheckVo> page);
+    List<EmpApplyCheckVo> getEmpApplyCheckList(@Param(value="empApplyCheckCo") EmpApplyCheckCo empApplyCheckCo, Page<EmpApplyCheckVo> page);
 
 }

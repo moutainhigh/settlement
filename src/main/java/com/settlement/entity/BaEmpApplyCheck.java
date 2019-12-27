@@ -67,7 +67,7 @@ public class BaEmpApplyCheck extends Model<BaEmpApplyCheck> {
     /**
      * 修改口令
      */
-    private String updateToken;
+    private String updatePassword;
 
     /**
      * 审核备注

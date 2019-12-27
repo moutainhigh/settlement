@@ -45,9 +45,9 @@
     </script>
     <script id="checkStatusTpl" type="text/html">
         {{#  if(d.checkStatusContent === '审核通过'){ }}
-        <span style="color: #71C671;">{{ d.checkStatusContent }}</span>
+        <span style="color: #71C671;font-weight: bold;">{{ d.checkStatusContent }}</span>
         {{#  } else if(d.checkStatusContent === '审核未通过') { }}
-        <span style="color: #EEAD0E;">{{ d.checkStatusContent }}</span>
+        <span style="color: #EEAD0E;font-weight: bold;">{{ d.checkStatusContent }}</span>
         {{#  } else { }}
         {{ d.checkStatusContent }}
         {{#  } }}
@@ -84,6 +84,7 @@
                     ]
                 ],
             done: function(res,cuur,count) {
+
             }
         });
           var $ = layui.$, active = {

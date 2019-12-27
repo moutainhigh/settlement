@@ -18,4 +18,6 @@ public class EmployeeVo extends BaEmployee implements Serializable {
 
     private Integer pgId;
 
+    private String applyUpdateStatusContent;
+
 }

@@ -89,40 +89,6 @@ function submitEmp(layer,data,pgId) {
     }
 }
 
-/** 图片预览 */
-function operImg(data) {
-    var imgName = data.rateEmailFilename;
-    // alert(imgName);
-    var src = '/img/' + imgName.replace("_","/");
-    var a = "<a href='javascript:(0)' class='layui-table-link' onclick=previewImg('"  + data.id + "')>" + imgName + "</a>";
-    // alert(a);
-    // var a = "<a onclick='previewImg(' + src + ')'>" + imgName +  "</a>";
-   // var img = new Image();
-   // img.src = src;
-    //var height = img.height + 50; // 原图片大小
-    //var width = img.width; //原图片大小
-    // var imgHtml = "<img src='" + src + "' width='500px' height='500px'/>";
-    //弹出层
-   /* layer.open({
-        type: 1,
-        shade: 0.8,
-        offset: 'auto',
-        area: [500 + 'px',550+'px'], // area: [width + 'px',height+'px'] //原图显示
-        shadeClose:true,
-        scrollbar: false,
-        title: "图片预览", //不显示标题
-        content: imgHtml, //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
-        cancel: function () {
-            //layer.msg('捕获就是从页面已经存在的元素上，包裹layer的结构', { time: 5000, icon: 6 });
-        }
-    });*/
-    return a;
-}
-
-function previewImg(id) {
-    xadmin.open('图片预览','/ba-employee/view/'+ id, 450,450);
-}
-
 /** 员工申请修改 */
 function apply(data, layer, url) {
     if (data.length === 0) {

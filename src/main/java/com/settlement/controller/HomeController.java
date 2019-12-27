@@ -6,7 +6,6 @@ import com.settlement.service.*;
 import com.settlement.utils.Const;
 import com.settlement.utils.Result;
 import com.settlement.vo.*;
-import org.apache.ibatis.annotations.Param;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -67,6 +66,8 @@ public class HomeController {
     private BaProjectGroupCheckService baProjectGroupCheckService;
     @Autowired
     private BaProjectGroupSettlementService baProjectGroupSettlementService;
+    @Autowired
+    private BaApplyEmployeeService baApplyEmployeeService;
 
     @GetMapping({"/","/login"})
     public String toLogin() {
@@ -627,6 +628,7 @@ public class HomeController {
         model.addAttribute("empList", this.baEmployeeService.getApplyUpdateEmps(ids));
         return "emp/apply";
     }
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * 跳转合同页面
@@ -869,11 +871,56 @@ public class HomeController {
      * @date 2019-12-24
      * @return
      */
-    @GetMapping("/ba-apply-check/list")
-    public String toApplyCheckPage() {
+    @GetMapping("/ba-emp-apply-check/list")
+    public String toApplyCheckPageList() {
         return "applycheck/list";
     }
 
+    /**
+     * @description 申请修改记录列表
+     *
+     * @auth admin
+     * @date 2019-12-27
+     * @return
+     */
+    @GetMapping("/ba-apply-employee/list")
+    public String toEmpApplyPageList(Model model) {
+        // 审核状态
+        model.addAttribute("checkStatusList",this.sysDataDicService.getDataDicSelectByParentCode(Const.CHECK_STATUS_PARENT_CODE));
+        return "applyemp/list";
+    }
+
+    /**
+     * @description 申请修改 审核
+     *
+     * @auth admin
+     * @date 2019-12-25
+     * @param id
+     * @param model
+     * @return
+     */
+    @GetMapping("/ba-emp-apply-check/check/{id}")
+    public String toApplyCheck(@PathVariable(value="id") Integer id, Model model) {
+        model.addAttribute("checkStatusList",this.sysDataDicService.getDataDicSelectByParentCode(Const.CHECK_RESULT_CODE));
+        model.addAttribute("id",id);
+        return "applycheck/check";
+    }
+
+    /**
+     * @description 员工申请审核:详细
+     *
+     * @auth admin
+     * @date 2019-12-26
+     * @param id
+     * @param model
+     * @return
+     */
+    @GetMapping("/ba-emp-apply-check/detail/{id}")
+    public String toApplyEmpDetailPage(@PathVariable(value="id") Integer id, Model model) {
+        // model.addAttribute("emps",this.baApplyEmployeeService.getApplyEmpListByApplyId(id));
+        model.addAttribute("applyId", id);
+        return "applycheck/detail";
+    }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 

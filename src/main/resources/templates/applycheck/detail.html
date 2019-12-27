@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html class="x-admin-sm"  xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <th:bolck th:include="common/header :: header('员工详情')" />
+    </head>
+    <body>
+        <div class="x-nav">
+          <span class="layui-breadcrumb">
+            <a href="/home">首页</a>
+            <a href="">审核管理</a>
+            <a>申请修改审核</a>
+            <a><cite>详情</cite></a>
+          </span>
+        </div>
+        <div class="layui-fluid">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-md12">
+                    <div class="layui-card">
+                        <div class="layui-card-body layui-table-body layui-table-main" >
+                            <table class="layui-table layui-form" id="dataTable" lay-filter="dataTable">
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </body>
+    <script th:src="@{/js/common/common.js}" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript"  th:inline="javascript">
+      layui.use(['laydate','table','form','element'], function(){
+        var laydate = layui.laydate;
+        var  form = layui.form;
+        var table = layui.table;
+        table.render({
+           elem: '#dataTable',
+           url: '/ba-apply-employee/pagedata',
+           page: true,
+           title: '详情表',
+           height: 'full-210',
+           defaultToolbar: ['filter', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+              title: '提示'
+              ,layEvent: 'LAYTABLE_TIPS'
+              ,icon: 'layui-icon-tips'
+          }],
+          where: {
+            applyId : [[ ${applyId} ]]
+          },
+           cols: [
+                    [
+                       {field:'id',title:'ID',hide:true},
+                       {field:'empName',title:'姓名',align:'center',fixed:'left'},
+                       {field:'code',title:'员工编号',align:'center'},
+                       {field:'entranceTime',title:'入场时间',align:'center'},
+                       {field:'responsiblePerson',title:'客户负责人',align:'center'},
+                       {field:'rateEmailFilename',title:'客户确认rate邮件',align:'center',templet:operImg},
+                       {field:'sendCopyEmail',title:'抄送邮件地址',align:'center'},
+                       {field:'posLevelInput',title:'级别',align:'center'}
+                      /* {field:'priceMonth',title:'单价',align:'center'}*/
+                      /* {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:100}*/
+                    ]
+                ]
+        });
+        /*  var $ = layui.$, active = {
+              reload: function(){
+                  // var keyword = $('#keyword');
+                  //执行重载
+                  table.reload('dataTable', {
+                      // method : 'post',
+                      page: {
+                          curr: 1 //重新从第 1 页开始
+                      }
+                      ,where: {
+                              applyId: [[ ${applyId} ]]
+                      }
+                  }, 'data');
+              }
+          };*/
+          $('.layui-btn').on('click', function(){
+              var type = $(this).data('type');
+              active[type] ? active[type].call(this) : '';
+          });
+
+      });
+
+    </script>
+</html>

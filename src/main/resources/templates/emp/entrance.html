@@ -41,7 +41,7 @@
                     </div>
                 </div>
             </div>
-        </div> 
+        </div>
     </body>
     <script th:src="@{/js/common/common.js}" type="text/javascript" charset="utf-8"></script>
     <script th:src="@{/js/emp/emp.js}" type="text/javascript" charset="utf-8"></script>
@@ -56,6 +56,7 @@
     </script>
     <script type="text/javascript"  th:inline="javascript">
         var pgId = [[ ${pgId} ]];
+        var applyUpdateStatusA = [[ ${APPLY_UPDATE_STATUS_A} ]];
       layui.use(['laydate','table','form','element'], function(){
         var laydate = layui.laydate;
         var  form = layui.form;
@@ -75,10 +76,21 @@
           where: {
             pgId : [[ ${pgId} ]]
           },
-         /*  done: function() {
-               $("[data-field='checkStatus']").css('display','none');
-           },*/
-           // id: 'checkStatus',
+           done: function(res,curr,count) {
+               // console.log(res.data[0].applyUpdateStatus);
+               //alert(res.data.length);
+               var that = this.elem.next();
+               res.data.forEach(function (item, index) {
+                   if (item.applyUpdateStatus == applyUpdateStatusA) {
+                       var tr = $("tr[data-index='" + index + "']");
+                       tr.attr({"style":"color:red;font-weight:bold"});
+                        var td = $(tr.find("td[data-field='id']"));
+                        var checkbox = $(td.find("input[type='checkbox']"));
+                        checkbox.attr("disabled",true);
+                        checkbox.remove();
+                   }
+               });
+           },
            cols: [
                     [
                        {field:'id',type:'checkbox',fixed:'left'},
@@ -88,7 +100,8 @@
                        {field:'responsiblePerson',title:'客户负责人',align:'center'},
                        {field:'rateEmailFilename',title:'客户确认rate邮件',align:'center',templet:operImg},
                        {field:'sendCopyEmail',title:'抄送邮件地址',align:'center'},
-                       {field:'createTime',title:'创建日期',align:'center'}
+                        {field:'applyUpdateStatus',title:'申请状态',align:'center',hide:true},
+                       {field:'applyUpdateStatusContent',title:'状态',align:'center'}
                       /* {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:100}*/
                     ]
                 ]
@@ -125,6 +138,11 @@
                      break;
              };
           });
+
+         function setDisabled(data) {
+             // alert(1);
+             //console.log(data);
+         }
       });
 
     </script>

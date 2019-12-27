@@ -38,7 +38,7 @@ public class Const {
     /** 结算负责人角色CODE：SETTLEMENT */
     public final static String ROLE_CODE_SETTLEMENT = "SETTLEMENT";
     /**审核状态父结点**/
-    public static final Object CHECK_STATUS_PARENT_CODE = "PG_CHECKSTATUS";
+    public static final String CHECK_STATUS_PARENT_CODE = "CHECKSTATUS";
     /** 审核状态NO_CHECK：待审核 */
     public final static String CHECK_STATUS_NO_CHECK = "NO_CHECK";
     /** 审核状态CHECK_PASS：审核通过*/
@@ -106,7 +106,7 @@ public class Const {
     /** 数据字典：考勤 申请修改类型 */
     public static final Object APPLY_TYPE = "WORKATTENDANCE";
     /** 员工申请修改状态A：申请修改中 */
-    public final static String EMP_APPLY_UPDATE_STATUS_A = "A";
+    public final static String EMP_APPLY_UPDATE_STATUS_A = "APPLYING";
     /** 员工申请修改状态F：修改完成 */
-    public final static String EMP_APPLY_UPDATE_STATUS_F = "F";
+    public final static String EMP_APPLY_UPDATE_STATUS_F = "UPDATE_FINISH";
 }

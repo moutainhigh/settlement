@@ -2,21 +2,22 @@ package com.settlement.co;
 
 import lombok.Data;
 
+
 /**
  * <p>
- *     员工申请修改Co
+ *    申请员工Co
  * </p>
  *
  * @auth admin
- * @date 2019-12-24
+ * @date 2019-12-26
  */
 @Data
 public class EmpApplyCo extends PageCo {
-    /** 审核状态 */
-    private String checkStatus;
-    /**  申请日期 */
-    private String applyDate;
-    /** 审核人 */
-    private Integer checkUserId;
+
+    private Integer applyId;
+
+    private String levelModeF;
+
+    private String levelModeH;
 
 }

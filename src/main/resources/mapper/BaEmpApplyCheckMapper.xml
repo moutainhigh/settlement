@@ -11,12 +11,12 @@
         <result column="check_status" property="checkStatus" />
         <result column="check_user_id" property="checkUserId" />
         <result column="check_time" property="checkTime" />
-        <result column="update_token" property="updateToken" />
+        <result column="update_password" property="updatePassword" />
         <result column="check_remark" property="checkRemark" />
     </resultMap>
 
     <!-- 员工申请信息列表 -->
-    <select id="getEmpApplyCheckList" parameterType="com.settlement.co.EmpApplyCo" resultType="com.settlement.vo.EmpApplyCheckVo">
+    <select id="getEmpApplyCheckList" parameterType="com.settlement.co.EmpApplyCheckCo" resultType="com.settlement.vo.EmpApplyCheckVo">
         SELECT
          beac.id,
          beac.apply_remark,
@@ -26,11 +26,27 @@
          beac.check_remark,
          sdd.dic_content as checkStatusContent,
          su.real_name as applyUserContent,
-         su1.real_name as checkUserContent
+         su1.real_name as checkUserContent,
+         bpg.pg_name as pgName
         FROM
          ba_emp_apply_check beac left join sys_data_dic sdd on beac.check_status = sdd.dic_code
          left join sys_user su on beac.apply_user_id = su.id
          left join sys_user su1 on beac.check_user_id = su1.id
+         left join ba_project_group bpg on bpg.id = beac.pg_id
+        <where>
+         <if test="empApplyCheckCo.applyUserId != null and empApplyCheckCo.applyUserId != ''">
+            beac.apply_user_id = #{empApplyCheckCo.applyUserId}
+         </if>
+         <if test="empApplyCheckCo.checkUserId != null and empApplyCheckCo.checkUserId != ''">
+            and beac.check_user_id = #{empApplyCheckCo.checkUserId}
+         </if>
+         <if test="empApplyCheckCo.checkStatus != null and empApplyCheckCo.checkStatus != ''">
+            and beac.check_status = #{empApplyCheckCo.checkStatus}
+         </if>
+         <if test="empApplyCheckCo.applyDate != null and empApplyCheckCo.applyDate != ''">
+            and DATE_FORMAT(beac.apply_time,'%Y-%m-%d') = #{empApplyCheckCo.applyDate}
+         </if>
+         </where>
          order by beac.apply_time DESC
     </select>
 

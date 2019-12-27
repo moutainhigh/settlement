@@ -1,8 +1,9 @@
 package com.settlement.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.settlement.bo.PageData;
-import com.settlement.co.EmpApplyCo;
+import com.settlement.co.EmpApplyCheckCo;
 import com.settlement.entity.BaApplyEmployee;
 import com.settlement.entity.BaEmpApplyCheck;
 import com.settlement.entity.BaEmployee;
@@ -10,15 +11,12 @@ import com.settlement.entity.SysUser;
 import com.settlement.mapper.BaApplyEmployeeMapper;
 import com.settlement.mapper.BaEmpApplyCheckMapper;
 import com.settlement.mapper.BaEmployeeMapper;
-import com.settlement.service.BaApplyEmployeeService;
 import com.settlement.service.BaEmpApplyCheckService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.settlement.service.BaEmployeeService;
 import com.settlement.utils.Const;
 import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
 import com.settlement.vo.EmpApplyCheckVo;
-import com.settlement.vo.ProjectGroupVo;
 import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,9 +104,36 @@ public class BaEmpApplyCheckServiceImpl extends ServiceImpl<BaEmpApplyCheckMappe
     }
 
     @Override
-    public PageData getApplyEmpPageList(EmpApplyCo empApplyCo) {
-        Page<EmpApplyCheckVo> page = new Page<EmpApplyCheckVo>(empApplyCo.getPage(), empApplyCo.getLimit());
-        page.setRecords(this.baseMapper.getEmpApplyCheckList(empApplyCo, page));
+    public PageData getApplyEmpPageList(EmpApplyCheckCo empApplyCheckCo) {
+        Page<EmpApplyCheckVo> page = new Page<EmpApplyCheckVo>(empApplyCheckCo.getPage(), empApplyCheckCo.getLimit());
+        page.setRecords(this.baseMapper.getEmpApplyCheckList(empApplyCheckCo, page));
         return new PageData(page.getTotal(),page.getRecords());
+    }
+
+    @Override
+    public Result updateCheckResult(EmpApplyCheckVo empApplyCheckVo) {
+        logger.info("员工申请审核提交service处理");
+        Result r = new Result();
+        try {
+            if (Const.CHECK_RESULT_PASS_CODE.equals(empApplyCheckVo.getCheckResult())) {
+                empApplyCheckVo.setCheckStatus(Const.CHECK_STATUS_CHECK_PASS);
+            } else if (Const.CHECK_RESULT_NOPASS_CODE.equals(empApplyCheckVo.getCheckResult())) {
+                empApplyCheckVo.setCheckStatus(Const.CHECK_STATUS_CHECK_NOPASS);
+            }
+            empApplyCheckVo.setCheckTime(new Date());
+            UpdateWrapper<BaEmpApplyCheck> updateWrapper = new UpdateWrapper<BaEmpApplyCheck>();
+            updateWrapper.eq("id",empApplyCheckVo.getId());
+            int ret = this.baseMapper.update(empApplyCheckVo, updateWrapper);
+            if (ret > 0) {
+                r.setCode(HttpResultEnum.CODE_200.getCode());
+                r.setMsg(HttpResultEnum.CODE_200.getMessage());
+            }
+        } catch (Exception e) {
+            logger.info("员工申请审核提交service异常" + e.getMessage());
+            e.printStackTrace();
+            r.setCode(HttpResultEnum.CODE_500.getCode());
+            r.setMsg(HttpResultEnum.CODE_500.getMessage());
+        }
+        return r;
     }
 }

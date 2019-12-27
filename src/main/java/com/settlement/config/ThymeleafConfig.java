@@ -30,6 +30,8 @@ public class ThymeleafConfig {
             vars.put("LEVEL_MODE_H", Const.LEVEL_MODE_H);
             vars.put("TIME_PARAM_STOP",Const.TIME_PRAMA_STOP);
             vars.put("TIME_PARAM_COMPLETE", Const.TIME_PRAMA_COMPELETE);
+            vars.put("APPLY_UPDATE_STATUS_A",  Const.EMP_APPLY_UPDATE_STATUS_A);
+            vars.put("APPLY_UPDATE_STATUS_F",  Const.EMP_APPLY_UPDATE_STATUS_F);
             viewResolver.setStaticVariables(vars);
         }
     }

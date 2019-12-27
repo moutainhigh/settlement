@@ -20,5 +20,9 @@ public class EmpApplyCheckVo extends BaEmpApplyCheck implements Serializable {
     private String checkUserContent;
     /** 审核状态 */
     private String checkStatusContent;
+    /** 申请项目组 */
+    private String pgName;
+    /** 审核结果 */
+    private String checkResult;
 
 }

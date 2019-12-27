@@ -83,8 +83,8 @@ function start(url) {
 }
 
 
-/** 确定 */
-function defined(data, layer, url) {
+/** 审核提交 */
+function check(data, layer, url) {
     $.ajax({
         url: url,
         type:"PUT",
@@ -102,7 +102,7 @@ function defined(data, layer, url) {
                 function() {
                     // 刷新数据，保留在当前页
                     var index = parent.layer.getFrameIndex(window.name);
-                    parent.layui.table.reload('dataTable');//重载父页表格，参数为表格ID
+                    parent.layui.table.reload('emp-dataTable');//重载父页表格，参数为表格ID
                     parent.layer.close(index);
                 });
             $(".layui-btn").removeAttr('disabled');
@@ -121,4 +121,16 @@ function createIds(obj) {
         }
     }
     return ids;
+}
+
+
+/** 图片预览 */
+function operImg(data) {
+    var imgName = data.rateEmailFilename;
+    var src = '/img/' + imgName.replace("_","/");
+    var a = "<a href='javascript:(0)' class='layui-table-link' onclick=previewImg('"  + data.id + "')>" + imgName + "</a>";
+    return a;
+}
+function previewImg(id) {
+    xadmin.open('图片预览','/ba-employee/view/'+ id, 500,500);
 }

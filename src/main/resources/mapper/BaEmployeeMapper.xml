@@ -37,35 +37,35 @@
 
     <select id="getEmployeeList" parameterType="com.settlement.co.EmployeeCo" resultType="com.settlement.vo.EmployeeVo">
         SELECT
-        be.id,
-        be.emp_name,
-        be.`code`,
-        be.entrance_time,
-        be.pos_level,
-        be.responsible_person,
-        be.upload_rate_email,
-        be.send_copy_email,
-        be.rp_email,
-        be.rate_email_filename,
-        bpe.pg_id,
-        be.claim_expense_person,
-        be.create_time,
-        be.place,
-        be.unit
+            be.id,
+            be.emp_name,
+            be.`code`,
+            be.entrance_time,
+            be.pos_level,
+            be.responsible_person,
+            be.upload_rate_email,
+            be.send_copy_email,
+            be.rp_email,
+            be.rate_email_filename,
+            bpe.pg_id,
+            be.claim_expense_person,
+            be.create_time,
+            be.place,
+            be.apply_update_status,
+            sdd.dic_content as applyUpdateStatusContent,
+            be.unit
         FROM
-        ba_employee be,
-        ba_pg_emp bpe
+            ba_employee be left join ba_pg_emp bpe on  be.id = bpe.emp_id
+            left join sys_data_dic sdd on be.apply_update_status = sdd.dic_code
         WHERE
-        be.id = bpe.emp_id
-        and be.del_flag = #{employeeCo.delFlag}
-        and bpe.pg_id = #{employeeCo.pgId}
-        and bpe.entrance_status = #{employeeCo.entranceStatus}
-        <if test="employeeCo.keyword != null and employeeCo.keyword !='' ">
-          and CONCAT(be.emp_name) like CONCAT('%',#{employeeCo.keyword},'%')
-        </if>
+            be.del_flag = #{employeeCo.delFlag}
+            and bpe.pg_id = #{employeeCo.pgId}
+            and bpe.entrance_status = #{employeeCo.entranceStatus}
+            <if test="employeeCo.keyword != null and employeeCo.keyword !='' ">
+              and CONCAT(be.emp_name) like CONCAT('%',#{employeeCo.keyword},'%')
+            </if>
         order by be.create_time
     </select>
-
 
     <update id="updateBatchEntranceStatusById" parameterType="java.util.List">
         <foreach collection="emps" item="emp" index="index" separator=";">
