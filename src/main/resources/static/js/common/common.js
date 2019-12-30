@@ -31,6 +31,62 @@ function checkCodeIsExist(url,code, layer,mode) {
     return flag;
 }
 
+/** 保存 */
+function save(data, layer,url) {
+    $.ajax({
+        url: url,
+        type:"POST",
+        // contentType:"application/json",//设置请求参数类型为json字符串
+        data: data.field,
+        // dataType:"json",
+        beforeSend: function () {
+            // 禁用按钮防止重复提交
+            $(".layui-btn").attr({ disabled: "disabled" });
+
+        },
+        success:function(r){
+            layer.alert(r.msg, {
+                    icon : r.code == '200' ? 6: 5
+                },
+                function() {
+                    // 刷新数据，保留在当前页
+                    var index = parent.layer.getFrameIndex(window.name);
+                    parent.layui.table.reload('dataTable');//重载父页表格，参数为表格ID
+                    parent.layer.close(index);
+                });
+            $(".layui-btn").removeAttr('disabled');
+        }
+    });
+}
+
+/** 提交 */
+function submit(data, layer,url) {
+    $.ajax({
+        url: url,
+        type:"PUT",
+        // contentType:"application/json",//设置请求参数类型为json字符串
+        data: data.field,
+        // dataType:"json",
+        beforeSend: function () {
+            // 禁用按钮防止重复提交
+            $(".layui-btn").attr({ disabled: "disabled" });
+
+        },
+        success:function(r){
+            layer.alert(r.msg, {
+                    icon : r.code == '200' ? 6: 5
+                },
+                function() {
+                    // 刷新数据，保留在当前页
+                    var index = parent.layer.getFrameIndex(window.name);
+                    parent.layui.table.reload('dataTable');//重载父页表格，参数为表格ID
+                    parent.layer.close(index);
+                });
+            $(".layui-btn").removeAttr('disabled');
+        }
+    });
+}
+
 /** 修改 */
 function edit(data, layer, url) {
     // 处理重复提交

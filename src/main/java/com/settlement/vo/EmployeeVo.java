@@ -20,4 +20,6 @@ public class EmployeeVo extends BaEmployee implements Serializable {
 
     private String applyUpdateStatusContent;
 
+    private String unitContent;
+
 }

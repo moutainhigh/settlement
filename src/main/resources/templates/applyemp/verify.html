@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+    
+    <head>
+        <th:bolck th:include="common/header :: header('口令验证')" />
+    </head>
+    <body>
+        <div class="layui-fluid">
+            <div class="layui-row">
+                <form class="layui-form">
+                    <div class="layui-form-item">
+                        <div class="layui-form-item">
+                            <label for="updatePassword" class="layui-form-label">
+                                <span class="x-red">*</span>修改口令</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="updatePassword" name="updatePassword" required="" lay-verify="updatePassword" autocomplete="off"  placeholder="请输入口令" class="layui-input" maxlength="20">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <input type="hidden" name="id" th:value="${id}">
+                            <label for="verifyToken" class="layui-form-label"></label>
+                            <button class="layui-btn" id="verifyToken" lay-filter="verifyToken" lay-submit="">验证</button>
+                        </div>
+                   </div>
+                </form>
+            </div>
+        </div>
+        <script th:src="@{/js/common/common.js}" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript">
+            // 表单操作
+            layui.use(['form', 'layer','jquery'],
+            function() {
+                $ = layui.jquery;
+                var form = layui.form,
+                layer = layui.layer;
+                form.render();
+                //自定义验证规则
+                form.verify({
+                    updatePassword: function(value) {
+                        if (value.length < 1) {
+                            return '口令至少得一个字符啊';
+                        }
+                    }
+                });
+
+                //监听保存
+                form.on('submit(verifyToken)',
+                    function(data) {
+                        var applyId = $("input[name='id']").val();
+                        $.post('/ba-emp-apply-check/verify',data.field, function(r) {
+                            if (r.code == 'verify_200') {
+                                // reloadTable('dataTable');
+                                xadmin.close();
+                                window.parent.xadmin.open('修改员工信息','/ba-apply-employee/emp-list/' + applyId,1000,545);
+                            } else if (r.code == 'verify_500') {
+                                layer.msg(r.msg,{icon:5});
+                            }
+                        });
+                        return false;
+                    });
+            });
+        </script>
+    </body>
+</html>

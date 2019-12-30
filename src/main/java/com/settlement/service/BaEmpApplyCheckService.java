@@ -22,4 +22,6 @@ public interface BaEmpApplyCheckService extends IService<BaEmpApplyCheck> {
     PageData getApplyEmpPageList(EmpApplyCheckCo empApplyCheckCo);
     /** 更新审核结果 */
     Result updateCheckResult(EmpApplyCheckVo empApplyCheckVo);
+    /** 验证口令 */
+    Result verifyUpdatePassword(EmpApplyCheckVo empApplyCheckVo);
 }

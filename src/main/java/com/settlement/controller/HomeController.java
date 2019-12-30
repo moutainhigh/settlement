@@ -67,8 +67,12 @@ public class HomeController {
     private BaProjectGroupCheckService baProjectGroupCheckService;
     @Autowired
     private BaProjectGroupSettlementService baProjectGroupSettlementService;
+    // @Autowired
+    // private BaApplyEmployeeService baApplyEmployeeService;
     @Autowired
-    private BaApplyEmployeeService baApplyEmployeeService;
+    private BaEmpApplyCheckService baEmpApplyCheckService;
+    @Autowired
+    private BaPgEmpService baPgEmpService;
 
     @GetMapping({"/","/login"})
     public String toLogin() {
@@ -943,6 +947,95 @@ public class HomeController {
         model.addAttribute("applyId", id);
         return "applycheck/detail";
     }
+
+    /**
+     * @description 员工申请修改：验证口令页
+     *
+     * @auth admin
+     * @date 2019-12-27
+     * @param id
+     * @return
+     */
+    @GetMapping("/ba-apply-employee/verify/{id}")
+    public String toVerifyApplyEmpPage(@PathVariable(value="id") Integer id, Model model) {
+        model.addAttribute("id", id);
+        return "applyemp/verify";
+    }
+
+    /**
+     * @description 员工申请：修改页
+     *
+     * @auth admin
+     * @date 2019-12-27
+     * @param applyId
+     * @return
+     */
+    @GetMapping("/ba-apply-employee/emp-list/{applyId}")
+    public String toEditApplyEmpPage(@PathVariable(value="applyId") Integer applyId, Model model) {
+        model.addAttribute("applyId", applyId);
+        return "applyemp/emp-list";
+    }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @description 员工离场
+     *
+     * @auth admin
+     * @date 2019-12-30
+     * @param applyId
+     * @param empId
+     * @return
+     */
+    @GetMapping("/ba-emp-leave-pg/{applyId}/{empId}")
+    public String toEmpLeavePgPage(@PathVariable(value="applyId") Integer applyId, @PathVariable(value="empId") Integer empId, Model model) {
+        // 取得项目ID
+        Integer pgId = this.baEmpApplyCheckService.getById(applyId).getPgId();
+        // 项目ID， 员工ID， 入场状态，取得pg_emp_id
+        Integer pgEmpId = this.baPgEmpService.getBaPgEmpByPgIdAndEmpId(pgId, empId, Const.ENTRANCE_STATUS_I).getId();
+        BaEmployee be = this.baEmployeeService.getById(empId);
+        model.addAttribute("pgEmpId", pgEmpId);
+        model.addAttribute("applyId", applyId);
+        model.addAttribute("emp", be);
+        return "applyemp/leave-pg";
+    }
+
+    /**
+     * @description 员工离职
+     *
+     * @auth admin
+     * @date 2019-12-30
+     * @param applyId
+     * @param empId
+     * @param model
+     * @return
+     */
+    @GetMapping("/ba-emp-leave-job/{applyId}/{empId}")
+    public String toEmpLeaveJobPage(@PathVariable(value="applyId") Integer applyId, @PathVariable(value="empId") Integer empId, Model model) {
+        BaEmployee be = this.baEmployeeService.getById(empId);
+        model.addAttribute("emp", be);
+        model.addAttribute("applyId", applyId);
+        return "applyemp/leave-job";
+    }
+
+    /**
+     * @description 员工申请修改：编辑
+     *
+     * @auth admin
+     * @date 2019-12-30
+     * @param applyId
+     * @param empId
+     * @param model
+     * @return
+     */
+    @GetMapping("/ba-apply-employee/edit/{applyId}/{empId}")
+    public String toEditApplyEmpPage(@PathVariable(value="applyId") Integer applyId, @PathVariable(value="empId") Integer empId, Model model) {
+        model.addAttribute("applyId", applyId);
+        Integer pgId = this.baEmpApplyCheckService.getById(applyId).getPgId();
+        model.addAttribute("levelPriceList", this.baLevelPriceService.getLevelPriceByPgId(pgId));
+        model.addAttribute("unitList", sysDataDicService.getDataDicSelectByParentCode(Const.UNIT_PARENT_CODE));
+        model.addAttribute("emp",this.baEmployeeService.getProjectEmpById(empId));
+        return "applyemp/edit";
+    }
+
 }
 

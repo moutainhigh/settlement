@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:bolck th:include="common/header :: header('员工离场')" />
+    <style>
+        .layui-table tbody tr:hover {background-color: #ffffff;}
+    </style>
+</head>
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>员工离场说明：离场后，员工将不再参与结算；离场员工在离场员工管理处查看；
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-form-text">
+                <label  class="layui-form-label">员工离场信息</label>
+                <div class="layui-input-block">
+                    <table class="layui-table">
+                        <tbody>
+                        <tr>
+                            <td width="23%" style="text-align:right;">员工姓名</td>
+                            <td th:text="${emp.empName}"></td>
+                            <td width="23%" style="text-align:right;">员工编号</td>
+                            <td th:text="${emp.code}"></td>
+                        </tr>
+                            <tr>
+                                <td width="23%" style="text-align:right;"><span class="x-red">*</span>离场时间</td>
+                                <td colspan="3">
+                                    <input  id="leavePgTime" name="leavePgTime" type="text"  lay-verify="leavePgTime" autocomplete="off" class="layui-input" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="23%" style="text-align:right;"><span class="x-red">*</span>离场原因</td>
+                                <td colspan="3">
+                                    <textarea name="reason" placeholder="请输入离场原因" class="layui-textarea" lay-verify="reason" maxlength="200"></textarea>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label"></label>
+                <input type="hidden" name="applyId" th:value="${applyId}">
+                <input type="hidden" name="pgEmpId" th:value="${pgEmpId}">
+                <input type="hidden" name="empId" th:value="${emp.id}">
+                <button class="layui-btn" id="save" lay-filter="save" lay-submit="save">保存</button>
+                <button class="layui-btn layui-btn-normal" id="sub" lay-filter="sub" lay-submit="sub">提交</button>
+                <!--<button class="layui-btn layui-btn-primary" id="close" lay-filter="close" type="reset">重置</button>-->
+            </div>
+        </form>
+    </div>
+</div>
+<script th:src="@{/js/common/common.js}" type="text/javascript" charset="utf-8"></script>
+<script th:src="@{/js/applycheck/applycheck.js}" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript"  th:inline="javascript">
+    layui.use(['form', 'layer','laydate'],
+    function() {
+        $ = layui.jquery;
+        var form = layui.form,
+            layer = layui.layer,laydate=layui.laydate;
+        // 初始化时间控件
+        laydate.render({
+            elem: '#leavePgTime'
+        });
+
+        //自定义验证规则
+        form.verify({
+            leavePgTime: function(value) {
+                if (value == null || value == '' || value == 'undefined') {
+                    return '离场时间必须输入啊';
+                }
+            },
+            reason: function(value) {
+                if (value == null || value == '' || value == 'undefined') {
+                    return '离场原因必须输入一个字符啊';
+                }
+            }
+        });
+
+        //监听保存
+        form.on('submit(save)',
+            function(data) {
+                // console.log(data);
+                save(data,layer,'/ba-emp-leave-pg/save');
+                return false;
+        });
+        // 监听提交
+        form.on('', function (data) {
+            // console.log(data);
+            submit(data,layer,'/ba-emp-leave-pg');
+            return false;
+        });
+    });
+
+</script>
+
+</body>
+
+</html>

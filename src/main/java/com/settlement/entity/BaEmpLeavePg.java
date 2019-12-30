@@ -2,6 +2,7 @@ package com.settlement.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import java.time.LocalDate;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
@@ -13,43 +14,38 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 
+ *    员工离场
  * </p>
  *
- * @author admin
- * @since 2019-12-11
+ * @author kun
+ * @since 2019-12-29
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class BaPgEmp extends Model<BaPgEmp> {
+public class BaEmpLeavePg extends Model<BaEmpLeavePg> {
 
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    /**
-     * 项目组ID
-     */
-    private Integer pgId;
+    private Integer pgEmpId;
+
+    private String reason;
 
     /**
-     * 项目组员工ID
+     * 离场时间
      */
-    private Integer empId;
-
-    /**
-     * 入离场状态: I-入场，L-离场
-     */
-    private String entranceStatus;
-
-    /**
-     * 更新时间
-     */
-    private Date operTime;
+    private Date leavePgTime;
 
     private Date createTime;
+
+    private Integer createUserId;
+
+    /** 员工ID */
+    private Integer empId;
+
 
     @Override
     protected Serializable pkVal() {
