@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+    
+    <head>
+        <th:bolck th:include="common/header :: header('编辑')" />
+    </head>
+    <body>
+       <div class="layui-fluid">
+           <div class="layui-row">
+                <form class="layui-form" lay-filter="empForm">
+                    <div class="layui-form-item">
+
+                        <!-- 必填内容 -->
+                        <div class="layui-collapse" lay-accordion="">
+                            <div class="layui-colla-item">
+                                <h2 class="layui-colla-title">必填内容</h2>
+                                <div class="layui-colla-content layui-show">
+                                    <div class="layui-form-item">
+                                        <div class="layui-inline">
+                                            <label for="empName" class="layui-form-label">
+                                                <span class="x-red">*</span>员工姓名</label>
+                                            <div class="layui-input-inline">
+                                                <input type="text" disabled="disabled" id="empName" name="empName" th:value="${emp.empName}" required="" lay-verify="empName" autocomplete="off"  placeholder="请输入员工姓名" class="layui-input" maxlength="20">
+                                            </div>
+                                        </div>
+                                        <div class="layui-inline">
+                                            <label for="code" class="layui-form-label">
+                                                <span class="x-red">*</span>员工编号</label>
+                                            <div class="layui-input-inline">
+                                                <input type="text" disabled="disabled" id="code" name="code" th:value="${emp.code}" required="" lay-verify="code" autocomplete="off"  placeholder="请输入员工编号" class="layui-input" maxlength="20">
+                                            </div>
+                                           <!-- <button type="button" id="checkEmpCode"  class="layui-btn layui-btn-primary layui-btn-xs">检查重复</button>-->
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-form-item">
+                                        <div class="layui-inline">
+                                            <label for="entranceTime" class="layui-form-label">
+                                                <span class="x-red">*</span>入场时间</label>
+                                            <div class="layui-input-inline layui-show-xs-block">
+                                                <input disabled="disabled" id="entranceTime" name="entranceTime" th:value="${#dates.format(emp.entranceTime,'yyyy-MM-dd')}" required="" lay-verify="date" autocomplete="off"  placeholder="请输入入场时间" class="layui-input" >
+                                            </div>
+                                        </div>
+                                        <div class="layui-inline">
+                                            <label for="place" class="layui-form-label">
+                                                <span class="x-red">*</span>员工所在地</label>
+                                            <div class="layui-input-inline">
+                                                <input type="text" id="place" name="place" th:value="${emp.place}" required="" lay-verify="place" autocomplete="off"  placeholder="请输入员工所在地" class="layui-input" maxlength="50">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-form-item">
+                                        <div class="layui-inline">
+                                            <label for="responsiblePerson" class="layui-form-label">
+                                                <span class="x-red">*</span>客户负责人</label>
+                                            <div class="layui-input-inline layui-show-xs-block">
+                                                <input  id="responsiblePerson" name="responsiblePerson" th:value="${emp.responsiblePerson}" required="" lay-verify="responsiblePerson" autocomplete="off"  placeholder="请输入客户负责人" class="layui-input" maxlength="20">
+                                            </div>
+                                        </div>
+                                        <div class="layui-inline">
+                                            <label for="rpEmail" class="layui-form-label">
+                                                <span class="x-red">*</span>邮件地址</label>
+                                            <div class="layui-input-inline">
+                                                <input type="text" id="rpEmail" name="rpEmail" th:value="${emp.rpEmail}" required="" lay-verify="email" autocomplete="off"  placeholder="请输入客户负责人邮件地址" class="layui-input" maxlength="100">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-form-item">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">
+                                                <span class="x-red">*</span>结算抄送邮件</label>
+                                            <div class="layui-input-inline layui-show-xs-block">
+                                                <input type="text" id="sendCopyEmail" name="sendCopyEmail" th:value="${emp.sendCopyEmail}" required="" lay-verify="sendCopyEmail" autocomplete="off"  placeholder="请输入结算发送抄送人邮件地址(客户方)" class="layui-input" maxlength="400">
+                                            </div>
+                                        </div>
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">
+                                                <span class="x-red">*</span>级别</label>
+                                            <div class="layui-input-inline">
+                                                <div id="div1">
+                                                    <select id="posLevelSelect" name="posLevel" lay-filter="posLevelSelect" lay-verify="posLevelSelect">
+                                                        <option value="" selected>请选择</option>
+                                                        <option th:each="levelPrice : ${levelPriceList}" th:value="${levelPrice.id}" th:text="${levelPrice.levelName}"></option>
+                                                    </select>
+                                                </div>
+                                                <div id="div2">
+                                                    <input  id="posLevelInput" name="posLevelInput" th:value="${emp.posLevelInput}"  class="layui-input" required="" lay-verify="posLevelInput" autocomplete="off"  placeholder="请输入级别"  maxlength="20">
+                                                </div>
+                                            </div>
+                                            <button type="button" id="handInputId" class="layui-btn layui-btn-primary layui-btn-xs">手填</button>
+                                            <button type="button" id="frameInputId"  class="layui-btn layui-btn-primary layui-btn-xs" style="margin-left: -2px;">框架</button>
+                                            <input type="hidden"  id="levelMode" name="levelMode"  th:value="${emp.levelMode}" />
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-form-item">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label"><span class="x-red">*</span>服务费(月)</label>
+                                            <div class="layui-input-inline">
+                                                <input name="priceMonth"  id="priceMonth" th:value="${emp.priceMonth}" class="layui-input" required="" lay-verify="number" autocomplete="off"  placeholder="单价/月"  maxlength="10">
+                                            </div>
+                                        </div>
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">
+                                                <span class="x-red">*</span>单位</label>
+                                            <div class="layui-input-inline">
+                                                <select name="unit" id="unit" lay-filter="unit">
+                                                    <option value="" >请选择</option>
+                                                    <option th:each="unit : ${unitList}" th:value="${unit.dicCode}" th:text="${unit.dicContent}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 上传图片-->
+                                    <div class="layui-form-item">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label"><span class="x-red">*</span>客户确认邮件</label>
+                                            <div class="layui-inline layui-upload">
+                                                <button class="layui-btn" id="test1" type="button">上传客户确认rate邮件图片</button>
+                                            </div>
+                                        </div>
+                                        <div class="layui-inline layui-upload-list">
+                                            <input type="hidden" th:value="${emp.uploadRateEmail}" name="uploadRateEmail" lay-verify="uploadRateEmail" >
+                                            <input type="hidden" th:value="${emp.rateEmailFilename}" name="rateEmailFilename" >
+                                            <img class="layui-upload-img" id="demo1" width="600" height="200" th:src="@{'/img/' + ${#strings.replace(emp.rateEmailFilename,'_','/')}}" />
+                                            <p id="demoText"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ///////////////////////////////////////////////  以下是选填内容 ////////////////////////////////////////////////////////// -->
+
+                        <div class="layui-collapse" lay-accordion="">
+                            <div class="layui-colla-item">
+                                <h2 class="layui-colla-title">选填内容</h2>
+                                <div class="layui-colla-content">
+                                    <div class="layui-form-item">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">服务费(天)</label>
+                                            <div class="layui-input-inline">
+                                                <input name="priceDay"  id="priceDay" th:value="${emp.priceDay}" class="layui-input" required="" lay-verify="" autocomplete="off"  placeholder="单价/天"  maxlength="10">
+                                            </div>
+                                        </div>
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">岗位</label>
+                                            <div class="layui-inline">
+                                                <input name="position" id="position"  th:value="${emp.position}" class="layui-input"  lay-verify="position" autocomplete="off"  placeholder=""  maxlength="20">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-form-item">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">证件号码</label>
+                                            <div class="layui-input-inline">
+                                                <input name="cardNo" id="cardNo" th:value="${emp.cardNo}" class="layui-input"  lay-verify="" autocomplete="off"  placeholder=""  maxlength="20">
+                                            </div>
+                                        </div>
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">报销接口人</label>
+                                            <div class="layui-input-inline">
+                                                <input name="claimExpensePerson" id="claimExpensePerson" th:value="${emp.claimExpensePerson}" class="layui-input" lay-verify="claimExpensePerson" autocomplete="off"  placeholder=""  maxlength="10">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-form-item">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">考勤负责人</label>
+                                            <div class="layui-input-inline">
+                                                <input name="workAttendencePerson" id="workAttendencePerson" th:value="${emp.workAttendencePerson}" class="layui-input"  lay-verify="workAttendencePerson" autocomplete="off"  placeholder=""  maxlength="20">
+                                            </div>
+                                        </div>
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">员工月薪</label>
+                                            <div class="layui-input-inline">
+                                                <input name="salaryMonth" id="salaryMonth" th:value="${emp.salaryMonth}" class="layui-input" lay-verify="" autocomplete="off"  placeholder=""  maxlength="10">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-form-item">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">员工日薪</label>
+                                            <div class="layui-input-inline">
+                                                <input name="salaryDay" id="salaryDay" th:value="${emp.salaryDay}" class="layui-input"  lay-verify="" autocomplete="off"  placeholder=""  maxlength="20">
+                                            </div>
+                                        </div>
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label"></label>
+                                            <div class="layui-input-inline">
+                                                <input type="hidden" name="pgId"  th:value="${pgId}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label for="saveButton" class="layui-form-label"></label>
+                            <input type="hidden" name="id" th:value="${emp.id}">
+                            <button class="layui-btn" id="saveButton" lay-filter="saveButton" lay-submit="">修改</button>
+                            <button class="layui-btn layui-btn-normal" id="submitButton" lay-filter="submitButton" lay-submit="">修改并提交</button>
+                        </div>
+                   </div>
+                </form>
+           </div>
+        </div>
+       <script th:src="@{/js/common/common.js}" type="text/javascript" charset="utf-8"></script>
+       <script th:src="@{/js/emp/emp.js}" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" th:inline="javascript">
+            var levelMode = [[${ emp.levelMode }]];
+            var levelModeH = [[ ${LEVEL_MODE_H} ]];
+            var levelModeF = [[ ${LEVEL_MODE_F} ]];
+
+            if (levelMode == levelModeH) {
+                $("#div2").show();
+                $("#div1").hide();
+                $("#handInputId").hide();
+                $("#frameInputId").show();
+                $("#priceMonth").removeAttr("readonly");
+            } else {
+                $("#div2").hide();
+                $("#div1").show();
+                $("#handInputId").show();
+                $("#frameInputId").hide();
+                $("#priceMonth").attr("readonly","readonly");
+            }
+            // 表单操作
+            layui.use(['laydate','form', 'layer','jquery','upload'],
+            function() {
+                $ = layui.jquery;
+                var laydate = layui.laydate;
+                var form = layui.form;
+                var layer = layui.layer;
+                var upload = layui.upload;
+
+                //普通图片上传
+                var uploadInst = upload.render({
+                    elem: '#test1'
+                    ,url: '/file/upload'
+                    ,method:'POST'
+                    ,field:'file'
+                    ,size: 5*1024 //限制文件大小，单位 KB
+                    ,before: function(obj){
+                        //预读本地文件示例，不支持ie8
+                       obj.preview(function(index, file, result){
+                            $('#demo1').attr('src', result); //图片链接（base64）
+                        });
+                    }
+                    ,done: function(res){
+                        // $("input[name='uploadRateEmail']").val('');
+                        // if(res.code != '0'){
+                        if (res.code == '9006') {
+                            //上传成功
+                            $("input[name='uploadRateEmail']").val(res.path);
+                            $("input[name='rateEmailFilename']").val(res.fileName);
+                        }
+                        return layer.msg(res.msg,{icon: res.code == '9006' ? 6 : 5});
+                       //   }
+                    }
+                    ,error: function(){
+                        //演示失败状态，并实现重传
+                       /* var demoText = $('#demoText');
+                        demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                        demoText.find('.demo-reload').on('click', function(){
+                            uploadInst.upload(); */
+                    }
+                });
+
+                form.val('empForm', {
+                    "posLevel": [[ ${emp.posLevel} ]]
+                        ,"unit": [[ ${emp.unit} ]]
+                });
+
+                laydate.render({
+                   elem: '#entranceTime'
+                });
+
+                form.render();
+                //自定义验证规则
+                form.verify({
+                   /* empName: function(value) {
+                        if (value.trim().length < 1) {
+                            return '员工姓名至少得1个字符啊';
+                        }
+                    },
+                    code: function (value) {
+                        if (value.trim().length < 1) {
+                            return '员工编号至少得1个字符啊';
+                        }
+                    },
+                    entranceTime: function(value) {
+                        if (value.length < 1) {
+                            return '入场时间至少得1个字符啊';
+                        }
+                    },*/
+                    place: function(value) {
+                        if (value.length < 1) {
+                            return '员工所在地至少得1个字符啊';
+                        }
+                    },
+                    responsiblePerson: function(value) {
+                        if (value.length < 1) {
+                            return '客户负责人至少得1个字符啊';
+                        }
+                    },
+                    rpEmail: function(value) {
+                        if (value.length < 1) {
+                            return '客户负责人邮件地址至少得1个字符啊';
+                        }
+                    },
+                    sendCopyEmail: function(value) {
+                        if (value.length < 1) {
+                            return '结算发送抄送人邮件地址(客户方)至少得1个字符啊';
+                        }
+                    },
+                    posLevelInput: function(value) {
+                        if ($("#div2").css('display') === 'block') {
+                            if (value.length < 1) {
+                                return '级别至少得1个字符啊';
+                            }
+                        }
+                    },
+                    posLevelSelect: function(value) {
+                        if ($("#div1").css('display') === 'block') {
+                            if (value.length < 1) {
+                                return '级别至少得选择一个啊';
+                            }
+                        }
+                    },
+                    priceMonth: function(value) {
+                        if (value.length < 1) {
+                            return '服务费单价月至少得1个字符啊';
+                        }
+                    },
+                    unit: function(value) {
+                        if (value.length < 1) {
+                            return '单位至少得选择1个啊';
+                        }
+                    },
+                    uploadRateEmail: function(value) {
+                        if (value.length < 1) {
+                            return '请上传客户确认rate邮件啊';
+                        }
+                    }
+                });
+
+                // 监听级别Select
+                form.on('select(posLevelSelect)', function (data) {
+                    if (data.value != '') {
+                        var id = data.value;
+                        $.get('/ba-level-price/' + id,null,function(r) {
+                            var levelPrice = r.data;
+                            // 服务费
+                            $("#priceMonth").val(levelPrice.price);
+                            // 单位
+                            $("#unit").val(levelPrice.unit);
+                            form.render('select');
+                        });
+                    }
+                });
+
+                //监听修改
+                form.on('submit(saveButton)',
+                    function(data) {
+                        edit(data,layer,'/ba-employee/edit');
+                        return false;
+                    });
+
+                //监听修改并提交
+                form.on('submit(submitButton)',
+                function(data) {
+                    layer.confirm('确认提交么?提交后员工信息将参与考勤、结算，编辑需要申请', function(index) {
+                        edit(data,layer, '/ba-employee/editsubmit');
+                    });
+                    return false;
+                });
+
+                // 监听手输
+                $(document).on('click','#handInputId',function() {
+                    handInput(levelModeH);
+                })
+                // 监听框架
+                $(document).on('click','#frameInputId',function() {
+                    frameInput(levelModeF);
+                })
+            });
+
+        </script>
+    </body>
+</html>

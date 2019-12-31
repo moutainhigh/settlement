@@ -1,5 +1,6 @@
 package com.settlement.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.settlement.bo.PageData;
@@ -52,23 +53,24 @@ public class BaEmpApplyCheckServiceImpl extends ServiceImpl<BaEmpApplyCheckMappe
         logger.info("员工申请批量保存service处理");
         Result r = new Result();
         try {
+            Date d = new Date();
             if (empIds != null && !"".equals(empIds)) {
                 // 新增员工申请修改
                 BaEmpApplyCheck beac = new BaEmpApplyCheck();
-                beac.setApplyTime(new Date());
+                beac.setApplyTime(d);
                 SysUser applyUser = (SysUser) SecurityUtils.getSubject().getPrincipal();
                 beac.setApplyUserId(applyUser.getId());
                 beac.setCheckUserId(empApplyCheckVo.getCheckUserId());
                 beac.setApplyRemark(empApplyCheckVo.getApplyRemark());
                 beac.setPgId(empApplyCheckVo.getPgId());
                 beac.setCheckStatus(Const.CHECK_STATUS_NO_CHECK);
+                beac.setCreateTime(d);
                 int ret = this.baseMapper.insert(beac);
                 // 新增员工申请修改关联表
                 List<BaApplyEmployee> list = new ArrayList<BaApplyEmployee>();
                 List<BaEmployee> empList = new ArrayList<BaEmployee>();
                 BaApplyEmployee bae = null;
                 BaEmployee be = null;
-                Date d = new Date();
                 String[] empArr = empIds.split(",");
                 for (int i = 0; i < empArr.length; i++) {
                     int empId = Integer.valueOf(empArr[i]);
@@ -133,6 +135,24 @@ public class BaEmpApplyCheckServiceImpl extends ServiceImpl<BaEmpApplyCheckMappe
             e.printStackTrace();
             r.setCode(HttpResultEnum.CODE_500.getCode());
             r.setMsg(HttpResultEnum.CODE_500.getMessage());
+        }
+        return r;
+    }
+
+    @Override
+    public Result verifyUpdatePassword(EmpApplyCheckVo empApplyCheckVo) {
+        Result r = new Result(HttpResultEnum.VERIFY_CODE_500.getCode(), HttpResultEnum.VERIFY_CODE_500.getMessage());
+        try {
+            QueryWrapper<BaEmpApplyCheck> queryWrapper = new QueryWrapper<BaEmpApplyCheck>();
+            queryWrapper.eq("id",empApplyCheckVo.getId());
+            queryWrapper.eq("update_password", empApplyCheckVo.getUpdatePassword());
+            int count = this.baseMapper.selectCount(queryWrapper);
+            if (count == 1) {
+              r.setCode(HttpResultEnum.VERIFY_CODE_200.getCode());
+              r.setMsg(HttpResultEnum.VERIFY_CODE_200.getMessage());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return r;
     }

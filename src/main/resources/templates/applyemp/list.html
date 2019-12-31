@@ -34,9 +34,6 @@
                                 </div>
                             </form>
                         </div>
-                        <div class="layui-card-header">
-                            <button class="layui-btn" data-type="edit"><i class="layui-icon">&#xe642;</i>修改</button>
-                        </div>
                         <div class="layui-card-body layui-table-body layui-table-main" >
                             <table class="layui-table layui-form" id="dataTable" lay-filter="dataTable">
                             </table>
@@ -46,6 +43,9 @@
             </div>
         </div>
     </body>
+    <script type="text/html" id="toolBar">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">修改</a>
+    </script>
     <script id="checkStatusTpl" type="text/html">
         {{#  if(d.checkStatusContent === '审核通过'){ }}
         <span style="color: #71C671;font-weight: bold;">{{ d.checkStatusContent }}</span>
@@ -70,21 +70,30 @@
                 url: '/ba-emp-apply-check/apply-pagedata',
                 // toolbar: '',
                 page: true,
-                // title: '导出参数',
                 height: 'full-210',
-                // id: 'userData',
+                done: function(res,curr,count) {
+                    res.data.forEach(function (item, index) {
+                       if (item.checkStatus != checkStatusPass) {
+                           // 审核不通过的设置，修改禁用
+                            var tr = $("tr[data-index='" + index + "']");
+                            var a = $(tr.find("a"));
+                            a.addClass("layui-btn-disabled");
+                        }
+                    });
+                },
                 cols: [
                     [
-                        {field:'id',type:'checkbox',fixed:'left'},
+                        {field:'id',title:'ID',fixed:'left',hide:true},
                         {field:'applyUserContent',title:'申请人 ',align:'center'},
                         {field:'pgName',title:'项目组 ',align:'center'},
                         //  {field:'applyTypeContent',title:'类型',align:'center'},
                         {field:'applyRemark',title:'申请描述',align:'center'},
-                        /* {field:'checkStatus',title:'审核状态',align:'center',hide:true},*/
+                        {field:'checkStatus',title:'审核状态',align:'center',hide:true},
                         {field:'applyTime',title:'申请时间',align:'center'},
                         {field:'checkStatusContent',title:'审核状态',align:'center',templet: '#checkStatusTpl'},
                         {field:'checkTime',title:'审核时间',align:'center'},
-                        {field:'checkRemark',title:'审核备注',align:'center'}
+                        {field:'checkRemark',title:'审核备注',align:'center'},
+                        {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:80}
                     ]
                 ]
             });
@@ -104,12 +113,11 @@
                             checkStatus: checkStatus.val()
                         }
                     }, 'data');
-                },
-                edit: function(){ //获取选中数据
-                    alert(123);
-                   // checkBoxCheckedOper('关联助理','/ba-project-group/relate-assistant/',table, layer, 600, 400);
-                },
+                }
             };
+
+
+
             $('.layui-btn').on('click', function(){
                 var type = $(this).data('type');
                 active[type] ? active[type].call(this) : '';
@@ -117,14 +125,14 @@
 
             // 员工申请修改监听审核、详细
             table.on('tool(dataTable)', function(obj){
-
-               /* else if(obj.event === 'check'){
-                    if (checkStatus == checkStatusPass || checkStatus == checkStatusNoPass) {
-                        layer.msg("记录处于【审核通过】或者【审核未通过】状态，不能审核",{icon:5});
-                    } else {
-                        xadmin.open('申请修改审核','/ba-emp-apply-check/check/'+ id,800,400);
+                var data = obj.data;
+                var id = data.id;
+               if(obj.event === 'edit'){
+                    if (data.checkStatus == checkStatusPass) {
+                        // layer.msg("记录处于【审核通过】或者【审核未通过】状态，不能审核",{icon:5});
+                        xadmin.open('验证口令','/ba-apply-employee/verify/'+ id,400,200);
                     }
-                }*/
+                }
             });
 
         })

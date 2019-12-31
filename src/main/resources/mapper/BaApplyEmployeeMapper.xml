@@ -33,17 +33,20 @@
              be.level_mode,
              be.place,
              be.price_month,
+             be.price_day,
              be.send_copy_email,
-             be.unit
+             be.claim_expense_person,
+             be.work_attendence_person,
+             be.unit,
+             sdd.dic_content as unitContent
             FROM
-             ba_apply_employee bae,
-             ba_employee be,
-             ba_level_price blp
+             ba_apply_employee bae left join  ba_employee be on bae.emp_id = be.id
+             left join ba_level_price blp on  blp.id = be.pos_level
+             left join sys_data_dic sdd on be.unit = sdd.dic_code
             WHERE
-             bae.emp_id = be.id
-             AND blp.id = be.pos_level
-             AND bae.apply_id = #{empApplyCo.applyId}
+             bae.apply_id = #{empApplyCo.applyId}
              AND be.level_mode = #{empApplyCo.levelModeF}
+             AND bae.update_status = #{empApplyCo.updateStatus}
            UNION ALL
             SELECT
              be.id,
@@ -57,15 +60,19 @@
              be.level_mode,
              be.place,
              be.price_month,
+             be.price_day,
              be.send_copy_email,
-             be.unit
+             be.claim_expense_person,
+             be.work_attendence_person,
+             be.unit,
+             sdd.dic_content as unitContent
             FROM
-             ba_apply_employee bae,
-             ba_employee be
+             ba_apply_employee bae left join ba_employee be on bae.emp_id = be.id
+             left join sys_data_dic sdd on be.unit = sdd.dic_code
             WHERE
-             bae.emp_id = be.id
-             AND bae.apply_id = #{empApplyCo.applyId}
+             bae.apply_id = #{empApplyCo.applyId}
              AND be.level_mode = #{empApplyCo.levelModeH}
+             AND bae.update_status = #{empApplyCo.updateStatus}
     </select>
 
 </mapper>

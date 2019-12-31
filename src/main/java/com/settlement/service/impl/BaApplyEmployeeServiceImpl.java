@@ -33,6 +33,7 @@ public class BaApplyEmployeeServiceImpl extends ServiceImpl<BaApplyEmployeeMappe
     public PageData getApplyEmpPageList(EmpApplyCo empApplyCo) {
         empApplyCo.setLevelModeF(Const.LEVEL_MODE_F);
         empApplyCo.setLevelModeH(Const.LEVEL_MODE_H);
+        empApplyCo.setUpdateStatus(Const.EMP_APPLY_UPDATE_STATUS_A);
         Page<EmployeeVo> page = new Page<EmployeeVo>(empApplyCo.getPage(), empApplyCo.getLimit());
         page.setRecords(this.baseMapper.getApplyEmpList(empApplyCo, page));
         return new PageData(page.getTotal(),page.getRecords());

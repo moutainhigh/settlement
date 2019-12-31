@@ -69,12 +69,27 @@ public class BaEmpApplyCheckController {
     /**
      * @description 审核提交
      *
+     * @auth admin
+     * @date 2019-12-27
      * @param empApplyCheckVo
      * @return
      */
     @PutMapping("/ba-emp-apply-check")
     public Result checkEmpApply(EmpApplyCheckVo empApplyCheckVo) {
         return this.baEmpApplyCheckService.updateCheckResult(empApplyCheckVo);
+    }
+
+    /**
+     * @description 验证口令
+     *
+     * @auth admin
+     * @date 2019-12-27
+     * @param empApplyCheckVo
+     * @return
+     */
+    @PostMapping("/ba-emp-apply-check/verify")
+    public Result verifyUpdatePassword(EmpApplyCheckVo empApplyCheckVo) {
+        return this.baEmpApplyCheckService.verifyUpdatePassword(empApplyCheckVo);
     }
 
 }

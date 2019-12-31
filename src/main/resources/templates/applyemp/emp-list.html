@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html class="x-admin-sm"  xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <th:bolck th:include="common/header :: header('员工详情')" />
+    </head>
+    <body>
+        <div class="x-nav">
+          <span class="layui-breadcrumb">
+            <a href="/home">首页</a>
+            <a href="">项目组管理</a>
+            <a>申请修改员工记录</a>
+            <a><cite>员工信息</cite></a>
+          </span>
+        </div>
+        <div class="layui-fluid">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-md12">
+                    <div class="layui-card">
+                        <div class="layui-card-body">
+                            <form class="layui-form layui-col-space5" onsubmit="return false">
+                                <div class="layui-inline layui-show-xs-block">
+                                    <input type="text" id="keyword" name="keyword"  placeholder="请输入员工姓名" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-inline layui-show-xs-block">
+                                    <button class="layui-btn" id="search" data-type="reload" lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i>查询</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="layui-card-body layui-table-body layui-table-main" >
+                            <table class="layui-table layui-form" id="dataTable" lay-filter="dataTable">
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </body>
+    <script th:src="@{/js/common/common.js}" type="text/javascript" charset="utf-8"></script>
+    <script type="text/html" id="toolBarHead">
+        <div class="layui-btn-container">
+            <button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="submit">批量提交</button>
+        </div>
+    </script>
+    <script type="text/html" id="toolBar">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="leavePg">离场</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="leaveJob">离职</a>
+    </script>
+    <script type="text/javascript"  th:inline="javascript">
+        var applyId = [[ ${applyId} ]];
+      layui.use(['laydate','table','form','element'], function(){
+        var laydate = layui.laydate;
+        var  form = layui.form;
+        var table = layui.table;
+        table.render({
+           elem: '#dataTable',
+           url: '/ba-apply-employee/pagedata',
+           page: true,
+           title: '详情表',
+           height: 'full-210',
+           toolbar: '#toolBarHead',
+           defaultToolbar: ['filter', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+              title: '提示'
+              ,layEvent: 'LAYTABLE_TIPS'
+              ,icon: 'layui-icon-tips'
+          }],
+          where: {
+            applyId : [[ ${applyId} ]]
+          },
+           cols: [
+                    [
+                       {field:'id',type:'checkbox',fixed:'left'},
+                       {field:'empName',title:'姓名',align:'center',fixed:'left'},
+                       {field:'code',title:'员工编号',align:'center'},
+                       {field:'entranceTime',title:'入场时间',align:'center'},
+                       {field:'responsiblePerson',title:'客户负责人',align:'center'},
+                       {field:'posLevelInput',title:'级别',align:'center'},
+                        // {field:'applyUpdateStatusContent',title:'状态',align:'center'},
+                        {field:'rateEmailFilename',title:'客户确认rate邮件',align:'center',templet:operImg,hide:true},
+                        {field:'sendCopyEmail',title:'抄送邮件地址',align:'center',hide:true},
+                        {field:'priceMonth',title:'单价(月)',align:'center',hide:true},
+                        {field:'unitContent',title:'单位',align:'center',hide:true},
+                        {field:'priceDay',title:'单价(日)',align:'center',hide:true},
+                        {field:'claimExpensePerson',title:'报销接口人',align:'center',hide:true},
+                        {field:'workAttendencePerson',title:'考勤负责人',align:'center',hide:true},
+                       {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:200}
+                    ]
+                ]
+        });
+        var $ = layui.$, active = {
+              reload: function(){
+                  // var keyword = $('#keyword');
+                  //执行重载
+                  table.reload('dataTable', {
+                      // method : 'post',
+                      page: {
+                          curr: 1 //重新从第 1 页开始
+                      }
+                      ,where: {
+                              applyId: [[ ${applyId} ]]
+                      }
+                  }, 'data');
+              }
+          };
+          $('.layui-btn').on('click', function(){
+              var type = $(this).data('type');
+              active[type] ? active[type].call(this) : '';
+          });
+
+          // 监听工具栏
+          table.on('tool(dataTable)', function(obj){
+              var data = obj.data;
+              var empId = data.id;
+              if(obj.event === 'edit'){
+                  xadmin.open('编辑','/ba-apply-employee/edit/'+ applyId + '/' + empId,800,420);
+              } else if(obj.event === 'leavePg'){
+                  xadmin.open('离场','/ba-emp-leave-pg/'+ applyId + '/' + empId,800,420);
+              } else if(obj.event === 'leaveJob'){
+                  xadmin.open('离职','/ba-emp-leave-job/' + applyId + '/' + empId,800,420);
+              }
+          });
+      });
+
+    </script>
+</html>

@@ -74,6 +74,8 @@ public class BaEmpApplyCheck extends Model<BaEmpApplyCheck> {
      */
     private String checkRemark;
 
+    private Date createTime;
+
 
     @Override
     protected Serializable pkVal() {
