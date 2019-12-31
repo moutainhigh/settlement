@@ -16,6 +16,8 @@ import java.util.List;
  */
 @Repository
 public interface BaApplyAttendanceMapper extends BaseMapper<BaApplyAttendance> {
-
+    /**批量插入**/
     Integer insertBatch(List<BaApplyAttendance> list);
+    /**批量更新**/
+    Integer updateStatusBatch(List<BaApplyAttendance> list);
 }

@@ -8,6 +8,7 @@ import com.settlement.service.BaWorkAttendanceService;
 import com.settlement.utils.Result;
 import com.settlement.vo.BaWorkAttendanceVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -65,6 +66,16 @@ public class BaWorkAttendanceController {
     @PostMapping("/generate")
     public Result generateWorkAttendance(String ids, Integer pgId) {
         return  baWorkAttendanceService.generateWorkAttendance(ids,pgId);
+    }
+
+    /**
+     * 检查数据是否有修改中的数据,不能提交
+     * @param ids
+     * @return
+     */
+    @GetMapping("/check/status/{ids}")
+    public Result checkStatus(@PathVariable Integer[] ids){
+        return baWorkAttendanceService.checkStatus(ids);
     }
     /**
      * 添加

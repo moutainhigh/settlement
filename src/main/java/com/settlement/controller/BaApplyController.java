@@ -42,17 +42,35 @@ public class BaApplyController {
     }
 
     /**
+     * 修改通过的考勤信息列表
+     * @param applyCo
+     * @return
+     */
+    @GetMapping("/apply/workattendancelist/pagedata")
+    public PageData listApplyWorkAttendancelistPageData(ApplyCo applyCo){
+        PageData pageData = baApplyService.listApplyWorkAttendancelistPageData(applyCo);
+        return  pageData;
+    }
+    /**
      * 加载考勤审核列表
      * @param applyCo
      * @return
      */
     @GetMapping("/check/workattend/pagedata")
     public PageData listCheckPageData(ApplyCo applyCo){
-        PageData pageData = baApplyService.listPageData(applyCo);
+        PageData pageData = baApplyService.listCheckWorkAttendancePageData(applyCo);
         return  pageData;
     }
 
-
+    /**
+     * 提交修改的考勤记录
+     * @param ids
+     * @return
+     */
+    @PutMapping("/work-attendance/commit/{ids}")
+    public Result commitWorkAttendance(@PathVariable Integer[] ids) {
+        return baApplyService.commitWorkAttendance(ids);
+    }
     /**
      * 审核考勤修改
      * @param baApplyVo
@@ -60,7 +78,6 @@ public class BaApplyController {
      */
     @PostMapping("/check/workattend")
     public Result checkWorkattend(BaApplyVo baApplyVo){
-
         return baApplyService.checkWorkattend(baApplyVo);
     }
     /**
@@ -68,7 +85,7 @@ public class BaApplyController {
      * @param baApplyVo
      * @return
      */
-    @PutMapping("/update")
+    @PutMapping("/update/check")
     public Result update(BaApplyVo baApplyVo){
         Result r = baApplyService.update(baApplyVo);
         return r;

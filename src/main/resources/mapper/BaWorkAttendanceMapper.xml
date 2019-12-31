@@ -39,11 +39,13 @@
     <!-- 根据项目组id获得当前项目组的员工考勤信息-->
     <select id="getWorkAttendanceVoByProjectId" parameterType="com.settlement.co.WorkAttendanceCo" resultType="com.settlement.vo.BaWorkAttendanceVo">
         select
-            e.emp_name as employeeName,
             w.id ,
+            e.emp_name as employeeName,
             w.work_days ,
             w.attendance_days ,
             w.absenteeism_days ,
+            w.sub_status,
+            d.dic_content as subStatusContent,
             w.float_performance,
             w.bonus,
             w.check_work_days,
@@ -66,12 +68,12 @@
             w.other_add_cost,
             w.other_sub_cost,
             w.remark ,
-            w.sub_status,
             w.create_time,
             w.pg_id,
             w.employee_id
         from ba_work_attendance w
         inner join ba_pg_emp pe on pe.emp_id=w.employee_id and pe.pg_id=w.pg_id
+        inner join sys_data_dic d on d.dic_code=w.sub_status
         inner join ba_employee e on pe.emp_id=e.id
         where 1=1
         and pe.pg_id=#{workAttendanceCo.projectId}
@@ -130,4 +132,14 @@
         </foreach>
 
     </insert>
+
+    <!-- 批量修改考勤状态 -->
+    <update id="updateSubStatusBatch" parameterType="java.util.List">
+        <foreach collection="list" item="baWorkAttendance" index="index" separator=";">
+            update ba_work_attendance
+            set
+            sub_status = #{baWorkAttendance.subStatus}
+            where id = #{baWorkAttendance.id}
+        </foreach>
+    </update>
 </mapper>

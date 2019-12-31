@@ -6,6 +6,7 @@ import com.settlement.entity.BaWorkAttendance;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.settlement.vo.BaWorkAttendanceVo;
 import org.apache.ibatis.annotations.Select;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import java.util.Map;
  * @author kun
  * @since 2019-12-03
  */
+@Repository
 public interface BaWorkAttendanceMapper extends BaseMapper<BaWorkAttendance> {
     /**根据项目组id获得当前项目组的员工考勤信息**/
     List<BaWorkAttendanceVo> getWorkAttendanceVoByProjectId(WorkAttendanceCo workAttendanceCo, Page<BaWorkAttendanceVo> page);
@@ -29,4 +31,6 @@ public interface BaWorkAttendanceMapper extends BaseMapper<BaWorkAttendance> {
     List<BaWorkAttendanceVo> getWorkAttendanceByApplyId(WorkAttendanceCo workAttendanceCo, Page<BaWorkAttendanceVo> page);
     /**生成考勤记录**/
     Integer insertBatch(List<BaWorkAttendance> baWorkAttendances);
+    /**批量修改考勤状态**/
+    Integer updateSubStatusBatch(List<BaWorkAttendance> baWorkAttendances);
 }

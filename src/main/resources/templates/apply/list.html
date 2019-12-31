@@ -56,6 +56,15 @@
     <script type="text/html" id="idselect">
         <input type="checkbox" name="id" value="{{d.id}}"  lay-filter="idselect">
     </script>
+    <script id="checkStatusTpl" type="text/html">
+        {{#  if(d.checkStatusContent === '审核通过'){ }}
+        <span style="color: #71C671;font-weight: bold;">{{ d.checkStatusContent }}</span>
+        {{#  } else if(d.checkStatusContent === '审核未通过') { }}
+        <span style="color: #EEAD0E;font-weight: bold;">{{ d.checkStatusContent }}</span>
+        {{#  } else { }}
+        {{ d.checkStatusContent }}
+        {{#  } }}
+    </script>
     <script type="text/javascript"  th:inline="none">
       layui.use(['laydate','table','form','element'], function(){
         var laydate = layui.laydate;
@@ -78,10 +87,10 @@
            // id: 'userData',
            cols: [[
                {field:'id',type:'checkbox',fixed:'left'},
-               {field:'applyTypeContent',title:'修改类型',align:'center',fixed:'left'},
+               {field:'applyTypeContent',title:'修改类型',align:'center'},
                {field:'applyRemark',title:'申请备注',align:'center'},
                {field:'checkStatus',title:'',align:'center',hide:true},
-               {field:'checkStatusContent',title:'审核状态',align:'center'},
+               {field:'checkStatusContent',title:'审核状态',align:'center',templet: '#checkStatusTpl'},
                {field:'checkUserContent',title:'审核人',align:'center'},
                {field:'applyTime',title:'申请时间',align:'center'},
                {field:'checkTime',title:'审核时间',align:'center'},

@@ -121,7 +121,15 @@
 <script type="text/html" id="idselect">
     <input type="checkbox" name="id" value="{{d.id}}"  lay-filter="idselect">
 </script>
-
+<script id="subStatusTpl" type="text/html">
+    {{#  if(d.subStatusContent === '修改中'){ }}
+    <span style="color: #71C671;font-weight: bold;">{{ d.subStatusContent }}</span>
+    {{#  } else if(d.subStatusContent === '已提交') { }}
+    <span style="color: #EEAD0E;font-weight: bold;">{{ d.subStatusContent }}</span>
+    {{#  } else { }}
+    {{ d.subStatusContent }}
+    {{#  } }}
+</script>
 <script type="text/javascript"  th:inline="javascript">
     layui.use(['table','form','upload','jquery'], function(){
         var form = layui.form;
@@ -151,38 +159,41 @@
                 ,monthValue:$('#months').children('option:selected').val()
             },
              //id: 'userData',
-            cols: [[
+            cols: [
+                [
                 {field:'id',type:'checkbox',fixed:'left'},
-                {field:'subStatus',title:'subStatus',hide:true},
                 {field:'employeeId',title:'员工编号',align:'center'},
-                //{field:'employeeName',title:'员工姓名',align:'center'},
+                {field:'employeeName',title:'员工姓名',align:'center'},
                 {field:'workDays',title:'标准工作天数',align:'center'},
                 {field:'attendanceDays',title:'出勤天数',align:'center'},
                 {field:'absenteeismDays',title:'缺勤天数',align:'center'},
-                {field:'floatPerformance',title:'浮动绩效',align:'center'},
-                {field:'bonus',title:'奖金',align:'center'},
+                {field:'floatPerformance',title:'浮动绩效',hide:true},
+                {field:'bonus',title:'奖金',hide:true},
                 {field:'checkWorkDays',title:'核算工作天数',align:'center'},
-                {field:'workDayOvertimeH',title:'工作日加班（小时）',align:'center'},
-                {field:'weekendOvertimeH',title:'周末加班（小时）',align:'center'},
-                {field:'festivalOvertimeH',title:'法定节假日加班（小时）',align:'center'},
-                {field:'工作日加班（天）',title:'工作日加班（天）',align:'center'},
-                {field:'weekendOvertimeD',title:'周末加班（天）',align:'center'},
-                {field:'festivalOvertimeD',title:'法定节假日加班（天）',align:'center'},
-                {field:'remainderOvertimeLmH',title:'上月剩余加班（小时）',align:'center'},
-                {field:'monthOvertimeH',title:'本月加班（小时）',align:'center'},
-                {field:'takeHoursOff',title:'调休（小时）',align:'center'},
-                {field:'details',title:'调休详情',align:'center'},
-                {field:'remainderOvertimeMH',title:'本月剩余加班（小时）',align:'center'},
-                {field:'taxiFare',title:'打车费',align:'center'},
-                {field:'travelExpenses',title:'差旅费',align:'center'},
-                {field:'meals',title:'餐费',align:'center'},
-                {field:'telephoneBill',title:'话费',align:'center'},
-                {field:'overtimeAllowance',title:'加班补助',align:'center'},
-                {field:'otherAddCost',title:'其他加项费用',align:'center'},
-                {field:'otherSubCost',title:'其他减项费用',align:'center'},
+                {field:'workDayOvertimeH',title:'工作日加班（小时）',hide:true},
+                {field:'weekendOvertimeH',title:'周末加班（小时）',hide:true},
+                {field:'festivalOvertimeH',title:'法定节假日加班（小时）',hide:true},
+                {field:'工作日加班（天）',title:'工作日加班（天）',hide:true},
+                {field:'weekendOvertimeD',title:'周末加班（天）',hide:true},
+                {field:'festivalOvertimeD',title:'法定节假日加班（天）',hide:true},
+                {field:'remainderOvertimeLmH',title:'上月剩余加班（小时）',hide:true},
+                {field:'monthOvertimeH',title:'本月加班（小时）',hide:true},
+                {field:'takeHoursOff',title:'调休（小时）',hide:true},
+                {field:'details',title:'调休详情',hide:true},
+                {field:'remainderOvertimeMH',title:'本月剩余加班（小时）',hide:true},
+                {field:'taxiFare',title:'打车费',hide:true},
+                {field:'travelExpenses',title:'差旅费',hide:true},
+                {field:'meals',title:'餐费',hide:true},
+                {field:'telephoneBill',title:'话费',hide:true},
+                {field:'overtimeAllowance',title:'加班补助',hide:true},
+                {field:'otherAddCost',title:'其他加项费用',hide:true},
+                {field:'otherSubCost',title:'其他减项费用',hide:true},
+                {field:'subStatusContent',title:'状态',align:'center',templet: '#subStatusTpl'},
+                {field:'subStatus',title:'subStatus',hide:true},
                 {field:'remark',title:'备注',align:'center'}
                 ,{fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:60}
-            ]]
+            ]
+            ]
            ,done:function(res,curr,count) {
                //如果是异步请求数据方式，res即为你接口返回的信息。
                //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
@@ -316,6 +327,12 @@
             // layer.msg('您已经超过本月修改申请的次数',{icon:5});
             // return;
         }
+        //修改中的数据不可重复申请修改
+        if(getSubStatus(data,'A').length >0) {
+            var noSubmitData = getSubStatus(data, 'A');
+            layer.msg("申请修改中的数据【" + noSubmitData + "】不可重复修改", {icon: 6});
+            return;
+        }
         //结算时间之前  //未提交的提示不需要申请修改
         if(judgeStopTime(projectId)) {
             if( getSubStatus(data,'N').length == data.length){
@@ -329,7 +346,7 @@
                 //提交的数据
                 layer.msg("在结算时间之前,已经提交的数据可以申请修改",{icon:6});
                 //判断当月修改的次数
-                xadmin.open(title,url + "/"+ ids2,w,h);
+                xadmin.open(title+1,url + "/"+ ids2,w,h);
                 return;
             }
         } else{
@@ -339,12 +356,13 @@
         }
         // 修改中的数据不能提交
         if(checkApplyModify(ids2)) {
-            layer.msg("申请修改中的数据不能提交",{icon:5});
+            layer.msg("申请修改中的数据不要重复提交",{icon:5});
             return;
         }
         //考勤结算周期内
          if(!judgeStopTime(projectId) && judgeCompleteTime(projectId)){
-            xadmin.open(title,url + "/"+ ids2,w,h);
+             //未提交的数据不可以修改
+            xadmin.open(title+2,url + "/"+ ids2,w,h);
             return;
          } else {
              layer.msg('超过考勤结算完成时间点,无法修改考勤记录', {icon: 5});
@@ -468,26 +486,21 @@
     // 1 不存在修改数据
     function checkApplyModify(ids) {
         var flag=false;
+        var status='A';
         $.ajax({
             type:'get'
-            ,url:'/ba-apply-attendance/check/apply/modify/'+ids
+            ,url:'/ba-work-attendance/check/status/'+ids
             ,async:false //同步处理
+            ,traditional:true
             ,success:function(r){
                 if(r.code=='1') {
                     flag = false;
                 }
                 else {
-                    var data=r.data;
-                    var attendanceIds=[];
-                    for(var i=0;i<data.length;i++) {
-                        attendanceIds[i]= data[i].attendanceId;
-                    }
-                    alert(attendanceIds);
                     flag = true;
                 }
             }
         });
-        alert('checkApplyModify:'+flag);
         return flag;
 
     }

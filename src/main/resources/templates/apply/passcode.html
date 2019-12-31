@@ -49,7 +49,7 @@
                         $.post('/ba-apply/verify/passcode',data.field,function (r) {
                             if(r.code=='verify_200'){
                                 xadmin.close();
-                                window.parent.xadmin.open('修改考勤信息',"/ba-work-attendance/apply/workattendancelist/"+r.data);
+                                window.parent.xadmin.open('修改考勤信息',"/ba-apply/workattendancelist/"+r.data);
                             } else {
                                 layer.msg('口令验证失败' ,{icon:5});
                             }

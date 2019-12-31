@@ -36,5 +36,10 @@ public interface BaApplyService extends IService<BaApply> {
     BaApplyVo getApplyVoById(Integer id);
     /**审核考勤修改**/
     Result checkWorkattend(BaApplyVo baApplyVo);
-
+    /**加载考勤审核列表**/
+    PageData listCheckWorkAttendancePageData(ApplyCo applyCo);
+    /**修改通过的考勤信息列表**/
+    PageData listApplyWorkAttendancelistPageData(ApplyCo applyCo);
+    /**提交修改的考勤记录**/
+    Result commitWorkAttendance(Integer[] ids);
 }

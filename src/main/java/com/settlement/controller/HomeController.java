@@ -835,6 +835,18 @@ public class HomeController {
         return "apply/passcode";
     }
 
+    /**
+     * 加载考勤申请记录
+     * @param id
+     * @param model
+     * @return
+     */
+    @GetMapping("/ba-apply/workattendancelist/{id}")
+    public String toApplyWorkattendancelist(@PathVariable Integer id,Model model){
+        model.addAttribute("applyId",id);
+        return "apply/attendlist";
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**

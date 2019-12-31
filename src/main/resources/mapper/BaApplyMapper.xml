@@ -45,7 +45,29 @@
         left join sys_user u1 on a.apply_user=u1.id
         order  by a.check_time desc,a.apply_time desc
     </select>
-
+<!--加载考勤审核列表-->
+    <select id="listCheckWorkAttendancePageData" parameterType="com.settlement.co.ApplyCo" resultType="com.settlement.vo.BaApplyVo">
+        select
+            a.id as id,
+            d.dic_content as applyTypeContent,
+            a.apply_user as applyUser,
+            u1.real_name as applyUserContent,
+            g.pg_name as projectName,
+            a.apply_remark as applyRemark,
+            a.check_status as checkStatus,
+            d1.dic_content as checkStatusContent,
+            u.real_name as checkUserContent,
+            a.apply_time as applyTime,
+            a.check_time as checkTime
+        from
+        (select * from ba_apply ba where 1=1 ) a
+        left join ba_project_group g on g.id=a.pg_id
+        left join sys_data_dic d on a.apply_type = d.dic_code
+        left join sys_data_dic d1 on a.check_status = d1.dic_code
+        left join sys_user u on a.check_user=u.id
+        left join sys_user u1 on a.apply_user=u1.id
+        order by a.check_time desc,a.apply_time desc
+    </select>
 <!--    根据id 获得BaApplyVo-->
     <select id="getApplyVoById" parameterType="java.util.Map" resultType="com.settlement.vo.BaApplyVo">
         select a.id as id,
@@ -66,5 +88,49 @@
         where a.id=#{id}
         order  by a.check_time desc,a.apply_time desc
 
+    </select>
+
+    <select id="listApplyWorkAttendancelistPageData" parameterType="com.settlement.co.ApplyCo" resultType="com.settlement.vo.BaWorkAttendanceVo">
+        SELECT
+            w.id ,
+            e.emp_name as employeeName,
+            w.work_days ,
+            w.attendance_days ,
+            w.absenteeism_days ,
+            w.sub_status,
+            d.dic_content as subStatusContent,
+            w.float_performance,
+            w.bonus,
+            w.check_work_days,
+            w.work_day_overtime_h,
+            w.weekend_overtime_h,
+            w.festival_overtime_h,
+            w.work_day_overtime_d,
+            w.weekend_overtime_d,
+            w.festival_overtime_d,
+            w.remainder_overtime_lm_h,
+            w.month_overtime_h,
+            w.take_hours_off,
+            w.details ,
+            w.remainder_overtime_m_h,
+            w.taxi_fare,
+            w.travel_expenses,
+            w.meals,
+            w.telephone_bill,
+            w.overtime_allowance,
+            w.other_add_cost,
+            w.other_sub_cost,
+            w.remark ,
+            w.create_time,
+            w.pg_id,
+            w.employee_id
+        from ba_apply a
+        left join ba_apply_attendance aa on aa.apply_id=a.id
+        left join ba_work_attendance w on aa.attendance_id=w.id
+        inner join ba_pg_emp pe on pe.emp_id=w.employee_id and pe.pg_id=w.pg_id
+        inner join sys_data_dic d on d.dic_code=w.sub_status
+        inner join ba_employee e on pe.emp_id=e.id
+        where a.id=#{applyCo.id}
+        and a.apply_user=#{applyCo.applyUser}
     </select>
 </mapper>

@@ -90,7 +90,7 @@ function start(url) {
 
 
 /** 审核提交 */
-function check(data, layer, url) {
+function check(data, layer, url,dataTable) {
     $.ajax({
         url: url,
         type:"PUT",
@@ -108,7 +108,7 @@ function check(data, layer, url) {
                 function() {
                     // 刷新数据，保留在当前页
                     var index = parent.layer.getFrameIndex(window.name);
-                    parent.layui.table.reload('emp-dataTable');//重载父页表格，参数为表格ID
+                    parent.layui.table.reload(dataTable);//重载父页表格，参数为表格ID
                     parent.layer.close(index);
                 });
             $(".layui-btn").removeAttr('disabled');

@@ -19,4 +19,14 @@
         </foreach>
     </insert>
 
+    <!-- 批量修改考勤状态 -->
+    <update id="updateStatusBatch" parameterType="java.util.List">
+        <foreach collection="list" item="baApplyAttendance" index="index" separator=";">
+            update ba_apply_attendance
+            set
+            update_status = #{baApplyAttendance.updateStatus}
+            where attendance_id = #{baApplyAttendance.attendanceId}
+        </foreach>
+    </update>
+
 </mapper>

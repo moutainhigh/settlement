@@ -74,6 +74,8 @@ public class Const {
     public final static String TIME_PRAMA_COMPELETE="TIME_COMPLETE";
     /** 考勤提交状态父：已提交  未提交 */
     public final static String SUB_STATUS= "SUB_STATUS";
+    /** 考勤提交状态S：申请修改中 */
+    public static final String SUB_STATUS_A = "A";
     /** 考勤提交状态S：已提交 */
     public final static String SUB_STATUS_S = "S";
     /** 考勤提交状态N：未提交*/
@@ -110,4 +112,5 @@ public class Const {
     public final static String EMP_APPLY_UPDATE_STATUS_A = "APPLYING";
     /** 员工申请修改状态F：修改完成 */
     public final static String EMP_APPLY_UPDATE_STATUS_F = "UPDATE_FINISH";
+
 }

@@ -5,6 +5,7 @@ import com.settlement.co.ApplyCo;
 import com.settlement.entity.BaApply;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.settlement.vo.BaApplyVo;
+import com.settlement.vo.BaWorkAttendanceVo;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -34,4 +35,8 @@ public interface BaApplyMapper extends BaseMapper<BaApply> {
 
     /**根据id 获得BaApplyVo*/
     BaApplyVo getApplyVoById(Map<String,Object> map);
+    /**加载考勤审核列表**/
+    List<BaApplyVo> listCheckWorkAttendancePageData(ApplyCo applyCo, Page<BaApplyVo> page);
+    /**listApplyWorkAttendancelistPageData**/
+    List<BaWorkAttendanceVo> listApplyWorkAttendancelistPageData(ApplyCo applyCo, Page<BaWorkAttendanceVo> page);
 }

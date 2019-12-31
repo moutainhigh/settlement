@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.settlement.bo.PageData;
 import com.settlement.co.TimeParamCo;
 import com.settlement.co.WorkAttendanceCo;
+import com.settlement.entity.BaApplyAttendance;
 import com.settlement.entity.BaTimeParam;
 import com.settlement.entity.BaWorkAttendance;
 import com.settlement.mapper.BaWorkAttendanceMapper;
@@ -96,6 +97,26 @@ public class BaWorkAttendanceServiceImpl extends ServiceImpl<BaWorkAttendanceMap
     }
 
     /**
+     * 检查数据是否有修改中的数据,不能提交
+     * @param ids
+     * @return
+     */
+    @Override
+    public Result checkStatus(Integer[] ids) {
+        Result r = new Result(HttpResultEnum.CODE_1.getCode(),HttpResultEnum.CODE_1.getMessage());
+        QueryWrapper<BaWorkAttendance> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("sub_status",Const.SUB_STATUS_A);
+        queryWrapper.in("id",ids);
+        List<BaWorkAttendance> baWorkAttendances = this.baseMapper.selectList(queryWrapper);
+        if(baWorkAttendances!=null && baWorkAttendances.size()>0) {
+            r.setCode(HttpResultEnum.CODE_0.getCode());
+            r.setMsg(HttpResultEnum.CODE_0.getMessage());
+            r.setData(baWorkAttendances);
+        }
+        return r;
+    }
+
+    /**
      *  添加
      * @param baWorkAttendanceVo
      * @return
@@ -173,12 +194,14 @@ public class BaWorkAttendanceServiceImpl extends ServiceImpl<BaWorkAttendanceMap
     @Override
     public Result commitWorkAttendance(String[] ids) {
         Result r = new Result(HttpResultEnum.COMMIT_CODE_500.getCode(),HttpResultEnum.COMMIT_CODE_500.getMessage());
-        Integer ret = 0;
+        List<BaWorkAttendance> baWorkAttendances = new ArrayList<>();
         for(String id:ids) {
             BaWorkAttendance baWorkAttendance = this.baseMapper.selectById(id);
             baWorkAttendance.setSubStatus(Const.EMP_SUBMIT_STATUS_S);
-            ret = this.baseMapper.updateById(baWorkAttendance);
+            baWorkAttendances.add(baWorkAttendance);
+            //ret = this.baseMapper.updateById(baWorkAttendance);
         }
+        Integer ret = this.baseMapper.updateSubStatusBatch(baWorkAttendances);
         if(ret != null && ret > 0 ) {
             r.setCode(HttpResultEnum.COMMIT_CODE_200.getCode());
             r.setMsg(HttpResultEnum.COMMIT_CODE_200.getMessage());
@@ -201,6 +224,4 @@ public class BaWorkAttendanceServiceImpl extends ServiceImpl<BaWorkAttendanceMap
         page.setRecords(baWorkAttendanceVos);
         return new PageData(page.getTotal(),page.getRecords());
     }
-
-
 }

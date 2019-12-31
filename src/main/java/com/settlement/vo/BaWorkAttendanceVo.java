@@ -7,4 +7,5 @@ import lombok.Data;
 public class BaWorkAttendanceVo extends BaWorkAttendance {
     private String employeeName;
     private String updateStatus;
+    private String subStatusContent;
 }
