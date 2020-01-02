@@ -54,7 +54,7 @@
     <script type="text/javascript" th:inline="javascript">
         var checkStatusPass = [[ ${PG_CHECKSTATUS_CHECK_PASS} ]];
         var checkStatusNoPass = [[ ${PG_CHECKSTATUS_CHECK_NOPASS} ]];
-
+        var mode = '';
         layui.use(['element','table'],function() {
             var $ = layui.jquery, table = layui.table, element = layui.element;
             // 初始化加载
@@ -76,6 +76,7 @@
             });
             // 员工申请修改监听审核、详细
             table.on('tool(emp-dataTable)', function(obj){
+                mode = 'e';
                 var data = obj.data;
                 var id = data.id;
                 var checkStatus = data.checkStatus;
@@ -85,13 +86,14 @@
                     if (checkStatus == checkStatusPass || checkStatus == checkStatusNoPass) {
                         layer.msg("记录处于【审核通过】或者【审核未通过】状态，不能审核",{icon:5});
                     } else {
-                        xadmin.open('申请修改审核','/ba-emp-apply-check/check/'+ id,800,400);
+                        xadmin.open('申请修改审核','/ba-emp-apply-check/check/'+ id + '/' + mode,800,400);
                     }
                 }
             });
 
             // 考勤监听审核、详细
             table.on('tool(work-dataTable)', function(obj){
+                mode = 'w';
                 var data = obj.data;
                 var id = data.id;
                 var checkStatus = data.checkStatus;
@@ -102,7 +104,7 @@
                     if (checkStatus == checkStatusPass || checkStatus == checkStatusNoPass) {
                         layer.msg("记录处于【审核通过】或者【审核未通过】状态，不能审核",{icon:5});
                     } else {
-                        xadmin.open('申请修改审核','/ba-emp-apply-check/check/'+ id,800,400);
+                        xadmin.open('申请修改审核','/ba-emp-apply-check/check/'+ id + '/' + mode,800,400);
                     }
                 }
             });

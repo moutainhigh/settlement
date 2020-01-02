@@ -112,5 +112,11 @@ public class Const {
     public final static String EMP_APPLY_UPDATE_STATUS_A = "APPLYING";
     /** 员工申请修改状态F：修改完成 */
     public final static String EMP_APPLY_UPDATE_STATUS_F = "UPDATE_FINISH";
+    /** 完成状态：完成 */
+    public final static String END_STATUS_END_CODE = "END";
+    /** 完成状态：未完成 */
+    public final static String END_STATUS_NO_END_CODE = "NO_END";
+    /** 完成状态CODE */
+    public final static String END_STATUS_CODE = "END_STATSU";
 
 }

@@ -6,6 +6,7 @@ import com.settlement.entity.BaEmployee;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.settlement.vo.EmployeeVo;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -30,4 +31,6 @@ public interface BaEmployeeMapper extends BaseMapper<BaEmployee> {
     List<EmployeeVo> getGenerateWorkattendPageData(EmployeeCo employeeCo, Page<EmployeeVo> page);
     /** 提交员工记录 */
     // List<EmployeeVo> getSubmitEmployeeList(@Param(value="employeeCo") EmployeeCo employeeCo, Page<EmployeeVo> page);
+    @Update("update ba_employee set apply_update_status = null where id = #{id}")
+    int updateApplyUpdateStatusNull(int id);
 }

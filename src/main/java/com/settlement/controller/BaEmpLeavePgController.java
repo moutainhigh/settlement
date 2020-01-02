@@ -36,10 +36,10 @@ public class BaEmpLeavePgController {
      * @param empLeavePgVo
      * @return
      */
-    @PostMapping("/save")
+   /* @PostMapping("/save")
     public Result save(EmpLeavePgVo empLeavePgVo) {
         return baEmpLeavePgService.saveEmpLeavePg(empLeavePgVo);
-    }
+    }*/
 
     /**
      * @description 员工离场：提交
@@ -49,9 +49,9 @@ public class BaEmpLeavePgController {
      * @param empLeavePgVo
      * @return
      */
-    @PutMapping
+    @PostMapping
     public Result submit(EmpLeavePgVo empLeavePgVo) {
-        return  this.baEmpLeavePgService.submitEmpLeavePg(empLeavePgVo);
+        return  this.baEmpLeavePgService.saveEmpLeavePg(empLeavePgVo);
     }
 
 }

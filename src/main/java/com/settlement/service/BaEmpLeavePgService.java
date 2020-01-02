@@ -17,5 +17,7 @@ public interface BaEmpLeavePgService extends IService<BaEmpLeavePg> {
     /** 员工离场：保存 */
     Result saveEmpLeavePg(EmpLeavePgVo empLeavePgVo);
     /** 员工离场： 提交 */
-    Result submitEmpLeavePg(EmpLeavePgVo empLeavePgVo);
+   // Result submitEmpLeavePg(EmpLeavePgVo empLeavePgVo);
+    /** 根据申请员工ID ，查询员工离场记录 */
+  /*  BaEmpLeavePg getEmpLeavePgByApplyEmpId(Integer applyEmpId);*/
 }

@@ -14,7 +14,11 @@ import com.settlement.vo.EmpLeaveJobVo;
  * @since 2019-12-30
  */
 public interface BaEmpLeaveJobService extends IService<BaEmpLeaveJob> {
-    /** 员工离职：保存 */
+    /** 员工离职：提交 */
     Result saveEmpLeaveJob(EmpLeaveJobVo empLeaveJobVo);
+    /** 根据申请员工ID，查询员工离职信息 */
+  //  BaEmpLeaveJob getEmpLeaveJobByApplyEmpId(Integer applyEmpId);
+
+
 
 }
