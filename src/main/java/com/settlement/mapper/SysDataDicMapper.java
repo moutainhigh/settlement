@@ -25,7 +25,7 @@ import java.util.Map;
 @Repository
 public interface SysDataDicMapper extends BaseMapper<SysDataDic> {
 
-   public List<SysDataDicVo> getDataDicVoByPid(@Param(value="dataDicCo") DataDicCo dataDicCo, Page<SysDataDicVo> page);
+   public List<SysDataDicVo> getDataDicVoByPid(@Param(value="dataDicCo") DataDicCo dataDicCo);
 
    /**
     * @description 根据父CODE查询下拉框
