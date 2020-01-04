@@ -5,12 +5,11 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.settlement.entity.BaEmpLeavePg">
         <id column="id" property="id" />
-        <result column="pg_emp_id" property="pgEmpId" />
+        <result column="apply_emp_id" property="applyEmpId" />
         <result column="empId" property="empId" />
         <result column="reason" property="reason" />
         <result column="leave_pg_time" property="leavePgTime" />
         <result column="create_time" property="createTime" />
-        <result column="create_user_id" property="createUserId" />
     </resultMap>
 
 </mapper>

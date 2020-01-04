@@ -5,9 +5,10 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.settlement.entity.BaEmpLeaveJob">
         <id column="id" property="id" />
+        <result column="apply_emp_id" property="applyEmpId" />
         <result column="emp_id" property="empId" />
-        <result column="leave_time" property="leaveTime" />
-        <result column="leave_reason" property="leaveReason" />
+        <result column="leave_job_time" property="leaveJobTime" />
+        <result column="reason" property="reason" />
         <result column="create_time" property="createTime" />
     </resultMap>
 

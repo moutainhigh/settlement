@@ -75,6 +75,10 @@ public class BaEmpApplyCheck extends Model<BaEmpApplyCheck> {
     private String checkRemark;
 
     private Date createTime;
+    /**
+     * 完成状态
+     */
+    private String endStatus;
 
 
     @Override

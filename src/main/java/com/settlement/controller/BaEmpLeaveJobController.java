@@ -27,14 +27,14 @@ public class BaEmpLeaveJobController {
     private BaEmpLeaveJobService baEmpLeaveJobService;
 
     /**
-     * 员工离职：保存
+     * 员工离职：提交
      *
      * @auth admin
      * @date 2019-12-30
      * @param empLeaveJobVo
      * @return
      */
-    @PostMapping("save")
+    @PostMapping
     public Result save(EmpLeaveJobVo empLeaveJobVo) {
         return this.baEmpLeaveJobService.saveEmpLeaveJob(empLeaveJobVo);
     }

@@ -30,17 +30,19 @@ public class BaEmpLeaveJob extends Model<BaEmpLeaveJob> {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
+    private Integer applyEmpId;
+
     private Integer empId;
 
     /**
      * 离职时间
      */
-    private Date leaveTime;
+    private Date leaveJobTime;
 
     /**
      * 离职原因
      */
-    private String leaveReason;
+    private String reason;
 
     /**
      * 创建时间

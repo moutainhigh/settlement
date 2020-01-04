@@ -22,7 +22,7 @@
     <!-- 查询申请修改的员工信息 -->
     <select id="getApplyEmpList" parameterType="com.settlement.co.EmpApplyCo" resultType="com.settlement.vo.EmployeeVo">
             SELECT
-             be.id,
+             bae.id,
              be.emp_name,
              be.`code`,
              be.entrance_time,
@@ -49,7 +49,7 @@
              AND bae.update_status = #{empApplyCo.updateStatus}
            UNION ALL
             SELECT
-             be.id,
+             bae.id,
              be.emp_name,
              be.`code`,
              be.entrance_time,

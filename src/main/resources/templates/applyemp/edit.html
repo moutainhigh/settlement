@@ -193,7 +193,7 @@
                                         <div class="layui-inline">
                                             <label class="layui-form-label"></label>
                                             <div class="layui-input-inline">
-                                                <input type="hidden" name="pgId"  th:value="${pgId}">
+                                                <input type="hidden" name="id"  th:value="${emp.id}">
                                             </div>
                                         </div>
                                     </div>
@@ -202,10 +202,10 @@
                         </div>
 
                         <div class="layui-form-item">
-                            <label for="saveButton" class="layui-form-label"></label>
-                            <input type="hidden" name="id" th:value="${emp.id}">
-                            <button class="layui-btn" id="saveButton" lay-filter="saveButton" lay-submit="">修改</button>
-                            <button class="layui-btn layui-btn-normal" id="submitButton" lay-filter="submitButton" lay-submit="">修改并提交</button>
+                            <label for="submitButton" class="layui-form-label"></label>
+                            <input type="hidden" name="applyEmpId" th:value="${applyEmpId}">
+                           <!-- <button class="layui-btn" id="saveButton" lay-filter="saveButton" lay-submit="">修改</button>-->
+                            <button class="layui-btn layui-btn-normal" id="submitButton" lay-filter="submitButton" lay-submit="">提交</button>
                         </div>
                    </div>
                 </form>
@@ -367,17 +367,17 @@
                 });
 
                 //监听修改
-                form.on('submit(saveButton)',
+               /* form.on('submit(saveButton)',
                     function(data) {
                         edit(data,layer,'/ba-employee/edit');
                         return false;
-                    });
+                    });*/
 
                 //监听修改并提交
                 form.on('submit(submitButton)',
                 function(data) {
-                    layer.confirm('确认提交么?提交后员工信息将参与考勤、结算，编辑需要申请', function(index) {
-                        edit(data,layer, '/ba-employee/editsubmit');
+                    layer.confirm('确认提交么?提交后再次编辑需要申请', function(index) {
+                        edit(data,layer, '/ba-apply-employee');
                     });
                     return false;
                 });

@@ -60,6 +60,7 @@
 <script type="text/javascript"  th:inline="javascript">
     var checkResultPass = [[ ${CHECK_RESULT_PASS} ]];
     var checkResultNoPass = [[ ${CHECK_RESULT_NOPASS} ]];
+    var mode = [[ ${mode} ]];
     layui.use(['form', 'layer'],
     function() {
         $ = layui.jquery;
@@ -97,10 +98,20 @@
         //监听提交
         form.on('submit(check)',
             function(data) {
-                console.log(data);
+                var url = '';
+                var tableName = '';
+                if (mode == 'e') {
+                    url = '/ba-emp-apply-check';
+                    tableName = 'emp-dataTable';
+                } else if (mode == 'w') {
+                    url = '/ba-apply/update/check';
+                    tableName = 'work-dataTable';
+                }
+                alert(url);
+                alert(tableName);
                 var retObject = checkResultVerify(data.field,checkResultPass,checkResultNoPass,layer);
                 if (retObject.flag) {
-                   check(data, layer, '/ba-apply/update/check','work-dataTable');
+                   check(data, layer, url, tableName);
                 }
                 return false;
             });

@@ -30,10 +30,9 @@ public class BaEmpLeavePg extends Model<BaEmpLeavePg> {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    private Integer pgEmpId;
-
     private String reason;
 
+    private Integer applyEmpId;
     /**
      * 离场时间
      */
@@ -41,7 +40,6 @@ public class BaEmpLeavePg extends Model<BaEmpLeavePg> {
 
     private Date createTime;
 
-    private Integer createUserId;
 
     /** 员工ID */
     private Integer empId;

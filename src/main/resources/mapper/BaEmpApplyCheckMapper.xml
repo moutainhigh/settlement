@@ -14,6 +14,7 @@
         <result column="update_password" property="updatePassword" />
         <result column="check_remark" property="checkRemark" />
         <result column="create_time" property="createTime" />
+        <result column="end_status" property="endStatus" />
     </resultMap>
 
     <!-- 员工申请信息列表 -->
@@ -28,7 +29,8 @@
          sdd.dic_content as checkStatusContent,
          su.real_name as applyUserContent,
          su1.real_name as checkUserContent,
-         bpg.pg_name as pgName
+         bpg.pg_name as pgName,
+         beac.end_status
         FROM
          ba_emp_apply_check beac left join sys_data_dic sdd on beac.check_status = sdd.dic_code
          left join sys_user su on beac.apply_user_id = su.id

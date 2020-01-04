@@ -32,13 +32,13 @@
                             <tr>
                                 <td width="23%" style="text-align:right;"><span class="x-red">*</span>离场时间</td>
                                 <td colspan="3">
-                                    <input  id="leavePgTime" name="leavePgTime" type="text"  lay-verify="leavePgTime" autocomplete="off" class="layui-input" />
+                                    <input  id="leavePgTime" name="leavePgTime" type="text"  placeholder="离场时间必须大于等于当前时间" th:value="${#dates.format(empLeavePg?.leavePgTime, 'yyyy-MM-dd')}" lay-verify="leavePgTime" autocomplete="off" class="layui-input" />
                                 </td>
                             </tr>
                             <tr>
                                 <td width="23%" style="text-align:right;"><span class="x-red">*</span>离场原因</td>
                                 <td colspan="3">
-                                    <textarea name="reason" placeholder="请输入离场原因" class="layui-textarea" lay-verify="reason" maxlength="200"></textarea>
+                                    <textarea name="reason" th:text="${empLeavePg?.reason}" placeholder="请输入离场原因" class="layui-textarea" lay-verify="reason" maxlength="200"></textarea>
                                 </td>
                             </tr>
                         </tbody>
@@ -48,10 +48,9 @@
 
             <div class="layui-form-item">
                 <label class="layui-form-label"></label>
-                <input type="hidden" name="applyId" th:value="${applyId}">
-                <input type="hidden" name="pgEmpId" th:value="${pgEmpId}">
+                <input type="hidden" name="applyEmpId" th:value="${applyEmpId}">
                 <input type="hidden" name="empId" th:value="${emp.id}">
-                <button class="layui-btn" id="save" lay-filter="save" lay-submit="save">保存</button>
+               <!-- <button class="layui-btn" id="save" lay-filter="save" lay-submit="save">保存</button>-->
                 <button class="layui-btn layui-btn-normal" id="sub" lay-filter="sub" lay-submit="sub">提交</button>
                 <!--<button class="layui-btn layui-btn-primary" id="close" lay-filter="close" type="reset">重置</button>-->
             </div>
@@ -86,16 +85,18 @@
         });
 
         //监听保存
-        form.on('submit(save)',
+        /*form.on('submit(save)',
             function(data) {
                 // console.log(data);
                 save(data,layer,'/ba-emp-leave-pg/save');
                 return false;
-        });
+        });*/
         // 监听提交
-        form.on('', function (data) {
+        form.on('submit(sub)', function (data) {
             // console.log(data);
-            submit(data,layer,'/ba-emp-leave-pg');
+            layer.confirm('确认提交离场么?', function(index) {
+                save(data,layer,'/ba-emp-leave-pg');
+            });
             return false;
         });
     });
