@@ -7,13 +7,8 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.settlement.bo.PageData;
 import com.settlement.co.CustomerCo;
-import com.settlement.entity.BaCustomer;
-import com.settlement.entity.BaDeptCustomer;
-import com.settlement.entity.BaPgTimeParam;
-import com.settlement.mapper.BaCustomerMapper;
-import com.settlement.mapper.BaDeptCustomerMapper;
-import com.settlement.mapper.BaPgTimeParamMapper;
-import com.settlement.mapper.SysRoleMapper;
+import com.settlement.entity.*;
+import com.settlement.mapper.*;
 import com.settlement.service.BaCustomerService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.settlement.utils.Const;
@@ -47,6 +42,8 @@ public class BaCustomerServiceImpl extends ServiceImpl<BaCustomerMapper, BaCusto
     private SysRoleMapper sysRoleMapper;
     @Autowired
     private BaPgTimeParamMapper baPgTimeParamMapper;
+    @Autowired
+    private SysUserMapper sysUserMapper;
     /**
      * 加载列表页面
      * @param customerCo
@@ -231,9 +228,15 @@ public class BaCustomerServiceImpl extends ServiceImpl<BaCustomerMapper, BaCusto
      */
     @Override
     public List<BaCustomerAndProjectVo> getCustomerAndProjectByUserId(Integer userId) {
+        Map<String,Object> roleMap = new HashMap<>();
+        roleMap.put("delFlag",Const.DEL_FLAG_N);
+        roleMap.put("userId",userId);
+        SysRole sysRole = sysRoleMapper.getSysRoleByUserId(roleMap);
+
         Map<String,Object> map = new HashMap<>();
         map.put("enabled",Const.ENABLED_Y);
         map.put("userId",userId);
+        map.put("roleCode",sysRole.getRoleCode());
         List<BaCustomerAndProjectVo> baCustomers = this.baseMapper.getCustomerAndProjectByUserId(map);
         return baCustomers;
     }
@@ -250,33 +253,39 @@ public class BaCustomerServiceImpl extends ServiceImpl<BaCustomerMapper, BaCusto
          * 1、用户id查询对应的角色
          * 2、客户经理可以查看所有的项目
          **/
+        Map<String,Object> roleMap = new HashMap<>();
+        roleMap.put("delFlag",Const.DEL_FLAG_N);
+        roleMap.put("userId",userId);
+        SysRole sysRole = sysRoleMapper.getSysRoleByUserId(roleMap);
+
         Map<String,Object> mapkey = new HashMap<>();
         mapkey.put("enabled",Const.ENABLED_Y);
         mapkey.put("userId",userId);
+        mapkey.put("roleCode",sysRole.getRoleCode());
         List<BaCustomerAndProjectVo> baCustomerAndProjectVos = this.baseMapper.getCustomerAndProjectByUserId(mapkey);
         Map<String,BaCustomerAndProjectVo> map = new HashMap<String,BaCustomerAndProjectVo>();
         List<BaCustomerAndProjectTreeVo> baCustomerAndProjectTreeVos = new ArrayList<>();
         for(BaCustomerAndProjectVo ba: baCustomerAndProjectVos) {
             if(map.containsKey(ba.getCode())) {
                 BaCustomerAndProjectTreeVo baVo = new BaCustomerAndProjectTreeVo();
-                baVo.setId(ba.getProjectId());
+                baVo.setId(ba.getProjectId()+"");
                 baVo.setTitle(ba.getProjectName());
-                baVo.setParentId(ba.getId());
+                baVo.setParentId(ba.getId()+ba.getCustomerName().hashCode()+"");
                 baVo.setCheckArr("0");
                 baCustomerAndProjectTreeVos.add(baVo);
             } else {
                 map.put(ba.getCode(),ba);
                 BaCustomerAndProjectTreeVo baVo = new BaCustomerAndProjectTreeVo();
-                baVo.setId(ba.getId());
+                baVo.setId(ba.getId()+ba.getCustomerName().hashCode()+"");
                 baVo.setTitle(ba.getCustomerName());
-                baVo.setParentId(0);
+                baVo.setParentId("0");
                 baVo.setCheckArr("0");
                 baCustomerAndProjectTreeVos.add(baVo);
 
                 BaCustomerAndProjectTreeVo baChildVo = new BaCustomerAndProjectTreeVo();
-                baChildVo.setId(ba.getProjectId());
+                baChildVo.setId(ba.getProjectId()+"");
                 baChildVo.setTitle(ba.getProjectName());
-                baChildVo.setParentId(ba.getId());
+                baChildVo.setParentId(ba.getId()+ba.getCustomerName().hashCode()+"");
                 baChildVo.setCheckArr("0");
                 baCustomerAndProjectTreeVos.add(baChildVo);
             }

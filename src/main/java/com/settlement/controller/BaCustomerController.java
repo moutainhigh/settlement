@@ -54,7 +54,7 @@ public class BaCustomerController {
     public Object customerAndProjectTree(HttpSession session){
         SysUser user = (SysUser)session.getAttribute("user");
         Integer userId = user.getId();
-        return baCustomerService.getCustomerAndProjectTreeByUserId(37);
+        return baCustomerService.getCustomerAndProjectTreeByUserId(userId);
 
     }
     /**

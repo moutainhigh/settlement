@@ -37,7 +37,10 @@
             left join ba_project_group pg on c.id = pg.customer_id
             left join ba_project_group_assistant pga on pga.pg_id = pg.id
             where pg.enabled=#{enabled}
-            <if test="{userId!=null}">
+            <if test="roleCode=='AM'">
+                and pg.check_user_id=#{userId}
+            </if>
+            <if test="roleCode =='ASSISTANT'">
                  and pga.assistant_id=#{userId}
             </if>
 
