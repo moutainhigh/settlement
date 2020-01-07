@@ -12,5 +12,7 @@ import lombok.Data;
 public class ProjectGroupCo extends PageCo {
 
     private String keyword;
+    /** 当前登陆用户ID */
+    private Integer currentUserId;
 
 }

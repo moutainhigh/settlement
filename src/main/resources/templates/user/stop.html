@@ -42,7 +42,7 @@
             </div>
 
             <div class="layui-form-item">
-                <label for="desc" class="layui-form-label">停用信息</label>
+                <label  class="layui-form-label">停用信息</label>
                 <div class="layui-input-block">
                     <table class="layui-table">
                         <tbody>
@@ -50,9 +50,10 @@
                             <td width="25%" style="text-align:right;"><span class="x-red">*</span>停用类型</td>
                             <td colspan="3">
                                 <!--<input name="role.id" type="radio" th:each="r:${roles}" th:value="${r.id}"  th:checked="${r.id==userVo.role.id}"     th:title="${r.roleCnName}"  />-->
-                                <input name="type" type="radio"    value="1" title="离职" />
+                                <input name="stopType" type="radio" th:each="stopType : ${stopTypeList}" th:value="${stopType.dicCode}" th:title="${stopType.dicContent}">
+                               <!-- <input name="type" type="radio"    value="1" title="离职" />
                                 <input name="type" type="radio"    value="2" title="转岗" />
-                                <input name="type" type="radio"    value="3" title="其他原因" />
+                                <input name="type" type="radio"    value="3" title="其他原因" />-->
                             </td>
                         </tr>
                         <tr>
@@ -67,7 +68,7 @@
             </div>
 
             <div class="layui-form-item layui-form-text" th:if="${userVo.role.roleCode} eq 'DM'">
-                <label for="" class="layui-form-label">项目组移交</label>
+                <label  class="layui-form-label">项目组移交</label>
                 <div class="layui-input-block">
                     <table class="layui-table">
                         <tbody>
@@ -81,7 +82,39 @@
                         <tr>
                             <td width="25%" style="text-align:right;">同角色用户</td>
                             <td colspan="3">
-                                <select name="userSelect" xm-select="userSelect" lay-filter="userSelect"  xm-select-max="1" lay-verify="userSelect">
+                               <!-- <select name="userSelect" xm-select="userSelect" lay-filter="userSelect"  xm-select-max="1" lay-verify="userSelect">
+                                </select>-->
+                                <select name="ownUserId">
+                                    <option value="">请选择转移的用户</option>
+                                    <option th:each="user : ${userSelect}" th:value="${user.value}" th:text="${user.name}"></option>
+                                </select>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-form-text" th:if="${userVo.role.roleCode} eq 'AM'">
+                <label  class="layui-form-label">客户移交</label>
+                <div class="layui-input-block">
+                    <table class="layui-table">
+                        <tbody>
+                        <tr>
+                            <td width="25%" style="text-align:right;">客户</td>
+                            <td colspan="3">
+                                <!-- <select name="projectGroupSelect" xm-select="projectGroupSelect" lay-filter="projectGroupSelect" lay-verify="projectGroupSelect">
+                                 </select>-->
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="25%" style="text-align:right;">同角色用户</td>
+                            <td colspan="3">
+                                <!--<select name="userSelect" xm-select="userSelect" lay-filter="userSelect"  xm-select-max="1" lay-verify="userSelect">
+                                </select>-->
+                                <select name="ownUserId" >
+                                    <option value="">请选择转移的用户</option>
+                                    <option th:each="user : ${userSelect}" th:value="${user.value}" th:text="${user.name}"></option>
                                 </select>
                             </td>
                         </tr>
@@ -109,15 +142,15 @@
     var roleId = $("input[name='roleId']").val();
     var deptId = $("input[name='deptId']").val();
     var roleCode = $("input[name='roleCode']").val();
-    if (roleCode == 'DM') {
+    //if (roleCode == 'DM') {
         // 下拉多选框
        /* formSelects.data('projectGroupSelect', 'server', {
             url: '/pg-/pgselect/' + userId
         });*/
-        formSelects.data('userSelect', 'server', {
+      /*  formSelects.data('userSelect', 'server', {
             url: '/sys-user/userselect/' + roleId + '/' + userId  + '/' + deptId
-        });
-    }
+        });*/
+    //}
     layui.use(['form', 'layer'],
     function() {
         $ = layui.jquery;

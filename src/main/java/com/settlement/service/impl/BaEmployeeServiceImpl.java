@@ -41,6 +41,9 @@ public class BaEmployeeServiceImpl extends ServiceImpl<BaEmployeeMapper, BaEmplo
 
     @Override
     public PageData getEmployeeList(EmployeeCo employeeCo) {
+        employeeCo.setDelFlag(Const.ENABLED_N);
+        employeeCo.setLevelModeF(Const.LEVEL_MODE_F);
+        employeeCo.setLevelModeH(Const.LEVEL_MODE_H);
         Page<EmployeeVo> page = new Page<EmployeeVo>(employeeCo.getPage(), employeeCo.getLimit());
         List<EmployeeVo> list = this.baseMapper.getEmployeeList(employeeCo,page);
         page.setRecords(list);

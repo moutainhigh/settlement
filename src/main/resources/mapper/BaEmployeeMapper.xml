@@ -35,36 +35,84 @@
         <result column="del_flag" property="delFlag" />
     </resultMap>
 
+
     <select id="getEmployeeList" parameterType="com.settlement.co.EmployeeCo" resultType="com.settlement.vo.EmployeeVo">
-        SELECT
-            be.id,
-            be.emp_name,
-            be.`code`,
-            be.entrance_time,
-            be.pos_level,
-            be.responsible_person,
-            be.upload_rate_email,
-            be.send_copy_email,
-            be.rp_email,
-            be.rate_email_filename,
-            bpe.pg_id,
-            be.claim_expense_person,
-            be.create_time,
-            be.place,
-            be.apply_update_status,
-            sdd.dic_content as applyUpdateStatusContent,
-            be.unit
+        SELECT * FROM
+        (SELECT
+        be.id,
+        be.emp_name,
+        be.`code`,
+        be.entrance_time,
+        be.pos_level,
+        blp.level_name as pos_level_input,
+        be.responsible_person,
+        be.upload_rate_email,
+        be.send_copy_email,
+        be.rp_email,
+        be.rate_email_filename,
+        bpe.pg_id,
+        be.claim_expense_person,
+        be.create_time,
+        be.place,
+        be.apply_update_status,
+        sdd.dic_content as applyUpdateStatusContent,
+        be.price_month,
+        be.unit,
+        sdd1.dic_content as unitContent,
+        be.work_attendence_person,
+        be.position,
+        be.price_day
         FROM
-            ba_employee be left join ba_pg_emp bpe on  be.id = bpe.emp_id
-            left join sys_data_dic sdd on be.apply_update_status = sdd.dic_code
+        ba_employee be left join ba_pg_emp bpe on  be.id = bpe.emp_id
+        left join sys_data_dic sdd on be.apply_update_status = sdd.dic_code
+        left join ba_level_price blp on be.pos_level = blp.id
+        left join sys_data_dic sdd1 on sdd1.dic_code = be.unit
         WHERE
-            be.del_flag = #{employeeCo.delFlag}
-            and bpe.pg_id = #{employeeCo.pgId}
-            and bpe.entrance_status = #{employeeCo.entranceStatus}
+        be.del_flag =  #{employeeCo.delFlag}
+        and bpe.pg_id = #{employeeCo.pgId}
+        and be.level_mode = #{employeeCo.levelModeF}
+        and bpe.entrance_status = #{employeeCo.entranceStatus}
+        UNION ALL
+        SELECT
+        be.id,
+        be.emp_name,
+        be.`code`,
+        be.entrance_time,
+        be.pos_level,
+        be.pos_level_input,
+        be.responsible_person,
+        be.upload_rate_email,
+        be.send_copy_email,
+        be.rp_email,
+        be.rate_email_filename,
+        bpe.pg_id,
+        be.claim_expense_person,
+        be.create_time,
+        be.place,
+        be.apply_update_status,
+        sdd.dic_content as applyUpdateStatusContent,
+        be.price_month,
+        be.unit,
+        sdd1.dic_content as unitContent,
+        be.work_attendence_person,
+        be.position,
+        be.price_day
+        FROM
+        ba_employee be left join ba_pg_emp bpe on  be.id = bpe.emp_id
+        left join sys_data_dic sdd on be.apply_update_status = sdd.dic_code
+        left join sys_data_dic sdd1 on sdd1.dic_code = be.unit
+        WHERE
+        be.del_flag =  #{employeeCo.delFlag}
+        and bpe.pg_id = #{employeeCo.pgId}
+        and be.level_mode = #{employeeCo.levelModeH}
+        and bpe.entrance_status = #{employeeCo.entranceStatus}
+        ) emp
+        <where>
             <if test="employeeCo.keyword != null and employeeCo.keyword !='' ">
-              and CONCAT(be.emp_name) like CONCAT('%',#{employeeCo.keyword},'%')
+                and CONCAT(emp.emp_name) like CONCAT('%',#{employeeCo.keyword},'%')
             </if>
-        order by be.create_time
+        </where>
+        order by emp.create_time
     </select>
 
     <update id="updateBatchEntranceStatusById" parameterType="java.util.List">

@@ -96,12 +96,20 @@
                        {field:'id',type:'checkbox',fixed:'left'},
                        {field:'empName',title:'姓名',align:'center',fixed:'left'},
                        {field:'code',title:'员工编号',align:'center'},
-                       {field:'entranceTime',title:'入场时间',align:'center'},
+                       {field:'entranceTime',title:'入场时间',align:'center',templet:'<div>{{layui.util.toDateString(d.entranceTime, "yyyy-MM-dd")}}</div>'},
                        {field:'responsiblePerson',title:'客户负责人',align:'center'},
-                       {field:'rateEmailFilename',title:'客户确认rate邮件',align:'center',templet:operImg},
-                       {field:'sendCopyEmail',title:'抄送邮件地址',align:'center'},
-                        {field:'applyUpdateStatus',title:'申请状态',align:'center',hide:true},
-                       {field:'applyUpdateStatusContent',title:'状态',align:'center'}
+                       {field:'rateEmailFilename',title:'客户确认rate邮件',align:'center',templet:operImg,hide:true},
+                        {field:'sendCopyEmail',title:'抄送邮件地址',align:'center',hide:true},
+                       {field:'pos_level_input',title:'级别',align:'center',hide:true},
+                        {field:'priceMonth',title:'服务费(月)',align:'center',hide:true},
+                        {field:'unitContent',title:'单位',align:'center',hide:true},
+                        {field:'priceDay',title:'服务费(天)',align:'center',hide:true},
+                        {field:'place',title:'员工所在地',align:'center',hide:true},
+                        {field:'position',title:'岗位',align:'center',hide:true},
+                        {field:'workAttendencePerson',title:'考勤负责人',align:'center',hide:true},
+                        {field:'claimExpensePerson',title:'报销接口人',align:'center',hide:true},
+                        /*{field:'applyUpdateStatus',title:'申请状态',align:'center',hide:true},*/
+                       {field:'applyUpdateStatusContent',title:'申请状态',align:'center',hide:true}
                       /* {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:100}*/
                     ]
                 ]

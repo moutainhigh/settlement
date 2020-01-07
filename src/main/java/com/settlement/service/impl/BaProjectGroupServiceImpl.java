@@ -6,21 +6,18 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.settlement.bo.PageData;
 import com.settlement.co.ProjectGroupCo;
-import com.settlement.entity.BaProjectGroup;
-import com.settlement.entity.BaProjectGroupAssistant;
-import com.settlement.entity.BaProjectGroupCheck;
-import com.settlement.entity.BaProjectGroupSettlement;
-import com.settlement.mapper.BaProjectGroupAssistantMapper;
-import com.settlement.mapper.BaProjectGroupCheckMapper;
-import com.settlement.mapper.BaProjectGroupMapper;
-import com.settlement.mapper.BaProjectGroupSettlementMapper;
+import com.settlement.entity.*;
+import com.settlement.mapper.*;
 import com.settlement.service.BaProjectGroupAssistantService;
 import com.settlement.service.BaProjectGroupService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.settlement.utils.Const;
 import com.settlement.utils.HttpResultEnum;
+import com.settlement.utils.HttpStateEnum;
 import com.settlement.utils.Result;
 import com.settlement.vo.ProjectGroupVo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +39,7 @@ import java.util.List;
 @Transactional
 public class BaProjectGroupServiceImpl extends ServiceImpl<BaProjectGroupMapper, BaProjectGroup> implements BaProjectGroupService {
 
+    private static Logger logger = LoggerFactory.getLogger(BaProjectGroupServiceImpl.class);
     @Autowired
     private BaProjectGroupAssistantMapper baProjectGroupAssistantMapper;
     @Autowired
@@ -50,6 +48,8 @@ public class BaProjectGroupServiceImpl extends ServiceImpl<BaProjectGroupMapper,
     private BaProjectGroupMapper baProjectGroupMapper;
     @Autowired
     private BaProjectGroupSettlementMapper baProjectGroupSettlementMapper;
+    @Autowired
+    private BaPgEmpMapper baPgEmpMapper;
 
     @Override
     public PageData getProjectGroupList(ProjectGroupCo baProjectGroupCo) {
@@ -280,4 +280,36 @@ public class BaProjectGroupServiceImpl extends ServiceImpl<BaProjectGroupMapper,
         return r;
     }
 
+    @Override
+    public Result updatePgStopById(Integer id) {
+        logger.info("项目组停用BaProjectGroupServiceImpl: updatePgStopById, id: " + id + "");
+        Result r = new Result();
+        // 检查是否存在入场员工，有入场员工不得停用
+        try {
+            QueryWrapper<BaPgEmp> queryWrapper = new QueryWrapper<BaPgEmp>();
+            queryWrapper.eq("pg_id", id);
+            queryWrapper.eq("entrance_status",Const.ENTRANCE_STATUS_I);
+            int count = this.baPgEmpMapper.selectCount(queryWrapper);
+            if (count == 0) {
+                // 更新停用
+                UpdateWrapper<BaProjectGroup> updateWrapper = new UpdateWrapper<BaProjectGroup>();
+                updateWrapper.eq("id", id);
+                BaProjectGroup bg = new BaProjectGroup();
+                bg.setEnabled(Const.ENABLED_N);
+                int ret = this.baseMapper.update(bg, updateWrapper);
+                if (ret > 0) {
+                    r.setCode(HttpResultEnum.CODE_200.getCode());
+                    r.setMsg(HttpResultEnum.CODE_200.getMessage());
+                }
+            } else {
+                r.setCode(HttpResultEnum.PG_STOP_CODE_500.getCode());
+                r.setMsg(HttpResultEnum.PG_STOP_CODE_500.getMessage());
+            }
+        } catch (Exception e) {
+            logger.error("项目组停用BaProjectGroupServiceImpl: updatePgStopById异常");
+            r.setCode(HttpResultEnum.CODE_500.getCode());
+            r.setMsg(HttpResultEnum.CODE_500.getMessage());
+        }
+        return r;
+    }
 }

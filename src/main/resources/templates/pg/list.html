@@ -44,6 +44,7 @@
         </div> 
     </body>
     <script th:src="@{/js/common/common.js}" type="text/javascript" charset="utf-8"></script>
+    <script th:src="@{/js/pg/pg.js}" type="text/javascript" charset="utf-8"></script>
     <script type="text/html" id="toolBar">
         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">员工详情</a>
         <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
@@ -97,10 +98,10 @@
                   }, 'data');
               },
               relateAssistant: function(){ //获取选中数据
-                  checkBoxCheckedOper('关联助理','/ba-project-group/relate-assistant/',table, layer, 600, 400);
+                  checkBoxCheckedOper('关联助理','/ba-project-group/relate-assistant/',table, layer, 600, 300);
               },
               relateSettlement: function(){ //获取选中数据
-                  checkBoxCheckedOper('关联结算负责人','/ba-project-group/relate-settlement/',table, layer, 600, 400);
+                  checkBoxCheckedOper('关联结算负责人','/ba-project-group/relate-settlement/',table, layer, 600, 300);
               },
               addEmp: function() {
                   checkBoxCheckedOper('员工录入','/ba-employee/enter-emp/',table, layer, 1000, 545);
@@ -135,12 +136,12 @@
                           ,btn: ['确定','取消']
                           ,yes: function(index){
                               // 发送ajax请求，更新后台
-                              $.get('',null, function() {
-
-                              });
-                              data.elem.checked=a;
-                              layui.form.render();
+                              // 判断是否有在场员工，有在场员工不能停用
+                              stop('/ba-project-group/stop/' + id);
+                              // data.elem.checked=a;
+                              // layui.form.render();
                               layer.close(index);
+                              layui.table.reload('dataTable');
                           }
                           ,btn2: function(index){
                               //按钮【按钮二】的回调
@@ -175,6 +176,8 @@
                               })
                           } else {
                               layer.msg(r.msg, {icon:5});
+                              data.elem.checked = !a;
+                              layui.form.render();
                           }
                       });
                   }

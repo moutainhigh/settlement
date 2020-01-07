@@ -98,5 +98,3 @@ function apply(data, layer, url) {
     }
 }
 
-
-

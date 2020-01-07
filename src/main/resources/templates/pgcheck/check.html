@@ -76,8 +76,8 @@
                 <label class="layui-form-label"></label>
                 <input type="hidden" name="id" th:value="${projectGroupCheckVo.id}">
                 <input type="hidden" name="pgId" th:value="${projectGroupCheckVo.pgId}">
-                <button class="layui-btn" id="confirm" lay-filter="confirm" lay-submit="confirm">确定</button>
-                <button class="layui-btn layui-btn-primary" id="close" lay-filter="close" type="reset">重置</button>
+                <button class="layui-btn" id="confirm" lay-filter="confirm" lay-submit="confirm">审核</button>
+                <!--<button class="layui-btn layui-btn-primary" id="close" lay-filter="close" type="reset">重置</button>-->
             </div>
         </form>
     </div>
@@ -109,7 +109,7 @@
                 console.log(data);
                 var retObject = checkResultVerify(data.field,checkResultPass,checkResultNoPass,layer);
                 if (retObject.flag) {
-                   check(data, layer, '/ba-project-group-check');
+                   check(data, layer, '/ba-project-group-check','dataTable');
                 }
                 //发异步，把数据提交给php
                /* layer.alert("增加成功", {

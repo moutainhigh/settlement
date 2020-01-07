@@ -38,7 +38,6 @@ public class BaEmployeeController {
     @GetMapping("/ba-employee/pagedata")
     public PageData getNoSubmitPageData(EmployeeCo employeeCo) {
          employeeCo.setEntranceStatus(Const.EMP_ENTRANCE_STATUS_N);
-        employeeCo.setDelFlag(Const.ENABLED_N);
         return this.baEmployeeService.getEmployeeList(employeeCo);
     }
 
@@ -53,7 +52,6 @@ public class BaEmployeeController {
     @GetMapping("/ba-employee/ent-pagedata")
     public PageData getSubmitPageData(EmployeeCo employeeCo) {
         employeeCo.setEntranceStatus(Const.ENTRANCE_STATUS_I);
-        employeeCo.setDelFlag(Const.ENABLED_N);
         return this.baEmployeeService.getEmployeeList(employeeCo);
     }
 

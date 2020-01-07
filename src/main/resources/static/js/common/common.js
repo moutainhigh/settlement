@@ -144,6 +144,30 @@ function start(url) {
     });
 }
 
+/** 停用 */
+function stop(url) {
+    $.ajax({
+        url: url,
+        type:"PUT",
+        beforeSend: function () {
+            // 禁用按钮防止重复提交
+            $(".layui-btn").attr({ disabled: "disabled" });
+
+        },
+        success:function(r){
+            layer.alert(r.msg, {
+                    icon : r.code == '200' ? 6: 5
+                }
+                /*function() {
+                    // 刷新数据，保留在当前页
+                   // var index = parent.layer.getFrameIndex(window.name);
+                    // layui.table.reload('dataTable');//重载父页表格，参数为表格ID
+                    // parent.layer.close(index);
+                }*/);
+            $(".layui-btn").removeAttr('disabled');
+        }
+    });
+}
 
 /** 审核提交 */
 function check(data, layer, url,dataTable) {

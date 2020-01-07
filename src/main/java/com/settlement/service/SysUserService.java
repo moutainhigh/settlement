@@ -43,4 +43,6 @@ public interface SysUserService extends IService<SysUser> {
     Result getAssistantSelect(Map<String, Object> map);
     /** 结算负责人下拉框 */
     Result getSettlementSelect(Map<String, Object> map);
+    /** 根据部门和角色查询客户经理 */
+    List<SysUser> getAmListByDeptAndRole(Map<String, Object> map);
 }

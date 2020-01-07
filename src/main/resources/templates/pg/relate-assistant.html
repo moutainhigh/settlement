@@ -45,7 +45,7 @@
         <script th:src="@{/js/formSelects-v4.js}" type="text/javascript" charset="utf-8"></script>
         <script th:src="@{/js/pg/pg.js}" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript">
-
+            var formSelects = layui.formSelects;
             // 下拉多选框赋值
             formSelects.data('assistantSelect', 'server', {
                 url: '/sys-user/assistant-select',

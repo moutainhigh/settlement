@@ -118,5 +118,7 @@ public class Const {
     public final static String END_STATUS_NO_END_CODE = "NO_END";
     /** 完成状态CODE */
     public final static String END_STATUS_CODE = "END_STATSU";
+    /** 用户停用类型CODE */
+    public final static String USER_STOP_TYPE_CODE = "STOP_TYPE";
 
 }

@@ -42,4 +42,6 @@ public interface BaProjectGroupService extends IService<BaProjectGroup> {
     Result checkPgStart(Integer id);
     /** 项目组启用 */
     Result updatePgStart(Integer id);
+    /** 项目组停用 */
+    Result updatePgStopById(Integer id);
 }

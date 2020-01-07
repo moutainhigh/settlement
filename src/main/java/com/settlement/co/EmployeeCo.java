@@ -24,4 +24,8 @@ public class EmployeeCo extends PageCo{
 
     private Date currentTime;
 
+    private String levelModeF;
+
+    private String levelModeH;
+
 }

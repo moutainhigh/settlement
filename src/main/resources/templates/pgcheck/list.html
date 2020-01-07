@@ -28,7 +28,10 @@
                                 </div>
                             </form>
                         </div>
-
+                        <div class="layui-card-header">
+                            <!-- <button class="layui-btn" onclick="xadmin.open('添加员工','/ba-employee/add',600,400)"><i class="layui-icon"></i>添加</button>
+                             <button class="layui-btn" data-type="relateAssistant"><i class="layui-icon"></i>提交</button>-->
+                        </div>
                         <div class="layui-card-body layui-table-body layui-table-main" >
                             <table class="layui-table layui-form" id="dataTable" lay-filter="dataTable">
                             </table>
@@ -68,6 +71,16 @@
            page: true,
            title: '项目组审核表',
            height: 'full-210',
+           done: function(res,curr,count) {
+                res.data.forEach(function (item, index) {
+                    if (item.checkStatus == checkStatusPass || item.checkStatus == checkStatusNoPass) {
+                        // 审核不通过的设置，修改禁用
+                        var tr = $("tr[data-index='" + index + "']");
+                        var a = $(tr.find("a[lay-event='check']"));
+                        a.addClass("layui-btn-disabled");
+                    }
+                });
+            },
            cols: [
                     [
                        {field:'id',title:'ID',hide:true},
@@ -82,10 +95,7 @@
                        {field:'checkTime',title:'审核日期',align:'center'},
                        {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:200}
                     ]
-                ],
-            done: function(res,cuur,count) {
-
-            }
+                ]
         });
           var $ = layui.$, active = {
               reload: function(){

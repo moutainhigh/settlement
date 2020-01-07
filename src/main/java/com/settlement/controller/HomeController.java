@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -148,12 +149,21 @@ public class HomeController {
     /**
      * @description 用户停用页面
      *
+     * @auth admin
+     * @date 2019-1-3
      * @return
      */
     @GetMapping("/sys-user/stop/{id}")
     public String toUserStop(@PathVariable  Integer id, Model model) {
         // 根据数据字典 取得停用原因
+        List<SysDataDicVo> stopTypeList = this.sysDataDicService.getDataDicSelectByParentCode(Const.USER_STOP_TYPE_CODE);
+        model.addAttribute("stopTypeList", stopTypeList);
         model.addAttribute("userVo",sysUserService.getUserStop(id));
+        // 同部门下的同角色用户
+        SysUser user = this.sysUserService.getById(id);
+        SysUserRole sur = this.sysUserRoleService.getRoleByUserId(id);
+        List<SelectVo> userSelect = (List<SelectVo>) this.sysUserService.getUserSelectByRoleDept(sur.getRoleId(), id, user.getDeptId()).getData();
+        model.addAttribute("userSelect", userSelect);
         return "user/stop";
     }
 
@@ -341,7 +351,14 @@ public class HomeController {
      * @return
      */
     @GetMapping("/ba-project-group/add")
-    public String toPgAdd() {
+    public String toPgAdd(Model model) {
+        // 取得客户经理下拉列表
+        SysUser user = (SysUser) SecurityUtils.getSubject().getPrincipal();
+        Map<String,Object> paramMap = new HashMap<String, Object>();
+        paramMap.put("deptId",user.getDeptId());
+        paramMap.put("amRoleCode",Const.ROLE_CODE_AM);
+        paramMap.put("enabled", Const.ENABLED_Y);
+        model.addAttribute("amList", this.sysUserService.getAmListByDeptAndRole(paramMap));
         return "pg/add";
     }
 
@@ -355,6 +372,13 @@ public class HomeController {
     @GetMapping("/ba-project-group/edit/{id}")
     public String toPgEdit(@PathVariable Integer id, Model model) {
         model.addAttribute("pg",this.baProjectGroupService.getById(id));
+        // 取得柯经理下来列表
+        SysUser user = (SysUser) SecurityUtils.getSubject().getPrincipal();
+        Map<String,Object> paramMap = new HashMap<String, Object>();
+        paramMap.put("deptId",user.getDeptId());
+        paramMap.put("amRoleCode",Const.ROLE_CODE_AM);
+        paramMap.put("enabled", Const.ENABLED_Y);
+        model.addAttribute("amList", this.sysUserService.getAmListByDeptAndRole(paramMap));
         return "pg/edit";
     }
 

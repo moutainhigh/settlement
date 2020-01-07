@@ -1,4 +1,3 @@
-var formSelects = layui.formSelects;
 /** 根据CODE检查项目组是否存在 */
 function checkPgIsExist(code, layer,mode) {
     var flag = true;

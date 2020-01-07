@@ -118,8 +118,16 @@
                     page: true,
                    // title: '导出参数',
                     height: 'full-210',
-                   //  toolbar: '#toolBarHead',
-                    // id: 'userData',
+                    done: function(res,curr,count) {
+                        var that = this.elem.next();
+                        res.data.forEach(function (item, index) {
+                            if (item.checkStatus == checkStatusPass || item.checkStatus == checkStatusNoPass) {
+                                var tr = $("tr[data-index='" + index + "']");
+                                var a = $(tr.find("a[lay-event='check']"));
+                                a.addClass("layui-btn-disabled");
+                            }
+                        });
+                    },
                     cols: [
                             [
                                 {field:'id',type:'checkbox',fixed:'left',hide:true},

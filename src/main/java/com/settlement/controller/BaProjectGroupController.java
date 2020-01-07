@@ -55,6 +55,8 @@ public class BaProjectGroupController {
      */
     @GetMapping("/ba-project-group/pagedata")
     public PageData getProjectGroupList1(ProjectGroupCo projectGroupCo) {
+        SysUser user = (SysUser) SecurityUtils.getSubject().getPrincipal();
+        projectGroupCo.setCurrentUserId(user.getId());
         return this.baProjectGroupService.getProjectGroupList(projectGroupCo);
     }
 
@@ -211,5 +213,18 @@ public class BaProjectGroupController {
     @PutMapping("/ba-project-group/start/{id}")
     public Result pgStart(@PathVariable(value="id") Integer id) {
         return this.baProjectGroupService.updatePgStart(id);
+    }
+
+    /**
+     * @description 项目组停用
+     *
+     * @auth admin
+     * @date 2020-1-3
+     * @param id
+     * @return
+     */
+    @PutMapping("/ba-project-group/stop/{id}")
+    public Result pgStop(@PathVariable(value="id") Integer id) {
+        return this.baProjectGroupService.updatePgStopById(id);
     }
 }

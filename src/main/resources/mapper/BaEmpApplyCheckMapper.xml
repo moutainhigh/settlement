@@ -29,7 +29,7 @@
          sdd.dic_content as checkStatusContent,
          su.real_name as applyUserContent,
          su1.real_name as checkUserContent,
-         bpg.pg_name as pgName,
+         bpg.pg_name as projectName,
          beac.end_status
         FROM
          ba_emp_apply_check beac left join sys_data_dic sdd on beac.check_status = sdd.dic_code

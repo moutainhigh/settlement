@@ -3,7 +3,6 @@
     
     <head>
         <th:bolck th:include="common/header :: header('添加项目组')" />
-        <link rel="stylesheet" th:href="@{/css/formSelects-v4.css}" />
     </head>
     <body>
         <div class="layui-fluid">
@@ -31,7 +30,11 @@
                             <label  class="layui-form-label">
                                 <span class="x-red">*</span>客户经理</label>
                             <div class="layui-input-inline">
-                                <select name="checkUserId" xm-select="amselect" lay-filter="checkUserId" xm-select-max="1" lay-verify="checkUserId">
+                                <!--<select name="checkUserId" xm-select="amselect" lay-filter="checkUserId" xm-select-max="1" lay-verify="checkUserId">
+                                </select>-->
+                                <select name="checkUserId" lay-filter="checkUserId" lay-verify="checkUserId">
+                                    <option value="">请选择客户经理</option>
+                                    <option th:each="am : ${amList}" th:value="${am.id}" th:text="${am.realName}"></option>
                                 </select>
                             </div>
                        </div>
@@ -63,21 +66,20 @@
                 </form>
             </div>
         </div>
-        <script th:src="@{/js/formSelects-v4.js}" type="text/javascript" charset="utf-8"></script>
         <script th:src="@{/js/pg/pg.js}" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript">
             // 客户经理下拉多选框
-            formSelects.data('amselect', 'server', {
-              url: '/sys-user/amselect'
-            });
-            // 助理下拉框
-          /*  formSelects.data('assistantselect', 'server', {
-                url: '/sys-user/assistantselect'
-            });
-            // 结算员下拉框
-            formSelects.data('settlementselect', 'server', {
-                url: '/sys-user/settlementselect'
-            });*/
+            /*  formSelects.data('amselect', 'server', {
+               url: '/sys-user/amselect'
+             });
+             // 助理下拉框
+            formSelects.data('assistantselect', 'server', {
+                 url: '/sys-user/assistantselect'
+             });
+             // 结算员下拉框
+             formSelects.data('settlementselect', 'server', {
+                 url: '/sys-user/settlementselect'
+             });*/
             // 表单操作
             layui.use(['form', 'layer','jquery'],
             function() {

@@ -32,7 +32,7 @@
                             <tr>
                                 <td width="23%" style="text-align:right;"><span class="x-red">*</span>离职时间</td>
                                 <td colspan="3">
-                                    <input  id="leaveJobTime" name="leaveJobTime" th:value="${#dates.format(empLeaveJob?.leaveJobTime, 'yyyy-MM-dd')}" type="text"  lay-verify="leaveJobTime" autocomplete="off" class="layui-input" />
+                                    <input  id="leaveJobTime" placeholder="离职时间必须大于等于当前时间" name="leaveJobTime" th:value="${#dates.format(empLeaveJob?.leaveJobTime, 'yyyy-MM-dd')}" type="text"  lay-verify="leaveJobTime" autocomplete="off" class="layui-input" />
                                 </td>
                             </tr>
                             <tr>

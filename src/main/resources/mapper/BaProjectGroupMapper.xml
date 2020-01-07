@@ -24,10 +24,13 @@
             LEFT JOIN sys_user su ON bpg.owner_user_id = su.id
         WHERE
             bpg.del_flag = 'N'
-        <if test="projectGroupCo.keyword != null">
+        <if test="projectGroupCo.keyword != null and projectGroupCo.keyword != ''">
             and CONCAT(pg_name,code) like CONCAT('%',#{projectGroupCo.keyword},'%')
         </if>
-            ORDER BY bpg.create_time desc
+        <if test="projectGroupCo.currentUserId != null">
+            and bpg.owner_user_id = #{projectGroupCo.currentUserId}
+        </if>
+        ORDER BY  bpg.enabled desc, bpg.create_time desc
     </select>
 
 </mapper>
