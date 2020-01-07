@@ -85,7 +85,17 @@
             initLevel: "2"
             //// line:true,
             ,done:function(res, $obj, first){
-                var id=13;
+                var id ;
+                $.ajax({
+                    type:'get'
+                    ,url:'/ba-customer/firstchild'
+                    ,async:false //同步处理
+                    ,success:function(r){
+                        if(r.code=='0') {
+                            id = r.data;
+                        }
+                    }
+                });
                 $("#projectTree").find("div[dtree-click='itemNodeClick'][dtree-id='projectTree'][data-id='"+id+"']").click();
                 $("#projectTree").css({ "width": "150px"});
             }

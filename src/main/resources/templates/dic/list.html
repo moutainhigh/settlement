@@ -48,7 +48,8 @@
     <script type="text/html" id="switchStatus">
         <input type="checkbox" name="status" value="{{d.id}}" lay-skin="switch" lay-text="启用|停用" lay-filter="status" {{ d.enabled == 'Y' ? 'checked' : '' }}>
     </script>
-    <script type="text/javascript"  th:inline="none">
+    <script th:src="@{/js/common/common.js}" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript"  th:inline="javascript">
       layui.use(['laydate','table','form','element'], function(){
         var laydate = layui.laydate;
         var  form = layui.form;
@@ -63,7 +64,8 @@
            title: '数据字典表',
            height: 'full-210',
            // id: 'userData',
-           cols: [[
+           cols: [
+               [
                {field:'id',hide:true},
                {field:'dicCode',title:'字典代码',align:'center',fixed:'left'},
                {field:'dicContent',title:'字典内容',align:'center'},
@@ -71,7 +73,8 @@
                {field:'pidContent',title:'父结点',align:'center'},
                {field:'enabled',title:'状态',align:'center',templet: '#switchStatus', unresize: true},
                {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:130}
-           ]]
+             ]
+           ]
         });
 
           //监听单元格编辑
@@ -102,14 +105,9 @@
 
           //监听状态操作
           form.on('switch(status)', function(data){
-              // layer.tips(this.value + ' ' + this.name + '：'+ obj.elem.checked, obj.othis);
               var id = this.value;
               var obj = $(data.elem);
               var a = data.elem.checked;
-              console.log(data);
-              console.log(obj.parent);
-              console.log(obj.parent.parent);
-              //alert(id+":"+a);
               if (!a) {
                   // 发送ajax请求，enabled停用 更新后台
                   layer.open({
@@ -123,9 +121,17 @@
                               success: function(data){
                                   if("edit_200"==data.code){
                                       layer.msg('停用成功', {icon: 6});
-                                      data.elem.checked = a;
-                                      layui.form.render();
+                                      //通过父结点查询子结点的数据
 
+                                      //从table中查询父结点是当前停用结点数据
+
+                                      //ajax请求 更新子结点数据状态
+
+                                      //页面子结点数据状态停用
+                                      data.elem.checked = a;
+                                      //layui.form.render();
+                                      layui.table.reload('dataTable');
+                                      //reloadTable('dataTable');
                                   }else {
                                       data.elem.checked = !a;
                                       layui.form.render();

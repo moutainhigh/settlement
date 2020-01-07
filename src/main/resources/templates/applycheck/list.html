@@ -98,8 +98,8 @@
                 var id = data.id;
                 var checkStatus = data.checkStatus;
                 if(obj.event === 'detail'){
-                    layer.msg('ID：'+ data.id + ' 的查看操作');
-                  //  xadmin.open('申请员工详情','/ba-emp-apply-check/detail/' + data.id,1000,545);
+                    //layer.msg('ID：'+ data.id + ' 的查看操作');
+                    xadmin.open('申请工时详情','/ba-apply-check/workattendance/detail/' + data.id,1000,545);
                 } else if(obj.event === 'check'){
                     if (checkStatus == checkStatusPass || checkStatus == checkStatusNoPass) {
                         layer.msg("记录处于【审核通过】或者【审核未通过】状态，不能审核",{icon:5});

@@ -8,9 +8,11 @@ import com.settlement.co.ApplyCo;
 import com.settlement.entity.BaApply;
 import com.settlement.entity.BaApplyAttendance;
 import com.settlement.entity.BaWorkAttendance;
+import com.settlement.entity.SysRole;
 import com.settlement.mapper.BaApplyAttendanceMapper;
 import com.settlement.mapper.BaApplyMapper;
 import com.settlement.mapper.BaWorkAttendanceMapper;
+import com.settlement.mapper.SysRoleMapper;
 import com.settlement.service.BaApplyService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.settlement.utils.Const;
@@ -42,6 +44,8 @@ public class BaApplyServiceImpl extends ServiceImpl<BaApplyMapper, BaApply> impl
     private BaApplyAttendanceMapper baApplyAttendanceMapper;
     @Autowired
     private BaWorkAttendanceMapper baWorkAttendanceMapper;
+    @Autowired
+    private SysRoleMapper sysRoleMapper;
     /**
      * 加载列表页面
      * @param applyCo
@@ -61,6 +65,11 @@ public class BaApplyServiceImpl extends ServiceImpl<BaApplyMapper, BaApply> impl
     @Override
     public PageData listCheckWorkAttendancePageData(ApplyCo applyCo) {
         Page<BaApplyVo> page = new Page<>(applyCo.getPage(),applyCo.getLimit());
+        Map<String,Object> roleMap = new HashMap<>();
+        roleMap.put("delFlag",Const.DEL_FLAG_N);
+        roleMap.put("userId",applyCo.getCheckUser());
+        SysRole sysRole = sysRoleMapper.getSysRoleByUserId(roleMap);
+        applyCo.setRoleCode(sysRole.getRoleCode());
         page.setRecords(this.baseMapper.listCheckWorkAttendancePageData(applyCo,page));
         return new PageData(page.getTotal(),page.getRecords());
     }
@@ -74,7 +83,8 @@ public class BaApplyServiceImpl extends ServiceImpl<BaApplyMapper, BaApply> impl
     public PageData listApplyWorkAttendancelistPageData(ApplyCo applyCo) {
         Page<BaWorkAttendanceVo> page = new Page<>(applyCo.getPage(),applyCo.getLimit());
         BaApply baApply = this.baseMapper.selectById(applyCo.getId());
-        applyCo.setApplyUser(baApply.getApplyUser());
+        applyCo.setUpdateStatus(Const.SUB_STATUS_A);
+        //applyCo.setApplyUser(baApply.getApplyUser());
         page.setRecords(this.baseMapper.listApplyWorkAttendancelistPageData(applyCo,page));
         return new PageData(page.getTotal(),page.getRecords());
     }
@@ -170,6 +180,7 @@ public class BaApplyServiceImpl extends ServiceImpl<BaApplyMapper, BaApply> impl
             baApply.setApplyType(baApplyVo.getApplyType());
             baApply.setApplyRemark(baApplyVo.getApplyRemark());
             baApply.setCheckStatus(baApplyVo.getCheckStatus());
+            baApply.setPgId(baApplyVo.getPgId());
             baApply.setApplyTime(new Date());
             baApply.setApplyUser(baApplyVo.getApplyUser());
             baApply.setCheckUser(baApplyVo.getCheckUser());
@@ -184,7 +195,7 @@ public class BaApplyServiceImpl extends ServiceImpl<BaApplyMapper, BaApply> impl
                     BaApplyAttendance baApplyAttendance = new BaApplyAttendance();
                     baApplyAttendance.setApplyId(baApply.getId());
                     baApplyAttendance.setAttendanceId(applyAttendanceId);
-                    baApplyAttendance.setUpdateStatus(Const.SUB_STATUS_N);
+                    baApplyAttendance.setUpdateStatus(Const.SUB_STATUS_A);
                     baApplyAttendance.setOperTime(new Date());
                     list.add(baApplyAttendance);
                     BaWorkAttendance baWorkAttendance = baWorkAttendanceMapper.selectById(applyAttendanceId);

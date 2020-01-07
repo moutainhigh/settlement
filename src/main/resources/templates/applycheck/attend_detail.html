@@ -9,16 +9,6 @@
         <div class="layui-col-md12">
             <div class="layui-card">
 
-                <div class="layui-card-header">
-                    <form  style="display: inline;" onsubmit="return false">
-                        <div class="layui-inline layui-show-xs-block">
-                            <input type="text" id="keyword" name="keyword"  placeholder="查询员工姓名或编号" autocomplete="off" class="layui-input">
-                        </div>
-                        <div class="layui-inline layui-show-xs-block">
-                            <button class="layui-btn" id="search" data-type="reload" lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i>查询</button>
-                        </div>
-                    </form>
-                   </div>
                 <div class="layui-card-body layui-table-body layui-table-main" >
                     <table class="layui-table layui-form" id="dataTable" lay-filter="dataTable">
                     </table>
@@ -28,16 +18,6 @@
     </div>
 </div>
 </body>
-<script type="text/html" id="toolBarHead">
-    <div class="layui-btn-container">
-        <button type="button" id="commmit" data-type="commmit" class="layui-btn layui-btn-normal">提交</button>
-    </div>
-</script>
-<script type="text/html" id="toolBar">
-    <div class="layui-btn-container">
-        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    </div>
-</script>
 <script id="subStatusTpl" type="text/html">
     {{#  if(d.subStatusContent === '修改中'){ }}
     <span style="color: #71C671;font-weight: bold;">{{ d.subStatusContent }}</span>
@@ -64,7 +44,7 @@
             // toolbar: '',
             page: true,
             title: '考勤记录',
-            height: 'full-210',
+            height: 'full-100',
             toolbar: '#toolBarHead',
             defaultToolbar: ['filter', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
                 title: '提示'
@@ -73,7 +53,7 @@
             }],
             where: {
                 id: [[${applyId}]]
-                ,mode:'check'
+                ,mode:'view'
             },
             // id: 'userData',
             cols: [
@@ -108,7 +88,7 @@
                     {field:'subStatusContent',title:'状态',align:'center',templet: '#subStatusTpl'},
                     {field:'subStatus',title:'subStatus',hide:true},
                     {field:'remark',title:'备注',align:'center'}
-                    ,{fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:75}
+
              ]
             ]
             ,done: function(res,curr,count) {
@@ -124,103 +104,9 @@
         });
 
         var $ = layui.$, active = {
-            reload: function(){
-                var keyword = $('#keyword');
-                //执行重载
-                table.reload('dataTable', {
-                    page: {
-                        curr: 1 //重新从第 1 页开始
-                    }
-                    ,where: {
-                        keyword: keyword.val()
-                    }
-                }, 'data');
-            }
-            // ,edit:function () {
-            //     checkBoxCheckedOper('修改考勤记录','/ba-work-attendance/edit/',table,layer,800,450);
-            // }
-            ,commmit:function () {
-                commmitOper('/ba-apply/work-attendance/commit/',table,layer);
-            }
 
         };
-        $('.layui-btn').on('click', function(){
-            var type = $(this).data('type');
-            active[type] ? active[type].call(this) : '';
-        });
-        // 监听工具栏
-        table.on('tool(dataTable)', function(obj){
-            var data = obj.data;
-             if(obj.event === 'edit' && data.subStatus!='S'){
-                 xadmin.open('修改考勤记录','/ba-work-attendance/edit/'+ data.id,800,450);
-            }
-        });
 
     });
-    function commmitOper(url, table, layer) {
-        var checkStatus = table.checkStatus('dataTable')
-            ,data = checkStatus.data;
-        if (data.length == 0) {
-            layer.alert('请先选择一行',{icon : 5});
-        }else if (data.length >= 1) {
-            var ids2=[];
-            for(var i=0;i<data.length;i++) {
-                ids2[i]=data[i].id;
-                //存在修改的记录，不要重复提交
-            }
-            layer.open({
-                content: '确认提交考勤记录数据？'
-                ,btn: ['确定','取消']
-                ,yes: function(index){
-                    // 发送ajax请求  提交考勤记录数据
-                    $.ajax({
-                        url:url+ids2,
-                        type:'put',
-                        success: function(r){
-                            if("commit_200"==r.code){
-                                layer.close(index);
-                                layer.msg('提交成功', {icon: 6});
-                                //执行重载
-                                table.reload('dataTable', {
-                                    page: {
-                                        curr: 1 //重新从第 1 页开始
-                                    }
-                                }, 'data');
-                            } else {
-                                layer.msg('提交失败', {icon: 5});
-                            }
-                        }
-                    });
-                }
-                ,btn2: function(index){
-                    //按钮【按钮二】的回调
-                    layui.table.render();
-                    layer.close(index);
-                }
-                ,cancel: function(){
-                    //右上角关闭回调
-                    layui.table.render();
-                }
-            });
-        }
-    }
-    /** 复选框选中操作 */
-    // function checkBoxCheckedOper(title, url, table, layer,w,h) {
-    //     var checkStatus = table.checkStatus('dataTable')
-    //         ,data = checkStatus.data;
-    //     if (data.length == 0) {
-    //         layer.alert('请先选择一行',{icon : 5});
-    //     }else if (data.length > 1) {
-    //         layer.alert('不能多选啊，只能选择一行',{icon : 5});
-    //     }else if(data.length == 1) {
-    //         //xadmin.open(title,url + data[0].id,w,h);
-    //         // 项目组只有处于审核通过状态才能操作
-    //         // if (data[0].checkStatus == passCheckStatus) {
-    //              xadmin.open(title,url + data[0].id,w,h);
-    //         // } else {
-    //         //     layer.msg("项目组只有处于【审核通过】状态才能" + title,{icon:5});
-    //         // }
-    //     }
-    // }
 </script>
 </html>

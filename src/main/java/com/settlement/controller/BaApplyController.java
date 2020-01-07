@@ -10,6 +10,7 @@ import com.settlement.service.BaApplyService;
 import com.settlement.utils.Result;
 import com.settlement.vo.ApplyWorkAttendanceVo;
 import com.settlement.vo.BaApplyVo;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,6 +49,8 @@ public class BaApplyController {
      */
     @GetMapping("/apply/workattendancelist/pagedata")
     public PageData listApplyWorkAttendancelistPageData(ApplyCo applyCo){
+        SysUser user = (SysUser) SecurityUtils.getSubject().getPrincipal();
+        applyCo.setApplyUser(user.getId());
         PageData pageData = baApplyService.listApplyWorkAttendancelistPageData(applyCo);
         return  pageData;
     }
@@ -58,6 +61,8 @@ public class BaApplyController {
      */
     @GetMapping("/check/workattend/pagedata")
     public PageData listCheckPageData(ApplyCo applyCo){
+        SysUser user = (SysUser) SecurityUtils.getSubject().getPrincipal();
+        applyCo.setCheckUser(user.getId());
         PageData pageData = baApplyService.listCheckWorkAttendancePageData(applyCo);
         return  pageData;
     }

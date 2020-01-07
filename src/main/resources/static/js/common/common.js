@@ -116,6 +116,24 @@ function edit(data, layer, url) {
     });
 }
 
+/**
+ * 列表页根据条件禁用
+ * @param res
+ * @param status
+ * @param value
+ */
+function checkboxDisable(res,status,value) {
+    res.data.forEach(function (item, index) {
+        if (eval(status) == value) {
+            var tr = $("tr[data-index='" + index + "']");
+            tr.attr({"style":"color:red;font-weight:bold"});
+            var td = $(tr.find("td[data-field='id']"));
+            var checkbox = $(td.find("input[type='checkbox']"));
+            checkbox.attr("disabled",true);
+            checkbox.remove();
+        }
+    });
+}
 /** 启用 */
 function start(url) {
     $.ajax({
