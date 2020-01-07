@@ -91,7 +91,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      * @return
      */
     @Override
-    public List<SysRole> findRoleByUserId(Integer userId) {
+    public SysRole findRoleByUserId(Integer userId) {
         Map<String,Object> map = new HashMap<>();
         map.put("userId",userId);
         map.put("delFlag",Const.DEL_FLAG_N);

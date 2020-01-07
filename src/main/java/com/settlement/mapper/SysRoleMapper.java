@@ -21,8 +21,8 @@ import java.util.Map;
 @Repository
 public interface SysRoleMapper extends BaseMapper<SysRole> {
 
-    @Select("SELECT r.id, r.role_cn_name, r.role_code  FROM sys_role r, sys_user_role ur WHERE r.del_flag = #{delFlag} ur.role_id = r.id AND ur.user_id = #{userId}")
-    List<SysRole> getSysRoleByUserId(Map<String,Object> map);
+    @Select("SELECT r.id, r.role_cn_name,r.role_en_name,r.role_code,r.remark,r.create_user_id,r.create_time,r.del_flag  FROM sys_role r, sys_user_role ur WHERE r.del_flag = #{delFlag} and ur.role_id = r.id AND ur.user_id = #{userId}")
+    SysRole getSysRoleByUserId(Map<String,Object> map);
 
     @Select("SELECT sr.id, sr.role_cn_name,sr.role_code FROM sys_role sr,sys_dept_role sdr WHERE sr.del_flag = #{delFlag} and sr.id = sdr.role_id and sdr.dept_id = #{deptId}")
     List<SysRole> getRolesByDeptId(Map<String,Object> map);

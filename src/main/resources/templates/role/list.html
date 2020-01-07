@@ -29,7 +29,7 @@
                             </form>
                         </div>
                         <div class="layui-card-header">
-                            <button class="layui-btn" onclick="xadmin.open('添加角色','/sys-role/toAddorUpdate/add/0',1000,600)"><i class="layui-icon"></i>添加</button>
+                            <button class="layui-btn" onclick="xadmin.open('添加角色','/sys-role/toAddorUpdate/add/0',700,300)"><i class="layui-icon"></i>添加</button>
                         </div>
                         <div class="layui-card-body layui-table-body layui-table-main" >
                             <table class="layui-table layui-form" id="dataTable" lay-filter="dataTable">
@@ -43,6 +43,7 @@
     <script type="text/html" id="toolBar">
         <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+        <a class="layui-btn layui-btn-xs" lay-event="assign">权限</a>
     </script>
     <script type="text/javascript"  th:inline="none">
         layui.use(['laydate','table','form','element'], function(){
@@ -64,7 +65,7 @@
                   {field: 'roleCode', title: '角色代码', align: 'center'},
                   {field: 'remark', title: '角色标记', align: 'center'},
                   {field: 'createTime', title: '创建时间', align: 'center'},
-                  {fixed: 'right', title: '操作', align: 'center', toolbar: '#toolBar', width: 130}
+                  {fixed: 'right', title: '操作', align: 'center', toolbar: '#toolBar', width: 210}
               ]]
           });
           var $ = layui.$, active = {
@@ -97,7 +98,9 @@
                       layer.close(index);
                   });
               } else if (obj.event === 'edit') {
-                  xadmin.open('编辑数据字典', '/sys-role/toAddorUpdate/update/' + data.id, 1000, 600);
+                  xadmin.open('编辑数据字典', '/sys-role/toAddorUpdate/update/' + data.id, 700, 300);
+              } else if(obj.event == 'assign') {
+                  xadmin.open('权限分配', '/sys-role/toAssignRole/' + data.id, 500, 600);
               }
           });
 
