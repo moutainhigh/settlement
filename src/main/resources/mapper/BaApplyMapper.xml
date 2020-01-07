@@ -8,6 +8,7 @@
         <result column="apply_type" property="applyType" />
         <result column="apply_remark" property="applyRemark" />
         <result column="check_status" property="checkStatus" />
+        <result column="pg_id" property="pgId" />
         <result column="apply_time" property="applyTime" />
         <result column="apply_user" property="applyUser" />
         <result column="check_user" property="checkUser" />
@@ -22,6 +23,7 @@
             d.dic_content as applyTypeContent,
             a.apply_remark as applyRemark,
             a.check_status as checkStatus,
+            a.pg_id as pgId,
             a.apply_user as applyUser,
             u1.real_name as applyUserContent,
             d1.dic_content as checkStatusContent,
@@ -51,6 +53,7 @@
             a.id as id,
             d.dic_content as applyTypeContent,
             a.apply_user as applyUser,
+            a.pg_id as pgId,
             u1.real_name as applyUserContent,
             g.pg_name as projectName,
             a.apply_remark as applyRemark,
@@ -66,7 +69,12 @@
         left join sys_data_dic d1 on a.check_status = d1.dic_code
         left join sys_user u on a.check_user=u.id
         left join sys_user u1 on a.apply_user=u1.id
-        order by a.check_time desc,a.apply_time desc
+        where 1=1
+        <if test="applyCo.roleCode=='ASSISTANT'">
+            and a.check_user=#{applyCo.checkUser}
+        </if>
+
+        order by a.apply_time desc,a.check_time desc
     </select>
 <!--    根据id 获得BaApplyVo-->
     <select id="getApplyVoById" parameterType="java.util.Map" resultType="com.settlement.vo.BaApplyVo">
@@ -74,6 +82,7 @@
         d.dic_content as applyTypeContent,
         a.apply_remark as applyRemark,
         a.check_status as checkStatus,
+        a.pg_id as pgId,
         a.apply_user as applyUser,
         u1.real_name as applyUserContent,
         d1.dic_content as checkStatusContent,
@@ -132,5 +141,11 @@
         inner join ba_employee e on pe.emp_id=e.id
         where a.id=#{applyCo.id}
         and a.apply_user=#{applyCo.applyUser}
+        <if test="applyCo.mode!='view'" >
+            and aa.update_status=#{applyCo.updateStatus}
+        </if>
+        <if test="applyCo.keyword!=null" >
+            and CONCAT(w.employee_id,e.emp_name) like CONCAT('%',#{applyCo.keyword},'%')
+        </if>
     </select>
 </mapper>

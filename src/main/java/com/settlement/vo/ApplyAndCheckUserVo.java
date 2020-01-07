@@ -9,5 +9,6 @@ public class ApplyAndCheckUserVo {
     private Integer applyUserId;
     private Integer checkUserId;
     private String checkUserName;
+    private Integer pgId;
     private Integer[] ids;
 }

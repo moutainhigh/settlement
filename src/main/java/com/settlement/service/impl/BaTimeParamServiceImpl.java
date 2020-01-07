@@ -282,12 +282,22 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
     public List<String> getTimeYearValue() {
         List<String> years = new ArrayList<>();
         Calendar cal = Calendar.getInstance();
+        String currentMonth=String.valueOf(cal.get(Calendar.MONTH)+1);
+        //1月份
+        if("1".equals(currentMonth)) {
+            String lastYear = String.valueOf(cal.get(Calendar.YEAR)-1);
+            years.add(lastYear);
+        }
         String year = String.valueOf(cal.get(Calendar.YEAR));
         years.add(year);
         return years;
 
     }
 
+    /**
+     * 获得当前月和上个月
+     * @return
+     */
     @Override
     public List<String> getTimeMonthValue() {
         List<String> months = new ArrayList<>();
@@ -295,7 +305,13 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
         String currentMonth=String.valueOf(cal.get(Calendar.MONTH)+1);
         String lastMonth=String.valueOf(cal.get(Calendar.MONTH));
         months.add(currentMonth);
-        months.add(lastMonth);
+        //1月份
+        if("1".equals(currentMonth)) {
+            months.add("12");
+        } else {
+            months.add(lastMonth);
+        }
+
         return months;
 
     }

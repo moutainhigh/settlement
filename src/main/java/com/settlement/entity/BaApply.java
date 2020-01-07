@@ -34,6 +34,8 @@ public class BaApply extends Model<BaApply> {
 
     private String checkStatus;
 
+    private Integer pgId;
+
     private Date applyTime;
 
     private Integer applyUser;

@@ -356,7 +356,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         map.put("deptId",deptId);
         map.put("roleId",Const.ROLE_CODE_AM);
         Result r = new Result(HttpResultEnum.CODE_1.getCode(),HttpResultEnum.CODE_1.getMessage());
-        List<SysDeptRoleUserVo> sysDeptRoleUserVos = this.baseMapper.getDeptRoleUsers(deptId);
+        List<SysDeptRoleUserVo> sysDeptRoleUserVos = this.baseMapper.getDeptRoleUsers(map);
         if(sysDeptRoleUserVos!=null) {
             r.setCode(HttpResultEnum.CODE_0.getCode());
             r.setMsg(HttpResultEnum.CODE_0.getMessage());

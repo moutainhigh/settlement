@@ -106,17 +106,11 @@
                         }
                     },
                     paramValue: function (value) {
-                        if (!/^\d+$/.test(value.trim())) {
-                            return '时间点参数值至少1位，且只能是数字';
-                        }
-                    },
-                    sort:function (value) {
-                        if (!/^\d+$/.test(value.trim())) {
-                            return '显示顺序至少1位，且只能是数字';
+                        var val = Number(value)
+                        if (!/^\d+$/.test(value.trim()) || val<1 || val>31) {
+                            return '时间点参数值至少1位，且只能是数字1-31';
                         }
                     }
-
-
                 });
                 //绑定创建客户按钮
                 $('#customerCreate').click(function () {

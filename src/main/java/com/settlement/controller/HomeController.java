@@ -196,6 +196,17 @@ public class HomeController {
     }
 
     /**
+     * 权限分配页
+     * @param roleId
+     * @param model
+     * @return
+     */
+    @GetMapping("/sys-role/toAssignRole/{roleId}")
+    public String toAssignRole(@PathVariable(value="roleId") Integer roleId,Model model){
+        model.addAttribute("roleId",roleId);
+        return "role/assign_role";
+    }
+    /**
      * 菜单管理列表
      * @return
      */
@@ -757,14 +768,14 @@ public class HomeController {
      * 考勤管理-申请修改
      * @return
      */
-    @GetMapping("/ba-work-attendance/applymodify/{checkUserId}/{ids}")
-    public String toApplymodifyPage(@PathVariable Integer checkUserId,@PathVariable Integer[] ids,Model model, HttpSession session){
+    @GetMapping("/ba-work-attendance/applymodify/{checkUserId}/{projectId}/{ids}")
+    public String toApplymodifyPage(@PathVariable Integer checkUserId,@PathVariable Integer projectId,@PathVariable Integer[] ids,Model model, HttpSession session){
         model.addAttribute("workAttendanceIds",ids);
         //申请人
         SysUser applyUser = (SysUser)session.getAttribute("user");
         //审核人AM
         SysUser checkUser= sysUserService.getById(checkUserId);
-        ApplyAndCheckUserVo applyAndCheckUserVo = new ApplyAndCheckUserVo(applyUser.getId(),checkUser.getId(),checkUser.getRealName(),ids);
+        ApplyAndCheckUserVo applyAndCheckUserVo = new ApplyAndCheckUserVo(applyUser.getId(),checkUser.getId(),checkUser.getRealName(),projectId,ids);
         model.addAttribute("applyAndCheckUserVo",applyAndCheckUserVo);
         return "workattendance/applymodify";
     }
@@ -875,6 +886,7 @@ public class HomeController {
     @GetMapping("/ba-apply/workattendancelist/{id}")
     public String toApplyWorkattendancelist(@PathVariable Integer id,Model model){
         model.addAttribute("applyId",id);
+       // model.addAttribute("mode","check");
         return "apply/attendlist";
     }
 
@@ -973,6 +985,12 @@ public class HomeController {
         return "applycheck/check";
     }
 
+    @GetMapping("/ba-apply-check/workattendance/detail/{id}")
+    public String totoApplyWorkattendanceDetailPage(@PathVariable(value="id") Integer id,Model model){
+        model.addAttribute("applyId", id);
+       // model.addAttribute("mode","view");
+        return "applycheck/attend_detail";
+    }
     /**
      * @description 员工申请审核:详细
      *

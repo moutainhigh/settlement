@@ -16,6 +16,7 @@ import com.settlement.vo.CheckStatusVo;
 import com.settlement.vo.SelectVo;
 import com.settlement.vo.SysDataDicListVo;
 import com.settlement.vo.SysDataDicVo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -203,21 +204,38 @@ public class SysDataDicServiceImpl extends ServiceImpl<SysDataDicMapper, SysData
     public PageData listPageData(DataDicCo dataDicCo) {
         dataDicCo.setDelFlag(Const.DEL_FLAG_N);
         Page<SysDataDicVo> page = new Page<SysDataDicVo>(dataDicCo.getPage(),dataDicCo.getLimit());
-        dataDicCo.setPid(Const.DATA_DIC_ROOT);
-        List<SysDataDicVo> sysDataDicList = sysDataDicMapper.getDataDicVoByPid(dataDicCo,page);
+        List<SysDataDicVo> sysDataDicList = new ArrayList<>();
         List<SysDataDicVo> sysPageDataDicList = new ArrayList<>();
-        for(SysDataDicVo sysDataDic: sysDataDicList){
-            if(sysDataDic.getDicCode().equals(Const.DATA_DIC_ROOT))
-                continue;
-            sysPageDataDicList.add(sysDataDic);
-            dataDicCo.setPid(sysDataDic.getDicCode());
-            List<SysDataDicVo> sysDataDicList2 = sysDataDicMapper.getDataDicVoByPid(dataDicCo,page);
+        if(StringUtils.isNotBlank(dataDicCo.getKeyword())){
+            sysPageDataDicList = sysDataDicMapper.getDataDicVoByPid(dataDicCo);
+        } else {
+            dataDicCo.setPid(Const.DATA_DIC_ROOT);
+            dataDicCo.setKeyword(null);
+            sysDataDicList = sysDataDicMapper.getDataDicVoByPid(dataDicCo);
+            sysPageDataDicList = new ArrayList<>();
+            for(SysDataDicVo sysDataDic: sysDataDicList){
+                if(sysDataDic.getDicCode().equals(Const.DATA_DIC_ROOT))
+                    continue;
+                sysPageDataDicList.add(sysDataDic);
+                dataDicCo.setPid(sysDataDic.getDicCode());
+                List<SysDataDicVo> sysDataDicList2 = sysDataDicMapper.getDataDicVoByPid(dataDicCo);
 
-            for(SysDataDicVo sysDataDic2: sysDataDicList2){
-                sysPageDataDicList.add(sysDataDic2);
+                for(SysDataDicVo sysDataDic2: sysDataDicList2){
+                    sysPageDataDicList.add(sysDataDic2);
+                }
             }
         }
-        page.setRecords(sysPageDataDicList);
+
+        int totalCount = sysPageDataDicList.size();
+        int pageCount = dataDicCo.getPage();
+        int limitCount = dataDicCo.getLimit();
+        if(totalCount<=limitCount){
+            page.setRecords(sysPageDataDicList);
+        } else {
+            page.setRecords(sysPageDataDicList.subList((pageCount-1)*limitCount,
+                    totalCount>pageCount*limitCount?pageCount*limitCount:totalCount));
+        }
+        //totalCount%limitCount<=
         page.setTotal(sysPageDataDicList.size());
         return new PageData(page.getTotal(),page.getRecords());
     }

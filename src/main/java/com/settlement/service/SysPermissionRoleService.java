@@ -14,6 +14,8 @@ import com.settlement.vo.SysRoleVo;
  * @since 2019-11-26
  */
 public interface SysPermissionRoleService extends IService<SysPermissionRole> {
-
+    /**更新角色信息**/
     Result savePermissionRoles(SysRoleVo sysRoleVo);
+    /**根据roleId获得对应的permission**/
+    Result getCheckedPermissionValueByRoleId(Integer roleId);
 }

@@ -30,6 +30,12 @@ public class SysPermissionRoleServiceImpl extends ServiceImpl<SysPermissionRoleM
 
     @Autowired
     private SysPermissionRoleMapper sysPermissionRoleMapper;
+
+    /**
+     * 更新角色信息
+     * @param sysRoleVo
+     * @return
+     */
     @Override
     public Result savePermissionRoles(SysRoleVo sysRoleVo) {
         Result r =  new Result(HttpResultEnum.ADD_CODE_500.getCode(),HttpResultEnum.ADD_CODE_500.getMessage());
@@ -56,6 +62,30 @@ public class SysPermissionRoleServiceImpl extends ServiceImpl<SysPermissionRoleM
         } catch (Exception e) {
             e.printStackTrace();
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+        return r;
+    }
+
+    /**
+     * 根据roleId获得对应的permission
+     * @param roleId
+     * @return
+     */
+    @Override
+    public Result getCheckedPermissionValueByRoleId(Integer roleId) {
+        Result r = new Result(HttpResultEnum.CODE_1.getCode(),HttpResultEnum.CODE_1.getMessage());
+        QueryWrapper<SysPermissionRole> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("role_id",roleId);
+        List<SysPermissionRole> sysPermissionRoles = this.baseMapper.selectList(queryWrapper);
+        String permissionIds="";
+        for(SysPermissionRole sysPermissionRole : sysPermissionRoles) {
+            permissionIds += sysPermissionRole.getPermissionId()+",";
+        }
+        if(permissionIds.length()>0) {
+            permissionIds = permissionIds.substring(0,permissionIds.length()-1);
+            r.setCode(HttpResultEnum.CODE_0.getCode());
+            r.setMsg(HttpResultEnum.CODE_0.getMessage());
+            r.setData(permissionIds);
         }
         return r;
     }

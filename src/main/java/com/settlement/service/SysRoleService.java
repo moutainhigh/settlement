@@ -19,7 +19,7 @@ import java.util.List;
  */
 public interface SysRoleService extends IService<SysRole> {
     /**根据角色查询用户**/
-    List<SysRole> findRoleByUserId(Integer userId);
+    SysRole findRoleByUserId(Integer userId);
     /**根据角色查询部门**/
     Result getRolesByDeptId(Integer deptId);
     /**添加角色**/

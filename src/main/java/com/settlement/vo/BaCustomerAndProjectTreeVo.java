@@ -4,8 +4,9 @@ import lombok.Data;
 
 @Data
 public class BaCustomerAndProjectTreeVo {
-    private Integer id;
+    private String id;
     private String title;
-    private Integer parentId;
+    private String parentId;
     private String checkArr;
+    private boolean isLeaf;
 }

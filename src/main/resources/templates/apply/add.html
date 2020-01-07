@@ -1,221 +1,294 @@
-<span class="x-red">*</span<!DOCTYPE html>
-                                <html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
 
-                                <head>
-                                    <th:bolck th:include="common/header :: header('添加用户')" />
-                                    <link rel="stylesheet" th:href="@{/css/formSelects-v4.css}" />
-                                </head>
-                                <body>
-                                <div class="layui-fluid">
-                                    <div class="layui-row">
-                                        <form class="layui-form">
-                                            <input type="hidden" name="id" th:value="${baContract.id}" th:if="${baContract!=null}" />
-                                            <div class="layui-form-item">
-                                                <div class="layui-form-item">
-                                                    <label for="contractNo" class="layui-form-label">
-                                                        <span class="x-red">*</span>合同编号</label>
-                                                    <div class="layui-input-inline">
-                                                        <input type="text" id="contractNo" name="contractNo" th:readonly="${mode.equals('update')}?true" th:value="${mode.equals('update')}?${baContract.contractNo}" required="" lay-verify="contractNo" autocomplete="off"  placeholder="请输入合同编号" class="layui-input" maxlength="20">
-                                                    </div>
-                                                    <div class="layui-input-inline">
-                                                        <button type="button" id="contractNoIsExist" th:if="${mode.equals('add')}" lay-filter="contractNoIsExist" class="layui-btn layui-btn-primary layui-btn-xs">检查合同编号是否可用</button>
-                                                    </div>
+<head>
+    <th:bolck th:include="common/header :: header('添加用户')" />
+    <link rel="stylesheet" th:href="@{/css/formSelects-v4.css}" />
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+            <input type="hidden" name="id" th:value="${baWork.id}" th:if="${baWork!=null}" />
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label for="employeeId" class="layui-form-label">
+                        <span class="x-red">*</span>员工编号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="employeeId" name="employeeId" readonly th:value="${baWork.employeeId}" required="" lay-verify="employeeId" autocomplete="off"  placeholder="请输入合同编号" class="layui-input" maxlength="20">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label for="employeeName" class="layui-form-label">
+                        <span class="x-red">*</span>员工姓名</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="employeeName" name="employeeName" disabled="true" readonly th:value="${baWork.employeeName}"  required="" lay-verify="employeeName" autocomplete="off" placeholder="请输入开票抬头" class="layui-input" maxlength="20">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label for="workDays" class="layui-form-label">
+                        <span class="x-red">*</span>标准工作天数</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="workDays" name="workDays"  readonly th:value="${baWork.workDays}"  required="" lay-verify="workDays" autocomplete="off" placeholder="标准工作天数" class="layui-input" maxlength="20">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label for="attendanceDays" class="layui-form-label">
+                        <span class="x-red">*</span>出勤天数</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="attendanceDays" name="attendanceDays" th:value="${baWork.attendanceDays}"  required="" lay-verify="attendanceDays" autocomplete="off" placeholder="出勤天数" class="layui-input" maxlength="20">
+                    </div>
+                </div>
 
-                                                </div>
-                                                <div class="layui-form-item">
-                                                    <label for="invoiceIssuing" class="layui-form-label">
-                                                        <span class="x-red">*</span>开票抬头</label>
-                                                    <div class="layui-input-inline">
-                                                        <input type="text" id="invoiceIssuing" name="invoiceIssuing" th:value="${mode.equals('update')}?${baContract.invoiceIssuing}"  required="" lay-verify="invoiceIssuing" autocomplete="off" placeholder="请输入开票抬头" class="layui-input" maxlength="20">
-                                                    </div>
+                <div class="layui-inline">
+                    <label for="absenteeismDays" class="layui-form-label">
+                        <span class="x-red">*</span>缺勤天数</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="absenteeismDays" name="absenteeismDays" th:value="${baWork.absenteeismDays}" required="" lay-verify="absenteeismDays" autocomplete="off"  placeholder="缺勤天数" class="layui-input" maxlength="20">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label for="floatPerformance" class="layui-form-label">
+                        浮动绩效</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="floatPerformance" name="floatPerformance" th:value="${baWork.floatPerformance}"  required="" lay-verify="floatPerformance" autocomplete="off" placeholder="请输入开票抬头" class="layui-input" maxlength="20">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label for="bonus" class="layui-form-label">
+                        奖金</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="bonus" name="bonus" th:value="${baWork.bonus}"  required="" lay-verify="bonus" autocomplete="off" placeholder="标准工作天数" class="layui-input" maxlength="20">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label for="checkWorkDays" class="layui-form-label">
+                        核算工作天数</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="checkWorkDays" name="checkWorkDays" th:value="${baWork.checkWorkDays}"  required="" lay-verify="checkWorkDays" autocomplete="off" placeholder="出勤天数" class="layui-input" maxlength="20">
+                    </div>
+                </div>
 
-                                                </div>
-                                                <div class="layui-form-item">
-                                                    <label for="customerId" class="layui-form-label">
-                                                        <span class="x-red">*</span>客户</label>
+                <div class="layui-inline">
+                    <label for="workDayOvertimeH" class="layui-form-label">
+                        工作日加班（小时）</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="workDayOvertimeH" name="workDayOvertimeH" th:value="${baWork.workDayOvertimeH}" required="" lay-verify="workDayOvertimeH" autocomplete="off"  placeholder="请输入合同编号" class="layui-input" maxlength="20">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label for="weekendOvertimeH" class="layui-form-label">
+                        周末加班（小时）</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="weekendOvertimeH" name="weekendOvertimeH" th:value="${baWork.weekendOvertimeH}"  required="" lay-verify="weekendOvertimeH" autocomplete="off" placeholder="请输入开票抬头" class="layui-input" maxlength="20">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label for="festivalOvertimeH" class="layui-form-label">
+                        法定节假日加班（小时）</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="festivalOvertimeH" name="festivalOvertimeH" th:value="${baWork.festivalOvertimeH}"  required="" lay-verify="festivalOvertimeH" autocomplete="off" placeholder="标准工作天数" class="layui-input" maxlength="20">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label for="workDayOvertimeD" class="layui-form-label">
+                       工作日加班（天）</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="workDayOvertimeD" name="workDayOvertimeD" th:value="${baWork.workDayOvertimeD}"  required="" lay-verify="workDayOvertimeD" autocomplete="off" placeholder="出勤天数" class="layui-input" maxlength="20">
+                    </div>
+                </div>
 
-                                                    <div class="layui-input-inline" >
-                                                        <select id="customerId" name="customerId" lay-filter="customerId" lay-verify="customerId" th:field="*{baContract.customerId}">
-                                                            <option value="0">请选择客户</option>
-                                                            <option th:each="baCustomer:${baCustomers}" th:value="${baCustomer.id}" th:text="${baCustomer.customerName}" >
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="layui-form-item">
-                                                    <label for="baProjectGroupId" class="layui-form-label">
-                                                        <span class="x-red">*</span>项目组</label>
-                                                    <div class="layui-input-inline">
-                                                        <select id="baProjectGroupId" name="baProjectGroupId" lay-filter="baProjectGroupId" lay-verify="baProjectGroupId" th:field="*{baContract.baProjectGroupId}">
-                                                            <option value="0">请选择项目</option>
-                                                            <option th:if="${mode.equals('update')}" th:each="project:${baProjectGroups}" th:value="${project.id}" th:text="${project.pgName}">
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="layui-form-item">
-                                                    <label for="startTime" class="layui-form-label">
-                                                        <span class="x-red">*</span>开始日期</label>
-                                                    <div class="layui-input-inline">
-                                                        <input type="text" name="startTime" id="startTime" lay-verify="startTime" lay-filter="startTime" th:value="${mode.equals('update')}?${#dates.format(baContract.startTime,'yyyy-MM-dd')}" autocomplete="off" class="layui-input">
-                                                    </div>
-                                                </div>
-                                                <div class="layui-form-item">
-                                                    <label for="endTime" class="layui-form-label">
-                                                        >结束日期</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="endTime" id="endTime" lay-verify="endTime" lay-filter="endTime"  th:value="${mode.equals('update')}?${#dates.format(baContract.endTime,'yyyy-MM-dd')}" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-form-item layui-form-text">
-                            <label class="layui-form-label">备注</label>
-                            <div class="layui-input-block">
-                                <textarea name="remark" id="remark" placeholder="请输入备注内容" class="layui-textarea"></textarea>
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label for="add" class="layui-form-label"></label>
-                            <button class="layui-btn" id="add" th:text="${mode.equals('add')}?'增加' : '修改'" lay-filter="add" lay-submit="">增加</button>
-                        </div>
-                   </div>
-                </form>
+                <div class="layui-inline">
+                    <label for="weekendOvertimeD" class="layui-form-label">
+                        周末加班（天）</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="weekendOvertimeD" name="weekendOvertimeD"  th:value="${baWork.weekendOvertimeD}" required="" lay-verify="weekendOvertimeD" autocomplete="off"  placeholder="请输入合同编号" class="layui-input" maxlength="20">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label for="festivalOvertimeD" class="layui-form-label">
+                        法定节假日加班（天）</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="festivalOvertimeD" name="festivalOvertimeD" th:value="${baWork.festivalOvertimeD}"  required="" lay-verify="festivalOvertimeD" autocomplete="off" placeholder="请输入开票抬头" class="layui-input" maxlength="20">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label for="remainderOvertimeLmH" class="layui-form-label">
+                        上月剩余加班（小时）</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="remainderOvertimeLmH" name="remainderOvertimeLmH" th:value="${baWork.remainderOvertimeLmH}"  required="" lay-verify="remainderOvertimeLmH" autocomplete="off" placeholder="标准工作天数" class="layui-input" maxlength="20">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label for="monthOvertimeH" class="layui-form-label">
+                        本月加班（小时）</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="monthOvertimeH" name="monthOvertimeH" th:value="${baWork.monthOvertimeH}"  required="" lay-verify="monthOvertimeH" autocomplete="off" placeholder="出勤天数" class="layui-input" maxlength="20">
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label for="takeHoursOff" class="layui-form-label">
+                        调休（小时）</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="takeHoursOff" name="takeHoursOff"  th:value="${baWork.takeHoursOff}" required="" lay-verify="takeHoursOff" autocomplete="off"  placeholder="请输入合同编号" class="layui-input" maxlength="20">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label for="details" class="layui-form-label">
+                        调休详情</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="details" name="details" th:value="${baWork.details}"  required="" lay-verify="details" autocomplete="off" placeholder="请输入开票抬头" class="layui-input" maxlength="20">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label for="remainderOvertimeMH" class="layui-form-label">
+                        本月剩余加班（小时）</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="remainderOvertimeMH" name="remainderOvertimeMH" th:value="${baWork.remainderOvertimeMH}"  required="" lay-verify="remainderOvertimeMH" autocomplete="off" placeholder="标准工作天数" class="layui-input" maxlength="20">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label for="taxiFare" class="layui-form-label">
+                        打车费</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="taxiFare" name="taxiFare" th:value="${baWork.taxiFare}"  required="" lay-verify="taxiFare" autocomplete="off" placeholder="出勤天数" class="layui-input" maxlength="20">
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label for="travelExpenses" class="layui-form-label">
+                        差旅费</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="travelExpenses" name="travelExpenses"  th:value="${baWork.travelExpenses}" required="" lay-verify="travelExpenses" autocomplete="off"  placeholder="请输入合同编号" class="layui-input" maxlength="20">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label for="meals" class="layui-form-label">
+                        餐费</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="meals" name="meals" th:value="${baWork.meals}"  required="" lay-verify="meals" autocomplete="off" placeholder="请输入开票抬头" class="layui-input" maxlength="20">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label for="telephoneBill" class="layui-form-label">
+                        话费</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="telephoneBill" name="telephoneBill" th:value="${baWork.telephoneBill}"  required="" lay-verify="telephoneBill" autocomplete="off" placeholder="标准工作天数" class="layui-input" maxlength="20">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label for="overtimeAllowance" class="layui-form-label">
+                       加班补助</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="overtimeAllowance" name="overtimeAllowance" th:value="${baWork.overtimeAllowance}"  required="" lay-verify="overtimeAllowance" autocomplete="off" placeholder="出勤天数" class="layui-input" maxlength="20">
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label for="otherAddCost" class="layui-form-label">
+                        其他加项费用</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="otherAddCost" name="otherAddCost" th:value="${baWork.otherAddCost}" required="" lay-verify="otherAddCost" autocomplete="off"  placeholder="请输入合同编号" class="layui-input" maxlength="20">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label for="otherSubCost" class="layui-form-label">
+                        其他减项费用</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="otherSubCost" name="otherSubCost" th:value="${baWork.otherSubCost}"  required="" lay-verify="otherSubCost" autocomplete="off" placeholder="请输入开票抬头" class="layui-input" maxlength="20">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label for="remark" class="layui-form-label">
+                        备注</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="remark" name="remark" th:value="${baWork.remark}"  required="" lay-verify="remark" autocomplete="off" placeholder="标准工作天数" class="layui-input" maxlength="20">
+                    </div>
+                </div>
+
             </div>
-        </div>
-        <script type="text/javascript" th:inline="javascript">
-            // 表单操作
-            layui.use(['form', 'layer','jquery','laydate'],
-            function() {
-                $ = layui.jquery;
-                var form = layui.form,
+            <div class="layui-form-item">
+                <label for="add" class="layui-form-label"></label>
+                <button class="layui-btn" id="add"  lay-filter="add" lay-submit="">保存</button>
+                <button class="layui-btn layui-btn-normal" id="commit"  lay-filter="commit" lay-submit="">提交</button>
+            </div>
+    </div>
+    </form>
+</div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+    // 表单操作
+    layui.use(['form', 'layer','jquery','laydate'],
+        function() {
+            $ = layui.jquery;
+            var form = layui.form,
                 layer = layui.layer,
-                 laydate = layui.laydate;
+                laydate = layui.laydate;
 
-                //日期
-                laydate.render({
-                    elem: '#startTime'
-                });
-                laydate.render({
-                    elem: '#endTime'
-                });
-                form.render();
-                //自定义验证规则
-                // form.verify({
-                //     contractNo: function(value) {
-                //         if (value.length < 1) {
-                //             return '合同编号至少得1个字符啊';
-                //         }
-                //     },
-                //     invoiceIssuing: function (value) {
-                //         if (value.length < 1) {
-                //             return '开票抬头至少得1个字符啊';
-                //         }
-                //     },
-                //     customerId: function (value) {
-                //         if (value.length < 1) {
-                //             return '请选择客户';
-                //         }
-                //     },
-                //     baProjectGroupId: function (value) {
-                //         if (value.length < 1) {
-                //             return '请选择项目组';
-                //         }
-                //     },
-                //     startTime: function (value) {
-                //         if (value.length < 1) {
-                //             return '请选择开始日期';
-                //         }
-                //     },endTime: function (value) {
-                //         if (value.length < 1) {
-                //             return '请选择结束日期';
-                //         }
-                //     }
-                // });
-                //根据选择的客户加载项目
-                form.on('select(customerId)',function(data){
-                    var customerId = data.value;
-                    $.ajax({
-                        type:'put',
-                        url:'/ba-project-group/groups/'+customerId,
-                        success:function(r){
-                            if(r.code=='0') {
-                                var groups = r.data;
-                                var baProjectGroup=$("#baProjectGroupId").empty();
-                                for(var i=0;i<groups.length;i++) {
-                                    // alert("<option value='"+groups[i].id+"'>"+groups[i].pgName+"</option>");
-                                    baProjectGroup.append("<option value='"+groups[i].id+"'>"+groups[i].pgName+"</option>");
-                                }
-                                form.render();
-                            } else {
-                                layer.msg('项目组数据加载失败',{icon:5});
-                            }
-                        }
-                        ,error:function(r) {
-                            layer.msg('项目组数据加载失败',{icon:5});
-                        }
-                    })
-                });
-                //检查合同编号是否存在
-                $('#contractNoIsExist').click(function () {
-                        var contractNo= $('#contractNo').val();
-                        if(contractNo.trim().length==0) {
-                            layer.msg('合同编号不能为空',{icon:5});
-                            return false;
-                        }
-                    contractNoIsExist(contractNo,layer,'');
-                    }
-                );
-                //监听提交
-                form.on('submit(add)', function(data){
-                    var mode=[[${mode}]];
-                    if("add"==mode && contractNoIsExist($('#contractNo').val(),layer,'submit')) {
-                        $.post('/ba-contract/add',data.field,function (r) {
-                            layer.alert(r.msg, {
-                                    icon : r.code == 'add_200' ? 6: 5
-                                },
-                                function() {
-                                    //关闭当前frame
-                                    xadmin.close();
-                                    // 可以对父窗口进行刷新
-                                    xadmin.father_reload();
-                                });
-                        });
-                    } else if('update'==mode){
-                        $.ajax({
-                            type:"put",
-                            url:'/ba-contract/update',
-                            data:data.field,
-                            success: function(r){
-                                layer.alert(r.msg, {
-                                        icon : r.code == 'edit_200' ? 6: 5
-                                    },
-                                    function() {
-                                        //关闭当前frame
-                                        xadmin.close();
-                                        // 可以对父窗口进行刷新
-                                        xadmin.father_reload();
-                                    });
-                            }
-                        });
-                    }
-                    return false;
-                });
+            //日期
+            laydate.render({
+                elem: '#startTime'
+            });
+            laydate.render({
+                elem: '#endTime'
+            });
+            form.render();
+            //自定义验证规则
+            // form.verify({
+            //     attendanceDays: function(value) {
+            //         if (value.length < 1) {
+            //             return '出勤天数至少得1个字符啊';
+            //         }
+            //     },
+            //     absenteeismDays: function (value) {
+            //         if (value.length < 1) {
+            //             return '缺勤天数至少得1个字符啊';
+            //         }
+            //     }
+            // });
+            $('#attendanceDays').blur(function () {
+               var workDays = $('#workDays').val();
+               var attendanceDays = $('#attendanceDays').val();
+               var absenteeismDays = 0;
+               if(attendanceDays<0) {
+                   $('#attendanceDays').val(0);
+                   $('#absenteeismDays').val(0);
+                   layer.msg('出勤天数不能是负数',{icon:5});
+                   return;
+               }
+               if(attendanceDays>workDays){
+                   $('#attendanceDays').val(absenteeismDays);
+                   $('#absenteeismDays').val(absenteeismDays);
+                   layer.msg('出勤天数不能大于考勤天数',{icon:5});
+                   return;
+               } else {
+                   absenteeismDays = workDays-attendanceDays;
+                   $('#absenteeismDays').val(absenteeismDays);
+               }
 
             });
+            //监听提交
+            form.on('submit(add)', function(data){
+                console.log(data.field);
+                    $.post('/ba-work-attendance/update',data.field,function (r) {
+                        layer.alert(r.msg, {
+                                icon : r.code == 'edit_200' ? 6: 5
+                            },
+                            function() {
+                                //关闭当前frame
+                                xadmin.close();
+                                // 可以对父窗口进行刷新
+                                xadmin.father_reload();
+                            });
+                    });
 
-            //form.render();
-            // 检查邮箱是否存在
-            function contractNoIsExist(contractNo, layer,mode) {
-                var flag = true;
-                $.ajaxSettings.async = false;
-                $.get('/ba-contract/isexist/' + contractNo , null , function(r) {
-                    if (r.code == 1)  {
-                        flag = false;
-                        layer.alert(r.msg, {icon: 5});
-                    } else if (mode != 'submit' && r.code == 0) {
-                        layer.alert(r.msg, {icon: 6});
-                    }
-                });
-                $.ajaxSettings.async = true;
-                return flag;
-            }
-        </script>
-    </body>
+                return false;
+            });
+
+        });
+
+    //form.render();
+</script>
+</body>
 </html>

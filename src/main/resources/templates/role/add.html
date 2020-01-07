@@ -56,34 +56,35 @@
                                autocomplete="off" class="layui-input">
                     </div>
                 </div>
-                <div class="layui-form-item layui-form-text">
-                    <label class="layui-form-label">
-                        拥有权限
-                    </label>
-                    <table  class="layui-table layui-input-block">
-                        <tbody>
-                        <div th:each="mroot:${maproot}">
-                            <div th:each="listchild,stats:${mroot.getValue()}">
-                                <tr>
-                                    <div th:each="m:${listchild.entrySet()}">
-                                        <td th:rowspan="${stats.size}" th:if="${stats.first}" width="20%">
+<!--                -->
+<!--                <div class="layui-form-item layui-form-text">-->
+<!--                    <label class="layui-form-label">-->
+<!--                        拥有权限-->
+<!--                    </label>-->
+<!--                    <table  class="layui-table layui-input-block">-->
+<!--                        <tbody>-->
+<!--                        <div th:each="mroot:${maproot}">-->
+<!--                            <div th:each="listchild,stats:${mroot.getValue()}">-->
+<!--                                <tr>-->
+<!--                                    <div th:each="m:${listchild.entrySet()}">-->
+<!--                                        <td th:rowspan="${stats.size}" th:if="${stats.first}" width="20%">-->
+<!--&lt;!&ndash;                                        <td width="20%">&ndash;&gt;-->
+<!--                                            <input type="checkbox" name="sysPermissions[]" lay-skin="primary" lay-filter="father" th:checked="${sysRole!=null}?${mroot.getKey().isChecked()}" th:value="${mroot.getKey().getId()}" th:title="${mroot.getKey().getPName()}">-->
+<!--                                        </td>-->
+
 <!--                                        <td width="20%">-->
-                                            <input type="checkbox" name="sysPermissions[]" lay-skin="primary" lay-filter="father" th:checked="${sysRole!=null}?${mroot.getKey().isChecked()}" th:value="${mroot.getKey().getId()}" th:title="${mroot.getKey().getPName()}">
-                                        </td>
+<!--                                            <input type="checkbox" name="sysPermissions[]" lay-skin="primary" lay-filter="father"  th:checked="${sysRole!=null}?${m.getKey().isChecked()}" th:value="${m.getKey().getId()}" th:title="${m.getKey().getPName()}">-->
+<!--                                        </td>-->
 
-                                        <td width="20%">
-                                            <input type="checkbox" name="sysPermissions[]" lay-skin="primary" lay-filter="father"  th:checked="${sysRole!=null}?${m.getKey().isChecked()}" th:value="${m.getKey().getId()}" th:title="${m.getKey().getPName()}">
-                                        </td>
-
-                                        <td width="60%">
-                                            <input type="checkbox" name="sysPermissions[]" lay-skin="primary" lay-filter="father" th:each="sys:${m.getValue()}" th:checked="${sysRole!=null}?${sys.isChecked()}" th:value="${sys.getId()}" th:title="${sys.getPName()}" value="2">
-                                        </td>
-                                    </div>
-                                </tr>
-                            </div>
-                        </div>
-                        </tbody>
-                    </table>
+<!--                                        <td width="60%">-->
+<!--                                            <input type="checkbox" name="sysPermissions[]" lay-skin="primary" lay-filter="father" th:each="sys:${m.getValue()}" th:checked="${sysRole!=null}?${sys.isChecked()}" th:value="${sys.getId()}" th:title="${sys.getPName()}" value="2">-->
+<!--                                        </td>-->
+<!--                                    </div>-->
+<!--                                </tr>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        </tbody>-->
+<!--                    </table>-->
 <!--                    <table  class="layui-table layui-input-block">-->
 <!--                        <tbody>-->
 <!--                        <tr>-->

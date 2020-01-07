@@ -40,9 +40,9 @@
         from sys_dept d
         left join sys_dept_role dr on d.id = dr.dept_id
         left join sys_role r on dr.role_id = r.id
-        left join sys_user u on u.dept_id = d.id
+        left join sys_user u on u.dept_id = d.id and u.email=d.email
         where 1=1
-        and r.id=#{userId}
+        and r.role_code=#{roleId}
         and d.id=#{deptId}
 
     </select>
