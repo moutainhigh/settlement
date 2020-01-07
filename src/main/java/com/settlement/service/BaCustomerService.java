@@ -38,6 +38,10 @@ public interface BaCustomerService extends IService<BaCustomer> {
     List<BaCustomerAndProjectVo> getCustomerAndProjectByUserId(Integer userId);
     /**根据用户id查询当前的客户信息和项目组生成树**/
     Object getCustomerAndProjectTreeByUserId(Integer userId);
+    /**根据用户id查询当前的客户信息和项目组list**/
+    List<BaCustomerAndProjectTreeVo> getCustomerAndProjectTreeListByUserId(Integer userId);
+    /**根据用户id查询当前的first node**/
+    Result getFirstNode(Integer userId);
     /** 根据部门ID取得客户 */
     List<BaCustomerVo> getCustomerByDeptId(Integer deptId);
     /** 根据客户负责人查询客户 */

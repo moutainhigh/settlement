@@ -112,7 +112,7 @@
                     alert('deptId');
                     var deptId =1;// data.value;
                     $.ajax({
-                        type:'put',
+                        type:'get',
                         url:'/ba-dept/role/users/'+deptId,
                         success:function(r){
                             if(r.code=='0') {

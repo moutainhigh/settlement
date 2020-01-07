@@ -12,6 +12,7 @@ import com.settlement.utils.Result;
 import com.settlement.utils.Status;
 import com.settlement.vo.BaCustomerAndProjectTreeVo;
 import com.settlement.vo.BaCustomerVo;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,6 +57,17 @@ public class BaCustomerController {
         Integer userId = user.getId();
         return baCustomerService.getCustomerAndProjectTreeByUserId(userId);
 
+    }
+
+    /**
+     * 根据用户id查询当前的first node
+     * @return
+     */
+    @GetMapping("/firstchild")
+    public Result getTreeFirstchild(){
+        SysUser user = (SysUser) SecurityUtils.getSubject().getPrincipal();
+        Integer userId = user.getId();
+        return baCustomerService.getFirstNode(userId);
     }
     /**
      * 添加

@@ -18,6 +18,7 @@ import com.settlement.utils.Status;
 import com.settlement.vo.BaCustomerAndProjectTreeVo;
 import com.settlement.vo.BaCustomerAndProjectVo;
 import com.settlement.vo.BaCustomerVo;
+import org.apache.ibatis.io.ResolverUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -249,6 +250,45 @@ public class BaCustomerServiceImpl extends ServiceImpl<BaCustomerMapper, BaCusto
      */
     @Override
     public Object getCustomerAndProjectTreeByUserId(Integer userId) {
+        JSONObject josn = new JSONObject();
+        Status status = new Status();
+        status.setCode(200);
+        status.setMessage("操作成功");
+        josn.put("status", JSONArray.toJSON(status));
+        josn.put("data", JSONArray.toJSON(getCustomerAndProjectTreeListByUserId(userId)));
+        return josn.toJSONString();
+    }
+
+    /**
+     * 根据用户id查询当前的first node
+     * @param userId
+     * @return
+     */
+    @Override
+    public Result getFirstNode(Integer userId){
+        Result r = new Result(HttpResultEnum.CODE_1.getCode(),HttpResultEnum.CODE_1.getMessage());
+        String first = null;
+        List<BaCustomerAndProjectTreeVo> baCustomerAndProjectTreeVos = getCustomerAndProjectTreeListByUserId(userId);
+        for(BaCustomerAndProjectTreeVo ba:baCustomerAndProjectTreeVos) {
+            if(ba.isLeaf()){
+                first = ba.getId();
+                break;
+            }
+        }
+        if(first!=null) {
+            r.setMsg(HttpResultEnum.CODE_0.getMessage());
+            r.setCode(HttpResultEnum.CODE_0.getCode());
+            r.setData(first);
+        }
+        return r;
+    }
+    /**
+     * 根据用户id查询当前的客户信息和项目组list
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<BaCustomerAndProjectTreeVo> getCustomerAndProjectTreeListByUserId(Integer userId){
         /**
          * 1、用户id查询对应的角色
          * 2、客户经理可以查看所有的项目
@@ -260,6 +300,7 @@ public class BaCustomerServiceImpl extends ServiceImpl<BaCustomerMapper, BaCusto
 
         Map<String,Object> mapkey = new HashMap<>();
         mapkey.put("enabled",Const.ENABLED_Y);
+        mapkey.put("checkStatus",Const.CHECK_STATUS_CHECK_PASS);
         mapkey.put("userId",userId);
         mapkey.put("roleCode",sysRole.getRoleCode());
         List<BaCustomerAndProjectVo> baCustomerAndProjectVos = this.baseMapper.getCustomerAndProjectByUserId(mapkey);
@@ -272,6 +313,7 @@ public class BaCustomerServiceImpl extends ServiceImpl<BaCustomerMapper, BaCusto
                 baVo.setTitle(ba.getProjectName());
                 baVo.setParentId(ba.getId()+ba.getCustomerName().hashCode()+"");
                 baVo.setCheckArr("0");
+                baVo.setLeaf(true);
                 baCustomerAndProjectTreeVos.add(baVo);
             } else {
                 map.put(ba.getCode(),ba);
@@ -287,19 +329,12 @@ public class BaCustomerServiceImpl extends ServiceImpl<BaCustomerMapper, BaCusto
                 baChildVo.setTitle(ba.getProjectName());
                 baChildVo.setParentId(ba.getId()+ba.getCustomerName().hashCode()+"");
                 baChildVo.setCheckArr("0");
+                baChildVo.setLeaf(true);
                 baCustomerAndProjectTreeVos.add(baChildVo);
             }
         }
-
-        JSONObject josn = new JSONObject();
-        Status status = new Status();
-        status.setCode(200);
-        status.setMessage("操作成功");
-        josn.put("status", JSONArray.toJSON(status));
-        josn.put("data", JSONArray.toJSON(baCustomerAndProjectTreeVos));
-        return josn.toJSONString();
+        return baCustomerAndProjectTreeVos;
     }
-
     @Override
     public List<BaCustomerVo> getCustomerByDeptId(Integer deptId) {
         Map<String,Object> paramMap = new HashMap<String, Object>();
