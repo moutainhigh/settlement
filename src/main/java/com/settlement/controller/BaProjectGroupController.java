@@ -15,6 +15,7 @@ import com.settlement.service.BaProjectGroupSettlementService;
 import com.settlement.utils.Const;
 import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
+import com.settlement.vo.BaApplyTransferVo;
 import com.settlement.vo.ProjectGroupVo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -227,4 +228,14 @@ public class BaProjectGroupController {
     public Result pgStop(@PathVariable(value="id") Integer id) {
         return this.baProjectGroupService.updatePgStopById(id);
     }
+
+    /**
+     * 项目移交
+     * @return
+     */
+    @PostMapping("/ba-project-group/apply/transfer")
+    public Result projectApplyTransfer(BaApplyTransferVo baApplyTransferVo){
+        return this.baProjectGroupService.projectApplyTransfer(baApplyTransferVo);
+    }
+
 }

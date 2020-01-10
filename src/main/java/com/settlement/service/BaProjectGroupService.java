@@ -5,6 +5,7 @@ import com.settlement.co.ProjectGroupCo;
 import com.settlement.entity.BaProjectGroup;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.settlement.utils.Result;
+import com.settlement.vo.BaApplyTransferVo;
 import com.settlement.vo.ProjectGroupVo;
 
 import java.util.List;
@@ -44,4 +45,7 @@ public interface BaProjectGroupService extends IService<BaProjectGroup> {
     Result updatePgStart(Integer id);
     /** 项目组停用 */
     Result updatePgStopById(Integer id);
+    /**项目移交**/
+    Result projectApplyTransfer(BaApplyTransferVo baApplyTransferVo);
+
 }

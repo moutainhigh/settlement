@@ -33,6 +33,7 @@
                             <button class="layui-btn" data-type="relateAssistant"><i class="layui-icon"></i>关联助理</button>
                             <button class="layui-btn" data-type="relateSettlement"><i class="layui-icon"></i>关联结算负责人</button>
                             <button class="layui-btn" data-type="addEmp"><i class="layui-icon"></i>员工录入</button>
+                            <button class="layui-btn" data-type="transfer">移交</button>
                         </div>
                         <div class="layui-card-body layui-table-body layui-table-main" >
                             <table class="layui-table layui-form" id="dataTable" lay-filter="dataTable">
@@ -105,6 +106,9 @@
               },
               addEmp: function() {
                   checkBoxCheckedOper('员工录入','/ba-employee/enter-emp/',table, layer, 1000, 545);
+              },
+              transfer:function(){
+                  transferOper('项目移交','/ba-project-group/transfer/',table,layer,400,300);
               }
           };
           $('.layui-btn').on('click', function(){
@@ -232,7 +236,22 @@
           });
           timeout(2000);
       }
-
+      /**移交**/
+      function transferOper(title,url,table,layer,w,h) {
+          var checkStatus = table.checkStatus('dataTable')
+              ,data = checkStatus.data;
+          var ids2=[];
+          if (data.length == 0) {
+              layer.alert('请先选择要移交的项目',{icon : 5});
+              return ;
+          }
+          for(var i=0;i<data.length;i++) {
+              ids2[i]=data[i].id;
+          }
+          //判断当月修改的次数
+          xadmin.open(title,url + ids2,w,h);
+          return;
+      }
       /** 复选框选中操作 */
       function checkBoxCheckedOper(title, url, table, layer,w,h) {
           var checkStatus = table.checkStatus('dataTable')

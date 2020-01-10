@@ -53,7 +53,7 @@ public class BaProjectGroupCheckServiceImpl extends ServiceImpl<BaProjectGroupCh
 
     @Override
     public Result updatePgCheck(ProjectGroupCheckVo projectGroupCheckVo) {
-        Result r = new Result(HttpResultEnum.CODE_500.getCode(), HttpResultEnum.CODE_500.getMessage());
+        Result r = new Result(HttpResultEnum.CHK_CODE_500.getCode(), HttpResultEnum.CHK_CODE_500.getMessage());
         // 更新项目组审核表
         try {
             UpdateWrapper<BaProjectGroupCheck> updateWrapper = new UpdateWrapper<BaProjectGroupCheck>();
@@ -78,8 +78,8 @@ public class BaProjectGroupCheckServiceImpl extends ServiceImpl<BaProjectGroupCh
             updateWrapper1.eq("id",bpg.getId());
             int ret1 = this.baProjectGroupMapper.update(bpg, updateWrapper1);
             if (ret > 0 && ret1 > 0) {
-                r.setCode(HttpResultEnum.CODE_200.getCode());
-                r.setMsg(HttpResultEnum.CODE_200.getMessage());
+                r.setCode(HttpResultEnum.CHK_CODE_200.getCode());
+                r.setMsg(HttpResultEnum.CHK_CODE_200.getMessage());
             }
         } catch (Exception e) {
             e.printStackTrace();

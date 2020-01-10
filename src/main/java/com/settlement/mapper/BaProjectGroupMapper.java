@@ -22,5 +22,8 @@ public interface BaProjectGroupMapper extends BaseMapper<BaProjectGroup> {
 
     /** 项目组列表数据 */
     List<ProjectGroupVo> getProjectGroupList(@Param(value="projectGroupCo") ProjectGroupCo projectGroupCo, Page<ProjectGroupVo> page);
-
+    /**项目组移交**/
+    Integer projectApplyTransfer(ProjectGroupVo projectGroupVo);
+    /**批量更新项目拥有者人员信息**/
+    Integer updateBatchs(List<BaProjectGroup> baProjectGroups);
 }

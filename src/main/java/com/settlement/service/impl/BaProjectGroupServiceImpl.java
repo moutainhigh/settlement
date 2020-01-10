@@ -15,6 +15,7 @@ import com.settlement.utils.Const;
 import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.HttpStateEnum;
 import com.settlement.utils.Result;
+import com.settlement.vo.BaApplyTransferVo;
 import com.settlement.vo.ProjectGroupVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +51,10 @@ public class BaProjectGroupServiceImpl extends ServiceImpl<BaProjectGroupMapper,
     private BaProjectGroupSettlementMapper baProjectGroupSettlementMapper;
     @Autowired
     private BaPgEmpMapper baPgEmpMapper;
+    @Autowired
+    private BaApplyTransferMapper baApplyTransferMapper;
+    @Autowired
+    private BaTransferMapper baTransferMapper;
 
     @Override
     public PageData getProjectGroupList(ProjectGroupCo baProjectGroupCo) {
@@ -309,6 +314,41 @@ public class BaProjectGroupServiceImpl extends ServiceImpl<BaProjectGroupMapper,
             logger.error("项目组停用BaProjectGroupServiceImpl: updatePgStopById异常");
             r.setCode(HttpResultEnum.CODE_500.getCode());
             r.setMsg(HttpResultEnum.CODE_500.getMessage());
+        }
+        return r;
+    }
+
+    /**
+     * 项目移交
+     * @param baApplyTransferVo
+     * @return
+     */
+    @Override
+    public Result projectApplyTransfer(BaApplyTransferVo baApplyTransferVo) {
+        Result r = new Result(HttpResultEnum.TRANS_CODE_500.getCode(),HttpResultEnum.TRANS_CODE_500.getMessage());
+        try{
+            baApplyTransferVo.setCheckStatus(Const.CHECK_STATUS_NO_CHECK);
+            baApplyTransferVo.setApplyTime(new Date());
+            baApplyTransferVo.setApplyType(Const.APPLY_TRANSFER_PROJECT);
+            baApplyTransferVo.setCheckUser(baApplyTransferVo.getCheckUser());
+            Integer ret = baApplyTransferMapper.insert(baApplyTransferVo);
+            if(ret!=null && ret >0) {
+                List<BaTransfer> baTransfers = new ArrayList<>();
+                for(Integer id : baApplyTransferVo.getIds()) {
+                    BaTransfer baTransfer = new BaTransfer();
+                    baTransfer.setApplyTransferId(baApplyTransferVo.getId());
+                    baTransfer.setTransferId(id);
+                    baTransfers.add(baTransfer);
+                }
+                Integer ret2 = baTransferMapper.insertBatch(baTransfers);
+                if(ret2!=null && ret2 >0) {
+                    r.setMsg(HttpResultEnum.TRANS_CODE_200.getMessage());
+                    r.setCode(HttpResultEnum.TRANS_CODE_200.getCode());
+                }
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         return r;
     }

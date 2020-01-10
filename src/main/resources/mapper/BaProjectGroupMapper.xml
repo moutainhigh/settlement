@@ -32,5 +32,13 @@
         </if>
         ORDER BY  bpg.enabled desc, bpg.create_time desc
     </select>
-
+    <!-- 批量修改考勤状态 -->
+    <update id="updateBatchs" parameterType="java.util.List">
+        <foreach collection="list" item="baGroup" index="index" separator=";">
+            update ba_project_group
+            set
+            owner_user_id = #{baGroup.ownerUserId}
+            where id = #{baGroup.id}
+        </foreach>
+    </update>
 </mapper>

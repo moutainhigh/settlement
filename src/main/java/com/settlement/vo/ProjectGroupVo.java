@@ -13,15 +13,18 @@ import java.io.Serializable;
  */
 @Data
 public class ProjectGroupVo extends BaProjectGroup implements Serializable {
-    /** 审核状态数据字典内容 */
-    private String checkStatusContent;
-    /** 负责人姓名 */
-    private String ownerName;
+        /** 审核状态数据字典内容 */
+        private String checkStatusContent;
+        /** 负责人姓名 */
+        private String ownerName;
 
-    private String assistants;
+        private String assistants;
 
-    private String settlements;
+        private String settlements;
 
-    private String checkUserName;
+        private String checkUserName;
+        private Integer[] ids;
+
+        private Integer receiver; //接收人
 
 }
