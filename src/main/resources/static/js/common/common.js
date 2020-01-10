@@ -7,6 +7,14 @@ function timeout(time) {
      //    parent.layer.close(index);
     }, time);
 }
+
+function timeoutClose(time,dataName) {
+    setTimeout(function () {
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index);
+        layui.table.reload(dataName);//重载父页表格，参数为表格ID
+    }, time);
+}
 /**停留刷新在当前页面**/
 function reloadTable(tableName){
     // 刷新数据，保留在当前页
@@ -201,7 +209,7 @@ function check(data, layer, url,dataTable) {
         },
         success:function(r){
             layer.alert(r.msg, {
-                    icon : r.code == '200' ? 6: 5
+                    icon : r.code == 'chk_200' ? 6: 5
                 },
                 function() {
                     // 刷新数据，保留在当前页
