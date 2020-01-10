@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+    
+    <head>
+        <th:bolck th:include="common/header :: header('添加城市')" />
+        <link rel="stylesheet" th:href="@{/css/formSelects-v4.css}" />
+        <link rel="stylesheet" th:href="@{/lib/layui_ext/dtree/dtree.css}">
+        <link rel="stylesheet" th:href="@{/lib/layui_ext/dtree/font/dtreefont.css}">
+    </head>
+    <body>
+        <div class="layui-fluid">
+            <div class="layui-row">
+                <form class="layui-form">
+                    <input type="hidden" name="id" th:value="${baCity.id}" th:if="${baCity!=null}" />
+                    <div class="layui-form-item">
+
+                        <div class="layui-form-item">
+                            <label for="cityName" class="layui-form-label">
+                                <span class="x-red">*</span>城市名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="cityName" name="cityName"  th:value="${mode.equals('update')}?${baCity.cityName}" required="" lay-verify="cityName" autocomplete="off"  placeholder="请输入城市名称" class="layui-input" maxlength="20">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="cityCode" class="layui-form-label">
+                                <span class="x-red">*</span>城市编号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="cityCode" name="cityCode" th:value="${mode.equals('update')}?${baCity.cityCode}"  required="" lay-verify="cityCode" autocomplete="off" placeholder="请输入城市编号" class="layui-input" maxlength="20">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="add" class="layui-form-label"></label>
+                            <button class="layui-btn" id="add" th:text="${mode.equals('add')}?'增加' : '修改'" lay-filter="add" lay-submit="">增加</button>
+                        </div>
+                   </div>
+                </form>
+            </div>
+        </div>
+        <script th:src="@{/js/common/common.js}" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" th:inline="javascript">
+            var mode=[[${mode}]];
+            // 表单操作
+            layui.use(['form', 'layer','jquery'],
+            function() {
+                $ = layui.jquery;
+                var form = layui.form,
+                    layer = layui.layer;
+                form.render();
+                //自定义验证规则
+                form.verify({
+                    cityName: function(value) {
+                        if (value.length < 1) {
+                            return '城市名称至少得1个字符';
+                        }
+                    },
+                    cityCode: function (value) {
+                        if (value.length < 1) {
+                            return '城市编号至少得1个字符';
+                        }
+                    }
+                });
+                //监听提交
+                form.on('submit(add)', function(data){
+                    if("add"==mode ) {
+                        $.post('/ba-city/add',data.field,function (r) {
+                            layer.alert(r.msg, {
+                                    icon : r.code == 'add_200' ? 6: 5
+                                },
+                                function() {
+                                  reloadTable('dataTable');
+                                });
+                        });
+                    } else if('update'==mode){
+                        $.ajax({
+                            url:"/ba-city/update/",
+                            type:"PUT",
+                            data: data.field,
+                            success:function(r){
+                                layer.alert(r.msg, {
+                                        icon : r.code == 'edit_200' ? 6: 5
+                                    },
+                                    function() {
+                                        reloadTable('dataTable');
+                                    });
+                            }
+                        });
+                    }
+                    return false;
+                });
+
+            });
+        </script>
+    </body>
+</html>
