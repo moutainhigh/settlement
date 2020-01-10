@@ -112,7 +112,13 @@
                         var a = $(tr.find("a"));
                         a.addClass("layui-btn-disabled");
                     }
+                    if(checkApplyStatus(item.id)) {
+                        var tr = $("tr[data-index='" + index + "']");
+                        var a = $(tr.find("a"));
+                        a.addClass("layui-btn-disabled");
+                    }
                 });
+
             }
         });
 
@@ -143,7 +149,7 @@
           // 监听工具栏
           table.on('tool(dataTable)', function(obj){
               var data = obj.data;
-              if(obj.event === 'edit' && data.checkStatus=='CHECK_PASS'){
+              if(obj.event === 'edit' && data.checkStatus=='CHECK_PASS' && !checkApplyStatus(data.id)){
                   xadmin.open('确认修改口令',"/ba-apply/passcode/"+data.id,400,200);
               }
           });
@@ -165,6 +171,22 @@
                   layer.msg("考勤记录只有处于【审核通过】状态才能修改" ,{icon:5});
               }
           }
+      }
+      ////检查每一条申请记录中全部是否还有未修改完的数据
+      function checkApplyStatus(applyId) {
+          var flag=false;
+          $.ajax({
+              type:'get',
+              url:'/ba-apply/check/applystatus/'+applyId,
+              async:false ,//同步处理
+              success:function(r){
+                  // alert('applyId:'+applyId+",code:"+r.code);
+                  if('0'==r.code) {
+                      flag = true;
+                  }
+              }
+          });
+          return flag;
       }
     </script>
 </html>

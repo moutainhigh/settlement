@@ -43,7 +43,20 @@ public class BaApplyController {
     }
 
     /**
-     * 修改通过的考勤信息列表
+     * 修改通过的考勤信息列表 AM
+     * @param applyCo
+     * @return
+     */
+    @GetMapping("/check/detail/workattendancelist/pagedata")
+    public PageData listApplyCheckDetailWorkAttendancelistPageData(ApplyCo applyCo){
+        SysUser user = (SysUser) SecurityUtils.getSubject().getPrincipal();
+        applyCo.setApplyUser(user.getId());
+        PageData pageData = baApplyService.listApplyCheckWorkAttendancelistPageData(applyCo);
+        return  pageData;
+    }
+
+    /**
+     * 修改通过的考勤信息列表 Assistant
      * @param applyCo
      * @return
      */
@@ -62,6 +75,7 @@ public class BaApplyController {
     @GetMapping("/check/workattend/pagedata")
     public PageData listCheckPageData(ApplyCo applyCo){
         SysUser user = (SysUser) SecurityUtils.getSubject().getPrincipal();
+
         applyCo.setCheckUser(user.getId());
         PageData pageData = baApplyService.listCheckWorkAttendancePageData(applyCo);
         return  pageData;
@@ -72,9 +86,9 @@ public class BaApplyController {
      * @param ids
      * @return
      */
-    @PutMapping("/work-attendance/commit/{ids}")
-    public Result commitWorkAttendance(@PathVariable Integer[] ids) {
-        return baApplyService.commitWorkAttendance(ids);
+    @PutMapping("/work-attendance/commit/{ids}/{applyId}")
+    public Result commitWorkAttendance(@PathVariable Integer[] ids,@PathVariable String applyId) {
+        return baApplyService.commitWorkAttendance(ids,applyId);
     }
     /**
      * 审核考勤修改
@@ -91,8 +105,8 @@ public class BaApplyController {
      * @return
      */
     @PutMapping("/update/check")
-    public Result update(BaApplyVo baApplyVo){
-        Result r = baApplyService.update(baApplyVo);
+    public Result updateCheck(BaApplyVo baApplyVo){
+        Result r = baApplyService.updateCheck(baApplyVo);
         return r;
     }
 
@@ -138,5 +152,15 @@ public class BaApplyController {
     @GetMapping("/apply/{count}/{monthValue}")
     public Result getApplyCountByProjectId(@PathVariable Integer projectId,@PathVariable String monthValue){
         return baApplyService.getApplyCountByProjectId(projectId,monthValue);
+    }
+
+    /**
+     * 检查每一条申请记录中全部是否还有未修改完的数据
+     * @param applyId
+     * @return
+     */
+    @GetMapping("/check/applystatus/{applyId}")
+    public Result checkApplyStatus(@PathVariable  Integer applyId) {
+        return baApplyService.checkApplyStatus(applyId);
     }
 }

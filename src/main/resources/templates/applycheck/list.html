@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html class="x-admin-sm"  xmlns:th="http://www.thymeleaf.org">
+<html class="x-admin-sm"  xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
     <head>
         <th:bolck th:include="common/header :: header('审核管理')" />
     </head>
@@ -39,8 +40,12 @@
         </div> 
     </body>
     <script type="text/html" id="toolBar">
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">详细</a>
-        <a class="layui-btn layui-btn-xs" lay-event="check">审核</a>
+        <shiro:hasPermission name="empApplyCheck:list,empApplyCheck:check">
+            <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">详细</a>
+        </shiro:hasPermission>
+        <shiro:hasPermission name="empApplyCheck:list">
+             <a class="layui-btn layui-btn-xs" lay-event="check">审核</a>
+        </shiro:hasPermission>
     </script>
     <script id="checkStatusTpl" type="text/html">
         {{#  if(d.checkStatusContent === '审核通过'){ }}
@@ -108,7 +113,6 @@
                     }
                 }
             });
-
             // 加载表格数据
             function getTableList(index,url) {
                 table.render({

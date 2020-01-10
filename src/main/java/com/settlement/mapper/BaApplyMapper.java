@@ -37,6 +37,8 @@ public interface BaApplyMapper extends BaseMapper<BaApply> {
     BaApplyVo getApplyVoById(Map<String,Object> map);
     /**加载考勤审核列表**/
     List<BaApplyVo> listCheckWorkAttendancePageData(ApplyCo applyCo, Page<BaApplyVo> page);
-    /**listApplyWorkAttendancelistPageData**/
+    /**申请修改考勤--申请修改列表**/
     List<BaWorkAttendanceVo> listApplyWorkAttendancelistPageData(ApplyCo applyCo, Page<BaWorkAttendanceVo> page);
+    /**申请修改考勤--审核详细列表**/
+    List<BaWorkAttendanceVo>  listApplyCheckWorkAttendancelistPageData(ApplyCo applyCo, Page<BaWorkAttendanceVo> page);
 }

@@ -5,10 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.settlement.bo.PageData;
 import com.settlement.co.ApplyCo;
-import com.settlement.entity.BaApply;
-import com.settlement.entity.BaApplyAttendance;
-import com.settlement.entity.BaWorkAttendance;
-import com.settlement.entity.SysRole;
+import com.settlement.entity.*;
 import com.settlement.mapper.BaApplyAttendanceMapper;
 import com.settlement.mapper.BaApplyMapper;
 import com.settlement.mapper.BaWorkAttendanceMapper;
@@ -20,6 +17,7 @@ import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
 import com.settlement.vo.BaApplyVo;
 import com.settlement.vo.BaWorkAttendanceVo;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,6 +51,8 @@ public class BaApplyServiceImpl extends ServiceImpl<BaApplyMapper, BaApply> impl
      */
     @Override
     public PageData listPageData(ApplyCo applyCo) {
+        SysUser user = (SysUser) SecurityUtils.getSubject().getPrincipal();
+        applyCo.setApplyUser(user.getId());
         Page<BaApplyVo> page = new Page<>(applyCo.getPage(),applyCo.getLimit());
         page.setRecords(this.baseMapper.getApplyWorkAttedances(applyCo,page));
         return new PageData(page.getTotal(),page.getRecords());
@@ -75,7 +75,7 @@ public class BaApplyServiceImpl extends ServiceImpl<BaApplyMapper, BaApply> impl
     }
 
     /**
-     * 修改通过的考勤信息列表
+     * 修改通过的考勤信息列表 Assistant
      * @param applyCo
      * @return
      */
@@ -89,19 +89,34 @@ public class BaApplyServiceImpl extends ServiceImpl<BaApplyMapper, BaApply> impl
         return new PageData(page.getTotal(),page.getRecords());
     }
 
+    /***
+     * 申请修改考勤--审核详细列表 AM
+     * @param applyCo
+     * @return
+     */
+    @Override
+    public PageData listApplyCheckWorkAttendancelistPageData(ApplyCo applyCo) {
+        Page<BaWorkAttendanceVo> page = new Page<>(applyCo.getPage(),applyCo.getLimit());
+        BaApply baApply = this.baseMapper.selectById(applyCo.getId());
+        applyCo.setUpdateStatus(Const.SUB_STATUS_A);
+        page.setRecords(this.baseMapper.listApplyCheckWorkAttendancelistPageData(applyCo,page));
+        return new PageData(page.getTotal(),page.getRecords());
+    }
+
     /**
      * 提交修改的考勤记录
      * @param ids
      * @return
      */
     @Override
-    public Result commitWorkAttendance(Integer[] ids) {
+    public Result commitWorkAttendance(Integer[] ids,String applyId) {
         Result r = new Result(HttpResultEnum.COMMIT_CODE_500.getCode(),HttpResultEnum.COMMIT_CODE_500.getMessage());
         List<BaApplyAttendance> baApplyAttendances = new ArrayList<>();
         List<BaWorkAttendance> baWorkAttendances = new ArrayList<>();
         for(Integer id:ids) {
             QueryWrapper<BaApplyAttendance> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("attendance_id",id);
+            queryWrapper.eq("apply_id",applyId);
             BaApplyAttendance baApplyAttendance = baApplyAttendanceMapper.selectOne(queryWrapper);
             baApplyAttendance.setUpdateStatus(Const.SUB_STATUS_S);
             baApplyAttendances.add(baApplyAttendance);
@@ -123,13 +138,32 @@ public class BaApplyServiceImpl extends ServiceImpl<BaApplyMapper, BaApply> impl
     }
 
     /**
+     * 检查每一条申请记录中全部是否还有未修改完的数据
+     * @param applyId
+     * @return
+     */
+    @Override
+    public Result checkApplyStatus(Integer applyId) {
+        Result r = new Result(HttpResultEnum.CODE_1.getCode(),HttpResultEnum.CODE_1.getMessage());
+        QueryWrapper<BaApplyAttendance> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("apply_id",applyId);
+        queryWrapper.eq("update_status",Const.SUB_STATUS_A);
+        List<BaApplyAttendance> baApplyAttendances = baApplyAttendanceMapper.selectList(queryWrapper);
+        if(baApplyAttendances==null || baApplyAttendances.size()==0) {
+            r.setCode(HttpResultEnum.CODE_0.getCode());
+            r.setMsg(HttpResultEnum.CODE_0.getMessage());
+        }
+        return r;
+    }
+
+    /**
      * 修改
      * @param baApplyVo
      * @return
      */
     @Override
-    public Result update(BaApplyVo baApplyVo) {
-        Result r = new Result(HttpResultEnum.EDIT_CODE_500.getCode(),HttpResultEnum.EDIT_CODE_500.getMessage());
+    public Result updateCheck(BaApplyVo baApplyVo) {
+        Result r = new Result(HttpResultEnum.CHK_CODE_500.getCode(),HttpResultEnum.CHK_CODE_500.getMessage());
         try{
             if(Const.CHECK_RESULT_PASS_CODE.equals(baApplyVo.getCheckResult())) {
                 baApplyVo.setCheckStatus(Const.CHECK_STATUS_CHECK_PASS);
@@ -154,8 +188,8 @@ public class BaApplyServiceImpl extends ServiceImpl<BaApplyMapper, BaApply> impl
                         this.baWorkAttendanceMapper.update(baWorkAttendanceMapper.selectById(attendId),updateWrapper2);
                     }
                 }
-                r.setCode(HttpResultEnum.CODE_200.getCode());
-                r.setMsg(HttpResultEnum.CODE_200.getMessage());
+                r.setCode(HttpResultEnum.CHK_CODE_200.getCode());
+                r.setMsg(HttpResultEnum.CHK_CODE_200.getMessage());
             }
         }catch (Exception e) {
             e.printStackTrace();

@@ -23,7 +23,7 @@ public interface BaApplyService extends IService<BaApply> {
     /**加载列表**/
     PageData listPageData(ApplyCo applyCo);
     /**修改**/
-    Result update(BaApplyVo baApplyVo);
+    Result updateCheck(BaApplyVo baApplyVo);
     /**申请修改考勤记录**/
     Result addAttendance(BaApplyVo baApplyVo);
     /**申请修改员工记录**/
@@ -38,8 +38,12 @@ public interface BaApplyService extends IService<BaApply> {
     Result checkWorkattend(BaApplyVo baApplyVo);
     /**加载考勤审核列表**/
     PageData listCheckWorkAttendancePageData(ApplyCo applyCo);
-    /**修改通过的考勤信息列表**/
+    /**申请修改考勤--申请修改列表考勤信息列表 ASSISTANT**/
     PageData listApplyWorkAttendancelistPageData(ApplyCo applyCo);
+    /**申请修改考勤--审核详细列表 AM **/
+    PageData listApplyCheckWorkAttendancelistPageData(ApplyCo applyCo);
     /**提交修改的考勤记录**/
-    Result commitWorkAttendance(Integer[] ids);
+    Result commitWorkAttendance(Integer[] ids,String applyId);
+    /**检查每一条申请记录中全部是否还有未修改完的数据**/
+    Result checkApplyStatus(Integer applyId);
 }
