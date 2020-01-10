@@ -34,7 +34,7 @@ public interface BaTimeParamService extends IService<BaTimeParam> {
     /**是否存在**/
     Result isExist(String code);
     /**获得当前年份**/
-    List<String> getTimeYearValue();
+    List<Integer> getTimeYearValue();
     /**获得当前年份上个月和当前月份**/
     List<String> getTimeMonthValue();
     /** projectId获得结算考勤时间停止点**/

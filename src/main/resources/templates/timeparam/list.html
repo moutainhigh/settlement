@@ -125,7 +125,7 @@
                   });
               } else {
                   layer.open({
-                      content: '确定要启用此用户吗？'
+                      content: '确定要启用此时间参数吗？'
                       ,btn: ['确定','取消']
                       ,yes: function(index){
                           // 发送ajax请求，enabled启用 更新后台
@@ -134,6 +134,7 @@
                               type:'put',
                               success: function(data){
                                   if("edit_200"==data.code){
+                                      layer.msg('启用成功', {icon: 6});
                                       layer.close(index);
                                       data.elem.checked=a;
                                       layui.form.render();
@@ -166,10 +167,14 @@
          table.on('tool(dataTable)', function(obj){
               var data = obj.data;
               if(obj.event === 'del'){
-                  layer.confirm('真的删除【 '+ data.paramValue + '】么?', function(index){
-                      timeparam_del(data.id);
-                      layer.close(index);
-                  });
+                  if (data.enabled == 'N') {
+                      layer.confirm('真的删除【 '+ data.paramValue + '】么?', function(index){
+                          timeparam_del(data.id);
+                          layer.close(index);
+                      });
+                  } else if (data.enabled == 'Y') {
+                      layer.msg('时间点参数在启用状态下,不能删除',{icon:5});
+                  }
               } else if(obj.event === 'edit'){
                   xadmin.open('编辑时间点参数','/ba-time-param/toAddorUpdate/update/'+ data.id,600,400);
               }

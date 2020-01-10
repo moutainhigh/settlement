@@ -279,19 +279,19 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
      * @return
      */
     @Override
-    public List<String> getTimeYearValue() {
-        List<String> years = new ArrayList<>();
+    public List<Integer> getTimeYearValue() {
+        List<Integer> years = new ArrayList<>();
         Calendar cal = Calendar.getInstance();
-        String currentMonth=String.valueOf(cal.get(Calendar.MONTH)+1);
+        int currentMonth=cal.get(Calendar.MONTH)+1;
         //1月份
-        if("1".equals(currentMonth)) {
-            String lastYear = String.valueOf(cal.get(Calendar.YEAR)-1);
+        if(1==currentMonth) {
+            Integer lastYear = cal.get(Calendar.YEAR)-1;
             years.add(lastYear);
         }
-        String year = String.valueOf(cal.get(Calendar.YEAR));
+        Integer year = cal.get(Calendar.YEAR);
         years.add(year);
+        Collections.reverse(years);
         return years;
-
     }
 
     /**
@@ -302,16 +302,24 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
     public List<String> getTimeMonthValue() {
         List<String> months = new ArrayList<>();
         Calendar cal = Calendar.getInstance();
-        String currentMonth=String.valueOf(cal.get(Calendar.MONTH)+1);
-        String lastMonth=String.valueOf(cal.get(Calendar.MONTH));
-        months.add(currentMonth);
+        int currentMonth=cal.get(Calendar.MONTH)+1;
+        int lastMonth=cal.get(Calendar.MONTH);
         //1月份
-        if("1".equals(currentMonth)) {
+        if(1==currentMonth) {
+            months.add("01");
             months.add("12");
         } else {
-            months.add(lastMonth);
+            if(currentMonth<10) {
+                months.add("0"+currentMonth);
+            } else{
+                months.add(currentMonth+"");
+            }
+            if(lastMonth<10) {
+                months.add("0"+lastMonth);
+            } else{
+                months.add(currentMonth+"");
+            }
         }
-
         return months;
 
     }
