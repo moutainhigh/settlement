@@ -205,10 +205,15 @@
          table.on('tool(dataTable)', function(obj){
               var data = obj.data;
               if(obj.event === 'del'){
-                  layer.confirm('真的删除【 '+ data.dicContent + '】么?', function(index){
-                      datadic_del(data.id);
-                      layer.close(index);
-                  });
+                  if (data.enabled == 'N') {
+                      layer.confirm('真的删除【 '+ data.dicContent + '】么?', function(index){
+                          datadic_del(data.id);
+                          layer.close(index);
+                      });
+                  } else if (data.enabled == 'Y') {
+                      layer.msg('数据字典在启用状态下,不能删除',{icon:5});
+                  }
+
               } else if(obj.event === 'edit'){
                   xadmin.open('编辑数据字典','/sys-data-dic/toAddOrUpdate/update/'+ data.id,600,400);
               }
