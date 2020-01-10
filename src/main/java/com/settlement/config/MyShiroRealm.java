@@ -1,20 +1,21 @@
 package com.settlement.config;
 
 import com.settlement.entity.SysPermission;
+import com.settlement.entity.SysPermissionRole;
 import com.settlement.entity.SysRole;
 import com.settlement.entity.SysUser;
+import com.settlement.service.SysPermissionRoleService;
 import com.settlement.service.SysRoleService;
 import com.settlement.service.SysUserService;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,25 +28,44 @@ public class MyShiroRealm extends AuthorizingRealm {
     private SysUserService sysUserService;
     @Autowired
     private SysRoleService sysRoleService;
+    @Autowired
+    private SysPermissionRoleService sysPermissionRoleService;
 
     /**
-     *@description 权限验证
+     * 设置realm name
+     * @param name
+     */
+    @Override
+    public void setName(String name) {
+        super.setName("MyShiroRealm");
+    }
+
+    /**
+     *@description 权限验证:根据认证数据获取用户的的权限信息
      *
-     * @param principalCollection
+     * @param principalCollection 包含了所有的已经认证的安全数据
+     *        authorizationInfo 授权数据
      * @return
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
+        //获取已经认证的用户数据
+        SysUser user = (SysUser)principalCollection.getPrimaryPrincipal();
+        //查询用户的角色
+        SysRole sysRole = sysRoleService.findRoleByUserId(user.getId());
+        //查询用户的权限信息
+        List<SysPermission> sysPermissions = sysPermissionRoleService.getPermissionByRoleId(sysRole.getId());
+        //存储所有权限code
+        List<String> permissions = new ArrayList<>();
+        for(SysPermission sysPermission : sysPermissions) {
+            permissions.add(sysPermission.getPermission());
+        }
+        //构造返回数据
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
-        // SysUser user = (SysUser)principalCollection.getPrimaryPrincipal();
-       // List<SysRole> roleList = sysRoleService.findRoleByUserId(user.getId());
-        // user.setRoles(roleList);
-        /*for(SysRole role:user.getRoles()){
-            authorizationInfo.addRole(role.getRoleCnName());
-            for(SysPermission p:role.getPermissions()){
-                authorizationInfo.addStringPermission(p.getPermission());
-            }
-        }*/
+        //设置权限集合
+        authorizationInfo.addStringPermissions(permissions);
+        //设置角色集全
+        authorizationInfo.addRole(sysRole.getRoleCode());
         return authorizationInfo;
     }
 
@@ -59,11 +79,13 @@ public class MyShiroRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
-        String userName = (String)authenticationToken.getPrincipal();
-       //  String pwd = new String((char[]) authenticationToken.getCredentials());
+       //获取登录用户信息(用户名和密码)
+        UsernamePasswordToken token = (UsernamePasswordToken)authenticationToken;
+        String userName = token.getUsername(); //(String)authenticationToken.getPrincipal();
+        String password = new String(token.getPassword());
         // 根据用户名从数据库取得用户信息
         SysUser user = sysUserService.findUserByEmail(userName);
-        if (user == null) {
+        if (user == null && user.getPassword().equals(password)) {
             return null;
         }
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
