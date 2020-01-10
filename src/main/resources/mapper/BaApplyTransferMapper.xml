@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.settlement.mapper.BaApplyTransferMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.settlement.entity.BaApplyTransfer">
+        <id column="id" property="id" />
+        <result column="apply_type" property="applyType" />
+        <result column="apply_remark" property="applyRemark" />
+        <result column="check_status" property="checkStatus" />
+        <result column="apply_time" property="applyTime" />
+        <result column="apply_user" property="applyUser" />
+        <result column="recieve_user" property="recieveUser" />
+        <result column="check_user" property="checkUser" />
+        <result column="check_time" property="checkTime" />
+        <result column="check_remark" property="checkRemark" />
+    </resultMap>
+    <select id="listPage" parameterType="com.settlement.co.ApplyTransferCo" resultType="com.settlement.vo.BaApplyTransferVo">
+            select
+                t.id,
+                t.apply_user,
+                au.real_name as applyUserContent,
+                t.apply_type,
+                d.dic_content as applyTypeContent,
+                t.apply_remark,
+                t.recieve_user,
+                ru.real_name as recieveUserContent,
+                t.check_user,
+                t.check_status,
+                d2.dic_content as checkStatusContent,
+                t.apply_time,
+                t.check_time
+        from ba_apply_transfer t
+            left join sys_user au on au.id=t.apply_user
+            left join sys_user ru on ru.id=t.recieve_user
+            left join sys_data_dic d on d.dic_code=t.apply_type
+            left join sys_data_dic d2 on d2.dic_code=t.check_status
+            where 1=1
+            <if test="applyTransferCo.roleCode=='AM'">
+                and t.apply_type=#{applyTransferCo.applyType}
+                and t.check_user=#{applyTransferCo.checkUser}
+            </if>
+            <if test="applyTransferCo.applyType != null and applyTransferCo.applyType !='' and applyTransferCo.roleCode !='AM'">
+                and  t.apply_type=#{applyTransferCo.applyType}
+            </if>
+            <if test="applyTransferCo.checkStatus != null and applyTransferCo.checkStatus != ''">
+                and t.check_status=#{applyTransferCo.checkStatus}
+            </if>
+            <if test="applyTransferCo.keyword != null and applyTransferCo.keyword !=''">
+                and concat(au.real_name,ru.real_name) like concat('%',#{applyTransferCo.keyword},'%')
+            </if>
+    </select>
+<!--    移交审核-客户详情-->
+    <select id="transferCustomerDetails" resultType="com.settlement.vo.BaApplyTransferVo" parameterType="com.settlement.co.ApplyTransferCo">
+
+        select
+            t.id,
+            au.real_name as applyUserContent,
+            ru.real_name as recieveUserContent,
+            c.customer_name as customerOrProjectName
+        from ba_apply_transfer a
+        inner join ba_transfer t on a.id = t.apply_transfer_id
+        inner join sys_data_dic d on d.dic_code = a.apply_type
+        inner join sys_user au on au.id = a.apply_user
+        inner join sys_user ru on ru.id = a.recieve_user
+        inner join ba_customer c on c.id = t.transfer_id
+        where a.id=#{baApplyTransfer.id}
+         and a.apply_type=#{baApplyTransfer.applyType}
+    </select>
+<!--    移交审核-项目详情-->
+    <select id="transferProjectDetails" resultType="com.settlement.vo.BaApplyTransferVo" parameterType="com.settlement.co.ApplyTransferCo">
+
+        select
+            t.id,
+            au.real_name as applyUserContent,
+            ru.real_name as recieveUserContent,
+            g.pg_name as customerOrProjectName
+            from ba_apply_transfer a
+            inner join ba_transfer t on a.id = t.apply_transfer_id
+            inner join sys_data_dic d on d.dic_code = a.apply_type
+            inner join sys_user au on au.id = a.apply_user
+            inner join sys_user ru on ru.id = a.recieve_user
+            inner join ba_project_group g on g.id = t.transfer_id
+        where a.id=#{baApplyTransfer.id}
+         and a.apply_type=#{baApplyTransfer.applyType}
+    </select>
+
+
+</mapper>

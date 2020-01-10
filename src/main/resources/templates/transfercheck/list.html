@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html class="x-admin-sm"  xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+    <head>
+        <th:bolck th:include="common/header :: header('审核管理')" />
+    </head>
+    <body>
+        <div class="x-nav">
+          <span class="layui-breadcrumb">
+            <a href="/home">首页</a>
+            <a href="">审核管理</a>
+            <a>
+              <cite>移交申请审核</cite></a>
+          </span>
+          <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
+            <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
+        </div>
+        <div class="layui-fluid">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-md12">
+                    <div class="layui-card">
+                        <div class="layui-card-body">
+                            <form class="layui-form layui-col-space5" onsubmit="return false">
+                                <div class="layui-form">
+                                    <div class="layui-inline ">
+                                        <span class="x-red"></span>提交状态:
+                                    </div>
+                                    <div class="layui-inline">
+                                        <select id="checkStatus" name="checkStatus"  lay-filter="checkStatus" lay-verify="checkStatus" style="width: 80px;height: 30px;">
+                                            <option value="">请选择</option>
+                                            <option th:each="check:${checkStatusList}" th:value="${check.dicCode}" th:text="${check.dicContent}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="layui-inline " th:if="${mode.equals('Y')}">
+                                        <span class="x-red"></span>移交类型:
+                                    </div>
+                                    <div class="layui-inline" th:if="${mode.equals('Y')}">
+                                        <select id="applyType" name="applyType"  lay-filter="applyType" lay-verify="applyType" style="width: 80px;height: 30px;">
+                                            <option value="">请选择</option>
+                                            <option th:each="apply:${applyTypeList}" th:value="${apply.dicCode}" th:text="${apply.dicContent}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="layui-inline" >
+                                        <input type="text" id="keyword" name="keyword"  value="" placeholder="申请人或接收人" autocomplete="off" class="layui-input" style="width: 200px">
+                                    </div>
+                                    <div class="layui-inline" >
+                                        <button class="layui-btn" id="search" data-type="reload" lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i>查询</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="layui-card-body layui-table-body layui-table-main" >
+                            <table class="layui-table layui-form" id="transferDataTable" lay-filter="transferDataTable"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </body>
+    <script type="text/html" id="toolBar">
+        <shiro:hasPermission name="transfercheck:detail">
+            <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">详细</a>
+        </shiro:hasPermission>
+        <shiro:hasPermission name="transfercheck:check">
+             <a class="layui-btn layui-btn-xs" lay-event="check">审核</a>
+        </shiro:hasPermission>
+    </script>
+    <script id="checkStatusTpl" type="text/html">
+        {{#  if(d.checkStatusContent === '审核通过'){ }}
+        <span style="color: #71C671;font-weight: bold;">{{ d.checkStatusContent }}</span>
+        {{#  } else if(d.checkStatusContent === '审核未通过') { }}
+        <span style="color: #EEAD0E;font-weight: bold;">{{ d.checkStatusContent }}</span>
+        {{#  } else { }}
+        {{ d.checkStatusContent }}
+        {{#  } }}
+    </script>
+    <script type="text/javascript" th:inline="javascript">
+        var checkStatusPass = [[ ${PG_CHECKSTATUS_CHECK_PASS} ]];
+        var checkStatusNoPass = [[ ${PG_CHECKSTATUS_CHECK_NOPASS} ]];
+        var mode = '';
+        layui.use(['element','table'],function() {
+            var $ = layui.jquery, table = layui.table, element = layui.element;
+            // 初始化加载
+            table.render({
+                elem: '#transferDataTable',
+                url: '/ba-apply-transfer/check/pagedata',
+                // toolbar: '',
+                page: true,
+                 title: '移交审核',
+                height: 'full-210',
+                done: function(res,curr,count) {
+                    var that = this.elem.next();
+                    res.data.forEach(function (item, index) {
+                        if (item.checkStatus == checkStatusPass || item.checkStatus == checkStatusNoPass) {
+                            var tr = $("tr[data-index='" + index + "']");
+                            var a = $(tr.find("a[lay-event='check']"));
+                            a.addClass("layui-btn-disabled");
+                        }
+                    });
+                },
+                cols: [
+                    [
+                        {field:'id',type:'checkbox',fixed:'left',hide:true},
+                        {field:'applyUserContent',title:'申请人 ',align:'center'},
+                        {field:'applyType',hide:true,align:'center'},
+                        {field:'applyTypeContent',title:'移交类型 ',align:'center'},
+                        {field:'recieveUserContent',title:'接收人 ',align:'center'},
+                        {field:'applyRemark',title:'申请描述',align:'center'},
+                        {field:'checkStatus',title:'',align:'center',hide:true},
+                        {field:'applyTime',title:'申请时间',align:'center'},
+                        {field:'checkStatusContent',title:'审核状态',align:'center',templet: '#checkStatusTpl'},
+                        {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:150}
+
+                    ]
+                ]
+            });
+            var $ = layui.$, active = {
+                reload: function(){
+                    var keyword = $('#keyword').val();
+                    var applyType =  $('#applyType').children('option:selected').val();
+                    var checkStatus = $('#checkStatus').children('option:selected').val();
+                    //执行重载
+                    table.reload('transferDataTable', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
+                        ,where: {
+                            keyword: keyword,
+                            applyType:applyType,
+                            checkStatus:checkStatus
+                        }
+                    }, 'data');
+                }
+            };
+            $('.layui-btn').on('click', function(){
+                var type = $(this).data('type');
+                active[type] ? active[type].call(this) : '';
+            });
+            // 员工申请修改监听审核、详细
+            table.on('tool(transferDataTable)', function(obj){
+                var data = obj.data;
+                var id = data.id;
+                var checkStatus = data.checkStatus;
+                if(obj.event === 'detail'){
+                    xadmin.open('详情','/ba-apply-transfer/check/detail/' + data.id,1000,545);
+                } else if(obj.event === 'check'){
+                    // if (checkStatus == checkStatusPass || checkStatus == checkStatusNoPass) {
+                    //     layer.msg("记录处于【审核通过】或者【审核未通过】状态，不能审核",{icon:5});
+                    // } else {
+                        xadmin.open('移交申请审核','/ba-apply-transfer/check/check/'+ id,800,400);
+                    // }
+                }
+            });
+        })
+    </script>
+</html>

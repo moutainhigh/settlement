@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html class="x-admin-sm"  xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <th:bolck th:include="common/header :: header('员工详情')" />
+    </head>
+    <body>
+        <div class="x-nav">
+          <span class="layui-breadcrumb">
+            <a href="/home">首页</a>
+            <a href="">审核管理</a>
+            <a>移交审核</a>
+            <a><cite>详情</cite></a>
+          </span>
+        </div>
+        <div class="layui-fluid">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-md12">
+                    <div class="layui-card">
+                        <div class="layui-card-body layui-table-body layui-table-main" >
+                            <table class="layui-table layui-form" id="dataTable" lay-filter="dataTable">
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </body>
+    <script type="text/javascript"  th:inline="javascript">
+      layui.use(['table','element'], function(){
+        var table = layui.table;
+
+        // table.render({
+        //    elem: '#dataTable',
+        //    url: '/ba-apply-transfer/check/detail/pagedata',
+        //    page: true,
+        //    title: '详情表',
+        //    height: 'full-210',
+        //      where: {
+        //     applyId : [[ ${applyId} ]]
+        //   },
+        //    cols: [
+        //        [
+        //        {field:'applyUserContent',title:'移交人',align:'center'},
+        //        {field:'customerOrProjectName',title:'项目(客户)',align:'center'},
+        //        {field:'recieveUserContent',title:'接收人',align:'center'}
+        //     ]
+        //    ]
+        // });
+
+          // table.render({
+          //     elem: '#dataTable',
+          //     url: '/ba-apply-transfer/check/detail/pagedata',
+          //     // toolbar: '',
+          //     page: true,
+          //     title: '时间点参数',
+          //     height: 'full-210',
+          //     where: {
+          //         applyId : [[ ${applyId} ]]
+          //     },
+          //     cols: [
+          //         [
+          //         {field:'applyUserContent',title:'移交人',align:'center'},
+          //         {field:'customerOrProjectName',title:'项目(客户)',align:'center'},
+          //         {field:'recieveUserContent',title:'接收人',align:'center'}
+          //     ]
+          //     ]
+          // });
+          table.render({
+              elem: '#dataTable',
+              url: '/ba-apply-transfer/check/detail/pagedata',
+              // toolbar: '',
+              page: true,
+              title: '时间点参数',
+              height: 'full-210',
+              where: {
+                  applyId : [[ ${applyId} ]]
+               },
+              cols: [
+                  [
+                      {field:'applyUserContent',title:'移交人',align:'center'},
+                      {field:'customerOrProjectName',title:'项目(客户)',align:'center'},
+                      {field:'recieveUserContent',title:'接收人',align:'center'}
+              ]]
+          });
+      });
+
+    </script>
+</html>

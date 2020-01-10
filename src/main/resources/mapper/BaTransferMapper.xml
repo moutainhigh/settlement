@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.settlement.mapper.BaTransferMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.settlement.entity.BaTransfer">
+        <id column="id" property="id" />
+        <result column="apply_transfer_id" property="applyTransferId" />
+        <result column="transfer_id" property="transferId" />
+    </resultMap>
+    <!-- 移交批量插入-->
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into ba_transfer(apply_transfer_id,transfer_id) values
+        <foreach collection="list" item="apply" index="" separator=",">
+            (#{apply.applyTransferId},#{apply.transferId})
+        </foreach>
+
+    </insert>
+</mapper>
