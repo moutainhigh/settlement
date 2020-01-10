@@ -3,7 +3,10 @@ package com.settlement.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.settlement.entity.SysDept;
+import com.settlement.entity.SysRole;
+import com.settlement.entity.SysUser;
 import com.settlement.mapper.SysDeptMapper;
+import com.settlement.mapper.SysRoleMapper;
 import com.settlement.service.SysDeptRoleService;
 import com.settlement.service.SysDeptService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -13,6 +16,7 @@ import com.settlement.utils.Result;
 import com.settlement.vo.SelectVo;
 import com.settlement.vo.SysDeptRoleUserVo;
 import com.settlement.vo.SysDeptVo;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,20 +38,35 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
 
     @Autowired
     private SysDeptRoleService sysDeptRoleService;
-
+    @Autowired
+    private SysRoleMapper sysRoleMapper;
     /**
      * 构造部门下拉列表
      * @return
      */
     @Override
     public Result getDeptSelect() {
-        QueryWrapper<SysDept> queryWrapper = new QueryWrapper<SysDept>();
-        queryWrapper.ne("dept_code", Const.DEPT_ROOT);
-        queryWrapper.orderByAsc("sort");
-        List<SysDept> deptList = this.baseMapper.selectList(queryWrapper);
+        SysUser user = (SysUser) SecurityUtils.getSubject().getPrincipal();
+        Map<String,Object> map = new HashMap<>();
+        map.put("delFlag",Const.DEL_FLAG_N);
+        map.put("userId",user.getId());
+        SysRole sysRole = sysRoleMapper.getSysRoleByUserId(map);
         List<SelectVo> deptSelectVoList = new ArrayList<SelectVo>();
-        if (deptList != null && deptList.size() > 0) {
-            deptSelectVoList = buildDeptTree(deptList);
+        if(sysRole.getRoleCode().equals(Const.ROLE_CODE_AM)) {
+            SysDept sysDept = this.baseMapper.selectById(user.getDeptId());
+            SelectVo selectVo = new SelectVo();
+            selectVo.setValue(sysDept.getId());
+            selectVo.setName(sysDept.getDeptName());
+            deptSelectVoList.add(selectVo);
+        } else if(sysRole.getRoleCode().equals(Const.ROLE_CODE_ADMIN)){
+            QueryWrapper<SysDept> queryWrapper = new QueryWrapper<SysDept>();
+            queryWrapper.eq("del_flag",Const.DEL_FLAG_N);
+            queryWrapper.ne("dept_code", Const.DEPT_ROOT);
+            queryWrapper.orderByAsc("sort");
+            List<SysDept> deptList =  this.baseMapper.selectList(queryWrapper);
+            if (deptList != null && deptList.size() > 0) {
+                deptSelectVoList = buildDeptTree(deptList);
+            }
         }
         Result r = new Result(HttpResultEnum.CODE_0.getCode(), HttpResultEnum.CODE_0.getMessage());
         r.setData(deptSelectVoList);

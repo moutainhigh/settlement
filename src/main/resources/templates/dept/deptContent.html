@@ -9,7 +9,7 @@
     <form class="layui-form" >
         <input th:type="hidden" name="_method" value="put" th:if="${mode.equals('update')}" />
         <input type="hidden" name="id" th:value="${sysDept.id}" th:if="${mode.equals('update')}" />
-        <input type="hidden" name="parentId" th:value="${sysDept.parentId}" />
+        <input type="hidden" id="parentId" name="parentId" th:value="${sysDept.parentId}" />
     <div class="layui-row" layui-form-panel lay-filter="show_form">
 
             <div class="layui-form-item">
@@ -87,8 +87,6 @@
 <script th:src="@{/js/formSelects-v4.js}" type="text/javascript" charset="utf-8"></script>
 <script th:src="@{/js/common/common.js}" type="text/javascript" charset="utf-8"></script>
 <script th:inline="javascript">
-
-
     layui.use('form', function(){
         var form = layui.form;
         //form.render();
@@ -151,23 +149,23 @@
         );
         //监听提交
         form.on('submit(add)', function(data){
-            $("#roles")
+            var pid = $("#parentId").val();
             if("add"==mode && checkCodeIsExist('/sys-dept/isexist/',$("#deptCode").val(),layer,'submit')) {
                 $.post('/sys-dept/add',data.field,function (r) {
                         var pid=$("#parentId").val();
                         if(r.code=='add_200') {
-                            var obj1 = window.parent.layui.dtree.getNowParam("demoTree");
-                            //alert(window.parent.layui.find("demoTree"));
 
+                           // window.parent.layui.dtree.partialRefreshAdd($divObj);
+                            // var obj1 = window.parent.layui.dtree.getNowParam("deptTree");
                             //window.parent.layui.dtree.changeTreeNodeAdd("refresh");
-                            window.parent.layui.dtree.reload("demoTree",{
-                                url: "/sys-dept/dtree/pagedata",
-                                //request: {id:pid},
-                                method: "post",
-                                initLevel: "5",
-                                success: function(data, obj, first){
-                                }
-                            });
+                            // window.parent.layui.dtree.reload("deptTree",{
+                            //     url: "/sys-dept/dtree/pagedata",
+                            //     //request: {id:pid},
+                            //     method: "post",
+                            //     initLevel: "5",
+                            //     success: function(data, obj, first){
+                            //     }
+                            // });
                             layer.msg('添加成功', {icon: 6});
                         } else {
                             layer.msg('添加失败', {icon: 5});
@@ -175,13 +173,15 @@
                     }
                 );
             } else if("update"==mode) {
+                var $divObj = $("#deptTree").find("div[dtree-click='itemNodeClick'][dtree-id='demoTree'][data-id='"+pid+"']");
+                console.log($divObj);
                 $.ajax({
                     url:"/sys-dept/update/",
                     type:"PUT",
                     data: data.field,
                     success:function(r){
                     if(r.code='edit_200') {
-                        window.parent.layui.dtree.reload("demoTree", {
+                        window.parent.layui.dtree.reload("deptTree", {
                             url: "/sys-dept/dtree/pagedata",
                             //request: {id:pid},
                             method: "post",
