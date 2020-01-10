@@ -161,10 +161,15 @@
               if(obj.event === 'detail'){
                   layer.msg('ID：'+ data.id + ' 的查看操作');
               } else if(obj.event === 'del'){
-                  layer.confirm('真的删除【 '+ data.paramName + '】么?', function(index){
-                      datadic_del(data.id);
-                      layer.close(index);
-                  });
+                  if (data.enabled == 'N') {
+                      layer.confirm('真的删除【 '+ data.paramName + '】么?', function(index){
+                          formula_del(data.id);
+                          layer.close(index);
+                      });
+                  } else if (data.enabled == 'Y') {
+                      layer.msg('结算公式参数在启用状态下,不能删除',{icon:5});
+                  }
+
               } else if(obj.event === 'edit'){
                   xadmin.open('编辑结算参数','/ba-formula-param/toAddorUpdate/update/'+ data.id,600,550);
               }
@@ -184,8 +189,8 @@
       });
 
 
-      /*数据字典-删除*/
-      function datadic_del(id){
+      /*结算参数-删除*/
+      function formula_del(id){
           $.ajax({
               url:"/ba-formula-param/delete/" + id,
               type:"delete",
