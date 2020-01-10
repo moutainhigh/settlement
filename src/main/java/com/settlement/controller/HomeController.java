@@ -7,6 +7,7 @@ import com.settlement.utils.Const;
 import com.settlement.utils.Result;
 import com.settlement.vo.*;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.eclipse.jetty.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -76,7 +77,8 @@ public class HomeController {
     private BaEmpLeavePgService baEmpLeavePgService;
     @Autowired
     private BaEmpLeaveJobService baEmpLeaveJobService;
-
+    @Autowired
+    private BaCityService baCityService;
 
     @GetMapping({"/","/login"})
     public String toLogin() {
@@ -99,7 +101,6 @@ public class HomeController {
         SysUser user = (SysUser) SecurityUtils.getSubject().getPrincipal();
         return r;
     }
-
     @GetMapping("/welcome")
     public String welcome() {
         return "welcome";
@@ -110,6 +111,7 @@ public class HomeController {
      *
      * @return
      */
+    @RequiresPermissions("user:list")
     @GetMapping("/sys-user/list")
     public String userPage() {
         return "user/list";
@@ -120,8 +122,11 @@ public class HomeController {
      *
      * @return
      */
+    @RequiresPermissions("user:add")
     @GetMapping("/sys-user/add")
-    public String toUserAdd() {
+    public String toUserAdd(Model model) {
+        List<BaCity> cities = baCityService.getBaCityList();
+        model.addAttribute("cities",cities);
         return "user/add";
     }
 
@@ -132,6 +137,7 @@ public class HomeController {
      * @param model
      * @return
      */
+    @RequiresPermissions("user:edit")
     @GetMapping("/sys-user/edit/{id}")
     public String toUserEdit(@PathVariable  Integer id, Model model) {
         // 根据ID 取得用户信息
@@ -141,6 +147,8 @@ public class HomeController {
         userVo.setRole(new SysRole().setId(userRole.getRoleId()));
         // 根据部门ID，查出角色
         List<SysRole> roles = (List<SysRole>)sysRoleService.getRolesByDeptId(user.getDeptId()).getData();
+        List<BaCity> cities = baCityService.getBaCityList();
+        model.addAttribute("cities",cities);
         model.addAttribute("userVo",userVo);
         model.addAttribute("roles",roles);
         return "user/edit";
@@ -153,6 +161,7 @@ public class HomeController {
      * @date 2019-1-3
      * @return
      */
+    @RequiresPermissions("user:stop")
     @GetMapping("/sys-user/stop/{id}")
     public String toUserStop(@PathVariable  Integer id, Model model) {
         // 根据数据字典 取得停用原因
@@ -167,9 +176,17 @@ public class HomeController {
         return "user/stop";
     }
 
+    /**
+     * 密码修改页面
+     * @return
+     */
+    @GetMapping("/sys-user/updatepassword")
+    public String updatePassword() {
+        return "user/updatepassword";
+    }
+    /////////////////////////////////////////////////////////////////////////////////   用户跳转页面 end //////////////////////////////////////////////////////////////
 
-/////////////////////////////////////////////////////////////////////////////////   用户跳转页面 end //////////////////////////////////////////////////////////////
-
+    @RequiresPermissions("role:list")
     @GetMapping("/sys-role/list")
     public String toRolePageList() {
         return "role/list";
@@ -179,6 +196,7 @@ public class HomeController {
      * 跳转角色添加页面
      * @return
      */
+    @RequiresPermissions({"role:toAdd","role:toUpdate"})
     @GetMapping("/sys-role/toAddorUpdate/{mode}/{id}")
     public String toRoleAdd(@PathVariable String mode,@PathVariable(required = false) Integer id,Model model) {
         if(Const.MODE_ADD.equals(mode)) {
@@ -201,19 +219,20 @@ public class HomeController {
      * @param model
      * @return
      */
+    @RequiresPermissions("role:toAssignRole")
     @GetMapping("/sys-role/toAssignRole/{roleId}")
     public String toAssignRole(@PathVariable(value="roleId") Integer roleId,Model model){
         model.addAttribute("roleId",roleId);
         return "role/assign_role";
     }
+    /////////////////////////////////////////////////////////////////////////////////   角色页面 end //////////////////////////////////////////////////////////////
     /**
      * 菜单管理列表
      * @return
      */
+    @RequiresPermissions("permission:list")
     @GetMapping("/sys-permission/list")
     public String toPermissionList() {
-        //public String toPermissionList(@RequestParam(defaultValue = "update") String mode, Model model) {
-        //model.addAttribute("mode",mode);
         return "permission/list";
     }
 
@@ -224,7 +243,8 @@ public class HomeController {
      * @param model
      * @return
      */
-    @GetMapping("/sys-permission/iframeContent")
+    @RequiresPermissions({"permission:toAdd","permission:toUpdate"})
+    @GetMapping("/sys-permission/permContent")
     public String permissionIframeContent(@RequestParam(required =false,defaultValue = "1")  Integer id, @RequestParam(required = false,defaultValue = "") String mode, Model model) {
         //菜单类型
         List<SysDataDicVo> sysDataDicVos =sysDataDicService.getDataDicSelectByParentCode(Const.PERMISSION_TYPE_CODE);
@@ -243,16 +263,51 @@ public class HomeController {
             model.addAttribute("sysPermission",sysPermission);
         } else {
             SysPermissionVo sysPermission = new SysPermissionVo(); //sysPermissionService.getRootSysPermissionVoById(Const.PERMISSION_ROOT_ID);
+            sysPermission.setType(Const.MENU_TYPE_B);
             model.addAttribute("mode","default");
             model.addAttribute("sysPermission",sysPermission);
         }
-        return "permission/iframeContent";
+        return "permission/permContent";
+    }
+    /////////////////////////////////////////////////////////////////////////////////   权限页面 end //////////////////////////////////////////////////////////////
+
+    /**
+     * 城市页面
+     * @return
+     */
+    @RequiresPermissions("city:list")
+    @GetMapping("/ba-city/list")
+    public String toCityList() {
+        return "city/list";
     }
 
+    /**
+     * 城市 新增 修改
+     * @param mode
+     * @param id
+     * @param model
+     * @return
+     */
+    @RequiresPermissions({"city:toUpdate","city:toAdd"})
+    @GetMapping("/ba-city/toAddorUpdate/{mode}/{id}")
+    public String toBaCityAddOrUpdate(@PathVariable String mode,@PathVariable(required = false) Integer id,Model model) {
+        if(Const.MODE_ADD.equals(mode)) {
+            model.addAttribute("mode",Const.MODE_ADD);
+            BaCity baCity = new BaCity();
+            model.addAttribute("baCity",baCity);
+        } else if(Const.MODE_UPDADTE.equals(mode)){
+            BaCity baCity = baCityService.getById(id);
+            model.addAttribute("baCity",baCity);
+            model.addAttribute("mode",Const.MODE_UPDADTE);
+        }
+        return "city/add";
+    }
+    /////////////////////////////////////////////////////////////////////////////////   城市页面 end //////////////////////////////////////////////////////////////
     /**
      * 跳转到部门列表页
      * @return
      */
+    @RequiresPermissions("dept:list")
     @GetMapping("/sys-dept/list")
     public String toDeptList() {
         return "dept/list";
@@ -265,7 +320,8 @@ public class HomeController {
      * @param model
      * @return
      */
-    @GetMapping("/sys-dept/iframeContent")
+    @RequiresPermissions({"dept:toUpdate","dept:toAdd"})
+    @GetMapping("/sys-dept/deptContent")
     public String deptIframeContent(@RequestParam(required =false,defaultValue = "1") Integer id, @RequestParam(required = false,defaultValue = "") String mode, Model model) {
         List<SysRoleVo> sysRoleVos = sysRoleService.getRoleVo();
         if("update".equals(mode)) {
@@ -289,15 +345,16 @@ public class HomeController {
             model.addAttribute("sysDept",sysDept);
         }
         model.addAttribute("sysRoleVos",sysRoleVos);
-        return "dept/iframeContent";
+        return "dept/deptContent";
     }
 
-/////////////////////////////////////////////////////////////////////////////////   用户跳转页面 end //////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////   部门页面 end //////////////////////////////////////////////////////////////
 
     /**
      * 数据字典列表
      * @return
      */
+    @RequiresPermissions("dic:list")
     @GetMapping("/sys-data-dic/list")
     public String toDatatDicList() {
         return "dic/list";
@@ -308,6 +365,7 @@ public class HomeController {
      *
      * @return
      */
+    @RequiresPermissions({"dic:toUpdate","dic:toAdd"})
     @GetMapping("/sys-data-dic/toAddOrUpdate/{mode}/{id}")
     public String toDataDicAdd(@PathVariable(value = "mode") String mode, @PathVariable(value="id",required = false) Integer id, Model model) {
 
@@ -349,6 +407,7 @@ public class HomeController {
      * @auth    admin
      * @dte     2019-11-20
      */
+    @RequiresPermissions("group:list")
     @GetMapping("/ba-project-group/list")
     public String toPgList() {
         return "pg/list";
@@ -361,6 +420,7 @@ public class HomeController {
      * @date 2019-11-21
      * @return
      */
+    @RequiresPermissions("group:add")
     @GetMapping("/ba-project-group/add")
     public String toPgAdd(Model model) {
         // 取得客户经理下拉列表
@@ -380,6 +440,7 @@ public class HomeController {
      * @date 2019-11-25
      * @return
      */
+    @RequiresPermissions("group:edit")
     @GetMapping("/ba-project-group/edit/{id}")
     public String toPgEdit(@PathVariable Integer id, Model model) {
         model.addAttribute("pg",this.baProjectGroupService.getById(id));
@@ -401,6 +462,7 @@ public class HomeController {
      * @param id
      * @return
      */
+    @RequiresPermissions("group:relateAssistant")
     @GetMapping("/ba-project-group/relate-assistant/{id}")
     public String toRelateAssistant(@PathVariable Integer id, Model model) {
         model.addAttribute("pg",this.baProjectGroupService.getProjectGroupAssistantById(id));
@@ -415,12 +477,13 @@ public class HomeController {
      * @param id
      * @return
      */
+    @RequiresPermissions("group:relateSettlement")
     @GetMapping("/ba-project-group/relate-settlement/{id}")
     public String toRelateSettlement(@PathVariable Integer id, Model model) {
         model.addAttribute("pg", this.baProjectGroupService.getProjectGroupSettlementById(id));
         return "pg/relate-settlement";
     }
-
+    @RequiresPermissions("group:start")
     @GetMapping("/ba-project-group/start/{id}")
     public String toStartPg(@PathVariable(value="id") Integer id,Model model) {
         BaProjectGroup bpg = this.baProjectGroupService.getById(id);
@@ -430,12 +493,33 @@ public class HomeController {
         model.addAttribute("customer",this.baCustomerService.getById(bpg.getCustomerId()));
         return "pg/start";
     }
+
+    /**
+     * 项目组移交user
+     * @param ids
+     * @param model
+     * @return
+     */
+    @RequiresPermissions("group:transfer")
+    @GetMapping("/ba-project-group/transfer/{ids}")
+    public String toTransferPage(@PathVariable Integer[] ids,Model model){
+        SysUser user = (SysUser)SecurityUtils.getSubject().getPrincipal();
+        SysUserRole sysRole = sysUserRoleService.getRoleByUserId(user.getId());
+        List<SysUserVo> amUsers = (List<SysUserVo>)sysUserService.getUserByDeptIdAndRoleCode(user.getDeptId()).getData();
+        List<SysUser> sysUsers = (List<SysUser>)sysUserService.getUserSelectByRoleDept(sysRole.getRoleId(),user.getId(),user.getDeptId()).getData();
+        model.addAttribute("ids",ids);
+        model.addAttribute("applyUser",user.getId());
+        model.addAttribute("amUsers",amUsers);
+        model.addAttribute("users",sysUsers);
+        return "pg/transfer";
+    }
     /////////////////////////////////////////////////////////////  项目组跳转end  ///////////////////////////////////////////////////////////////////
 
     /**
      * 跳转时间点参数页面
      * @return
      */
+    @RequiresPermissions("time:list")
     @GetMapping("/ba-time-param/list")
     public String toTimeParam(){
         return "timeparam/list";
@@ -445,6 +529,7 @@ public class HomeController {
      * 时间点-关联项目组
      * @return
      */
+    @RequiresPermissions("time:relateProject")
     @GetMapping("/ba-time-param/relate/project/{id}/{type}")
     public String toRelateProject(@PathVariable Integer id,@PathVariable String type, Model model){
         model.addAttribute("id",id);
@@ -453,9 +538,10 @@ public class HomeController {
     }
 
     /**
-     * 跳转角色添加页面
+     * 跳转时间参数添加页面
      * @return
      */
+    @RequiresPermissions({"time:toUpdate","time:toAdd"})
     @GetMapping("/ba-time-param/toAddorUpdate/{mode}/{id}")
     public String toTimeParamAddOrUpdate(@PathVariable String mode,@PathVariable(required = false) Integer id,Model model) {
         //时间点类型
@@ -479,11 +565,12 @@ public class HomeController {
         return "timeparam/add";
 
     }
-
+/////////////////////////////////////////////////////////////////////////////////   时间参数页面 end //////////////////////////////////////////////////////////////
     /**
      * 跳转导出参数页面
      * @return
      */
+    @RequiresPermissions("export:list")
     @GetMapping("/ba-export-param/list")
     public String toExportParam(){
         return "exportparam/list";
@@ -494,6 +581,7 @@ public class HomeController {
      * 跳转角色添加页面
      * @return
      */
+    @RequiresPermissions({"export:toUpdate","export:toAdd"})
     @GetMapping("/ba-export-param/toAddorUpdate/{mode}/{id}")
     public String toExportParamAddOrUpdate(@PathVariable String mode,@PathVariable(required = false) Integer id,Model model) {
         if(Const.MODE_ADD.equals(mode)) {
@@ -506,11 +594,12 @@ public class HomeController {
         return "exportparam/add";
     }
 
-
+/////////////////////////////////////////////////////////////////////////////////   导出参数页面 end //////////////////////////////////////////////////////////////
     /**
      * 跳转结算公式参数页面
      * @return
      */
+    @RequiresPermissions("formula:list")
     @GetMapping("/ba-formula-param/list")
     public String toFormulaParam(){
         return "formulaparam/list";
@@ -521,6 +610,7 @@ public class HomeController {
      * 跳转角色添加页面
      * @return
      */
+    @RequiresPermissions({"formula:toUpdate","formula:toAdd"})
     @GetMapping("/ba-formula-param/toAddorUpdate/{mode}/{id}")
     public String toFormulaParamAddOrUpdate(@PathVariable String mode,@PathVariable(required = false) Integer id,Model model) {
         if(Const.MODE_ADD.equals(mode)) {
@@ -532,11 +622,12 @@ public class HomeController {
         }
         return "formulaparam/add";
     }
-
+/////////////////////////////////////////////////////////////////////////////////   结算页面 end //////////////////////////////////////////////////////////////
     /**
      * 跳转结算公式参数页面
      * @return
      */
+    @RequiresPermissions("customer:list")
     @GetMapping("/ba-customer/list")
     public String toBaCustomer(){
         return "customer/list";
@@ -547,6 +638,7 @@ public class HomeController {
      * 跳转角色添加页面
      * @return
      */
+    @RequiresPermissions({"customer:toUpdate","customer:toAdd"})
     @GetMapping("/ba-customer/toAddorUpdate/{mode}/{id}")
     public String toBaCustomerAddOrUpdate(@PathVariable String mode,@PathVariable(required = false) Integer id,Model model) {
         if(Const.MODE_ADD.equals(mode)) {
@@ -555,7 +647,8 @@ public class HomeController {
             model.addAttribute("baCustomer",baCustomerVo);
         } else if(Const.MODE_UPDADTE.equals(mode)){
             SysDept sysDept = sysDeptService.getDeptByCustomerId(id);
-            List<SysDeptRoleUserVo> chiefs = (List<SysDeptRoleUserVo>)sysDeptService.getDeptRoleUsers(sysDept.getId()).getData();
+            //List<SysDeptRoleUserVo> chiefs = (List<SysDeptRoleUserVo>)sysDeptService.getDeptRoleUsers(sysDept.getId()).getData();
+            List<SysUserVo> chiefs = (List<SysUserVo>) sysUserService.getUserByDeptIdAndRoleCode(sysDept.getId()).getData();
             BaCustomerVo baCustomerVo = baCustomerService.getBaCustomerVoById(id);
             model.addAttribute("baCustomer",baCustomerVo);
             model.addAttribute("chiefs",chiefs);
@@ -564,6 +657,24 @@ public class HomeController {
         return "customer/add";
     }
     /**
+     * 客户移交user
+     * @param ids
+     * @param model
+     * @return
+     */
+    @RequiresPermissions("customer:transfer")
+    @GetMapping("/ba-customer/transfer/{ids}")
+    public String toTransferCustomerPage(@PathVariable Integer[] ids,Model model){
+        SysUser user = (SysUser)SecurityUtils.getSubject().getPrincipal();
+        SysUserRole sysRole = sysUserRoleService.getRoleByUserId(user.getId());
+        List<SysUser> sysUsers = (List<SysUser>)sysUserService.getUserSelectByRoleDept(sysRole.getRoleId(),user.getId(),user.getDeptId()).getData();
+        model.addAttribute("ids",ids);
+        model.addAttribute("applyUser",user.getId());
+        model.addAttribute("users",sysUsers);
+        return "customer/transfer";
+    }
+    /////////////////////////////////////////////////////////////////////////////////   客户页面 end //////////////////////////////////////////////////////////////
+    /**
      * @description 员工录入
      *
      * @auth admin
@@ -571,6 +682,7 @@ public class HomeController {
      * @param pgId
      * @return
      */
+    @RequiresPermissions("employee:enterEmp")
     @GetMapping("/ba-employee/enter-emp/{pgId}")
     public String toEnterEmployPage(@PathVariable  Integer pgId, Model model) {
         model.addAttribute("pgId", pgId);
@@ -586,6 +698,7 @@ public class HomeController {
      * @param model
      * @return
      */
+    @RequiresPermissions("employee:entranceEmp")
     @GetMapping("/ba-employee/entrance-emp/{pgId}")
     public String toDetailEmpPage(@PathVariable  Integer pgId, Model model) {
         model.addAttribute("pgId", pgId);
@@ -604,6 +717,7 @@ public class HomeController {
      * @param model
      * @return
      */
+    @RequiresPermissions("employee:add")
     @GetMapping("/ba-employee/add/{pgId}")
     public String toAddEmployeePage(@PathVariable Integer pgId, Model model) {
         // 级别填写模式
@@ -626,6 +740,7 @@ public class HomeController {
      * @param model
      * @return
      */
+    @RequiresPermissions("employee:edit")
     @GetMapping("/ba-employee/edit/{id}/{pgId}")
     public String toEditEmployee(@PathVariable Integer id, @PathVariable Integer pgId, Model model) {
         model.addAttribute("levelPriceList", this.baLevelPriceService.getLevelPriceByPgId(pgId));
@@ -643,6 +758,7 @@ public class HomeController {
      * @param id
      * @return
      */
+    @RequiresPermissions("employee:view")
     @GetMapping("/ba-employee/view/{id}")
     public String toViewImg(@PathVariable Integer id, Model model) {
         model.addAttribute("imgSrc", this.baEmployeeService.getProjectEmpById(id).getRateEmailFilename());
@@ -659,6 +775,7 @@ public class HomeController {
      * @param model
      * @return
      */
+    @RequiresPermissions("employee:apply")
     @GetMapping("/ba-employee/apply/{ids}/{pgId}")
     public String toEmpApplyPage(@PathVariable(value="ids") String ids, @PathVariable(value="pgId") Integer pgId, Model model) {
         BaProjectGroup bpg = this.baProjectGroupService.getById(pgId);
@@ -674,11 +791,12 @@ public class HomeController {
         return "emp/apply";
     }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////员工页面 end///////////////////////////////////////////////////////////////////
     /**
      * 跳转合同页面
      * @return
      */
+    @RequiresPermissions("contract:list")
     @GetMapping("/ba-contract/list")
     public String toBaContract(){
         return "contract/list";
@@ -689,6 +807,7 @@ public class HomeController {
      * 跳转合同添加页面
      * @return
      */
+    @RequiresPermissions({"contract:toUpdate","contract:toAdd"})
     @GetMapping("/ba-contract/toAddorUpdate/{mode}/{id}")
     public String toBaContractAddOrUpdate(@PathVariable String mode,@PathVariable(required = false) Integer id,Model model) {
 
@@ -707,12 +826,13 @@ public class HomeController {
         model.addAttribute("baCustomers",baCustomers);
         return "contract/add";
     }
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////合同管理页面 end/////////////////////////////////////////////////////////////////////////////////
 
     /**
      * 考勤管理页面
      * @return
      */
+    @RequiresPermissions("attendance:list")
     @GetMapping("/ba-work-attendance/list")
     public String toWorkAttendance(){
         return "workattendance/list";
@@ -722,9 +842,10 @@ public class HomeController {
      * @param projectId 项目id
      * @return
      */
+    @RequiresPermissions("attendance:attendlist")
     @GetMapping("/ba-work-attendance/attendlist")
     public String toAttendList(Integer projectId,Model model){
-        List<String> years = baTimeParamService.getTimeYearValue();
+        List<Integer> years = baTimeParamService.getTimeYearValue();
         List<String> months = baTimeParamService.getTimeMonthValue();
         List<SysDataDicVo> subStatusList = sysDataDicService.getDataDicSelectByParentCode(Const.SUB_STATUS);
         Integer applyCount = 0;
@@ -733,20 +854,15 @@ public class HomeController {
         String compelteTime = baTimeParamService.getCompleteParam(projectId);
         if(projectId!=null) {
             BaProjectGroup baProjectGroup = baProjectGroupService.getById(projectId);
-            BaProjectGroupAssistant baProjectGroupAssistant = baProjectGroupAssistantService.getBaProjectGroupAssistantByGroupId(projectId);
+            //BaProjectGroupAssistant baProjectGroupAssistant = baProjectGroupAssistantService.getBaProjectGroupAssistantByGroupId(projectId);
             String applyTime= baTimeParamService.getCurrentMonthYear();
             applyCount = (Integer)baApplyService.getApplyCountByProjectId(projectId,applyTime).getData();
-            model.addAttribute("checkUserId", baProjectGroupAssistant.getAssistantId());
+            //绑定审核人AM
+            model.addAttribute("checkUserId", baProjectGroup.getCheckUserId());
             model.addAttribute("projectId", projectId);
         }
         String tipCountMessage = "本月您已经修改"+applyCount+"次,还有"+(totalApplyCount-applyCount)+"次修改机会";
         String tipStopAndCompelteTime = "";
-//        if(stopTime.split("-")[2].equals("null")) {
-//            tipStopAndCompelteTime+=" 设置【结算时间点】";
-//        }
-//        if(compelteTime.split("-")[2].equals("null")) {
-//            tipStopAndCompelteTime+=" 设置【结算完成时间点】";
-//        }
         if(!StringUtil.isNotBlank(stopTime)) {
             stopTime="尚未设置【结算时间点】";
         }
@@ -768,6 +884,7 @@ public class HomeController {
      * 考勤管理-申请修改
      * @return
      */
+    @RequiresPermissions("attendance:applymodify")
     @GetMapping("/ba-work-attendance/applymodify/{checkUserId}/{projectId}/{ids}")
     public String toApplymodifyPage(@PathVariable Integer checkUserId,@PathVariable Integer projectId,@PathVariable Integer[] ids,Model model, HttpSession session){
         model.addAttribute("workAttendanceIds",ids);
@@ -786,6 +903,7 @@ public class HomeController {
      * @param model
      * @return
      */
+    @RequiresPermissions("attendance:edit")
     @GetMapping("/ba-work-attendance/edit/{id}")
     public String toWorkAttendanceEdit(@PathVariable Integer id, Model model){
         BaWorkAttendanceVo baWorkAttendanceVo = baWorkAttendanceService.getBaWorkAttendanceVoById(id);
@@ -799,6 +917,7 @@ public class HomeController {
      * @param model
      * @return
      */
+    @RequiresPermissions("attendance:generate")
     @GetMapping("/ba-work-attendance/generate/{projectId}")
     public String toGenerateWorkAttendance(@PathVariable Integer projectId,Model model){
         model.addAttribute("pgId",projectId);
@@ -810,18 +929,20 @@ public class HomeController {
      * @param model
      * @return
      */
+    @RequiresPermissions("attendance:workattendancelist")
     @GetMapping("/ba-work-attendance/apply/workattendancelist/{id}")
    public String toApplyWorkattendanceList(@PathVariable Integer id, Model model) {
         model.addAttribute("applyId",id);
         return "apply/applyattendlist";
     }
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////考勤//////////////////////////////////////////////////////////////////////////////
 
     /**
      * 考勤审核
      * @param model
      * @return
      */
+    @RequiresPermissions("applyCheckWorkattendance:list")
     @GetMapping("/ba-apply-check-workattendance/list")
     public String toCheckattendanceList(Model model){
         List<SysDataDic> checkStatusList = sysDataDicService.getCheckStatus();
@@ -835,6 +956,7 @@ public class HomeController {
      * @param model
      * @return
      */
+    @RequiresPermissions("applyCheckWorkattendance:check")
     @GetMapping("/ba-apply/check/workattendance/{id}")
     public String toCheckattendanceList(@PathVariable Integer id, Model model){
         BaApplyVo baApplyVo = baApplyService.getApplyVoById(id);
@@ -847,6 +969,7 @@ public class HomeController {
      * 申请修改记录
      * @return
      */
+    @RequiresPermissions("apply:list")
     @GetMapping("/ba-apply/list")
     public String toApplyList(Model model){
         List<SysDataDic> checkStatusList = sysDataDicService.getCheckStatus();
@@ -855,21 +978,85 @@ public class HomeController {
     }
 
     /**
+     * 审核 申请移交
+     * @param model
+     * @return
+     */
+    @RequiresPermissions("transfercheck:list")
+    @GetMapping("/ba-apply-transfer/check/list")
+    public String toApplyTransferCheckList(Model model){
+        SysUser user = (SysUser) SecurityUtils.getSubject().getPrincipal() ;
+        SysRole sysRole = sysRoleService.findRoleByUserId(user.getId());
+        List<SysDataDicVo> checkStatusList = sysDataDicService.getDataDicSelectByParentCode(Const.CHECK_STATUS_PARENT_CODE);
+        List<SysDataDicVo> applyTypeList = sysDataDicService.getDataDicSelectByParentCode(Const.APPLY_TRANSFER);
+        model.addAttribute("checkStatusList",checkStatusList);
+        model.addAttribute("applyTypeList",applyTypeList);
+        if(sysRole.getRoleCode().equals(Const.ROLE_CODE_AM)) {
+            model.addAttribute("mode", "N");
+        }else {
+            model.addAttribute("mode","Y");
+        }
+        return "transfercheck/list";
+    }
+
+    /**
+     * 跳转移交审核页面
+     * @param id
+     * @param model
+     * @return
+     */
+    @RequiresPermissions("transfercheck:check")
+    @GetMapping("/ba-apply-transfer/check/check/{id}")
+    public String toApplyTransferCheck(@PathVariable Integer id, Model model){
+        List<SysDataDicVo> checkStatusList = sysDataDicService.getDataDicSelectByParentCode(Const.CHECK_RESULT_CODE);
+        model.addAttribute("checkStatusList",checkStatusList);
+        model.addAttribute("applyId",id);
+        return "transfercheck/check";
+    }
+
+    /**
+     * 跳转移交详细详细
+     * @param id
+     * @param model
+     * @return
+     */
+    @RequiresPermissions("transfercheck:detail")
+    @GetMapping("/ba-apply-transfer/check/detail/{id}")
+    public String toApplyTransferCheckDetail(@PathVariable Integer id,Model model){
+        model.addAttribute("applyId",id);
+        return "transfercheck/detail";
+    }
+    /**
      * 申请修改考勤记录
      * @param id
      * @return
      */
+    @RequiresPermissions("apply:workattendance")
     @GetMapping("/ba-apply/workattendance/{id}")
     public String toApplyWorkAttendanceList(@PathVariable Integer id) {
-        return "apply/attendlist";
+        return "apply/applyattendlist";
     }
 
+    /**
+     * 加载考勤申请记录 Assistant
+     * @param id
+     * @param model
+     * @return
+     */
+    @RequiresPermissions("apply:workattendancelist")
+    @GetMapping("/ba-apply/workattendancelist/{id}")
+    public String toApplyWorkattendancelist(@PathVariable Integer id,Model model){
+        model.addAttribute("applyId",id);
+        // model.addAttribute("mode","check");
+        return "apply/attendlist";
+    }
     /**
      * 跳转口令验证页面
      * @param id
      * @param model
      * @return
      */
+    @RequiresPermissions("apply:passcode")
     @GetMapping("/ba-apply/passcode/{id}")
     public String toApplyPassCode(@PathVariable Integer id,Model model){
         BaApply baApply = baApplyService.getById(id);
@@ -877,20 +1064,9 @@ public class HomeController {
         return "apply/passcode";
     }
 
-    /**
-     * 加载考勤申请记录
-     * @param id
-     * @param model
-     * @return
-     */
-    @GetMapping("/ba-apply/workattendancelist/{id}")
-    public String toApplyWorkattendancelist(@PathVariable Integer id,Model model){
-        model.addAttribute("applyId",id);
-       // model.addAttribute("mode","check");
-        return "apply/attendlist";
-    }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /////////////////////////////////////////////////////////////////////////////////////申请 审核////////////////////////////////////////////////////////////////////////////
 
     /**
      * @description 项目组审核列表页
@@ -899,6 +1075,7 @@ public class HomeController {
      * @date 2019-12-10
      * @return
      */
+    @RequiresPermissions("groupcheck:list")
     @GetMapping("/ba-project-group-check/list")
     public String toPgCheckList() {
         return "pgcheck/list";
@@ -912,6 +1089,7 @@ public class HomeController {
      * @param id
      * @return
      */
+    @RequiresPermissions("groupcheck:check")
     @GetMapping("/ba-project-group-check/check/{id}")
     public String pgCheckPage(@PathVariable Integer id, Model model) {
         model.addAttribute("projectGroupCheckVo", this.baProjectGroupCheckService.getPgCheckById(id));
@@ -930,6 +1108,7 @@ public class HomeController {
      * @param model
      * @return
      */
+    @RequiresPermissions("groupcheck:detail")
     @GetMapping("/ba-project-group-check/{id}")
     public String pgCheckDetail(@PathVariable(value="id") Integer id, Model model) {
         ProjectGroupCheckVo pgcv = this.baProjectGroupCheckService.getPgCheckById(id);
@@ -939,7 +1118,7 @@ public class HomeController {
         return "pgcheck/detail";
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////项目组审核 end /////////////////////////////////////////////////////////////////////////
 
     /**
      * @description 申请修改审核列表
@@ -948,6 +1127,7 @@ public class HomeController {
      * @date 2019-12-24
      * @return
      */
+    @RequiresPermissions("empApplyCheck:list")
     @GetMapping("/ba-emp-apply-check/list")
     public String toApplyCheckPageList() {
         return "applycheck/list";
@@ -960,6 +1140,7 @@ public class HomeController {
      * @date 2019-12-27
      * @return
      */
+    @RequiresPermissions("applyEmployee:list")
     @GetMapping("/ba-apply-employee/list")
     public String toEmpApplyPageList(Model model) {
         // 审核状态
@@ -977,6 +1158,7 @@ public class HomeController {
      * @param model
      * @return
      */
+    @RequiresPermissions("empApplyCheck:check")
     @GetMapping("/ba-emp-apply-check/check/{id}/{mode}")
     public String toApplyCheck(@PathVariable(value="id") Integer id, @PathVariable(value="mode") String mode, Model model) {
         model.addAttribute("checkStatusList",this.sysDataDicService.getDataDicSelectByParentCode(Const.CHECK_RESULT_CODE));
@@ -985,6 +1167,13 @@ public class HomeController {
         return "applycheck/check";
     }
 
+    /**
+     * 申请修改考勤详细页
+     * @param id
+     * @param model
+     * @return
+     */
+    @RequiresPermissions("applyCheck:workattendanceDetail")
     @GetMapping("/ba-apply-check/workattendance/detail/{id}")
     public String totoApplyWorkattendanceDetailPage(@PathVariable(value="id") Integer id,Model model){
         model.addAttribute("applyId", id);
@@ -1000,6 +1189,7 @@ public class HomeController {
      * @param model
      * @return
      */
+    @RequiresPermissions("empApplyCheck:detail")
     @GetMapping("/ba-emp-apply-check/detail/{id}")
     public String toApplyEmpDetailPage(@PathVariable(value="id") Integer id, Model model) {
         // model.addAttribute("emps",this.baApplyEmployeeService.getApplyEmpListByApplyId(id));
@@ -1015,6 +1205,7 @@ public class HomeController {
      * @param id
      * @return
      */
+    @RequiresPermissions("applyEmployee:verify")
     @GetMapping("/ba-apply-employee/verify/{id}")
     public String toVerifyApplyEmpPage(@PathVariable(value="id") Integer id, Model model) {
         model.addAttribute("id", id);
@@ -1029,12 +1220,13 @@ public class HomeController {
      * @param applyId
      * @return
      */
+    @RequiresPermissions("applyEmployee:empList")
     @GetMapping("/ba-apply-employee/emp-list/{applyId}")
     public String toApplyEmpPage(@PathVariable(value="applyId") Integer applyId, Model model) {
         model.addAttribute("applyId", applyId);
         return "applyemp/emp-list";
     }
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////员工审核//////////////////////////////////////////////////////////////////
 
     /**
      * @description 员工离场
@@ -1044,6 +1236,7 @@ public class HomeController {
      * @param applyEmpId
      * @return
      */
+    @RequiresPermissions("empLeavePg:leavePg")
     @GetMapping("/ba-emp-leave-pg/{applyEmpId}")
     public String toEmpLeavePgPage(@PathVariable(value="applyEmpId") Integer applyEmpId, Model model) {
         BaApplyEmployee bae = baApplyEmployeeService.getById(applyEmpId);
@@ -1068,6 +1261,7 @@ public class HomeController {
      * @param model
      * @return
      */
+    @RequiresPermissions("empLeaveJob:leaveJob")
     @GetMapping("/ba-emp-leave-job/{applyEmpId}")
     public String toEmpLeaveJobPage(@PathVariable(value="applyEmpId") Integer applyEmpId, Model model) {
         BaApplyEmployee bae = this.baApplyEmployeeService.getById(applyEmpId);
@@ -1088,6 +1282,7 @@ public class HomeController {
      * @param model
      * @return
      */
+    @RequiresPermissions("applyEmployee:edit")
     @GetMapping("/ba-apply-employee/edit/{applyEmpId}")
     public String toEditApplyEmpPage(@PathVariable(value="applyEmpId") Integer applyEmpId, Model model) {
         model.addAttribute("applyEmpId", applyEmpId);
