@@ -28,7 +28,7 @@
                             <label for="email" class="layui-form-label">
                                 <span class="x-red">*</span>邮箱</label>
                             <div class="layui-input-inline">
-                                <input type="text" id="email" name="email" required="" lay-verify="email" autocomplete="off" placeholder="公司邮箱,系统登陆用户名" class="layui-input" maxlength="100">
+                                <input type="text" id="email" name="email"  required="" lay-verify="email" autocomplete="off" placeholder="公司邮箱,系统登陆用户名" class="layui-input" maxlength="100">
                             </div>
                             <div class="layui-input-inline">
                                 <button type="button" id="userIsExist" lay-filter="userIsExist" class="layui-btn layui-btn-primary layui-btn-xs">检查邮箱是否可用</button>
@@ -38,24 +38,27 @@
                             <label for="password" class="layui-form-label">
                                 <span class="x-red">*</span>密码</label>
                             <div class="layui-input-inline">
-                                <input type="password" id="password" name="passord" required="" lay-verify="password" autocomplete="off" placeholder="8到16个字符,含大小写字母和数字" class="layui-input">
+                                <input type="password" id="password" name="password" required="" lay-verify="password" autocomplete="off" placeholder="8到16个字符,含大小写字母和数字" class="layui-input">
                             </div>
                             <div class="layui-input-inline">
                                <button type="button" onclick="setPass()" class="layui-btn layui-btn-primary layui-btn-xs">使用系统默认密码</button>
                             </div>
                         </div>
                         <div class="layui-form-item">
-                            <label for="city" class="layui-form-label">
+                            <label  class="layui-form-label">
                                 <span class="x-red">*</span>城市</label>
                             <div class="layui-input-inline">
-                                <input type="text" id="city" name="city" required="" lay-verify="city" autocomplete="off" class="layui-input">
+                                <select id="city" name="city" lay-filter="city" lay-verify="city" >
+                                    <option value="">请选择城市</option>
+                                    <option th:each="city:${cities}" th:value="${city.id}" th:text="${city.cityName}" >
+                                </select>
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label for="mobile" class="layui-form-label">
                                 <span class="x-red">*</span>手机</label>
                             <div class="layui-input-inline">
-                                <input type="text" id="mobile" name="mobile" required="" lay-verify="phone" autocomplete="off" placeholder="请输入手机" class="layui-input" maxlength="20">
+                                <input type="text" id="mobile" name="mobile"  required="" lay-verify="phone" autocomplete="off" placeholder="请输入手机" class="layui-input" maxlength="20">
                             </div>
                         </div>
                        <div class="layui-form-item">
@@ -83,8 +86,11 @@
         <script th:src="@{/js/user/user.js}" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript">
             // 下拉多选框
+            // formSelects.data('citySelect', 'server', {
+            //   url: '/ba-city/citySelect'
+            // });
             formSelects.data('deptSelect', 'server', {
-              url: '/sys-dept/deptselect'
+                url: '/sys-dept/deptselect'
             });
             // 表单操作
             layui.use(['form', 'layer','jquery'],

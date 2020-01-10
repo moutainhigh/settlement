@@ -28,11 +28,12 @@
     </ul>
     <ul class="layui-nav right" lay-filter="">
         <li class="layui-nav-item">
-            <a href="javascript:;">admin</a>
+            <a href="javascript:;">[[${session.user.realName}]]</a>
             <dl class="layui-nav-child">
                 <!-- 二级菜单 -->
                 <dd>
-                    <a onclick="xadmin.open('','')">个人信息</a></dd>
+<!--                    <a onclick="xadmin.open('','')">个人信息</a></dd>-->
+                <a onclick="xadmin.open('修改密码','/sys-user/updatepassword',400,250)">修改密码</a></dd>
                <!-- <dd>
                     <a onclick="xadmin.open('切换帐号','')">切换帐号</a></dd>-->
                 <dd>

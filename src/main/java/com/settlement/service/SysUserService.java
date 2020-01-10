@@ -1,11 +1,13 @@
 package com.settlement.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.settlement.bo.PageData;
 import com.settlement.co.UserCo;
 import com.settlement.entity.SysUser;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.settlement.utils.Result;
 import com.settlement.vo.SysUserVo;
+import com.settlement.vo.UserStopVo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +23,8 @@ import java.util.Map;
  * @since 2019-11-07
  */
 public interface SysUserService extends IService<SysUser> {
+    /** 查询用户列表 **/
+    PageData getUserList(UserCo userCo);
     /** 根据邮箱查询用户 */
     SysUser findUserByEmail(String email);
     /** 新增用户 */
@@ -45,4 +49,8 @@ public interface SysUserService extends IService<SysUser> {
     Result getSettlementSelect(Map<String, Object> map);
     /** 根据部门和角色查询客户经理 */
     List<SysUser> getAmListByDeptAndRole(Map<String, Object> map);
+    /** 根据deptId和roleCode获得当前部门下的AM角色的用户 **/
+    Result getUserByDeptIdAndRoleCode(Integer deptId);
+    /**用户停用**/
+    Result userStop(UserStopVo userStopVo);
 }

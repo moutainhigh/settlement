@@ -48,7 +48,10 @@
                             <label for="city" class="layui-form-label">
                                 <span class="x-red">*</span>城市</label>
                             <div class="layui-input-inline">
-                                <input type="city" id="city" name="city" th:value="${userVo.city}" required="" lay-verify="city" autocomplete="off" class="layui-input">
+                                <select id="city" name="city" lay-filter="city" lay-verify="city" th:field="*{userVo.city}">
+                                    <option value="">请选择城市</option>
+                                    <option th:each="city:${cities}" th:value="${city.id}" th:text="${city.cityName}" >
+                                </select>
                             </div>
                         </div>
                         <div class="layui-form-item">

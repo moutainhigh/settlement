@@ -27,6 +27,7 @@ formSelects.on('deptSelect', function(id, vals, val, isAdd, isDisabled){
         });
     }
 },true);
+
 // 检查角色是否选择
 function checkRole(layer) {
     var flag = false;

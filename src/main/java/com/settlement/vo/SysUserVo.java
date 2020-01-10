@@ -21,8 +21,10 @@ import java.util.List;
 public class SysUserVo extends SysUser implements Serializable {
 
     private SysRole role;
-
+    private String roleCode;
+    private String roleCnName;
     private String deptName;
+    private String cityName;
 
     public SysUserVo() {
     }

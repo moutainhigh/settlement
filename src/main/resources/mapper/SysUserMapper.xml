@@ -18,7 +18,25 @@
         <result column="del_flag" property="delFlag" />
         <result column="salt" property="salt" />
     </resultMap>
-
+    <!--用户列表-->
+    <select id="getUserList" parameterType="com.settlement.co.UserCo" resultType="com.settlement.vo.SysUserVo">
+        select
+            r.role_code as roleCode,
+            r.role_cn_name as roleCnName,
+            d.dept_name as deptName,
+            c.city_name as cityName,
+            u.*
+        from sys_user u
+        inner join ba_city c on c.id = u.city
+        inner join sys_user_role ur on ur.user_id = u.id
+        inner join sys_role r on r.id = ur.role_id
+        inner join sys_dept d on d.id = u.dept_id
+        where u.del_flag=#{userCo.delFlag}
+        <if test="userCo.keyword!=null">
+            and concat(u.real_name u.email) like concat('%',#{userCo.keyword},'%')
+        </if>
+        order by u.create_time desc
+    </select>
     <select id="getAmSelect" resultType="com.settlement.entity.SysUser">
         select
             su.id,
@@ -55,6 +73,23 @@
         and su.id = sur.user_id
         and sur.role_id = sr.id
         and sr.role_code = #{settlementRoleCode}
+    </select>
+    <!--根据deptId和roleCode获得当前部门下的AM角色的用户-->
+    <select id="getUserByDeptIdAndRoleCode" parameterType="java.util.Map" resultType="com.settlement.vo.SysUserVo">
+        select
+            r.role_code as roleCode,
+            r.role_cn_name as roleCnName,
+            d.dept_name as deptName,
+            c.city_name as cityName,
+            u.*
+        from sys_user u
+        inner join ba_city c on c.id = u.city
+        inner join sys_user_role ur on ur.user_id = u.id
+        inner join sys_role r on r.id = ur.role_id
+        inner join sys_dept d on d.id = u.dept_id
+        where u.del_flag=#{delFlag}
+        and r.role_code=#{roleCode}
+        and d.id=#{deptId}
     </select>
 
 </mapper>

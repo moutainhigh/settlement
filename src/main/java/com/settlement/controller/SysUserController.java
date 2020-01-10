@@ -2,6 +2,7 @@ package com.settlement.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.settlement.bo.PageData;
@@ -16,6 +17,7 @@ import com.settlement.utils.Const;
 import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
 import com.settlement.vo.SysUserVo;
+import com.settlement.vo.UserStopVo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +27,9 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
 
+import javax.persistence.PersistenceUnit;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -53,18 +57,18 @@ public class SysUserController {
      * @description 用户列表
      *
      * @param userCo    用户查询条件
-     * @param model
      * @return
      */
     @GetMapping("/sys-user/pagedata")
-    public PageData getUserList(UserCo userCo, Model model) {
-        IPage<SysUser> page = new Page<SysUser>(userCo.getPage(), userCo.getLimit());
-        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<SysUser>();
-        queryWrapper.eq("del_flag", Const.DEL_FLAG_N);
-        queryWrapper.like(StringUtils.isNotBlank(userCo.getKeyword()),"real_name",userCo.getKeyword());
-        queryWrapper.orderByDesc("create_time");
-        this.sysUserService.page(page, queryWrapper);
-        return new PageData(page.getTotal(), page.getRecords());
+    public PageData getUserList(UserCo userCo) {
+//        IPage<SysUser> page = new Page<SysUser>(userCo.getPage(), userCo.getLimit());
+//        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<SysUser>();
+//        queryWrapper.eq("del_flag", Const.DEL_FLAG_N);
+//        queryWrapper.like(StringUtils.isNotBlank(userCo.getKeyword()),"real_name",userCo.getKeyword());
+//        queryWrapper.orderByDesc("create_time");
+//        this.sysUserService.page(page, queryWrapper);
+//        return new PageData(page.getTotal(), page.getRecords());
+        return sysUserService.getUserList(userCo);
     }
 
     /**
@@ -144,14 +148,46 @@ public class SysUserController {
     }
 
     /**
+     * 修改密码
+     * @param password
+     * @param session
+     * @return
+     */
+    @PostMapping("/sys-user/update/password")
+    public Result updatePassword(String password, HttpSession session) {
+
+        Result r = new Result(HttpResultEnum.EDIT_CODE_500.getCode(),HttpResultEnum.EDIT_CODE_500.getMessage());
+        SysUser user = (SysUser)session.getAttribute("user");
+        Integer userId=user.getId();
+        user.setPassword(password);
+        UpdateWrapper<SysUser> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("id",userId);
+        boolean ret = sysUserService.update(user,updateWrapper);
+        if(ret) {
+            r.setCode(HttpResultEnum.EDIT_CODE_200.getCode());
+            r.setMsg(HttpResultEnum.EDIT_CODE_200.getMessage());
+        }
+        return r;
+    }
+    /**
      * @description 启用
      *
      * @param id              用户ID
      * @return
      */
-    @GetMapping("/sys-user/start/{id}")
+    @PutMapping("/sys-user/start/{id}")
     public Result userStart(@PathVariable  Integer id) {
         return sysUserService.updateUserStart(id);
+    }
+
+    /**
+     * 用户停用
+     * @param userStopVo
+     * @return
+     */
+    @PutMapping("/sys-user/stop/")
+    public Result userStop(UserStopVo userStopVo){
+        return sysUserService.userStop(userStopVo);
     }
 
     /**
@@ -183,6 +219,15 @@ public class SysUserController {
         return this.sysUserService.getAmSelect(paramMap);
     }
 
+    /**
+     * 根据deptId和roleCode获得当前部门下的AM角色的用户
+     * @param deptId
+     * @return
+     */
+    @GetMapping("/sys-user/dept/role/users/{deptId}")
+    public Result getUserByDeptIdAndRoleCode(@PathVariable(value="deptId") Integer deptId) {
+        return  this.sysUserService.getUserByDeptIdAndRoleCode(deptId);
+    }
     /**
      * @description 助理下拉框
      *

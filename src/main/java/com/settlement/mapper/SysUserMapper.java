@@ -1,7 +1,11 @@
 package com.settlement.mapper;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.settlement.co.UserCo;
 import com.settlement.entity.SysUser;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.settlement.utils.Result;
+import com.settlement.vo.SysUserVo;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
@@ -70,4 +74,9 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
      * @return
      */
     List<SysUser> getSettlementSelect(Map<String, Object> map);
+    /**用户列表**/
+    List<SysUserVo> getUserList(UserCo userCo, Page<SysUserVo> page);
+    /** 根据deptId和roleCode获得当前部门下的AM角色的用户 **/
+    List<SysUserVo> getUserByDeptIdAndRoleCode(Map<String, Object> map);
+
 }
