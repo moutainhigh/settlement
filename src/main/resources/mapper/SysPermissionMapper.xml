@@ -17,7 +17,7 @@
         <result column="create_time" property="createTime" />
         <result column="del_flag" property="delFlag" />
     </resultMap>
-
+    <!--  根据id获得当前的菜单信息  -->
     <select id="getSysPermissionVoById" parameterType="java.util.Map" resultType="com.settlement.vo.SysPermissionVo">
       select p1.p_name as parentContent,
 		p2.*
@@ -25,5 +25,19 @@
     inner join sys_permission p2 on p1.id=p2.parent_id
     where p1.del_flag=#{delFlag}
           and p2.id=#{id}
+    </select>
+    <!--  根据roleCode获得当前的菜单信息  -->
+    <select id="getSysPermissionVoMenuByRoleCode" parameterType="java.util.Map" resultType="com.settlement.vo.SysPermissionVo">
+        select
+            *
+        from sys_permission p
+        inner join sys_permission_role pr  on p.id=pr.permission_id
+        inner join sys_role r on r.id = pr.role_id
+        and r.role_code=#{roleCode}
+        and r.del_flag=#{delFlag}
+        and p.del_flag=#{delFlag}
+        and p.type=#{type}
+        and p.id!= #{id}
+        order by p.sort asc
     </select>
 </mapper>

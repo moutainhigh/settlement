@@ -2,6 +2,7 @@ package com.settlement.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.settlement.entity.SysPermission;
 import com.settlement.entity.SysPermissionRole;
 import com.settlement.mapper.SysPermissionRoleMapper;
 import com.settlement.service.SysPermissionRoleService;
@@ -88,5 +89,15 @@ public class SysPermissionRoleServiceImpl extends ServiceImpl<SysPermissionRoleM
             r.setData(permissionIds);
         }
         return r;
+    }
+
+    /**
+     * 根据roleId获得对应的permission
+     * @param roleId
+     * @return
+     */
+    @Override
+    public List<SysPermission> getPermissionByRoleId(Integer roleId) {
+        return this.baseMapper.getPermissionByRoleId(roleId);
     }
 }

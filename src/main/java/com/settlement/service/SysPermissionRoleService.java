@@ -1,9 +1,12 @@
 package com.settlement.service;
 
+import com.settlement.entity.SysPermission;
 import com.settlement.entity.SysPermissionRole;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.settlement.utils.Result;
 import com.settlement.vo.SysRoleVo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -18,4 +21,6 @@ public interface SysPermissionRoleService extends IService<SysPermissionRole> {
     Result savePermissionRoles(SysRoleVo sysRoleVo);
     /**根据roleId获得对应的permission**/
     Result getCheckedPermissionValueByRoleId(Integer roleId);
+    /**根据roleId获得对应的permission**/
+    List<SysPermission> getPermissionByRoleId(Integer roleId);
 }

@@ -109,7 +109,6 @@ public class SysPermissionController {
     @PostMapping("/dtree/list/pagedata")
     public Object getPermissionDTreeList() {
         List<SysPermissionVo> sysPermissions = sysPermissionService.getPermissionTreeData();
-
         JSONObject josn = new JSONObject();
         Status status = new Status();
         status.setCode(200);

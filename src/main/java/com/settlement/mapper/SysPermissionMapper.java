@@ -34,4 +34,6 @@ public interface SysPermissionMapper extends BaseMapper<SysPermission> {
      */
     @Select("select * from sys_permission where id=#{id} and del_flag=#{delFlag}")
     SysPermissionVo getRootSysPermissionVoById(Map<String,Object> map);
+    /**根据roleCode获得当前的菜单信息**/
+    List<SysPermissionVo> getSysPermissionVoMenuByRoleCode(Map<String,Object> map);
 }

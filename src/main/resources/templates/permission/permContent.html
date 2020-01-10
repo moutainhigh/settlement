@@ -9,7 +9,7 @@
     <form class="layui-form" >
         <input th:type="hidden" name="_method" value="put" th:if="${mode.equals('update')}" />
         <input type="hidden" name="id" th:value="${sysPermission.id}" th:if="${mode.equals('update')}" />
-        <input type="hidden" name="parentId" th:value="${sysPermission.parentId}" />
+        <input type="hidden" id="parentId" name="parentId" th:value="${sysPermission.parentId}" />
     <div class="layui-row" layui-form-panel lay-filter="show_form">
 
             <div class="layui-form-item" >
@@ -46,11 +46,11 @@
                 </div>
 
             <div class="layui-form-item layui-form-text">
-                <label  class="layui-form-label">
+                <label  for="type" class="layui-form-label">
                     <span class="x-red">*</span>类型
                 </label>
                 <div class="layui-input-block">
-                    <input type="radio" name="type" th:each="sysDataDic:${sysDataDicVos}" th:value="${sysDataDic.dicCode}" th:title="${sysDataDic.dicContent}" th:checked="${sysDataDic.dicCode}==${sysPermission.type}">
+                    <input type="radio" id="type" name="type" lay-filter="type"  th:each="sysDataDic:${sysDataDicVos}" th:value="${sysDataDic.dicCode}" th:title="${sysDataDic.dicContent}" th:checked="${sysDataDic.dicCode}==${sysPermission.type}">
                 </div>
           </div>
             <div class="layui-form-item">
@@ -65,9 +65,9 @@
                 <div class="layui-input-inline">
                     <input type="text" id="sort" name="sort" th:value="${mode.equals('update')}?${sysPermission.sort}" required="" lay-verify="sort" autocomplete="off" class="layui-input"></div>
             </div>
-        <div class="layui-form-item">
+        <div class="layui-form-item" id="iconDiv" th:if="${sysPermission.type.equals('M')}">
             <label for="icon" class="layui-form-label">
-                <span class="x-red">*</span>菜单图标</label>
+               菜单图标</label>
             <div class="layui-input-inline">
                 <input type="text" id="icon" name="icon" th:value="${mode.equals('update')}?${sysPermission.icon}" required="" lay-verify="icon" autocomplete="off" class="layui-input"></div>
         </div>
@@ -122,25 +122,36 @@
             checkCodeIsExist('/sys-permission/isexist/',pCode,layer,'');
             }
         );
+        form.on('radio(type)', function(data){
+            //console.log(data.elem); //得到radio原始DOM对象
+            //console.log(data.value); //被点击的radio的value值
+            if(data.value=='M') {
+                $('#iconDiv').css('display','');
+                $('#icon').attr('lay-verify','icon');
+            } else {
+                $('#iconDiv').css('display','none');
+                $('#icon').attr('lay-verify','');
+            }
+        });
         //监听提交
         form.on('submit(add)', function(data){
             if("add"==mode && checkCodeIsExist('/sys-permission/isexist/',$("#pCode").val(),layer,'submit')) {
                 $.post('/sys-permission/add',data.field,function (r) {
-                        var pid=$("#parentId").val();
+                        //var pid=$("#parentId").val();
                         if(r.code=='add_200') {
-                            var obj1 = window.parent.layui.dtree.getNowParam("demoTree");
+                            var obj1 = window.parent.layui.dtree.getNowParam("permissionTree");
                             //alert(window.parent.layui.find("demoTree"));
                             //window.parent.layui.dtree.changeTreeNodeAdd("refresh");
-                            window.parent.layui.dtree.reload("demoTree",{
-                                url: "/sys-permission/dtree/list/pagedata",
-                                //request: {id:pid},
-                                method: "post",
-                                initLevel: "2",
-                                success: function(data, $obj, first){
-                                    var id = r.data.id;
-                                    window.parent.layui.$("demoTree").find("div[dtree-click='itemNodeClick'][dtree-id='demoTree'][data-id='" + id + "']").click();
-                                }
-                            });
+                            // window.parent.layui.dtree.reload("permissionTree",{
+                            //     url: "/sys-permission/dtree/list/pagedata",
+                            //     //request: {id:pid},
+                            //     method: "post",
+                            //     initLevel: "2",
+                            //     success: function(data, $obj, first){
+                            //         //var id = r.data.id;
+                            //         //window.parent.layui.$("permissionTree").find("div[dtree-click='itemNodeClick'][dtree-id='demoTree'][data-id='" + pid + "']").click();
+                            //     }
+                            // });
                             layer.msg('添加成功', {icon: 6});
                         } else {
                             layer.msg('添加失败', {icon: 5});
@@ -148,22 +159,34 @@
                     }
                 );
             } else if("update"==mode) {
+                // var pid=$('#parentId').val();
+                // alert("pid1:"+pid);
+                // var $divObj = $("#permissionTree").find("div[dtree-click='itemNodeClick'][dtree-id='permissionTree'][data-id='"+pid+"']");
+                // console.log($divObj);
+                // alert($divObj);
                 $.post('/sys-permission/update',data.field,function (r) {
                         if(r.code=='edit_200') {
-                            window.parent.layui.dtree.reload("demoTree",{
-                                url: "/sys-permission/dtree/list/pagedata",
-                                //request: {id:pid},
-                                method: "post",
-                                initLevel: "2",
-                                done: function(data, $obj, first){
-                                   // window.parent.layui.dtree.openTo(30,true);
-                                   //  var parentId = r.data.parentId;
-                                   //  var id= r.data.id;
-                                   //  var parentNode = window.parent.layui.$("#demoTree").find("div[dtree-click='itemNodeClick'][dtree-id='demoTree'][data-id='" + parentId + "']");
-                                   //  console.dirxml(parentNode);
-                                   //  window.parent.layui.$("#demoTree").find("div[dtree-click='itemNodeClick'][dtree-id='demoTree'][data-id='" + id + "']").click();
-                                }
-                            });
+                            // var obj1 = window.parent.layui.dtree.getNowParam("permissionTree");
+                            // alert("obj2:"+obj1.nodeId);
+                            // console.log(window.parent.layui.$("#permissionTree"));
+                            // window.parent.layui.$("#permissionTree").obj.changeTreeNodeEdit("refresh");
+                            // window.parent.layui.dtree.partialRefreshEdit($divObj);
+
+                            // window.parent.layui.dtree.reload("permissionTree",{
+                            //     url: "/sys-permission/dtree/list/pagedata",
+                            //     //request: {id:pid},
+                            //     method: "post",
+                            //     initLevel: "3",
+                            //     done: function(data, $obj, first){
+                            //        // window.parent.layui.dtree.openTo(30,true);
+                            //        //  var parentId = r.data.parentId;
+                            //        //  var id= r.data.id;
+                            //        //  var parentNode = window.parent.layui.$("#permissionTree").find("div[dtree-click='itemNodeClick'][dtree-id='demoTree'][data-id='" + parentId + "']");
+                            //        //  console.dirxml(parentNode);
+                            //         window.parent.layui.$("#permissionTree").find("div[dtree-click='itemNodeClick'][dtree-id='permissionTree'][data-id='" + pid + "']").click();
+                            //         window.parent.layui.$("#permissionTree").find("div[dtree-click='itemNodeClick'][dtree-id='permissionTree'][data-id='" + pid + "']").clickSpread($divObj);
+                            //     }
+                            // });
                             layer.msg("修改成功", {icon: 6});
 
                         } else {

@@ -4,14 +4,19 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.settlement.entity.SysPermission;
 import com.settlement.entity.SysPermissionRole;
+import com.settlement.entity.SysRole;
+import com.settlement.entity.SysUser;
 import com.settlement.mapper.SysPermissionMapper;
 import com.settlement.mapper.SysPermissionRoleMapper;
+import com.settlement.mapper.SysRoleMapper;
+import com.settlement.mapper.SysUserMapper;
 import com.settlement.service.SysPermissionService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.settlement.utils.Const;
 import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
 import com.settlement.vo.SysPermissionVo;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +40,8 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
     private SysPermissionMapper sysPermissionMapper;
     @Autowired
     private SysPermissionRoleMapper sysPermissionRoleMapper;
+    @Autowired
+    private SysRoleMapper sysRoleMapper;
 
     /**
      * 生成菜单
@@ -43,39 +50,57 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
      */
     @Override
     public List<SysPermissionVo> getMenu(Integer roleId) {
-        QueryWrapper<SysPermission> queryWrapper = new QueryWrapper<SysPermission>();
-        queryWrapper.ne("id",1);
-        queryWrapper.eq("type", Const.MENU_TYPE_M);
-        queryWrapper.eq("del_flag",Const.DEL_FLAG_N);
-        queryWrapper.orderByAsc("sort");
-        List<SysPermission> list = this.baseMapper.selectList(queryWrapper);
+        SysUser user = (SysUser)SecurityUtils.getSubject().getPrincipal();
+        Map<String,Object> roleMap = new HashMap<>();
+        roleMap.put("delFlag",Const.DEL_FLAG_N);
+        roleMap.put("userId",user.getId());
+        SysRole sysRole = sysRoleMapper.getSysRoleByUserId(roleMap);
+        Map<String,Object> map = new HashMap<>();
+        map.put("id",1);
+        map.put("type", Const.MENU_TYPE_M);
+        map.put("delFlag",Const.DEL_FLAG_N);
+        map.put("roleCode",sysRole.getRoleCode());
+        List<SysPermissionVo> list = this.baseMapper.getSysPermissionVoMenuByRoleCode(map);
         List<SysPermissionVo> leftList = new ArrayList<SysPermissionVo>();
-        if (list != null && list.size() > 0) {
-            for (SysPermission sp : list) {
-                if (sp.getParentId() == 1) {
-                    SysPermissionVo spv = new SysPermissionVo();
-                    spv.setId(sp.getId());
-                    spv.setPName(sp.getPName());
-                    spv.setUrl(sp.getUrl());
-                    spv.setPermission(sp.getPermission());
-                    spv.setParentId(sp.getParentId());
-                    spv.setIcon(sp.getIcon());
-                    for (SysPermission sp1 : list) {
-                        if (spv.getId() == sp1.getParentId()) {
-                            SysPermissionVo spvChild = new SysPermissionVo();
-                            spvChild.setId(sp1.getId());
-                            spvChild.setPName(sp1.getPName());
-                            spvChild.setUrl(sp1.getUrl());
-                            spvChild.setPermission(sp1.getPermission());
-                            spvChild.setParentId(sp1.getParentId());
-                            spvChild.setIcon(sp1.getIcon());
-                            spv.getChildrens().add(spvChild);
-                        }
-                    }
-                    leftList.add(spv);
-                }
+        Map<Integer,SysPermissionVo> menuMap = new HashMap<>();
+        for(SysPermissionVo sp : list) {
+            menuMap.put(sp.getId(),sp);
+        }
+        for(SysPermissionVo sp : list) {
+            SysPermissionVo child = sp;
+            if(sp.getParentId() == 1) {
+                leftList.add(child);
+            } else {
+                SysPermissionVo parent = menuMap.get(sp.getParentId());
+                parent.getChildrens().add(child);
             }
         }
+//        if (list != null && list.size() > 0) {
+//            for (SysPermissionVo sp : list) {
+//                if (sp.getParentId() == 1) {
+//                    SysPermissionVo spv = new SysPermissionVo();
+//                    spv.setId(sp.getId());
+//                    spv.setPName(sp.getPName());
+//                    spv.setUrl(sp.getUrl());
+//                    spv.setPermission(sp.getPermission());
+//                    spv.setParentId(sp.getParentId());
+//                    spv.setIcon(sp.getIcon());
+//                    for (SysPermission sp1 : list) {
+//                        if (spv.getId() == sp1.getParentId()) {
+//                            SysPermissionVo spvChild = new SysPermissionVo();
+//                            spvChild.setId(sp1.getId());
+//                            spvChild.setPName(sp1.getPName());
+//                            spvChild.setUrl(sp1.getUrl());
+//                            spvChild.setPermission(sp1.getPermission());
+//                            spvChild.setParentId(sp1.getParentId());
+//                            spvChild.setIcon(sp1.getIcon());
+//                            spv.getChildrens().add(spvChild);
+//                        }
+//                    }
+//                    leftList.add(spv);
+//                }
+//            }
+//        }
         return leftList;
     }
 
