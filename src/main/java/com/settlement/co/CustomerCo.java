@@ -7,4 +7,6 @@ public class CustomerCo extends PageCo {
     private String keyword;
     private String delFlag;
     private String enabled;
+    private String roleCode;
+    private Integer userId;
 }

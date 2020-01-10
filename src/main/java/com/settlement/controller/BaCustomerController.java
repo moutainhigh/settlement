@@ -5,11 +5,13 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.settlement.bo.PageData;
 import com.settlement.co.CustomerCo;
+import com.settlement.entity.BaApplyTransfer;
 import com.settlement.entity.SysUser;
 import com.settlement.service.BaCustomerService;
 import com.settlement.service.SysRoleService;
 import com.settlement.utils.Result;
 import com.settlement.utils.Status;
+import com.settlement.vo.BaApplyTransferVo;
 import com.settlement.vo.BaCustomerAndProjectTreeVo;
 import com.settlement.vo.BaCustomerVo;
 import org.apache.shiro.SecurityUtils;
@@ -121,6 +123,15 @@ public class BaCustomerController {
     @PutMapping("/enable/stop/{id}")
     public Result updateEnableStop(@PathVariable(value="id") Integer id){
         return baCustomerService.updateEnableStop(id);
+    }
+
+    /**
+     * 客户移交
+     * @return
+     */
+    @PostMapping("/apply/transfer")
+    public Result customerApplyTransfer(BaApplyTransferVo baApplyTransferVo){
+        return this.baCustomerService.customerApplyTransfer(baApplyTransferVo);
     }
 
 }

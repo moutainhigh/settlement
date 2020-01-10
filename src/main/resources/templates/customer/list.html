@@ -29,8 +29,8 @@
                             </form>
                         </div>
                         <div class="layui-card-header">
-                            <button class="layui-btn" onclick="xadmin.open('添加客户','/ba-customer/toAddorUpdate/add/0',400,350)"><i class="layui-icon"></i>添加</button>
-<!--                            <button type="button" id="delete" class="layui-btn layui-btn-danger" onclick="deleteFun()" lay-demo="reload">删除</button>-->
+                            <button class="layui-btn" onclick="xadmin.open('添加客户','/ba-customer/toAddorUpdate/add/0',450,500)"><i class="layui-icon"></i>添加</button>
+                            <button class="layui-btn" data-type="transfer">移交</button>
                         </div>
                         <div class="layui-card-body layui-table-body layui-table-main" >
                             <table class="layui-table layui-form" id="dataTable" lay-filter="dataTable">
@@ -65,11 +65,12 @@
            height: 'full-210',
            // id: 'userData',
            cols: [[
-               {field:'id',hide:true},
+               {field:'id',type:'checkbox',fixed:'left'},
                {field:'customerName',title:'客户名称',align:'center',fixed:'left'},
                {field:'code',title:'客户编码',edit: 'text',align:'center'},
                {field:'chiefName',title:'负责人',edit: 'text',align:'center'},
                {field:'enabled',title:'状态',align:'center',templet: '#switchStatus', unresize: true},
+               {field:'createTime',title:'创建日期',align:'center'},
                {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:130}
            ]]
         });
@@ -87,6 +88,9 @@
                       }
                   }, 'data');
               },
+              transfer:function(){
+                  transferOper('项目移交','/ba-customer/transfer/',table,layer,500,400);
+              }
           };
           $('.layui-btn').on('click', function(){
               var type = $(this).data('type');
@@ -120,7 +124,7 @@
                   });
               } else {
                   layer.open({
-                      content: '确定要启用此用户吗？'
+                      content: '确定要启用此客户吗？'
                       ,btn: ['确定','取消']
                       ,yes: function(index){
                           // 发送ajax请求，enabled启用 更新后台
@@ -163,13 +167,17 @@
               if(obj.event === 'detail'){
                   layer.msg('ID：'+ data.id + ' 的查看操作');
               } else if(obj.event === 'del'){
+                  if (data.enabled == 'N') {
+                      layer.confirm('真的删除【 '+ data.customerName + '】么?', function(index){
+                          customer_del(data.id);
+                          layer.close(index);
+                      });
+                  } else if (data.enabled == 'Y') {
+                      layer.msg('客户在启用状态下,不能删除',{icon:5});
+                  }
 
-                  layer.confirm('真的删除【 '+ data.customerName + '】么?', function(index){
-                      customer_del(data.id);
-                      layer.close(index);
-                  });
               } else if(obj.event === 'edit'){
-                  xadmin.open('编辑客户','/ba-customer/toAddorUpdate/update/'+ data.id,400,350);
+                  xadmin.open('编辑客户','/ba-customer/toAddorUpdate/update/'+ data.id,450,500);
               }
           });
 
@@ -186,7 +194,22 @@
 
       });
 
-
+      /**移交**/
+      function transferOper(title,url,table,layer,w,h) {
+          var checkStatus = table.checkStatus('dataTable')
+              ,data = checkStatus.data;
+          var ids2=[];
+          if (data.length == 0) {
+              layer.alert('请先选择要移交的客户',{icon : 5});
+              return ;
+          }
+          for(var i=0;i<data.length;i++) {
+              ids2[i]=data[i].id;
+          }
+          //判断当月修改的次数
+          xadmin.open(title,url + ids2,w,h);
+          return;
+      }
       /*-删除*/
       function customer_del(id){
           $.ajax({

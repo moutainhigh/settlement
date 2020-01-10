@@ -57,7 +57,10 @@ public interface BaCustomerMapper extends BaseMapper<BaCustomer> {
      * @return
      */
     List<BaCustomerVo> getBaCustomerByChief(Map<String, Object> map);
-
+    /**客户移交**/
+    Integer customerApplyTransfer(BaCustomerVo baCustomerVo);
+    /**批量更新客户拥有者人员信息**/
+    Integer updateBatchs(List<BaCustomer> baCustomers);
 }
 
 

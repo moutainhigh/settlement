@@ -13,4 +13,6 @@ import lombok.Data;
 public class BaCustomerVo extends BaCustomer {
     private Integer deptId;
     private String chiefName;
+    private Integer[] ids;
+    private Integer receiver; //接收人
 }

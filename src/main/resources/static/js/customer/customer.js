@@ -14,13 +14,13 @@ formSelects.on('deptSelect', function(id, vals, val, isAdd, isDisabled){
     var deptId = formSelects.value("deptSelect",'val');
     if (deptId != null && deptId != '') {
         // 取得部门对应的角色
-        $.get('/sys-dept/role/users/'+deptId,null, function(r) {
+        $.get('/sys-user/dept/role/users/'+deptId,null, function(r) {
             $("#chief").empty();
             if(r.code=='0') {
                 var users = r.data;
                 var chief=$("#chief").empty();
                 for(var i=0;i<users.length;i++) {
-                    chief.append("<option value='"+users[i].userId+"'>"+users[i].userRealName+"</option>");
+                    chief.append("<option value='"+users[i].id+"'>"+users[i].realName+"</option>");
                 }
                 render();
             } else {

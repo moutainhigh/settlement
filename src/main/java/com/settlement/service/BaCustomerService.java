@@ -5,6 +5,7 @@ import com.settlement.co.CustomerCo;
 import com.settlement.entity.BaCustomer;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.settlement.utils.Result;
+import com.settlement.vo.BaApplyTransferVo;
 import com.settlement.vo.BaCustomerAndProjectTreeVo;
 import com.settlement.vo.BaCustomerAndProjectVo;
 import com.settlement.vo.BaCustomerVo;
@@ -46,4 +47,6 @@ public interface BaCustomerService extends IService<BaCustomer> {
     List<BaCustomerVo> getCustomerByDeptId(Integer deptId);
     /** 根据客户负责人查询客户 */
     List<BaCustomerVo> getCustomerByChief(Integer chief);
+    /**客户移交**/
+    Result customerApplyTransfer(BaApplyTransferVo baApplyTransferVo);
 }

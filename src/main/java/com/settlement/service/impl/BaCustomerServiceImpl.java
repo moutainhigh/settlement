@@ -15,10 +15,12 @@ import com.settlement.utils.Const;
 import com.settlement.utils.HttpResultEnum;
 import com.settlement.utils.Result;
 import com.settlement.utils.Status;
+import com.settlement.vo.BaApplyTransferVo;
 import com.settlement.vo.BaCustomerAndProjectTreeVo;
 import com.settlement.vo.BaCustomerAndProjectVo;
 import com.settlement.vo.BaCustomerVo;
 import org.apache.ibatis.io.ResolverUtil;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,6 +47,10 @@ public class BaCustomerServiceImpl extends ServiceImpl<BaCustomerMapper, BaCusto
     private BaPgTimeParamMapper baPgTimeParamMapper;
     @Autowired
     private SysUserMapper sysUserMapper;
+    @Autowired
+    private BaApplyTransferMapper baApplyTransferMapper;
+    @Autowired
+    private BaTransferMapper baTransferMapper;
     /**
      * 加载列表页面
      * @param customerCo
@@ -52,8 +58,14 @@ public class BaCustomerServiceImpl extends ServiceImpl<BaCustomerMapper, BaCusto
      */
     @Override
     public PageData listPageData(CustomerCo customerCo) {
+        SysUser user = (SysUser) SecurityUtils.getSubject().getPrincipal();
+        Map<String,Object> map = new HashMap<>();
+        map.put("delFlag",Const.DEL_FLAG_N);
+        map.put("userId",user.getId());
+        SysRole sysRole = sysRoleMapper.getSysRoleByUserId(map);
+        customerCo.setUserId(user.getId());
+        customerCo.setRoleCode(sysRole.getRoleCode());
         customerCo.setDelFlag(Const.DEL_FLAG_N);
-        customerCo.setEnabled(Const.ENABLED_Y);
         Page<BaCustomerVo> page = new Page<>(customerCo.getPage(),customerCo.getLimit());
         page.setRecords(this.baseMapper.listPageData(customerCo,page));
         return new PageData(page.getTotal(),page.getRecords());
@@ -349,5 +361,40 @@ public class BaCustomerServiceImpl extends ServiceImpl<BaCustomerMapper, BaCusto
         paramMap.put("chief",chief);
         paramMap.put("enabled", Const.ENABLED_Y);
         return this.baseMapper.getBaCustomerByChief(paramMap);
+    }
+
+    /**
+     * 客户移交
+     * @param baApplyTransferVo
+     * @return
+     */
+    @Override
+    public Result customerApplyTransfer(BaApplyTransferVo baApplyTransferVo) {
+        Result r = new Result(HttpResultEnum.TRANS_CODE_500.getCode(),HttpResultEnum.TRANS_CODE_500.getMessage());
+        try{
+            baApplyTransferVo.setCheckStatus(Const.CHECK_STATUS_NO_CHECK);
+            baApplyTransferVo.setApplyTime(new Date());
+            baApplyTransferVo.setApplyType(Const.APPLY_TRANSFER_CUSTOMER);
+            baApplyTransferVo.setCheckUser(1);
+            Integer ret = baApplyTransferMapper.insert(baApplyTransferVo);
+            if(ret!=null && ret >0) {
+                List<BaTransfer> baTransfers = new ArrayList<>();
+                for(Integer id : baApplyTransferVo.getIds()) {
+                    BaTransfer baTransfer = new BaTransfer();
+                    baTransfer.setApplyTransferId(baApplyTransferVo.getId());
+                    baTransfer.setTransferId(id);
+                    baTransfers.add(baTransfer);
+                }
+                Integer ret2 = baTransferMapper.insertBatch(baTransfers);
+                if(ret2!=null && ret2 >0) {
+                    r.setMsg(HttpResultEnum.TRANS_CODE_200.getMessage());
+                    r.setCode(HttpResultEnum.TRANS_CODE_200.getCode());
+                }
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+        return r;
     }
 }
