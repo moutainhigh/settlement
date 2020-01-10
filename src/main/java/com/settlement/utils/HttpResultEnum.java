@@ -82,6 +82,10 @@ public enum HttpResultEnum {
 
     EMP_CODE_0("0","员工不存在，可以添加"),
     EMP_CODE_1("1","员工已经存在，不能添加"),
+    //移交申请
+
+    TRANS_CODE_200("trans_200","移交成功"),
+    TRANS_CODE_500("trans_500","移交失败"),
 
     FILE_UPLOAD_CODE_9006("9006","文件上传成功"),
     FILE_UPLOAD_CODE_9000("9000","文件上传失败"),

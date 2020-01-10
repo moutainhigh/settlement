@@ -7,8 +7,12 @@ package com.settlement.utils;
  * @date 2019/11/11.
  */
 public class Const {
-    /** 功能类型M */
+    /** 功能类型M 菜单*/
     public final static String MENU_TYPE_M = "M";
+    /** 功能类型 B 按钮 */
+    public final static String MENU_TYPE_B = "B";
+    /** 功能类型 A Ajax */
+    public final static String MENU_TYPE_A = "A";
     /** 启用状态Y-可用 */
     public final static String ENABLED_Y = "Y";
     /** 启用状态N-不可用*/
@@ -33,6 +37,8 @@ public class Const {
     public final static String SALT = "12345678";
     /** 客户经理角色CODE:AM */
     public final static String ROLE_CODE_AM = "AM";
+    /** 管理员角色CODE:ADMIN */
+    public static final String ROLE_CODE_ADMIN = "ADMIN";
     /** 助理角色CODE：ASSISTANT */
     public final static String ROLE_CODE_ASSISTANT = "ASSISTANT";
     /** 结算负责人角色CODE：SETTLEMENT */
@@ -120,5 +126,12 @@ public class Const {
     public final static String END_STATUS_CODE = "END_STATSU";
     /** 用户停用类型CODE */
     public final static String USER_STOP_TYPE_CODE = "STOP_TYPE";
+    /** 申请移交 **/
+    public static final String APPLY_TRANSFER = "TRANSFER_TYPE";
+    /** 申请移交 客户**/
+    public static final String APPLY_TRANSFER_CUSTOMER = "TRANSFER_CUSTOMER";
+    /** 申请移交 项目**/
+    public static final String APPLY_TRANSFER_PROJECT = "TRANSFER_PROJECT";
+
 
 }
