@@ -6,4 +6,5 @@ import lombok.Data;
 public class BaCustomerAndProjectVo extends BaCustomerVo {
     private Integer projectId;
     private String projectName;
+    private String projectCode;
 }

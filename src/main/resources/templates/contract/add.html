@@ -100,31 +100,31 @@
                 //自定义验证规则
                 form.verify({
                     contractNo: function(value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '合同编号至少得1个字符啊';
                         }
                     },
                     invoiceIssuing: function (value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '开票抬头至少得1个字符啊';
                         }
                     },
                     customerId: function (value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '请选择客户';
                         }
                     },
                     baProjectGroupId: function (value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '请选择项目组';
                         }
                     },
                     startTime: function (value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '请选择开始日期';
                         }
                     },endTime: function (value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '请选择结束日期';
                         }
                     }

@@ -58,7 +58,7 @@
                     iframeUrl: "/sys-dept/deptContent", // iframe路由到的地址
                     iframeLoad: "all", // 表示点击任意节点加载iframe
                     iframeDefaultRequest: {nodeId: "id"}, // 这里就将nodeId这个参数名称改为了id这个名称
-                    iframeRequest : {"mode" : "update"},
+                    iframeRequest : {"mode" : "view"},
                     //request: {"mode": [[${mode}]]}, // url 这里就自定义了需要传递的参数
                     //dataStyle: "layuiStyle",  //使用layui风格的数据格式
                     dataFormat: "list",  //配置data的风格为list
@@ -89,22 +89,18 @@
                 // 点击按钮获取所有选中节点值
                 $("#edit").click(function(){
                     var param = dtree.getNowParam("deptTree"); // 获取当前选中节点
-                    $.ajax({
-                            type: "get",
-                            url: "/sys-dept/deptContent",
-                            data: {id: param.nodeId,mode:'update'},
-                            dataType: "json",
-                            success: function (data) {
-
-                            }
-                        }
-                    );
+                    var id=0;
+                    if(param.nodeId==null) {
+                        layer.msg('请选择要修改的结点',{icon:5});
+                        return;
+                    } else {
+                        id=param.nodeId;
+                    }
+                    document.getElementById('deptContent').src="/sys-dept/deptContent?mode=update&id="+id;
                 })
                 // 点击按钮获取所有选中节点值
                 $("#delete").click(function(){
                     var param = dtree.getNowParam("deptTree");
-                    // var parent=param.parent();
-                    // alert(parent.context);
                     if(param.leaf==null) {
                         layer.msg('请选择要删除的节点', {icon: 5});
                         return ;

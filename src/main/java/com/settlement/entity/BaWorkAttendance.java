@@ -88,6 +88,8 @@ public class BaWorkAttendance extends Model<BaWorkAttendance> {
 
     private Integer employeeId;
 
+    private String workMonth;
+
 
     @Override
     protected Serializable pkVal() {

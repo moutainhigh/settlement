@@ -96,7 +96,7 @@
                 //自定义验证规则
                 form.verify({
                     dicCode: function(value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '数据字典编码至少得1个字符';
                         }
                     },
@@ -106,7 +106,7 @@
                         }
                     },
                     dicContent: function (value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '数据字典内容至少得1个字符啊';
                         }
                     }

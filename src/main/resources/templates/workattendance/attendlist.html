@@ -164,7 +164,7 @@
             cols: [
                 [
                 {field:'id',type:'checkbox',fixed:'left'},
-                {field:'employeeId',title:'员工编号',align:'center'},
+                {field:'employeeCode',title:'员工编号',align:'center'},
                 {field:'employeeName',title:'员工姓名',align:'center'},
                 {field:'workDays',title:'标准工作天数',align:'center'},
                 {field:'attendanceDays',title:'出勤天数',align:'center'},
@@ -242,9 +242,15 @@
                     var checkUserId = [[${checkUserId}]];
                     var totalApplyCount = [[${totalApplyCount}]];
                     var applyCount = [[${applyCount}]];
+                    if(checkStopTimeStatus(projectId)){
+                        return;
+                    }
                     applyModify('申请修改','/ba-work-attendance/applymodify/'+checkUserId,projectId,applyCount,totalApplyCount,table,layer,500,450);
                     break;
                 case 'commmit':
+                    if(checkStopTimeStatus(projectId)){
+                        return;
+                    }
                     var compelteTime=[[${compelteTime}]];
                     var stopTime=[[${stopTime}]];
                     commitWorkAttendanceOper('/ba-work-attendance/commit/',projectId,stopTime,compelteTime,table,layer);

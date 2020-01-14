@@ -14,10 +14,10 @@
 
                     <div class="layui-inline">
                         <label  for="roleCnName" class="layui-form-label">
-                            <span class="x-red">*</span>角色名
+                            <span class="x-red">*</span>角色中文名
                         </label>
                         <div class="layui-input-inline">
-                            <input type="text" id="roleCnName" name="roleCnName" th:value="${sysRole!=null}?${sysRole.roleCnName}" required="" lay-verify="required"
+                            <input type="text" id="roleCnName" name="roleCnName" th:value="${sysRole!=null}?${sysRole.roleCnName}" required="" lay-verify="roleCnName"
                             autocomplete="off" class="layui-input">
                         </div>
                     </div>
@@ -26,7 +26,7 @@
                             <span class="x-red">*</span>角色英文名
                         </label>
                         <div class="layui-input-inline">
-                            <input type="text" id="roleEnName" name="roleEnName" th:value="${sysRole!=null}?${sysRole.roleEnName}"required="" lay-verify="required"
+                            <input type="text" id="roleEnName" name="roleEnName" th:value="${sysRole!=null}?${sysRole.roleEnName}" required="" lay-verify="roleEnName"
                                autocomplete="off" class="layui-input">
                         </div>
                     </div>
@@ -38,7 +38,7 @@
                             <span class="x-red">*</span>角色编码
                         </label>
                         <div class="layui-input-inline">
-                            <input type="text" id="roleCode" name="roleCode" th:readonly="${sysRole!=null}?true" th:value="${sysRole!=null}?${sysRole.roleCode}"required="" lay-verify="required"
+                            <input type="text" id="roleCode" name="roleCode" th:readonly="${sysRole!=null}?true" th:value="${sysRole!=null}?${sysRole.roleCode}"required="" lay-verify="roleCode"
                                    lay-filter="roleCode" autocomplete="off" class="layui-input">
                         </div>
                         <div class="layui-input-inline">
@@ -52,7 +52,7 @@
                         <span class="x-red">*</span>角色备注
                     </label>
                     <div class="layui-input-inline">
-                        <input type="text" id="remark" name="remark" th:value="${sysRole!=null}?${sysRole.remark}" required="" lay-verify="required"
+                        <input type="text" id="remark" name="remark" th:value="${sysRole!=null}?${sysRole.remark}" required="" lay-verify="remark"
                                autocomplete="off" class="layui-input">
                     </div>
                 </div>
@@ -122,7 +122,7 @@
 <!--                        </tr>-->
 <!--                        </tbody>-->
 <!--                    </table>-->
-                </div>
+<!--                </div>-->
                 <div class="layui-form-item">
                 <button class="layui-btn" th:text="${mode.equals('add')}?'增加' : '修改'" lay-submit="" lay-filter="add">增加</button>
               </div>
@@ -135,27 +135,27 @@
             $ = layui.jquery;
           var form = layui.form
           ,layer = layui.layer;
-        
+            form.render();
           //自定义验证规则
           form.verify({
               roleCnName: function(value){
-              if(value.length < 5){
-                return '角色中文名至少得5个字符啊';
-              }
-            },
+                  if(value.trim().length < 1){
+                    return '角色中文名至少得1个字符啊';
+                  }
+                },
               roleEnName: function(value){
-                  if(value.length < 5){
-                      return '角色英文名至少得5个字符啊';
+                  if(value.trim().length < 1){
+                      return '角色英文名至少得1个字符啊';
                   }
               },
               roleCode: function(value){
-                  if(value.length < 5){
-                      return '角色编码至少得5个字符啊';
+                  if(value.trim().length < 1){
+                      return '角色编码至少得1个字符啊';
                   }
               },
               remark: function(value){
-                  if(value.length < 5){
-                      return '角色备注至少得5个字符啊';
+                  if(value.trim().length < 1){
+                      return '角色备注至少得1个字符啊';
                   }
               }
           });
@@ -203,59 +203,8 @@
 
             return false;
           });
-
-            form.on('checkbox(child1)', function(data){
-                if(data.elem.checked){
-                    alert($(data.elem).parent().html());
-                    $(data.elem).parent().siblings('td').find('input').prop("checked", true);
-                    //$(data.elem).parent().prev().siblings('td').find('input').prop("checked", true);
-                    form.render();
-                }else{
-                    $(data.elem).parent().siblings('td').find('input').prop("checked", false);
-                    form.render();
-                }
-            });
-            form.on('checkbox(child2)', function(data){
-                if(data.elem.checked){
-                    alert($(data.elem).parent().html());
-                    $(data.elem).parent().siblings('td').find('input').prop("checked", true);
-                    //$(data.elem).parent().prev().siblings('td').find('input').prop("checked", true);
-                    form.render();
-                }else{
-                    $(data.elem).parent().siblings('td').find('input').prop("checked", false);
-                    form.render();
-                }
-            });
-
-        form.on('checkbox(father)', function(data){
-            //alert(data.html());
-            // alert(data.elem.attr());
-            if(data.elem.checked){
-                // alert("elem:"+$(data.elem).val());
-                //  alert("parents:"+$(data.elem).parents().html());
-                // alert("1-parent:"+$(data.elem).parent().html());
-                // alert("2-parent:"+$(data.elem).parent().parent().html());
-                // alert("22-parent:"+ $(data.elem).parent().parent().find().siblings().html());
-               //  alert("3-parent:"+$(data.elem).parent().parent().parent().html());
-                // alert("4-parent:"+$(data.elem).parent().parent().parent().parent().html());
-                // alert("5-parent:"+$(data.elem).parent().parent().parent().parent().parent().html());
-                $(data.elem).parent().siblings('td').find('input').prop("checked", true);
-                form.render(); 
-            }else{
-               $(data.elem).parent().siblings('td').find('input').prop("checked", false);
-                form.render();  
-            }
-        });
-          
-          
         });
     </script>
-    <script>var _hmt = _hmt || []; (function() {
-        var hm = document.createElement("script");
-        hm.src = "https://hm.baidu.com/hm.js?b393d153aeb26b46e9431fabaf0f6190";
-        var s = document.getElementsByTagName("script")[0];
-        s.parentNode.insertBefore(hm, s);
-      })();</script>
   </body>
 
 </html>

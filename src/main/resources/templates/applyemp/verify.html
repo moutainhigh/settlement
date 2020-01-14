@@ -38,7 +38,7 @@
                 //自定义验证规则
                 form.verify({
                     updatePassword: function(value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '口令至少得一个字符啊';
                         }
                     }

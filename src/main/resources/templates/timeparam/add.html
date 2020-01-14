@@ -96,12 +96,12 @@
                 //自定义验证规则
                 form.verify({
                     paramCode: function(value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '时间点参数编号至少得1个字符啊';
                         }
                     },
                     paramItem: function (value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '时间点参数项至少得1个字符啊';
                         }
                     },

@@ -8,6 +8,7 @@ import com.settlement.utils.Result;
 import com.settlement.vo.SysRoleVo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -36,4 +37,6 @@ public interface SysRoleService extends IService<SysRole> {
     List<SysRoleVo> getRoleVo();
     /**查询部门所对应的sysRoleVo**/
     List<SysRoleVo> getRoleVoByDeptId(Integer deptId);
+    /**查询除roleCode之外的角色**/
+    List<SysRoleVo> getRoleVoExclude(String roleCode);
 }

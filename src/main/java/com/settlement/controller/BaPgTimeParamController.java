@@ -27,4 +27,13 @@ public class BaPgTimeParamController {
     public Result getCheckedValueByTimeParamId(@PathVariable Integer timeParamId){
         return  baPgTimeParamService.getCheckedValueByTimeParamId(timeParamId);
     }
+    /**
+     * 检查有没有设备时间点
+     * @param projectId
+     * @return
+     */
+    @GetMapping("/check/time/status/{projectId}")
+    public Result checkTimeStatus(@PathVariable String projectId) {
+        return  baPgTimeParamService.checkTimeStatus(projectId);
+    }
 }

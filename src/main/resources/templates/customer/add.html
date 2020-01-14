@@ -85,22 +85,22 @@
                 //自定义验证规则
                 form.verify({
                     deptId: function(value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '请选择客户所属部门';
                         }
                     },
                     customerName: function(value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '客户名称至少得1个字符';
                         }
                     },
                     code: function (value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '客户编号至少得1个字符';
                         }
                     },
                     chief: function (value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '客户负责人至少得1个字符';
                         }
                     }

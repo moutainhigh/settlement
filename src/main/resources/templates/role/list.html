@@ -45,6 +45,7 @@
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
         <a class="layui-btn layui-btn-xs" lay-event="assign">权限</a>
     </script>
+    <script th:src="@{/js/common/common.js}" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript"  th:inline="none">
         layui.use(['laydate','table','form','element'], function(){
             var laydate = layui.laydate;
@@ -103,16 +104,6 @@
                   xadmin.open('权限分配', '/sys-role/toAssignRole/' + data.id, 500, 600);
               }
           });
-
-            //执行一个laydate实例
-            laydate.render({
-                elem: '#start' //指定元素
-            });
-
-            //执行一个laydate实例
-            laydate.render({
-                elem: '#end' //指定元素
-            });
       });
         /*角色-删除*/
         function role_del(id){
@@ -125,7 +116,8 @@
                 success:function(r){
                     //location.reload();
                     layer.msg(r.msg,{icon: r.code == 'delete_200'? 6 : 5});
-                    location.reload();
+                    // location.reload();
+                    timeout(1000);
                 }
             });
             timeout(2000);

@@ -55,12 +55,12 @@
                 //自定义验证规则
                 form.verify({
                     paramName: function(value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '导出参数名称至少得1个字符啊';
                         }
                     },
                     colValue: function (value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '导出参数字段值至少得1个字符啊';
                         }
                     },

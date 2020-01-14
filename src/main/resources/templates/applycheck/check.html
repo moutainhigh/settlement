@@ -76,7 +76,7 @@
                 }
             }
             ,updatePassword: function (value) {
-                if (value.length < 1) {
+                if (value.trim().length < 1) {
                     return '口令至少得1个字符啊';
                 }
             },

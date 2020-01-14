@@ -45,7 +45,10 @@
                                             <label for="place" class="layui-form-label">
                                                 <span class="x-red">*</span>员工所在地</label>
                                             <div class="layui-input-inline">
-                                                <input type="text" id="place" name="place" required="" lay-verify="place" autocomplete="off"  placeholder="请输入员工所在地" class="layui-input" maxlength="50">
+                                                <select id="place" name="place" lay-filter="place" lay-verify="place" >
+                                                    <option value="">请选择城市</option>
+                                                    <option th:each="city:${cities}" th:value="${city.id}" th:text="${city.cityName}" >
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
@@ -278,51 +281,51 @@
                         }
                     },
                     place: function(value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '员工所在地至少得1个字符啊';
                         }
                     },
                     responsiblePerson: function(value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '客户负责人至少得1个字符啊';
                         }
                     },
                     rpEmail: function(value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '客户负责人邮件地址至少得1个字符啊';
                         }
                     },
                     sendCopyEmail: function(value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '结算发送抄送人邮件地址(客户方)至少得1个字符啊';
                         }
                     },
                     posLevelInput: function(value) {
                         if ($("#div2").css('display') === 'block') {
-                            if (value.length < 1) {
+                            if (value.trim().length < 1) {
                                 return '级别至少得1个字符啊';
                             }
                         }
                     },
                     posLevelSelect: function(value) {
                         if ($("#div1").css('display') === 'block') {
-                            if (value.length < 1) {
+                            if (value.trim().length < 1) {
                                 return '级别至少得选择一个啊';
                             }
                         }
                     },
                     priceMonth: function(value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '服务费单价月至少得1个字符啊';
                         }
                     },
                     unit: function(value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '单位至少得选择1个啊';
                         }
                     },
                     uploadRateEmail: function(value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '请上传客户确认rate邮件啊';
                         }
                     }

@@ -78,7 +78,7 @@
                        {field:'code',title:'项目组编号',align:'center'},
                        {field:'checkStatus',title:'',align:'center',hide:true},
                        {field:'checkStatusContent',title:'审核状态',align:'center'},
-                       {field:'ownerName',title:'负责人',align:'center'},
+                       {field:'ownerName',title:'交付经理',align:'center'},
                        {field:'enabled',title:'状态',align:'center',templet: '#switchStatus', unresize: true},
                        {field:'createTime',title:'创建日期',align:'center'},
                        {fixed:'right',title:'操作',align:'center',toolbar:'#toolBar',width:240}
@@ -108,7 +108,7 @@
                   checkBoxCheckedOper('员工录入','/ba-employee/enter-emp/',table, layer, 1000, 545);
               },
               transfer:function(){
-                  transferOper('项目移交','/ba-project-group/transfer/',table,layer,400,300);
+                  transferOper('项目移交','/ba-project-group/transfer/',table,layer,600,400);
               }
           };
           $('.layui-btn').on('click', function(){

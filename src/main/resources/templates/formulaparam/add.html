@@ -64,7 +64,7 @@
                 //自定义验证规则
                 form.verify({
                     paramName: function(value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '公式参数名称至少得1个字符啊';
                         }
                     },
@@ -74,12 +74,12 @@
                         }
                     },
                     paramCode: function (value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '公式参数编号内容至少得1个字符啊';
                         }
                     },
                     colValue: function (value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '字段值内容至少得1个字符啊';
                         }
                     }

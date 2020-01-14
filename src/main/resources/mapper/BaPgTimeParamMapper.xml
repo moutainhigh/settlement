@@ -16,4 +16,13 @@
             (#{baPgTimeParams.pgId},#{baPgTimeParams.tPId})
         </foreach>
     </insert>
+
+    <select id="getCheckPgTimeExist" parameterType="java.util.Map" resultType="int">
+        select
+        count(1)
+        from ba_pg_time_param pgt
+        inner join ba_time_param t on t.id = pgt.t_p_id
+        where t.type=#{type}
+        and pg_id=#{projectId}
+    </select>
 </mapper>

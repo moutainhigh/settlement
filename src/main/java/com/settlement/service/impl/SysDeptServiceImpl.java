@@ -145,6 +145,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         QueryWrapper<SysDept> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("enabled",Const.ENABLED_Y);
         queryWrapper.eq("del_flag",Const.DEL_FLAG_N);
+        queryWrapper.orderByAsc("sort");
         List<SysDept> sysDepts = this.baseMapper.selectList(queryWrapper);
 
         List<SysDeptVo> sysDeptVos = new ArrayList<>();

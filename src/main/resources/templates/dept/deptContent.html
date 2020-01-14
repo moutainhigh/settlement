@@ -34,33 +34,33 @@
                 <label for="deptName" class="layui-form-label">
                     <span class="x-red">*</span>部门名称</label>
                 <div class="layui-input-inline">
-                    <input type="text" id="deptName" name="deptName" th:value="${mode.equals('update')}?${sysDept.deptName}" required="" lay-verify="deptName" autocomplete="off" class="layui-input"></div>
+                    <input type="text" id="deptName" name="deptName" th:value="${!mode.equals('add')}?${sysDept.deptName}" required="" lay-verify="deptName" autocomplete="off" class="layui-input"></div>
                 </div>
             <div class="layui-form-item">
                 <label for="chief" class="layui-form-label">
                     <span class="x-red">*</span>部门负责人</label>
                 <div class="layui-input-inline">
-                    <input type="text" id="chief" name="chief" th:value="${mode.equals('update')}?${sysDept.chief}" lay-verify="chief" required="" autocomplete="off" class="layui-input"></div>
+                    <input type="text" id="chief" name="chief" th:value="${!mode.equals('add')}?${sysDept.chief}" lay-verify="chief" required="" autocomplete="off" class="layui-input"></div>
             </div>
 
          <div class="layui-form-item">
             <label for="email" class="layui-form-label">
                 <span class="x-red">*</span>负责人邮箱</label>
             <div class="layui-input-inline">
-                <input type="text" id="email" name="email" th:value="${mode.equals('update')}?${sysDept.email}" lay-verify="email" required="" autocomplete="off" class="layui-input"></div>
+                <input type="text" id="email" name="email" th:value="${!mode.equals('add')}?${sysDept.email}" lay-verify="email" required="" autocomplete="off" class="layui-input"></div>
             </div>
         <div class="layui-form-item">
             <label for="remark" class="layui-form-label">
                 <span class="x-red">*</span>备注</label>
             <div class="layui-input-inline">
-                <input type="text" id="remark" name="remark" th:value="${mode.equals('update')}?${sysDept.remark}" lay-verify="remark" required="" autocomplete="off" class="layui-input"></div>
+                <input type="text" id="remark" name="remark" th:value="${!mode.equals('add')}?${sysDept.remark}" lay-verify="remark" required="" autocomplete="off" class="layui-input"></div>
         </div>
 
             <div class="layui-form-item">
                 <label for="sort" class="layui-form-label">
                     <span class="x-red">*</span>显示顺序</label>
                 <div class="layui-input-inline">
-                    <input type="text" id="sort" name="sort" th:value="${mode.equals('update')}?${sysDept.sort}" required="" lay-verify="sort" autocomplete="off" class="layui-input"></div>
+                    <input type="text" id="sort" name="sort" th:value="${!mode.equals('add')}?${sysDept.sort}" required="" lay-verify="sort" autocomplete="off" class="layui-input"></div>
             </div>
         <div class="layui-form-item">
             <label for="roles" class="layui-form-label">
@@ -70,7 +70,7 @@
                     <tr>
                         <td th:each="role:${sysRoleVos}">
                 <div >
-                     <input type="checkbox" id="roles" name="roles[]" lay-verify="roles" th:checked="${mode.equals('update')}?${role.checked}" lay-skin="primary" th:value="${role.id}" th:title="${role.roleCnName}" />
+                     <input type="checkbox" id="roles" name="roles[]" lay-verify="roles" th:checked="${!mode.equals('add')}?${role.checked}" lay-skin="primary" th:value="${role.id}" th:title="${role.roleCnName}" />
                 </div>
                         </td>
                     </tr>
@@ -79,7 +79,8 @@
         </div>
             <div class="layui-form-item">
                 <label  class="layui-form-label"></label>
-                <button class="layui-btn" id="add" lay-filter="add" th:text="${mode.equals('add')}?'增加' : '修改'" lay-submit="">增加</button></div>
+                <button class="layui-btn" id="add" lay-filter="add" th:text="${mode.equals('add')}?'增加' : '修改'" th:if="${!mode.equals('view')}" lay-submit="">增加</button>
+            </div>
 
     </div>
     </form>
@@ -92,31 +93,30 @@
         //form.render();
         //form.render('checkbox');
        var mode=[[${mode}]];
-
         //自定义验证规则
         form.verify({
             parentId: function(value) {
-                if (value.length < 1) {
+                if (value.trim().length < 1) {
                     return '时间点参数编号至少得1个字符啊';
                 }
             },
             deptCode: function (value) {
-                if (value.length < 1) {
+                if (value.trim().length < 1) {
                     return '部门编号至少得1个字符';
                 }
             },
             deptName: function (value) {
-                if (value.length < 1) {
+                if (value.trim().length < 1) {
                     return '时部门名称至少得1个字符';
                 }
             },
             chief: function (value) {
-                if (value.length < 1) {
+                if (value.trim().length < 1) {
                     return '负责负责人至少得1个字符';
                 }
             },
             remark: function (value) {
-                if (value.length < 1) {
+                if (value.trim().length < 1) {
                     return '备注信息至少得1个字符';
                 }
             },
@@ -167,6 +167,7 @@
                             //     }
                             // });
                             layer.msg('添加成功', {icon: 6});
+                            // window.parent.layui.$('#deptContent').src="/sys-dept/deptContent?mode=update&id="+pid;
                         } else {
                             layer.msg('添加失败', {icon: 5});
                         }

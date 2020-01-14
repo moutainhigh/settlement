@@ -34,6 +34,7 @@
         <result column="create_time" property="createTime" />
         <result column="pg_id" property="pgId" />
         <result column="employee_id" property="employeeId" />
+        <result column="work_month" property="workMonth" />
     </resultMap>
 
     <!-- 根据项目组id获得当前项目组的员工考勤信息-->
@@ -41,6 +42,7 @@
         select
             w.id ,
             e.emp_name as employeeName,
+            e.`code` as employeeCode,
             w.work_days ,
             w.attendance_days ,
             w.absenteeism_days ,

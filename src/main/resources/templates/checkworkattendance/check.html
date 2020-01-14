@@ -74,12 +74,12 @@
                 //自定义验证规则
                 form.verify({
                     updatePassword: function(value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '验证口令至少得1个字符';
                         }
                     },
                     checkRemark: function (value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '审核备注内容至少1个字符';
                         }
                     }

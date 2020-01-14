@@ -130,6 +130,9 @@ public class BaTimeParamServiceImpl extends ServiceImpl<BaTimeParamMapper, BaTim
         }
         return  r;
     }
+
+
+
     /**
      * 保存项目的时间点参数
      * @param projectIds

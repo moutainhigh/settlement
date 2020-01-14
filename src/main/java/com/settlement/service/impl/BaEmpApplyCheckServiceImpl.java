@@ -127,14 +127,14 @@ public class BaEmpApplyCheckServiceImpl extends ServiceImpl<BaEmpApplyCheckMappe
             updateWrapper.eq("id",empApplyCheckVo.getId());
             int ret = this.baseMapper.update(empApplyCheckVo, updateWrapper);
             if (ret > 0) {
-                r.setCode(HttpResultEnum.CODE_200.getCode());
-                r.setMsg(HttpResultEnum.CODE_200.getMessage());
+                r.setCode(HttpResultEnum.CHK_CODE_200.getCode());
+                r.setMsg(HttpResultEnum.CHK_CODE_200.getMessage());
             }
         } catch (Exception e) {
             logger.info("员工申请审核提交service异常" + e.getMessage());
             e.printStackTrace();
-            r.setCode(HttpResultEnum.CODE_500.getCode());
-            r.setMsg(HttpResultEnum.CODE_500.getMessage());
+            r.setCode(HttpResultEnum.CHK_CODE_500.getCode());
+            r.setMsg(HttpResultEnum.CHK_CODE_500.getMessage());
         }
         return r;
     }

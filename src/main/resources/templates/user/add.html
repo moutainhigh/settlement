@@ -102,12 +102,12 @@
                 //自定义验证规则
                 form.verify({
                     realName: function(value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '姓名至少得1个字符啊';
                         }
                     },
                     employeeNo: function (value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '员工编号至少得1个字符啊';
                         }
                     },
@@ -118,7 +118,7 @@
                         }
                     },
                     deptId: function(value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '部门至少得选择一个啊';
                         }
                     }

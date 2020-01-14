@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -18,4 +19,6 @@ import java.util.List;
 public interface BaPgTimeParamMapper extends BaseMapper<BaPgTimeParam> {
     /**批量插入**/
     Integer saveBatchs(List<BaPgTimeParam> baPgTimeParams);
+    /**检查是否设置时间参数**/
+    Integer getCheckPgTimeExist(Map<String,Object> map);
 }

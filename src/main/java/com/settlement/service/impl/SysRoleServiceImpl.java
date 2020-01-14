@@ -71,8 +71,9 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     public List<SysRoleVo> getRoleVoByDeptId(Integer deptId) {
         Map<String,Object> map = new HashMap<>();
         map.put("deptId",deptId);
+        map.put("roleCode",Const.ROLE_CODE_ADMIN);
         map.put("delFlag",Const.DEL_FLAG_N);
-        List<SysRoleVo> sysRoleVos = this.baseMapper.getRoleVo(map);
+        List<SysRoleVo> sysRoleVos = this.baseMapper.getRoleVoExclude(map);
         List<SysRoleVo> sysRoleCheckedVos = this.baseMapper.getRoleVoByDeptId(map);
         for(SysRoleVo sysCheckedRoleVo:sysRoleCheckedVos) {
             for(SysRoleVo sysRoleVo:sysRoleVos) {
@@ -83,6 +84,19 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
             }
         }
         return sysRoleVos;
+    }
+
+    /**
+     * 查询除roleCode之外的角色
+     * @param roleCode
+     * @return
+     */
+    @Override
+    public List<SysRoleVo> getRoleVoExclude(String roleCode) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("roleCode",roleCode);
+        map.put("delFlag",Const.DEL_FLAG_N);
+        return this.baseMapper.getRoleVoExclude(map);
     }
 
     /**

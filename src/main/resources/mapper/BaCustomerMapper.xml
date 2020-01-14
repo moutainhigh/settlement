@@ -35,6 +35,7 @@
             c.customer_name as customerName,
             c.code as code,
             pg.id as projectId,
+            pg.`code` as projectCode,
             pg.pg_name as projectName
             from ba_customer c
             left join ba_project_group pg on c.id = pg.customer_id

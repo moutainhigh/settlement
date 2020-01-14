@@ -49,12 +49,12 @@
                 //自定义验证规则
                 form.verify({
                     cityName: function(value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '城市名称至少得1个字符';
                         }
                     },
                     cityCode: function (value) {
-                        if (value.length < 1) {
+                        if (value.trim().length < 1) {
                             return '城市编号至少得1个字符';
                         }
                     }

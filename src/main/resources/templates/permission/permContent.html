@@ -88,17 +88,17 @@
         //自定义验证规则
         form.verify({
             pCode: function(value) {
-                if (value.length < 1) {
+                if (value.trim().length < 1) {
                     return '菜单编码至少得1个字符啊';
                 }
             },
             pName: function (value) {
-                if (value.length < 1) {
+                if (value.trim().length < 1) {
                     return '菜单名称至少得1个字符啊';
                 }
             },
             url: function (value) {
-                if (value.length < 1) {
+                if (value.trim().length < 1) {
                     return '链接url地址至少得1个字符啊';
                 }
             },

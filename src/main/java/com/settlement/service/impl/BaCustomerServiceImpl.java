@@ -316,33 +316,53 @@ public class BaCustomerServiceImpl extends ServiceImpl<BaCustomerMapper, BaCusto
         mapkey.put("userId",userId);
         mapkey.put("roleCode",sysRole.getRoleCode());
         List<BaCustomerAndProjectVo> baCustomerAndProjectVos = this.baseMapper.getCustomerAndProjectByUserId(mapkey);
+        //存储判断子结点
         Map<String,BaCustomerAndProjectVo> map = new HashMap<String,BaCustomerAndProjectVo>();
+        //存储判断父结点
+        Map<String,BaCustomerAndProjectTreeVo> projectMap = new HashMap<String,BaCustomerAndProjectTreeVo>();
+        //返回树结构数据
         List<BaCustomerAndProjectTreeVo> baCustomerAndProjectTreeVos = new ArrayList<>();
         for(BaCustomerAndProjectVo ba: baCustomerAndProjectVos) {
+            //判断当前是否已经存在父结点
             if(map.containsKey(ba.getCode())) {
-                BaCustomerAndProjectTreeVo baVo = new BaCustomerAndProjectTreeVo();
-                baVo.setId(ba.getProjectId()+"");
-                baVo.setTitle(ba.getProjectName());
-                baVo.setParentId(ba.getId()+ba.getCustomerName().hashCode()+"");
-                baVo.setCheckArr("0");
-                baVo.setLeaf(true);
-                baCustomerAndProjectTreeVos.add(baVo);
+                //判断当前是否已经存在相同子结点,存在跳出本次循环
+                String projectCode = ba.getProjectCode();
+                if(!projectMap.containsKey(projectCode)) {
+                    //不存在相同子结点,构造数据添加
+                    BaCustomerAndProjectTreeVo baVo = new BaCustomerAndProjectTreeVo();
+                    baVo.setId(ba.getProjectId()+"");
+                    baVo.setProjectCode(projectCode);
+                    baVo.setTitle(ba.getProjectName());
+                    baVo.setParentId(ba.getId()+ba.getCustomerName().hashCode()+"");
+                    baVo.setCheckArr("0");
+                    baVo.setLeaf(true);
+                    baCustomerAndProjectTreeVos.add(baVo);
+                    projectMap.put(projectCode,baVo);
+                }
+
             } else {
+                //不存在父结点 构造父结点并添加到map中
                 map.put(ba.getCode(),ba);
+                //构建父结点
                 BaCustomerAndProjectTreeVo baVo = new BaCustomerAndProjectTreeVo();
-                baVo.setId(ba.getId()+ba.getCustomerName().hashCode()+"");
+                String baVoId = ba.getId()+ba.getCustomerName().hashCode()+"";
+                baVo.setId(baVoId);
                 baVo.setTitle(ba.getCustomerName());
                 baVo.setParentId("0");
                 baVo.setCheckArr("0");
                 baCustomerAndProjectTreeVos.add(baVo);
-
+                //同时构造子结点
                 BaCustomerAndProjectTreeVo baChildVo = new BaCustomerAndProjectTreeVo();
                 baChildVo.setId(ba.getProjectId()+"");
+                baChildVo.setProjectCode(ba.getProjectCode());
                 baChildVo.setTitle(ba.getProjectName());
-                baChildVo.setParentId(ba.getId()+ba.getCustomerName().hashCode()+"");
+                baChildVo.setParentId(baVo.getId());
                 baChildVo.setCheckArr("0");
                 baChildVo.setLeaf(true);
-                baCustomerAndProjectTreeVos.add(baChildVo);
+                if(!projectMap.containsKey(baChildVo.getProjectCode())){
+                    baCustomerAndProjectTreeVos.add(baChildVo);
+                    projectMap.put(baChildVo.getProjectCode(),baChildVo);
+                }
             }
         }
         return baCustomerAndProjectTreeVos;

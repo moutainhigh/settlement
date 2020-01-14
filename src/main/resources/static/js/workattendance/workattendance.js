@@ -227,6 +227,22 @@ function checkApplyModify(ids) {
     return flag;
 
 }
+//检查有没有设备时间点
+function checkStopTimeStatus(projectId){
+    var flag =false;
+    $.ajax({
+        type:'get',
+        url:'/ba-pg-time-param/check/time/status/'+projectId,
+        async:false,
+        success:function(r) {
+            if('0'==r.code) {
+                layer.msg(r.data,{icon:5});
+                flag=true;
+            }
+        }
+        });
+    return flag;
+}
 //根据提交的状态S N获得对应的数组列表
 function getSubStatus(data,subStatusValue) {
     var idSubStatus=[];

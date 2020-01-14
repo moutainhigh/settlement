@@ -322,8 +322,8 @@ public class HomeController {
      */
     @RequiresPermissions({"dept:toUpdate","dept:toAdd"})
     @GetMapping("/sys-dept/deptContent")
-    public String deptIframeContent(@RequestParam(required =false,defaultValue = "1") Integer id, @RequestParam(required = false,defaultValue = "") String mode, Model model) {
-        List<SysRoleVo> sysRoleVos = sysRoleService.getRoleVo();
+    public String deptIframeContent(@RequestParam(required =false,defaultValue = "1") Integer id, @RequestParam(required = false,defaultValue = "view") String mode, Model model) {
+        List<SysRoleVo> sysRoleVos = sysRoleService.getRoleVoExclude(Const.ROLE_CODE_ADMIN);
         if("update".equals(mode)) {
             SysDeptVo sysDept=sysDeptService.getSysDeptVoById(id);
             sysRoleVos = sysRoleService.getRoleVoByDeptId(sysDept.getId());
@@ -338,10 +338,10 @@ public class HomeController {
             model.addAttribute("mode", "add");
             model.addAttribute("sysDept",sysDept);
         } else {
-            SysDeptVo sysDept= new SysDeptVo();//sysDeptService.getRootSysDeptVoById(Const.DEPT_ROOT);
-            sysRoleVos = sysRoleService.getRoleVo();
+            SysDeptVo sysDept=sysDeptService.getSysDeptVoById(id);
+            sysRoleVos = sysRoleService.getRoleVoByDeptId(sysDept.getId());
             model.addAttribute("sysRoleVos",sysRoleVos);
-            model.addAttribute("mode","default");
+            model.addAttribute("mode","view");
             model.addAttribute("sysDept",sysDept);
         }
         model.addAttribute("sysRoleVos",sysRoleVos);
@@ -720,6 +720,8 @@ public class HomeController {
     @RequiresPermissions("employee:add")
     @GetMapping("/ba-employee/add/{pgId}")
     public String toAddEmployeePage(@PathVariable Integer pgId, Model model) {
+        List<BaCity> cities = baCityService.getBaCityList();
+        model.addAttribute("cities",cities);
         // 级别填写模式
         // model.addAttribute("levelTypeSelect", this.sysDataDicService.getDataDicSelectByParentCode(Const.LEVEL_TYPE_PARENT_CODE));
         // 查询项目组关联的级别
@@ -743,6 +745,8 @@ public class HomeController {
     @RequiresPermissions("employee:edit")
     @GetMapping("/ba-employee/edit/{id}/{pgId}")
     public String toEditEmployee(@PathVariable Integer id, @PathVariable Integer pgId, Model model) {
+        List<BaCity> cities = baCityService.getBaCityList();
+        model.addAttribute("cities",cities);
         model.addAttribute("levelPriceList", this.baLevelPriceService.getLevelPriceByPgId(pgId));
         // 单位
         model.addAttribute("unitList", sysDataDicService.getDataDicSelectByParentCode(Const.UNIT_PARENT_CODE));
@@ -1285,6 +1289,8 @@ public class HomeController {
     @RequiresPermissions("applyEmployee:edit")
     @GetMapping("/ba-apply-employee/edit/{applyEmpId}")
     public String toEditApplyEmpPage(@PathVariable(value="applyEmpId") Integer applyEmpId, Model model) {
+        List<BaCity> cities = baCityService.getBaCityList();
+        model.addAttribute("cities",cities);
         model.addAttribute("applyEmpId", applyEmpId);
         BaApplyEmployee bae = this.baApplyEmployeeService.getById(applyEmpId);
         Integer pgId = this.baEmpApplyCheckService.getById(bae.getApplyId()).getPgId();

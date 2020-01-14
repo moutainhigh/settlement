@@ -55,5 +55,4 @@ public interface BaTimeParamService extends IService<BaTimeParam> {
     Result saveRelateProject(Integer[] projectIds, String timeParamId);
     /**检查有没有保存过时间点参数**/
     Result checkTimeParamStatusByProjectIds(Integer[] projectIds, String timeParamId,String type);
-
 }
